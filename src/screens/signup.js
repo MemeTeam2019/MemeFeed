@@ -35,7 +35,7 @@ export default class SignupScreen extends React.Component {
 
       if (!doc.exists) {
         transaction.set(ref, {
-          email: email,
+          email: email.toLowerCase(),
           name: name,
           username: username,
           followersCnt: 0,
@@ -87,22 +87,27 @@ export default class SignupScreen extends React.Component {
               style={styles.input}
               placeholder="Email"
               onChangeText={(email) => this.setState({email: email})}
+              autoComplete="email"
+              autoCapitalize="none"
             />
             <TextInput
               style={styles.input}
               placeholder="Name"
               onChangeText={(name) => this.setState({name: name})}
+              autoComplete="name"
             />
             <TextInput
               style={styles.input}
               placeholder="Username"
               onChangeText={(username) => this.setState({username: username})}
+              autoComplete="username"
             />
             <TextInput
               style={styles.input}
               placeholder="Password"
               secureTextEntry={true}
               onChangeText={(password) => this.setState({password: password})}
+              autoComplete="password"
             />
             <TextInput
               style={styles.input}
