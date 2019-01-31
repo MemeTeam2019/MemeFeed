@@ -27,22 +27,51 @@ export default class SignupScreen extends React.Component {
     }
   }
 
+  addUserDoc = (uid, email, name, username) => {
+    console.log("adding user for " + uid);
+    firebase.firestore().runTransaction(async transaction => {
+      const ref = await firebase.firestore().collection("Users").doc(uid);
+      const doc = await transaction.get(ref);
+
+      if (!doc.exists) {
+        transaction.set(ref, {
+          email: email,
+          name: name,
+          username: username,
+          followersCnt: 0,
+          followingCnt: 0
+        })
+        return uid;
+      }
+    })
+    .then(uid => {
+      console.log("User doc successfully set for user with " + uid)
+    })
+    .catch(err => {
+      console.log(err);
+    })
+  }
+
   handleSignup = () => {
     let email = this.state.email;
+    let name = this.state.name;
+    let username = this.state.username;
     let password = this.state.password;
     if (password !== this.state.cpassword) {
-      Alert.alert("Passwords don't match", ``, [{text: 'OK'}]);
+      Alert.alert("Passwords don't match", '', [{text: 'OK'}]);
+      return;
     }
     firebase.auth().createUserWithEmailAndPassword(email, password)
     .then((userCredentials) => {
       if (userCredentials !== undefined && userCredentials !== null) {
-          console.log('User created successfully with uuid' + userCredentials.user);
+        let uid = userCredentials.user._user.uid;
+        this.addUserDoc(uid, email, name, username);
       } else {
         console.log('???');
       }
     })
     .catch(error => {
-      console.log(error.code);
+      console.log(error);
     });
   }
 
@@ -100,7 +129,6 @@ const styles = StyleSheet.create({
     paddingTop: '18%',
     alignItems: 'center',
     justifyContent: 'center',
-    // backgroundColor: '#fcfcfc'
   },
   title: {
     fontSize: 36,
