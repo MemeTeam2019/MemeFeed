@@ -1,5 +1,7 @@
 /*This is an Example of Grid Image Gallery in React Native*/
 import * as React from 'react';
+import firebase from 'react-native-firebase';
+
 //import React in our project
 import {
   Image,
@@ -16,14 +18,38 @@ import PhotoGrid from 'react-native-image-grid';
 class HomeFeed extends React.Component {
   constructor() {
     super();
+    this.ref = firebase.firestore().collection('MiaTestingMemePulling');
+    this.unsubscribe = null;
     this.state = {
       imageuri: '',
       ModalVisibleStatus: false,
+      isLoading: true,
+      memes: [],
+      items: [], 
     };
-    this.state = { items: [] };
   }
  
+  // function for extracting Firebase responses to the state
+  onCollectionUpdate = (querySnapshot) => {
+    const memes = [];
+    querySnapshot.forEach((doc) => {
+      const { image, time} = doc.data();
+      memes.push({
+        key: doc.id,
+        doc, // DocumentSnapshot
+        src: image,
+        time,
+      });
+    });
+    this.setState({
+      memes,
+      isLoading: false,
+   });
+  }
+
   componentDidMount() {
+    this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate);
+
     var that = this;
     let items = Array.apply(null, Array(60)).map((v, i) => {
       //Using demo placeholder images but you can add your images here
@@ -106,7 +132,7 @@ class HomeFeed extends React.Component {
       return (
         <View style={styles.containerStyle}>
         <PhotoGrid
-          data={this.state.items}
+          data={this.state.memes}
           itemsPerRow={3}
           //You can decide the item per row
           itemMargin={1}
