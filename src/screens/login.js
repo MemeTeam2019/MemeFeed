@@ -7,7 +7,8 @@ import {
   Button,
   TextInput,
   Alert,
-  ImageBackground
+  ImageBackground,
+  AsyncStorage
 } from 'react-native';
 import firebase from 'react-native-firebase';
 
@@ -25,8 +26,10 @@ export default class LoginScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.unsubscriber = firebase.auth().onAuthStateChanged(user => {
-      this.setState({user: user})
+    this.unsubscriber = firebase.auth().onAuthStateChanged(User => {
+      AsyncStorage.setItem("uid", User._user.uid).then(() => {
+        this.props.navigation.navigate("Main");
+      })
     });
   }
 
@@ -35,11 +38,7 @@ export default class LoginScreen extends React.Component {
     let password = this.state.password;
     firebase.auth().signInWithEmailAndPassword(email, password)
       .then(user => {
-        if (typeof user !== undefined && user !== null) {
-          this.props.navigation.navigate('Main');
-        } else {
-          console.log("yikes");
-        }
+        console.log(user);
       })
       .catch(error => {
         let errorMessage = "";
