@@ -37,10 +37,10 @@ export default class LoginScreen extends React.Component {
     let email = this.state.email;
     let password = this.state.password;
     firebase.auth().signInWithEmailAndPassword(email, password)
-      .then(user => {
-        console.log(user);
+      .then((User) => {
+        console.log(User);
       })
-      .catch(error => {
+      .catch((error) => {
         let errorMessage = "";
         switch(error.code) {
           case "auth/invalid-email":
@@ -104,8 +104,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    //backgroundColor: '#FCB103'
+    alignItems: 'center'
   },
   title: {
     fontSize: 36,
