@@ -1,3 +1,13 @@
+
+
+
+
+
+
+
+
+
+
 /*This is an Example of Grid Image Gallery in React Native*/
 import * as React from 'react';
 //import React in our project
@@ -10,9 +20,9 @@ import {
   StyleSheet,
 } from 'react-native';
 //import all the needed components
- 
+
 import PhotoGrid from 'react-native-image-grid';
- 
+
 class HomeFeed extends React.Component {
   constructor() {
     super();
@@ -22,7 +32,7 @@ class HomeFeed extends React.Component {
     };
     this.state = { items: [] };
   }
- 
+
   componentDidMount() {
     var that = this;
     let items = Array.apply(null, Array(60)).map((v, i) => {
@@ -45,7 +55,7 @@ class HomeFeed extends React.Component {
       imageuri: imageURL,
     });
   }
- 
+
   renderItem(item, itemSize, itemPaddingHorizontal) {
     //Single item of Grid
     return (
@@ -67,10 +77,52 @@ class HomeFeed extends React.Component {
       </TouchableOpacity>
     );
   }
- 
+
+/*  Header Code ----------------
+  render() {
+    return (
+      <View style={styles.container}>
+        <View style={styles.navBar}>
+            <Image source={require('./images/banner3.png')} style={{ width: 230, height: 50}} />
+            <TouchableOpacity>
+            <Image
+            source={require('./images/fullFeed4.png')} style={{ width: 50, height: 50}}
+            />
+            </TouchableOpacity>
+            <TouchableOpacity>
+            <Image
+            source={require('./images/boxFeed4.png')} style={{ width: 50, height: 50}}
+            />
+            </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  navBar: {
+    height:100,
+    backgroundColor: 'white',
+    elevation: 3,
+    paddingHorizontal: 20,
+    paddingRight: 3,
+    paddingTop: 50,
+    flexDirection: 'row',
+    alignItems: 'center'
+  }
+});
+
+
+
+ -----------------------------*/
   render() {
     if (this.state.ModalVisibleStatus) {
-      //Modal to show full image with close button 
+      //Modal to show full image with close button
       return (
         <Modal
           transparent={false}
@@ -105,6 +157,19 @@ class HomeFeed extends React.Component {
       //Photo Grid of images
       return (
         <View style={styles.containerStyle}>
+        <View style={styles.navBar}>
+        <Image source={require('../images/banner3.png')} style={{ width: 230, height: 50}} />
+        <TouchableOpacity>
+        <Image
+        source={require('../images/fullFeed4.png')} style={{ width: 50, height: 50}}
+        />
+        </TouchableOpacity>
+        <TouchableOpacity>
+        <Image
+        source={require('../images/boxFeed4.png')} style={{ width: 50, height: 50}}
+        />
+        </TouchableOpacity>
+        </View>
         <PhotoGrid
           data={this.state.items}
           itemsPerRow={3}
@@ -119,13 +184,13 @@ class HomeFeed extends React.Component {
     }
   }
 }
- 
+
 export default HomeFeed;
 const styles = StyleSheet.create({
   containerStyle: {
     justifyContent: 'center',
     flex: 1,
-    marginTop: 20,
+    marginTop: 0, //20
   },
   fullImageStyle: {
     justifyContent: 'center',
@@ -147,6 +212,16 @@ const styles = StyleSheet.create({
     right: 9,
     position: 'absolute',
   },
+  navBar: {
+    height:100,
+    backgroundColor: 'white',
+    elevation: 3,
+    paddingHorizontal: 20,
+    paddingRight: 3,
+    paddingTop: 50,//50
+    flexDirection: 'row',
+    alignItems: 'center'
+  }
 });
 
 
