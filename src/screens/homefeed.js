@@ -1,3 +1,13 @@
+
+
+
+
+
+
+
+
+
+
 /*This is an Example of Grid Image Gallery in React Native*/
 import * as React from 'react';
 import firebase from 'react-native-firebase';
@@ -12,9 +22,9 @@ import {
   StyleSheet,
 } from 'react-native';
 //import all the needed components
- 
+
 import PhotoGrid from 'react-native-image-grid';
- 
+
 class HomeFeed extends React.Component {
   constructor() {
     super();
@@ -28,6 +38,7 @@ class HomeFeed extends React.Component {
       items: [], 
     };
   }
+<<<<<<< HEAD
  
   // function for extracting Firebase responses to the state
   onCollectionUpdate = (querySnapshot) => {
@@ -46,6 +57,8 @@ class HomeFeed extends React.Component {
       isLoading: false,
    });
   }
+=======
+>>>>>>> spr2_term1_us3
 
   componentDidMount() {
     this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate);
@@ -71,7 +84,7 @@ class HomeFeed extends React.Component {
       imageuri: imageURL,
     });
   }
- 
+
   renderItem(item, itemSize, itemPaddingHorizontal) {
     //Single item of Grid
     return (
@@ -93,10 +106,52 @@ class HomeFeed extends React.Component {
       </TouchableOpacity>
     );
   }
- 
+
+/*  Header Code ----------------
+  render() {
+    return (
+      <View style={styles.container}>
+        <View style={styles.navBar}>
+            <Image source={require('./images/banner3.png')} style={{ width: 230, height: 50}} />
+            <TouchableOpacity>
+            <Image
+            source={require('./images/fullFeed4.png')} style={{ width: 50, height: 50}}
+            />
+            </TouchableOpacity>
+            <TouchableOpacity>
+            <Image
+            source={require('./images/boxFeed4.png')} style={{ width: 50, height: 50}}
+            />
+            </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
+  navBar: {
+    height:100,
+    backgroundColor: 'white',
+    elevation: 3,
+    paddingHorizontal: 20,
+    paddingRight: 3,
+    paddingTop: 50,
+    flexDirection: 'row',
+    alignItems: 'center'
+  }
+});
+
+
+
+ -----------------------------*/
   render() {
     if (this.state.ModalVisibleStatus) {
-      //Modal to show full image with close button 
+      //Modal to show full image with close button
       return (
         <Modal
           transparent={false}
@@ -131,6 +186,19 @@ class HomeFeed extends React.Component {
       //Photo Grid of images
       return (
         <View style={styles.containerStyle}>
+        <View style={styles.navBar}>
+        <Image source={require('../images/banner3.png')} style={{ width: 230, height: 50}} />
+        <TouchableOpacity>
+        <Image
+        source={require('../images/fullFeed4.png')} style={{ width: 50, height: 50}}
+        />
+        </TouchableOpacity>
+        <TouchableOpacity>
+        <Image
+        source={require('../images/boxFeed4.png')} style={{ width: 50, height: 50}}
+        />
+        </TouchableOpacity>
+        </View>
         <PhotoGrid
           data={this.state.memes}
           itemsPerRow={3}
@@ -145,14 +213,18 @@ class HomeFeed extends React.Component {
     }
   }
 }
- 
+
 export default HomeFeed;
 const styles = StyleSheet.create({
   containerStyle: {
     justifyContent: 'center',
     flex: 1,
+<<<<<<< HEAD
     marginTop: 20,
     backgroundColor: 'rgba(255,255,255,1)',
+=======
+    marginTop: 0, //20
+>>>>>>> spr2_term1_us3
   },
   fullImageStyle: {
     justifyContent: 'center',
@@ -174,6 +246,16 @@ const styles = StyleSheet.create({
     right: 9,
     position: 'absolute',
   },
+  navBar: {
+    height:100,
+    backgroundColor: 'white',
+    elevation: 3,
+    paddingHorizontal: 20,
+    paddingRight: 3,
+    paddingTop: 50,//50
+    flexDirection: 'row',
+    alignItems: 'center'
+  }
 });
 
 
