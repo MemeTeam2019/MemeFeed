@@ -1,13 +1,3 @@
-
-
-
-
-
-
-
-
-
-
 /*This is an Example of Grid Image Gallery in React Native*/
 import * as React from 'react';
 import firebase from 'react-native-firebase';
@@ -38,7 +28,6 @@ class HomeFeed extends React.Component {
       items: [], 
     };
   }
-<<<<<<< HEAD
  
   // function for extracting Firebase responses to the state
   onCollectionUpdate = (querySnapshot) => {
@@ -57,8 +46,6 @@ class HomeFeed extends React.Component {
       isLoading: false,
    });
   }
-=======
->>>>>>> spr2_term1_us3
 
   componentDidMount() {
     this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate);
@@ -219,12 +206,8 @@ const styles = StyleSheet.create({
   containerStyle: {
     justifyContent: 'center',
     flex: 1,
-<<<<<<< HEAD
     marginTop: 20,
     backgroundColor: 'rgba(255,255,255,1)',
-=======
-    marginTop: 0, //20
->>>>>>> spr2_term1_us3
   },
   fullImageStyle: {
     justifyContent: 'center',
@@ -252,38 +235,8 @@ const styles = StyleSheet.create({
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 50,//50
+    paddingTop: 50,
     flexDirection: 'row',
     alignItems: 'center'
   }
 });
-
-
-// import React from 'react';
-// import {ScrollView, Text, StyleSheet} from 'react-native';
-
-// export default class HomeFeed extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       name: this.props.navigation.getParam('name')
-//     }
-//   }
-//   render() {
-//     return (
-//       <ScrollView>
-//         <Text style={styles.title}>
-//           Hello, {this.state.name}! :D
-//         </Text>
-//       </ScrollView>
-//     );
-//   }
-// }
-
-// const styles = StyleSheet.create({
-//   title: {
-//     fontSize: 36,
-//     textAlign: 'center',
-//     marginTop: '30%'
-//   }
-// })
