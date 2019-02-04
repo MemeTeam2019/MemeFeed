@@ -7,9 +7,11 @@ import {
   Button,
   TextInput,
   Alert,
-  ImageBackground
+  ImageBackground,
+  Image
 } from 'react-native';
 import firebase from 'react-native-firebase';
+
 
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -68,11 +70,15 @@ export default class LoginScreen extends React.Component {
   render() {
     return (
       <ImageBackground 
-        source={require('../images/background.jpeg')}
+        source={require('../images/bkgrnd.jpeg')}
         style={styles.background}>
       <View style={styles.container}>
         <KeyboardAvoidingView behavior='position'>
           {/* <Text style={styles.title}>MEME FEED</Text> */}
+          <Image 
+            style={styles.logo}
+            source={require('../images/logo.png')}
+          />
           <TextInput
             style={styles.input}
             placeholder="Email"
@@ -134,5 +140,12 @@ const styles = StyleSheet.create({
     flex: 1,
     height: '100%',
     width: '100%'
+  },
+  logo: {
+    width: 250,
+    height: 125,
+    borderRadius: 5,
+    paddingHorizontal: 15,
+    margin: '5%'
   }
 });
