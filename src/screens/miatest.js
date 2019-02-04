@@ -2,6 +2,8 @@
 import * as React from 'react';
 import firebase from 'react-native-firebase';
 
+import ButtonBar from '../components/image/ButtonBar';
+
 //import React in our project
 import {
   Image,
@@ -95,54 +97,9 @@ class HomeFeed extends React.Component {
   }
  
   render() {
-    if (this.state.ModalVisibleStatus) {
-      //Modal to show full image with close button 
-      return (
-        <Modal
-          transparent={false}
-          animationType={'fade'}
-          visible={this.state.ModalVisibleStatus}
-          onRequestClose={() => {
-            this.ShowModalFunction(!this.state.ModalVisibleStatus,'');
-          }}>
-          <View style={styles.modelStyle}>
-            <Image
-              style={styles.fullImageStyle}
-              source={{ uri: this.state.imageuri }}
-            />
-            <TouchableOpacity
-              activeOpacity={0.5}
-              style={styles.closeButtonStyle}
-              onPress={() => {
-                this.ShowModalFunction(!this.state.ModalVisibleStatus,'');
-              }}>
-              <Image
-                source={{
-                  uri:
-                    'https://aboutreact.com/wp-content/uploads/2018/09/close.png',
-                }}
-                style={{ width: 25, height: 25, marginTop:16 }}
-              />
-            </TouchableOpacity>
-          </View>
-        </Modal>
+    return (
+      <ButtonBar/>
       );
-    } else {
-      //Photo Grid of images
-      return (
-        <View style={styles.containerStyle}>
-        <PhotoGrid
-          data={this.state.memes}
-          itemsPerRow={3}
-          //You can decide the item per row
-          itemMargin={1}
-          itemPaddingHorizontal={1}
-          renderHeader={this.renderHeader}
-          renderItem={this.renderItem.bind(this)}
-        />
-        </View>
-      );
-    }
   }
 }
  
@@ -151,8 +108,8 @@ const styles = StyleSheet.create({
   containerStyle: {
     justifyContent: 'center',
     flex: 1,
-    marginTop: 20,
     backgroundColor: 'rgba(255,255,255,1)',
+    marginTop: 20,
   },
   fullImageStyle: {
     justifyContent: 'center',
@@ -165,7 +122,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,1)',
+    backgroundColor: 'rgba(0,0,0,0.4)',
   },
   closeButtonStyle: {
     width: 25,
@@ -176,32 +133,3 @@ const styles = StyleSheet.create({
   },
 });
 
-
-// import React from 'react';
-// import {ScrollView, Text, StyleSheet} from 'react-native';
-
-// export default class HomeFeed extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       name: this.props.navigation.getParam('name')
-//     }
-//   }
-//   render() {
-//     return (
-//       <ScrollView>
-//         <Text style={styles.title}>
-//           Hello, {this.state.name}! :D
-//         </Text>
-//       </ScrollView>
-//     );
-//   }
-// }
-
-// const styles = StyleSheet.create({
-//   title: {
-//     fontSize: 36,
-//     textAlign: 'center',
-//     marginTop: '30%'
-//   }
-// })
