@@ -14,10 +14,11 @@ export default class LoadingScreen extends React.Component {
 
   componentDidMount() {
     firebase.auth().onAuthStateChanged((User) => {
-      console.log(User);
-      AsyncStorage.setItem("uid", User._user.uid).then(() => {
+      if (User) {
         this.props.navigation.navigate("Main");
-      })
+      } else {
+        this.props.navigation.navigate("Auth");
+      }
     })
   }
 

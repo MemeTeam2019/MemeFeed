@@ -8,7 +8,7 @@ import {
   TextInput,
   Alert,
   ImageBackground,
-  AsyncStorage
+  AsyncStorage,
   Image
 } from 'react-native';
 import firebase from 'react-native-firebase';
@@ -29,9 +29,9 @@ export default class LoginScreen extends React.Component {
 
   componentDidMount() {
     this.unsubscriber = firebase.auth().onAuthStateChanged(User => {
-      AsyncStorage.setItem("uid", User._user.uid).then(() => {
+      if (User) {
         this.props.navigation.navigate("Main");
-      })
+      }
     });
   }
 

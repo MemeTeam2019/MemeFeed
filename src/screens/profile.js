@@ -34,6 +34,15 @@ export default class ProfileScreen extends React.Component {
     })
   }
 
+  logout = () => {
+    firebase.auth().signOut().then(() => {
+      this.props.navigation.navigate("Auth");
+    })
+    .catch(err => {
+      console.log(err);
+    })
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -42,6 +51,10 @@ export default class ProfileScreen extends React.Component {
         <Text>uid: {this.state.uid}</Text>
         <Text>Following: {this.state.followingCnt}</Text>
         <Text>Followers: {this.state.followersCnt}</Text>
+        <Button
+          title="Log Out"
+          onPress={this.logout}
+        />
       </View>
     );
   }
