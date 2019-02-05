@@ -1,18 +1,23 @@
 import React from 'react';
+import { Alert, AppRegistry, Button, StyleSheet, View, TouchableOpacity, Image } from 'react-native';
 
-// import ButtonBar from './ButtonBar';
-
+import ButtonBar from './ButtonBar';
+import Photo from './Photo';
+import TileHeader from './TileHeader';
+ 
 class Tile extends React.Component {
-
-render() {
-    const { onPress, style, ...props } = this.props;
+  render() {
     return (
-      
-        // <ButtonBar/>
+        <React.Fragment>
+          <TileHeader/>
+          <Photo/>
+          <ButtonBar/>
+        </React.Fragment>
     );
   }
+}
 
 
-        
+export default Tile; 
+ 
 
-export default List;
