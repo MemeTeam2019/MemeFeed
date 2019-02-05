@@ -52,7 +52,7 @@ export default class SignupScreen extends React.Component {
     })
   }
 
-  handleSignup = () => {
+  handleSubmit = () => {
     let email = this.state.email;
     let name = this.state.name;
     let username = this.state.username;
@@ -62,12 +62,14 @@ export default class SignupScreen extends React.Component {
       return;
     }
     firebase.auth().createUserWithEmailAndPassword(email, password)
-    .then((userCredentials) => {
-      if (userCredentials !== undefined && userCredentials !== null) {
-        let uid = userCredentials.user._user.uid;
+    .then(user => {
+      if (user) {
+        let uid = user.user.uid;
         this.addUserDoc(uid, email, name, username);
+        console.log("yuh");
+        this.props.navigation.push("Confirm");
       } else {
-        console.log('???');
+        Alert.alert("Error", "Couldn't create acount. Please try again", [{text: "OK"}]);
       }
     })
     .catch(error => {
@@ -119,7 +121,7 @@ export default class SignupScreen extends React.Component {
               title="Submit"
               style={styles.submit}
               color= '#fff'
-              onPress={() => this.handleSignup()}
+              onPress={() => this.handleSubmit()}
             />
           </KeyboardAvoidingView>
         </View>

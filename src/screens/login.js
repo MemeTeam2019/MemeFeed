@@ -2,13 +2,11 @@ import React from 'react';
 import {
   StyleSheet,
   View,
-  Text,
   KeyboardAvoidingView,
   Button,
   TextInput,
   Alert,
   ImageBackground,
-  AsyncStorage,
   Image
 } from 'react-native';
 import firebase from 'react-native-firebase';
@@ -27,23 +25,20 @@ export default class LoginScreen extends React.Component {
     };
   }
 
-  componentDidMount() {
-    this.unsubscriber = firebase.auth().onAuthStateChanged(User => {
-      if (User) {
-        this.props.navigation.navigate("Main");
-      }
-    });
-  }
-
   handleLogin = () => {
     let email = this.state.email;
     let password = this.state.password;
     firebase.auth().signInWithEmailAndPassword(email, password)
-      .then((User) => {
-        console.log(User);
+      .then(user => {
+        if (!user.user.emailVerified) {
+          Alert.alert("Error", "Your account is not verified.", [{text: "OK"}]);
+          this.props.navigation.push("Confirm");
+        } else {
+          this.props.navigation.navigate("Main");
+        }
       })
-      .catch((error) => {
-        let errorMessage = "";
+      .catch(error => {
+        let errorMessage = "An error occured";
         switch(error.code) {
           case "auth/invalid-email":
             errorMessage = "Invalid email";
@@ -63,7 +58,7 @@ export default class LoginScreen extends React.Component {
   }
 
   handleSignup() {
-    this.props.navigation.push('Signup', {name:this.state.email});
+    this.props.navigation.push('Signup');
   }
 
   render() {
@@ -73,7 +68,6 @@ export default class LoginScreen extends React.Component {
         style={styles.background}>
       <View style={styles.container}>
         <KeyboardAvoidingView behavior='position'>
-          {/* <Text style={styles.title}>MEME FEED</Text> */}
           <Image 
             style={styles.logo}
             source={require('../images/logo.png')}
@@ -97,7 +91,7 @@ export default class LoginScreen extends React.Component {
           <Button
             title="Sign Up"
             color='#fff'
-            onPress={() => this.handleSignup()}
+            onPress={() => this.props.navigation.push("Signup")}
           />
         </KeyboardAvoidingView>
       </View>
