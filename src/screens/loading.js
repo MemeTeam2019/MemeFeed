@@ -39,7 +39,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "white"
   },
-  loadingText: {
-    fontSize: 36
+  loading: {
+    fontSize: 24,
+    padding: 20
   }
 })

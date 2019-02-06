@@ -57,10 +57,6 @@ export default class LoginScreen extends React.Component {
       });
   }
 
-  handleSignup() {
-    this.props.navigation.push('Signup');
-  }
-
   render() {
     return (
       <ImageBackground 

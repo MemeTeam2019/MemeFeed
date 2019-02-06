@@ -19,11 +19,11 @@ export default class SignupScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
-      name: '',
-      username: '',
-      password: '',
-      cpassword: ''
+      email: "",
+      name: "",
+      username: "",
+      password: "",
+      cpassword: ""
     }
   }
 

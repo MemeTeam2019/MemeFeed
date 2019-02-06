@@ -3,7 +3,8 @@ import {
   View,
   Text,
   StyleSheet,
-  Button
+  Button,
+  AsyncStorage
 } from "react-native";
 import firebase from "react-native-firebase";
 
@@ -20,6 +21,12 @@ export default class ProfileScreen extends React.Component {
     }
   }
 
+  handleLogout = () => {
+    firebase.auth().signOut().then(() => {
+      this.props.navigation.navigate("Login");
+    });
+  }
+
   componentDidMount() {
     const authInfo = firebase.auth().currentUser;
     this.setState({
@@ -27,11 +34,17 @@ export default class ProfileScreen extends React.Component {
       uid: authInfo.uid
     });
     const docRef = firebase.firestore().collection("Users").doc(authInfo.uid);
-    docRef.get().then((User) => {
-      this.setState(User.data());
-    }).catch((err) => {
+    docRef.get().then(User => {
+      let data = User.data();
+      console.log(data);
+      this.setState(data);
+      for (const key in data) {
+        AsyncStorage.setItem(key, data[key].toString());
+      }
+    }).catch(err => {
       console.log(err);
-    })
+    });
+
   }
 
   logout = () => {
@@ -52,8 +65,8 @@ export default class ProfileScreen extends React.Component {
         <Text>Following: {this.state.followingCnt}</Text>
         <Text>Followers: {this.state.followersCnt}</Text>
         <Button
-          title="Log Out"
-          onPress={this.logout}
+          title="Logout"
+          onPress={() => this.handleLogout()}
         />
       </View>
     );
