@@ -12,6 +12,7 @@ import {
   Text,
   View,
   Modal,
+  Alert,
   StyleSheet,
 } from 'react-native';
 //import all the needed components
@@ -19,10 +20,16 @@ import {
 import PhotoGrid from 'react-native-image-grid';
  
 class HomeFeed extends React.Component {
-  
+  _onPressButton = () => {
+        Alert.alert("button pressed")
+  }
+
   render() {
     return (
       <Tile/>
+
+
+
       );
   }
 }
