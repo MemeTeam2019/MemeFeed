@@ -25,10 +25,10 @@ class HomeFeed extends React.Component {
       ModalVisibleStatus: false,
       isLoading: true,
       memes: [],
-      items: [], 
+      items: [],
     };
   }
- 
+
   // function for extracting Firebase responses to the state
   onCollectionUpdate = (querySnapshot) => {
     const memes = [];
@@ -174,18 +174,21 @@ const styles = StyleSheet.create({
       return (
         <View style={styles.containerStyle}>
         <View style={styles.navBar}>
-        <Image source={require('../images/banner3.png')} style={{ width: 230, height: 50}} />
+        <Image source={require('../images/general.png')} style={{ width: 250, height: 50}} />
+        </View>
+        <View style={styles.navBut}>
         <TouchableOpacity>
         <Image
-        source={require('../images/fullFeed4.png')} style={{ width: 50, height: 50}}
+        source={require('../images/fullFeedF.png')} style={{ width: 100, height: 50}}
         />
         </TouchableOpacity>
         <TouchableOpacity>
         <Image
-        source={require('../images/boxFeed4.png')} style={{ width: 50, height: 50}}
+        source={require('../images/gridFeedF.png')} style={{ width: 100, height: 50}}
         />
         </TouchableOpacity>
         </View>
+
         <PhotoGrid
           data={this.state.memes}
           itemsPerRow={3}
@@ -206,7 +209,6 @@ const styles = StyleSheet.create({
   containerStyle: {
     justifyContent: 'center',
     flex: 1,
-    marginTop: 20,
     backgroundColor: 'rgba(255,255,255,1)',
   },
   fullImageStyle: {
@@ -230,13 +232,24 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   navBar: {
-    height:100,
+    height:80,
     backgroundColor: 'white',
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 50,
+    paddingTop: 50,//50
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  navBut: {
+    height:50,
+    backgroundColor: 'white',
+    elevation: 3,
+    paddingHorizontal: 20,
+    paddingRight: 3,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   }
 });
