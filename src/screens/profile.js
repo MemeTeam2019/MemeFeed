@@ -5,8 +5,11 @@ import {
   StyleSheet,
   Button,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert,
+  YellowBox
 } from "react-native";
+import {Menu, MenuProvider, MenuOptions, MenuOption, MenuTrigger} from "react-native-popup-menu";
 import firebase from "react-native-firebase";
 
 export default class ProfileScreen extends React.Component {
@@ -49,15 +52,13 @@ export default class ProfileScreen extends React.Component {
     return (
       <View style={styles.containerStyle}>
         <View style={styles.navBar}>
-          <Image source={require('../images/banner3.png')} style={{ width: 250, height: 50}} />
-          <TouchableOpacity onPress={this.logout}>
-          <Image
-          source={require('../images/logout.png')} style={{ width: 50, height: 40}}
-          />
-          </TouchableOpacity>
+          <Text style={styles.textSty}>username: {this.state.username}</Text>
         </View>
-        <View style={styles.textSty}>
-        <Text>DropDown</Text>
+        <View style={styles.profilePic}>
+        <Image
+        source={require('../images/tester.png')} style={{ width: 50, height: 40}}/>
+        <Text style={styles.textSty}>Following: {this.state.followingCnt}</Text>
+        <Text style={styles.textSty}>Followers: {this.state.followersCnt}</Text>
         </View>
         <View style={styles.textSty}>
                 <Text>name: {this.state.name}</Text>
@@ -70,7 +71,7 @@ export default class ProfileScreen extends React.Component {
                   title="Log Out"
                   onPress={this.logout}
                 />
-              </View>
+        </View>
       </View>
     );
   }
@@ -107,6 +108,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    fontSize: 360,
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center',
+    backgroundColor: 'white'
   },
   navBut: {
     height:50,
@@ -119,9 +124,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   textSty: {
+    fontSize: 20,
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center',
+    backgroundColor: 'white',
+    paddingRight: 3,
+    paddingHorizontal: 20,
+  },
+  profilePic: {
+    backgroundColor: 'white',
+    elevation: 3,
+    paddingHorizontal: 20,
+    paddingRight: 3,
+    paddingTop: 10,//50
+    flexDirection: 'row',
+    alignItems: 'center',
     fontSize: 360,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
     backgroundColor: 'white'
-  }
+  },
 })
+
+
+/* loggout button
+<TouchableOpacity onPress={this.logout}>
+<Image
+source={require('../images/logout.png')} style={{ width: 50, height: 40}}
+/>
+</TouchableOpacity>
+*/
