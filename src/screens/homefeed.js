@@ -207,8 +207,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
     backgroundColor: 'rgba(255,255,255,1)',
-    marginTop: 20,
-    backgroundColor: 'rgba(255,255,255,1)',
   },
   fullImageStyle: {
     justifyContent: 'center',

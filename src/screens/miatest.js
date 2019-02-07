@@ -22,13 +22,20 @@ class HomeFeed extends React.Component {
   
   render() {
     return (
-      <Tile/>
+      <View style={styles.tile}>
+        <Tile/>
+      </View>
+      
       );
   }
 }
  
 export default HomeFeed;
 const styles = StyleSheet.create({
-
+  tile: {
+    justifyContent: 'center',
+    flex: 1,
+    backgroundColor: '#fff'
+  }
 });
 

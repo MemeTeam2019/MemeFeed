@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
-import {Text, StyleSheet } from 'react-native';
+import {Text, StyleSheet, View } from 'react-native';
 
  
 class TileHeader extends React.Component {
 
   render() {
     return (
-      <Text style={styles.text}>YOOOOO OOOO OOOO O OOO O O OOOO O</Text>
+      <View style={styles.container}>
+        <Text style={styles.text}>pic</Text>
+        <Text style={styles.text}>@username</Text>
+      </View>
     );
   }
 }
@@ -14,7 +17,18 @@ class TileHeader extends React.Component {
 export default TileHeader; 
  
 const styles = StyleSheet.create({
-  text: { fontWeight: 'bold', fontSize: 16 },
+  container: {
+    justifyContent: 'center',
+    flex: 1,
+    backgroundColor: '#fff',
+    width: '100%',
+    height: 75
+  },
+  text: { 
+    fontWeight: 'bold', 
+    fontSize: 16,
+    fontFamily: 'AvenirNext-Regular',
+  },
 });
 
 

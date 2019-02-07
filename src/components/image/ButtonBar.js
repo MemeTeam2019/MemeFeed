@@ -105,12 +105,13 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     margin: 1,
+    backgroundColor: '#fff'
   },
   list: {
     flex: 1,
     top: 800,
     right: 9,
     position: 'absolute',
-
+    backgroundColor: '#fff'
   }
 });
