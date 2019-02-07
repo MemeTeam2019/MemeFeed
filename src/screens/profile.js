@@ -52,25 +52,48 @@ export default class ProfileScreen extends React.Component {
     return (
       <View style={styles.containerStyle}>
         <View style={styles.navBar}>
-          <Text style={styles.textSty}>username: {this.state.username}</Text>
+          <Text style={styles.textSty4}>{this.state.username}</Text>
         </View>
         <View style={styles.profilePic}>
         <Image
-        source={require('../images/tester.png')} style={{ width: 50, height: 40}}/>
-        <Text style={styles.textSty}>Following: {this.state.followingCnt}</Text>
-        <Text style={styles.textSty}>Followers: {this.state.followersCnt}</Text>
+        source={require('../images/proPic.png')} style={{ width: 70, height: 70}}/>
+        <Text>      </Text>
+        <Text>      </Text>
+        <Text style={styles.textSty}> {this.state.followingCnt} {"\n"} <Text style={styles.textSty3}>Following</Text></Text>
+        <Text>      </Text>
+        <Text>      </Text>
+        <Text style={styles.textSty}>{this.state.followersCnt} {"\n"} <Text style={styles.textSty3}>Followers</Text> </Text>
         </View>
-        <View style={styles.textSty}>
-                <Text>name: {this.state.name}</Text>
-                <Text>email: {this.state.email}</Text>
-                <Text>uid: {this.state.uid}</Text>
-                <Text>username: {this.state.username}</Text>
-                <Text>Following: {this.state.followingCnt}</Text>
-                <Text>Followers: {this.state.followersCnt}</Text>
-                <Button
-                  title="Log Out"
-                  onPress={this.logout}
-                />
+        <View style={styles.profilePic}>
+          <Text style={styles.textSty2}>{this.state.name}</Text>
+          <Text>      </Text>
+          <Text>      </Text>
+          <Text style={styles.textSty5}>{" "}User Settings{"  "}</Text>
+        </View>
+        <View style={styles.textSty2}>
+              <TouchableOpacity onPress={this.logout}>
+              <Image
+                source={require('../images/logout.png')} style={{ width: 50, height: 40}}
+              />
+              </TouchableOpacity>
+        </View>
+        <View style={styles.textSty2}>
+            <Button
+                title="Log Out"
+                onPress={this.logout}
+              />
+        </View>
+        <View style={styles.navBut}>
+        <TouchableOpacity>
+        <Image
+        source={require('../images/fullFeedF.png')} style={{ width: 100, height: 50}}
+        />
+        </TouchableOpacity>
+        <TouchableOpacity>
+        <Image
+        source={require('../images/gridFeedF.png')} style={{ width: 100, height: 50}}
+        />
+        </TouchableOpacity>
         </View>
       </View>
     );
@@ -99,7 +122,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   navBar: {
-    height:100,
+    height:80,
     backgroundColor: 'white',
     elevation: 3,
     paddingHorizontal: 20,
@@ -124,12 +147,55 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   textSty: {
+    fontSize: 17,
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center',
+    backgroundColor: 'white',
+    paddingRight: 2,
+    paddingLeft: 2,
+    paddingHorizontal: 10,
+    //borderColor: 'black',
+    //borderWidth: 1,
+    //borderRadius: 5,
+  },
+  textSty2: {
+    fontSize: 20,
+    fontFamily: 'AvenirNext-Regular',
+    backgroundColor: 'white',
+    paddingRight: 3,
+    paddingHorizontal: 10,
+  },
+  textSty3: {
+    fontSize: 15,
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center',
+    backgroundColor: 'white',
+    paddingRight: 2,
+    paddingLeft: 2,
+    paddingHorizontal: 10,
+    fontWeight: 'bold',
+    color: '#848180',
+  },
+  textSty4: {
+    fontSize: 20,
+    fontFamily: 'AvenirNext-Regular',
+    backgroundColor: 'white',
+    paddingRight: 3,
+    paddingHorizontal: 10,
+    fontWeight: 'bold',
+  },
+  textSty5: {
     fontSize: 20,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
     backgroundColor: 'white',
-    paddingRight: 3,
-    paddingHorizontal: 20,
+    paddingRight: 2,
+    paddingLeft: 2,
+    paddingHorizontal: 10,
+    borderColor: '#848180',
+    color: '#848180',
+    borderWidth: 1,
+    borderRadius: 5,
   },
   profilePic: {
     backgroundColor: 'white',
@@ -144,13 +210,35 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     backgroundColor: 'white'
   },
+  textshadow:{
+    fontSize:40,
+    color:'#FFFFFF',
+    fontFamily:'Times New Roman',
+    paddingLeft:30,
+    paddingRight:30,
+    textShadowColor:'#585858',
+    textShadowOffset:{width: 5, height: 5},
+    textShadowRadius:20,
+  },
 })
 
 
-/* loggout button
+/*
+
+logout button:
+
 <TouchableOpacity onPress={this.logout}>
 <Image
 source={require('../images/logout.png')} style={{ width: 50, height: 40}}
 />
 </TouchableOpacity>
+
+<Text>name: {this.state.name}</Text>
+<Text>email: {this.state.email}</Text>
+<Text>uid: {this.state.uid}</Text>
+<Text>username: {this.state.username}</Text>
+<Text>Following: {this.state.followingCnt}</Text>
+<Text>Followers: {this.state.followersCnt}</Text>
+
+
 */

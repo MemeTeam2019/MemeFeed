@@ -94,48 +94,6 @@ class HomeFeed extends React.Component {
     );
   }
 
-/*  Header Code ----------------
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.navBar}>
-            <Image source={require('./images/banner3.png')} style={{ width: 230, height: 50}} />
-            <TouchableOpacity>
-            <Image
-            source={require('./images/fullFeed4.png')} style={{ width: 50, height: 50}}
-            />
-            </TouchableOpacity>
-            <TouchableOpacity>
-            <Image
-            source={require('./images/boxFeed4.png')} style={{ width: 50, height: 50}}
-            />
-            </TouchableOpacity>
-        </View>
-      </View>
-    );
-  }
-
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  navBar: {
-    height:100,
-    backgroundColor: 'white',
-    elevation: 3,
-    paddingHorizontal: 20,
-    paddingRight: 3,
-    paddingTop: 50,
-    flexDirection: 'row',
-    alignItems: 'center'
-  }
-});
-
-
-
- -----------------------------*/
   render() {
     if (this.state.ModalVisibleStatus) {
       //Modal to show full image with close button
