@@ -1,13 +1,14 @@
-import React from 'react';
-import {AsyncStorage} from 'react-native';
 import {createSwitchNavigator, createAppContainer} from 'react-navigation';
-import firebase from 'react-native-firebase';
 
+import LoadingScreen from "./src/screens/loading";
 import AuthRouter from './src/routers/authNavigator';
 import MainRouter from './src/routers/mainNavigator';
 
 export default createAppContainer(createSwitchNavigator(
   {
+    Loading: {
+      screen: LoadingScreen
+    },
     Auth: {
       screen: AuthRouter
     },
@@ -16,6 +17,6 @@ export default createAppContainer(createSwitchNavigator(
     }
   },
   {
-    initialRouteName: 'Auth'
+    initialRouteName: "Loading"
   }
 ));

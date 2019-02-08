@@ -7,9 +7,12 @@ import {
   Button,
   TextInput,
   Alert,
-  ImageBackground
+  ImageBackground,
+  AsyncStorage,
+  Image
 } from 'react-native';
 import firebase from 'react-native-firebase';
+
 
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -25,8 +28,10 @@ export default class LoginScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.unsubscriber = firebase.auth().onAuthStateChanged(user => {
-      this.setState({user: user})
+    this.unsubscriber = firebase.auth().onAuthStateChanged(User => {
+      if (User) {
+        this.props.navigation.navigate("Main");
+      }
     });
   }
 
@@ -34,14 +39,10 @@ export default class LoginScreen extends React.Component {
     let email = this.state.email;
     let password = this.state.password;
     firebase.auth().signInWithEmailAndPassword(email, password)
-      .then(user => {
-        if (typeof user !== undefined && user !== null) {
-          this.props.navigation.navigate('Main');
-        } else {
-          console.log("yikes");
-        }
+      .then((User) => {
+        console.log(User);
       })
-      .catch(error => {
+      .catch((error) => {
         let errorMessage = "";
         switch(error.code) {
           case "auth/invalid-email":
@@ -68,11 +69,15 @@ export default class LoginScreen extends React.Component {
   render() {
     return (
       <ImageBackground 
-        source={require('../images/background.jpeg')}
+        source={require('../images/bkgrnd.jpeg')}
         style={styles.background}>
       <View style={styles.container}>
         <KeyboardAvoidingView behavior='position'>
           {/* <Text style={styles.title}>MEME FEED</Text> */}
+          <Image 
+            style={styles.logo}
+            source={require('../images/logo.png')}
+          />
           <TextInput
             style={styles.input}
             placeholder="Email"
@@ -105,8 +110,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-    //backgroundColor: '#FCB103'
+    alignItems: 'center'
   },
   title: {
     fontSize: 36,
@@ -134,5 +138,12 @@ const styles = StyleSheet.create({
     flex: 1,
     height: '100%',
     width: '100%'
+  },
+  logo: {
+    width: 250,
+    height: 125,
+    borderRadius: 5,
+    paddingHorizontal: 15,
+    margin: '5%'
   }
 });

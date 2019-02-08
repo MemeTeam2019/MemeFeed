@@ -12,9 +12,9 @@ import {
   StyleSheet,
 } from 'react-native';
 //import all the needed components
- 
+
 import PhotoGrid from 'react-native-image-grid';
- 
+
 class HomeFeed extends React.Component {
   constructor() {
     super();
@@ -25,10 +25,10 @@ class HomeFeed extends React.Component {
       ModalVisibleStatus: false,
       isLoading: true,
       memes: [],
-      items: [], 
+      items: [],
     };
   }
- 
+
   // function for extracting Firebase responses to the state
   onCollectionUpdate = (querySnapshot) => {
     const memes = [];
@@ -65,7 +65,7 @@ class HomeFeed extends React.Component {
       imageuri: imageURL,
     });
   }
- 
+
   renderItem(item, itemSize, itemPaddingHorizontal) {
     //Single item of Grid
     return (
@@ -87,10 +87,10 @@ class HomeFeed extends React.Component {
       </TouchableOpacity>
     );
   }
- 
+
   render() {
     if (this.state.ModalVisibleStatus) {
-      //Modal to show full image with close button 
+      //Modal to show full image with close button
       return (
         <Modal
           transparent={false}
@@ -125,6 +125,22 @@ class HomeFeed extends React.Component {
       //Photo Grid of images
       return (
         <View style={styles.containerStyle}>
+        <View style={styles.navBar}>
+        <Image source={require('../images/general.png')} style={{ width: 250, height: 50}} />
+        </View>
+        <View style={styles.navBut}>
+        <TouchableOpacity>
+        <Image
+        source={require('../images/fullFeedF.png')} style={{ width: 100, height: 50}}
+        />
+        </TouchableOpacity>
+        <TouchableOpacity>
+        <Image
+        source={require('../images/gridFeedF.png')} style={{ width: 100, height: 50}}
+        />
+        </TouchableOpacity>
+        </View>
+
         <PhotoGrid
           data={this.state.memes}
           itemsPerRow={3}
@@ -139,7 +155,7 @@ class HomeFeed extends React.Component {
     }
   }
 }
- 
+
 export default HomeFeed;
 const styles = StyleSheet.create({
   containerStyle: {
@@ -147,7 +163,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(255,255,255,1)',
     marginTop: 20,
-    backgroundColor: 'rgba(255,255,255,1)',
   },
   fullImageStyle: {
     justifyContent: 'center',
@@ -169,34 +184,25 @@ const styles = StyleSheet.create({
     right: 9,
     position: 'absolute',
   },
+  navBar: {
+    height:80,
+    backgroundColor: 'white',
+    elevation: 3,
+    paddingHorizontal: 20,
+    paddingRight: 3,
+    paddingTop: 50,//50
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  navBut: {
+    height:50,
+    backgroundColor: 'white',
+    elevation: 3,
+    paddingHorizontal: 20,
+    paddingRight: 3,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
 });
-
-
-// import React from 'react';
-// import {ScrollView, Text, StyleSheet} from 'react-native';
-
-// export default class HomeFeed extends React.Component {
-//   constructor(props) {
-//     super(props);
-//     this.state = {
-//       name: this.props.navigation.getParam('name')
-//     }
-//   }
-//   render() {
-//     return (
-//       <ScrollView>
-//         <Text style={styles.title}>
-//           Hello, {this.state.name}! :D
-//         </Text>
-//       </ScrollView>
-//     );
-//   }
-// }
-
-// const styles = StyleSheet.create({
-//   title: {
-//     fontSize: 36,
-//     textAlign: 'center',
-//     marginTop: '30%'
-//   }
-// })
