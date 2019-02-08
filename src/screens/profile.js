@@ -7,7 +7,8 @@ import {
   Image,
   TouchableOpacity,
   Alert,
-  YellowBox
+  YellowBox,
+  AsyncStorage
 } from "react-native";
 import {Menu, MenuProvider, MenuOptions, MenuOption, MenuTrigger} from "react-native-popup-menu";
 import firebase from "react-native-firebase";
@@ -25,6 +26,12 @@ export default class ProfileScreen extends React.Component {
     }
   }
 
+  handleLogout = () => {
+    firebase.auth().signOut().then(() => {
+      this.props.navigation.navigate("Login");
+    });
+  }
+
   componentDidMount() {
     const authInfo = firebase.auth().currentUser;
     this.setState({
@@ -32,11 +39,17 @@ export default class ProfileScreen extends React.Component {
       uid: authInfo.uid
     });
     const docRef = firebase.firestore().collection("Users").doc(authInfo.uid);
-    docRef.get().then((User) => {
-      this.setState(User.data());
-    }).catch((err) => {
+    docRef.get().then(User => {
+      let data = User.data();
+      console.log(data);
+      this.setState(data);
+      for (const key in data) {
+        AsyncStorage.setItem(key, data[key].toString());
+      }
+    }).catch(err => {
       console.log(err);
-    })
+    });
+
   }
 
   logout = () => {
@@ -50,6 +63,7 @@ export default class ProfileScreen extends React.Component {
 
   render() {
     return (
+// <<<<<<< HEAD
       <View style={styles.containerStyle}>
         <View style={styles.navBar}>
           <Text style={styles.textSty4}>{this.state.username}</Text>
@@ -87,6 +101,17 @@ export default class ProfileScreen extends React.Component {
         <TouchableOpacity>
         <Image
         source={require('../images/fullFeedF.png')} style={{ width: 100, height: 50}}
+// =======
+//       <View style={styles.container}>
+//         <Text>name: {this.state.name}</Text>
+//         <Text>email: {this.state.email}</Text>
+//         <Text>uid: {this.state.uid}</Text>
+//         <Text>Following: {this.state.followingCnt}</Text>
+//         <Text>Followers: {this.state.followersCnt}</Text>
+//         <Button
+//           title="Logout"
+//           onPress={() => this.handleLogout()}
+// >>>>>>> sprint2_term1
         />
         </TouchableOpacity>
         <TouchableOpacity>

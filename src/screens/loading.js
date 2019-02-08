@@ -2,9 +2,10 @@ import React from "react";
 import {
   View,
   Text,
-  AsyncStorage,
-  StyleSheet
+  StyleSheet,
+  ActivityIndicator
 } from "react-native";
+import {NavigationEvents} from "react-navigation";
 import firebase from "react-native-firebase";
 
 export default class LoadingScreen extends React.Component {
@@ -13,19 +14,19 @@ export default class LoadingScreen extends React.Component {
   }
 
   componentDidMount() {
-    firebase.auth().onAuthStateChanged((User) => {
-      if (User) {
-        this.props.navigation.navigate("Main");
-      } else {
-        this.props.navigation.navigate("Auth");
-      }
-    })
+    const user = firebase.auth().currentUser;
+    if (!user) {
+      this.props.navigation.navigate("Auth");
+    } else {
+      this.props.navigation.navigate("Main")
+    }
   }
 
   render() {
     return (
       <View style={styles.container}>
-        <Text>Loading...</Text>
+        <Text style={styles.loadingText}>Loading...</Text>
+        <ActivityIndicator size="large"/>
       </View>
     );
   }
@@ -37,5 +38,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "white"
+  },
+  loading: {
+    fontSize: 24,
+    padding: 20
   }
 })
