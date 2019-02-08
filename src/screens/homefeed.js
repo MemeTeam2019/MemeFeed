@@ -18,7 +18,7 @@ import PhotoGrid from 'react-native-image-grid';
 class HomeFeed extends React.Component {
   constructor() {
     super();
-    this.ref = firebase.firestore().collection('MiaTestingMemePulling');
+    this.ref = firebase.firestore().collection('Memes');
     this.unsubscribe = null;
     this.state = {
       imageuri: '',
@@ -33,11 +33,11 @@ class HomeFeed extends React.Component {
   onCollectionUpdate = (querySnapshot) => {
     const memes = [];
     querySnapshot.forEach((doc) => {
-      const { image, time} = doc.data();
+      const { url, time} = doc.data();
       memes.push({
         key: doc.id,
         doc, // DocumentSnapshot
-        src: image,
+        src: url,
         time,
       });
     });
@@ -48,14 +48,8 @@ class HomeFeed extends React.Component {
   }
 
   componentDidMount() {
-    this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate);
+    this.unsubscribe = this.ref.limit(60).onSnapshot(this.onCollectionUpdate);
 
-    var that = this;
-    let items = Array.apply(null, Array(60)).map((v, i) => {
-      //Using demo placeholder images but you can add your images here
-      return { id: i, src: 'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg'};
-    });
-    that.setState({ items });
   }
   // renderHeader() {
   //   //Header of the Screen

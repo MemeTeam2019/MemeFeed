@@ -31,17 +31,12 @@ class ButtonBar extends React.Component {
   _onPressButton = (num) => {
     // Alert.alert(num.toString())
 
-    this.setState({ selectedButton: num })
+    val = num
+    if (num === this.state.selectedButton){
+      val = null
+    }
+    this.setState({ selectedButton: val })
 
-
-    // for(let i = 0; i < 5; i++){
-    //     if (i != num) {
-    //       this.emojiRank[i] = this.UnclickedEmojiRank[i]
-    //     }
-    //     else {
-    //       this.emojiRank[i] = this.VisableEmojiRank[i]
-    //     }
-    // }  
   }
 
 
