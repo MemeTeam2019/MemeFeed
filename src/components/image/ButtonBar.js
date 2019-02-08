@@ -30,13 +30,11 @@ class ButtonBar extends React.Component {
 
   _onPressButton = (num) => {
     // Alert.alert(num.toString())
-
     val = num
     if (num === this.state.selectedButton){
       val = null
     }
     this.setState({ selectedButton: val })
-
   }
 
 
@@ -67,6 +65,10 @@ class ButtonBar extends React.Component {
     return (
 
       <View style={{flex: 1, flexDirection: 'row'}}>
+        <View style={{width: 10, height: 50}}>
+          
+        </View>
+
         <View style={{width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}>
           <TouchableOpacity
             style={{
