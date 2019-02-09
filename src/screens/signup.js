@@ -48,7 +48,7 @@ export default class SignupScreen extends React.Component {
       console.log("User doc successfully set for user with " + uid)
     })
     .catch(err => {
-      console.log(err);
+      Alert.alert("Signup Error", "Error creating User doc for" + email, [{text: "OK"}]);
     })
   }
 
@@ -73,7 +73,7 @@ export default class SignupScreen extends React.Component {
       }
     })
     .catch(error => {
-      console.log(error);
+      Alert.alert("Error", error.code, [{text: "OK"}])
     });
   }
 
