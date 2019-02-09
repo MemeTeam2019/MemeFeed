@@ -10,8 +10,9 @@ import {
   YellowBox
 } from "react-native";
 import {Menu, MenuProvider, MenuOptions, MenuOption, MenuTrigger} from "react-native-popup-menu";
+import OptionsMenu from "react-native-options-menu";
 import firebase from "react-native-firebase";
-
+const SettingsIcon = require('../images/setting.png');
 export default class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -21,7 +22,8 @@ export default class ProfileScreen extends React.Component {
       name: "",
       uid: "",
       followingCnt: 0,
-      followersCnt: 0
+      followersCnt: 0,
+      open: false,
     }
   }
 
@@ -51,25 +53,32 @@ export default class ProfileScreen extends React.Component {
   render() {
     return (
       <View style={styles.containerStyle}>
+        {/*Display Username top center*/}
         <View style={styles.navBar}>
           <Text style={styles.textSty4}>{this.state.username}</Text>
         </View>
+        {/*Profile Pic, Follwers, Follwing Block*/}
         <View style={styles.profilePic}>
+        {/*PROFILE PICTURE*/}
         <Image
-        source={require('../images/proPic.png')} style={{ width: 70, height: 70}}/>
+        source={require('../images/profilePic.png')} style={{width: 80, height: 80, borderRadius: 80/2}}/>
         <Text>      </Text>
-        <Text>      </Text>
+        {/*FOLLOWING*/}
         <Text style={styles.textSty}> {this.state.followingCnt} {"\n"} <Text style={styles.textSty3}>Following</Text></Text>
         <Text>      </Text>
         <Text>      </Text>
+        {/*FOLLOWERS*/}
         <Text style={styles.textSty}>{this.state.followersCnt} {"\n"} <Text style={styles.textSty3}>Followers</Text> </Text>
         </View>
+        {/*DISPLAY NAME*/}
         <View style={styles.profilePic}>
           <Text style={styles.textSty2}>{this.state.name}</Text>
           <Text>      </Text>
           <Text>      </Text>
+          {/*USER SETTING TEXT BOX*/}
           <Text style={styles.textSty5}>{" "}User Settings{"  "}</Text>
         </View>
+        {/*LOGGOUT BUTTON ICON*/}
         <View style={styles.textSty2}>
               <TouchableOpacity onPress={this.logout}>
               <Image
@@ -77,12 +86,14 @@ export default class ProfileScreen extends React.Component {
               />
               </TouchableOpacity>
         </View>
+        {/*LOGOUT TEXT*/}
         <View style={styles.textSty2}>
             <Button
                 title="Log Out"
                 onPress={this.logout}
               />
         </View>
+        {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
         <View style={styles.navBut}>
         <TouchableOpacity>
         <Image
@@ -94,6 +105,15 @@ export default class ProfileScreen extends React.Component {
         source={require('../images/gridFeedF.png')} style={{ width: 100, height: 50}}
         />
         </TouchableOpacity>
+        </View>
+        {/*OPTIONS MENU*/}
+        <View>
+        <OptionsMenu
+          button={SettingsIcon}
+          buttonStyle={{ width: 50, height: 50, margin: 7.5, resizeMode: "contain" }}
+          destructiveIndex={1}
+          options={["Edit Profile", "Change Profile Picture", "Logout"]}
+          actions={[this.logout]}/>
         </View>
       </View>
     );
@@ -120,6 +140,17 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
+  },
+  animatedBox: {
+    flex: 1,
+    backgroundColor: "#38C8EC",
+    padding: 10,
+  },
+  body: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F04812',
   },
   navBar: {
     height:80,
@@ -154,9 +185,6 @@ const styles = StyleSheet.create({
     paddingRight: 2,
     paddingLeft: 2,
     paddingHorizontal: 10,
-    //borderColor: 'black',
-    //borderWidth: 1,
-    //borderRadius: 5,
   },
   textSty2: {
     fontSize: 20,
@@ -174,7 +202,7 @@ const styles = StyleSheet.create({
     paddingLeft: 2,
     paddingHorizontal: 10,
     fontWeight: 'bold',
-    color: '#848180',
+    color: '#76A9BC',
   },
   textSty4: {
     fontSize: 20,
@@ -192,8 +220,8 @@ const styles = StyleSheet.create({
     paddingRight: 2,
     paddingLeft: 2,
     paddingHorizontal: 10,
-    borderColor: '#848180',
-    color: '#848180',
+    borderColor: '#76A9BC',
+    color: '#76A9BC',
     borderWidth: 1,
     borderRadius: 5,
   },
