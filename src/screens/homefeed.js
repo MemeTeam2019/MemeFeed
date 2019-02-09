@@ -18,26 +18,26 @@ import PhotoGrid from 'react-native-image-grid';
 class HomeFeed extends React.Component {
   constructor() {
     super();
-    this.ref = firebase.firestore().collection('MiaTestingMemePulling');
+    this.ref = firebase.firestore().collection('Memes');
     this.unsubscribe = null;
     this.state = {
       imageuri: '',
       ModalVisibleStatus: false,
       isLoading: true,
       memes: [],
-      items: [], 
+      items: [],
     };
   }
- 
+
   // function for extracting Firebase responses to the state
   onCollectionUpdate = (querySnapshot) => {
     const memes = [];
     querySnapshot.forEach((doc) => {
-      const { image, time} = doc.data();
+      const { url, time} = doc.data();
       memes.push({
         key: doc.id,
         doc, // DocumentSnapshot
-        src: image,
+        src: url,
         time,
       });
     });
@@ -48,14 +48,8 @@ class HomeFeed extends React.Component {
   }
 
   componentDidMount() {
-    this.unsubscribe = this.ref.onSnapshot(this.onCollectionUpdate);
+    this.unsubscribe = this.ref.limit(60).onSnapshot(this.onCollectionUpdate);
 
-    var that = this;
-    let items = Array.apply(null, Array(60)).map((v, i) => {
-      //Using demo placeholder images but you can add your images here
-      return { id: i, src: 'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg'};
-    });
-    that.setState({ items });
   }
   // renderHeader() {
   //   //Header of the Screen
@@ -94,48 +88,6 @@ class HomeFeed extends React.Component {
     );
   }
 
-/*  Header Code ----------------
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.navBar}>
-            <Image source={require('./images/banner3.png')} style={{ width: 230, height: 50}} />
-            <TouchableOpacity>
-            <Image
-            source={require('./images/fullFeed4.png')} style={{ width: 50, height: 50}}
-            />
-            </TouchableOpacity>
-            <TouchableOpacity>
-            <Image
-            source={require('./images/boxFeed4.png')} style={{ width: 50, height: 50}}
-            />
-            </TouchableOpacity>
-        </View>
-      </View>
-    );
-  }
-
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  navBar: {
-    height:100,
-    backgroundColor: 'white',
-    elevation: 3,
-    paddingHorizontal: 20,
-    paddingRight: 3,
-    paddingTop: 50,
-    flexDirection: 'row',
-    alignItems: 'center'
-  }
-});
-
-
-
- -----------------------------*/
   render() {
     if (this.state.ModalVisibleStatus) {
       //Modal to show full image with close button
@@ -174,18 +126,21 @@ const styles = StyleSheet.create({
       return (
         <View style={styles.containerStyle}>
         <View style={styles.navBar}>
-        <Image source={require('../images/banner3.png')} style={{ width: 230, height: 50}} />
+        <Image source={require('../images/general.png')} style={{ width: 250, height: 50}} />
+        </View>
+        <View style={styles.navBut}>
         <TouchableOpacity>
         <Image
-        source={require('../images/fullFeed4.png')} style={{ width: 50, height: 50}}
+        source={require('../images/fullFeedF.png')} style={{ width: 100, height: 50}}
         />
         </TouchableOpacity>
         <TouchableOpacity>
         <Image
-        source={require('../images/boxFeed4.png')} style={{ width: 50, height: 50}}
+        source={require('../images/gridFeedF.png')} style={{ width: 100, height: 50}}
         />
         </TouchableOpacity>
         </View>
+
         <PhotoGrid
           data={this.state.memes}
           itemsPerRow={3}
@@ -208,7 +163,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(255,255,255,1)',
     marginTop: 20,
-    backgroundColor: 'rgba(255,255,255,1)',
   },
   fullImageStyle: {
     justifyContent: 'center',
@@ -231,13 +185,24 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   navBar: {
-    height:100,
+    height:80,
     backgroundColor: 'white',
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 50,
+    paddingTop: 50,//50
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  navBut: {
+    height:50,
+    backgroundColor: 'white',
+    elevation: 3,
+    paddingHorizontal: 20,
+    paddingRight: 3,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   }
 });
