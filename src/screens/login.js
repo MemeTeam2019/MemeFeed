@@ -71,13 +71,14 @@ export default class LoginScreen extends React.Component {
           <TextInput
             style={styles.input}
             placeholder="Email"
-            onChangeText={(email) => this.setState({email: email})}
+            onChangeText={email => this.setState({email: email})}
+            autoCapitalize="none"
           />
           <TextInput
             style={styles.input}
             placeholder="Password"
             secureTextEntry={true}
-            onChangeText={(password) => this.setState({password: password})}
+            onChangeText={password => this.setState({password: password})}
           />
           <Button
             title="Log In"
