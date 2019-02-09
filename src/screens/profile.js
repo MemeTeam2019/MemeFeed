@@ -11,6 +11,7 @@ import {
   AsyncStorage
 } from "react-native";
 import {Menu, MenuProvider, MenuOptions, MenuOption, MenuTrigger} from "react-native-popup-menu";
+import ProfileGrid from '../components/userProfile/ProfileGrid';
 import firebase from "react-native-firebase";
 
 export default class ProfileScreen extends React.Component {
@@ -63,7 +64,9 @@ export default class ProfileScreen extends React.Component {
 
   render() {
     return (
+
 // <<<<<<< HEAD
+      <React.Fragment>
       <View style={styles.containerStyle}>
         <View style={styles.navBar}>
           <Text style={styles.textSty4}>{this.state.username}</Text>
@@ -115,12 +118,17 @@ export default class ProfileScreen extends React.Component {
         />
         </TouchableOpacity>
         <TouchableOpacity>
-        <Image
-        source={require('../images/gridFeedF.png')} style={{ width: 100, height: 50}}
-        />
+          <Image
+            source={require('../images/gridFeedF.png')} style={{ width: 100, height: 50}}
+          />
         </TouchableOpacity>
         </View>
+
       </View>
+
+
+      <ProfileGrid/>
+      </React.Fragment>
     );
   }
 }
