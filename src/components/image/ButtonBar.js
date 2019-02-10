@@ -6,13 +6,9 @@ import Grid from 'react-native-grid-component';
  
 class ButtonBar extends React.Component {
 
-
-
   constructor(props) {
     super(props);
-
     this.state = { selectedButton: null };
-
     this.emojiRank= {0: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/ImagesForApplicationDesign%2FExpressionless.png?alt=media&token=b53082db-03bd-4fad-9322-d0827253eee1',
       1:'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/ImagesForApplicationDesign%2FNuetral.png?alt=media&token=c9f280e5-a6a8-4f29-ab83-1171b76eac45',
       2:'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/ImagesForApplicationDesign%2FSlightlySmiling.png?alt=media&token=4daf97e4-0b31-4e79-8866-07a3c8bf4ba8',
@@ -27,6 +23,21 @@ class ButtonBar extends React.Component {
     };  
   }
 
+  componentDidMount() {
+    const user = firebase.auth().currentUser;
+    const ref = firebase.firestore().collection("Reacts").doc(user.uid);
+    const memeId = "dummy";
+
+    ref.get().then(docSnapshot => {
+      if (docSnapshot.exists) {
+        let data = docSnapshot.data();
+        let react = data[memeId].rank;
+        this.setState({ selectedButton: react == -1 ? null : react })
+      } else {
+        return;
+      }
+    })
+  }
 
 
   _onPressButton = (num) => {
@@ -42,14 +53,10 @@ class ButtonBar extends React.Component {
     const date = (new Date()).toString();
     const memeId = "dummy";
 
-    ref.get().then(doc => {
-      const data = doc.data();
+    ref.get().then(docSnapshot => {
+      const data = docSnapshot.data();
       const oldRank = data[memeId].rank;
-      let newRank = -1;
-      if (oldRank == num)
-        newRank = -1;
-      else
-        newRank = num;
+      let newRank = oldRank === num ? -1 : num;
       ref.set({[memeId]: {
         rank: newRank,
         time: date
@@ -59,9 +66,7 @@ class ButtonBar extends React.Component {
   }
 
 
-  _renderItem = (data) => (
-
-
+  _renderItem = (data) => {
       <TouchableOpacity
         style={{
           width: 25,
@@ -74,8 +79,7 @@ class ButtonBar extends React.Component {
           source={{ uri: this.emojiRank[data]}}
         />
       </TouchableOpacity>
-
-  );
+  }
 
 
  
