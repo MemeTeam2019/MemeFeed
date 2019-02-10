@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Alert, AppRegistry, Button, StyleSheet, View, TouchableOpacity, Image } from 'react-native';
+import firebase from "react-native-firebase";
  
 import Grid from 'react-native-grid-component';
  
@@ -35,6 +36,26 @@ class ButtonBar extends React.Component {
       val = null
     }
     this.setState({ selectedButton: val })
+
+    const user = firebase.auth().currentUser;
+    const ref = firebase.firestore().collection("Reacts").doc(user.uid);
+    const date = (new Date()).toString();
+    const memeId = "dummy";
+
+    ref.get().then(doc => {
+      const data = doc.data();
+      const oldRank = data[memeId].rank;
+      let newRank = -1;
+      if (oldRank == num)
+        newRank = -1;
+      else
+        newRank = num;
+      ref.set({[memeId]: {
+        rank: newRank,
+        time: date
+      }}, {merge: true});
+    })
+    .catch(error => console.log(error))
   }
 
 
