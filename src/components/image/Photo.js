@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
-import { Alert, AppRegistry, Button, StyleSheet, View, TouchableOpacity, Image } from 'react-native';
+import { Dimensions, StyleSheet, View, TouchableOpacity, Image, Text } from 'react-native';
+
  
 import Grid from 'react-native-grid-component';
  
 class Photo extends React.Component {
 
- 
+  // constructor(){
+  //   super();
+  //   this.state = {
+  //     screenWidth: Dimensions.get("window").width
+  //   }
+  // }
+
   render() {
     return (
         <View style={styles.modelStyle}>
@@ -23,11 +30,9 @@ export default Photo;
  
 const styles = StyleSheet.create({
   fullImageStyle: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 250,
     width: '100%',
-    //resizeMode: 'center',
+    height: 250,
+    marginTop: '20%'
   },
   modelStyle: {
     flex: 1,

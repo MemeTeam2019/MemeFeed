@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, AppRegistry, Button, StyleSheet, View, TouchableOpacity, Image } from 'react-native';
+import { Alert, AppRegistry, Button, StyleSheet, View, TouchableOpacity, Image, Text } from 'react-native';
  
 import Grid from 'react-native-grid-component';
  
@@ -71,8 +71,8 @@ class ButtonBar extends React.Component {
   render() {
     return (
 
-      <View style={{flex: 1, flexDirection: 'row'}}>
-        <View style={{width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}>
+      <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
+        <View style={{width: 50, height: 240, alignItems: 'center', justifyContent: 'center'}}>
           <TouchableOpacity
             style={{
               width: 35,
@@ -90,7 +90,7 @@ class ButtonBar extends React.Component {
           </TouchableOpacity>
         </View>
 
-        <View style={{width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}>
+        <View style={{width: 50, height: 240, alignItems: 'center', justifyContent: 'center'}}>
           <TouchableOpacity
             style={{
               width: 35,
@@ -108,7 +108,7 @@ class ButtonBar extends React.Component {
           </TouchableOpacity>
         </View>
 
-        <View style={{width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}>
+        <View style={{width: 50, height: 240, alignItems: 'center', justifyContent: 'center'}}>
           <TouchableOpacity
             style={{
               width: 35,
@@ -126,7 +126,7 @@ class ButtonBar extends React.Component {
           </TouchableOpacity>
         </View>
 
-        <View style={{width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}>
+        <View style={{width: 50, height: 240, alignItems: 'center', justifyContent: 'center'}}>
           <TouchableOpacity
             style={{
               width: 35,
@@ -143,9 +143,7 @@ class ButtonBar extends React.Component {
             />
           </TouchableOpacity>
         </View>
-
-
-        <View style={{width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}} >
+        <View style={{width: 50, height: 240, alignItems: 'center', justifyContent: 'center'}} >
         <TouchableOpacity
             style={{
               width: 35,
@@ -164,7 +162,7 @@ class ButtonBar extends React.Component {
           </TouchableOpacity>
         </View>
       </View>
-
+      
       // <Grid
       //   style={styles.list}
       //   renderItem={this._renderItem}
@@ -180,16 +178,16 @@ class ButtonBar extends React.Component {
 export default ButtonBar; 
  
 const styles = StyleSheet.create({
-  item: {
-    flex: 1,
-    height: 50,
-    margin: 1,
-    backgroundColor: '#fff'
-  },
-  list: {
-    // flex: .5,
-    // top: 25,
-    // right: 9,
-    // position: 'absolute',
-  }
+  // item: {
+  //   flex: 1,
+  //   height: 50,
+  //   margin: 1,
+  //   backgroundColor: '#fff'
+  // },
+  // list: {
+  //   flex: .5,
+  //   top: 25,
+  //   right: 9,
+  //   position: 'absolute',
+  // }
 });

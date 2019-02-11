@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Text, StyleSheet, View } from 'react-native';
+import {Text, StyleSheet, View, Image } from 'react-native';
 
  
 class TileHeader extends React.Component {
@@ -7,8 +7,10 @@ class TileHeader extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>pic</Text>
-        <Text style={styles.text}>@username</Text>
+        <Image 
+          style={styles.userImg}
+          source={{uri:'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg'}}/>
+        <Text style={styles.text}>username</Text>
       </View>
     );
   }
@@ -18,17 +20,24 @@ export default TileHeader;
  
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
-    flex: 1,
+    flexDirection: 'row',
     backgroundColor: '#fff',
     width: '100%',
-    height: 75
+    height: 100,
+    paddingHorizontal: 10,
+    alignItems: 'center'
   },
   text: { 
     fontWeight: 'bold', 
     fontSize: 16,
     fontFamily: 'AvenirNext-Regular',
+    marginLeft: 10
   },
+  userImg: {
+    width: 40,
+    height: 40,
+    borderRadius: 20
+  }
 });
 
 

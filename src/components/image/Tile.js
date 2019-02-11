@@ -13,7 +13,7 @@ class Tile extends React.Component {
           <TileHeader/>
           <Photo/>
           <ButtonBar/>
-          <PostInfo/>
+          {/* <PostInfo/> */}
         </React.Fragment>
     );
   }
