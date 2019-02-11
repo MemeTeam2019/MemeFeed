@@ -14,9 +14,9 @@ import {
   StyleSheet,
 } from 'react-native';
 //import all the needed components
- 
+
 import PhotoGrid from 'react-native-image-grid';
- 
+
 class HomeFeed extends React.Component {
   constructor() {
     super();
@@ -27,10 +27,10 @@ class HomeFeed extends React.Component {
       ModalVisibleStatus: false,
       isLoading: true,
       memes: [],
-      items: [], 
+      items: [],
     };
   }
- 
+
   // function for extracting Firebase responses to the state
   onCollectionUpdate = (querySnapshot) => {
     const memes = [];
@@ -73,7 +73,7 @@ class HomeFeed extends React.Component {
       imageuri: imageURL,
     });
   }
- 
+
   renderItem(item, itemSize, itemPaddingHorizontal) {
     //Single item of Grid
     return (
@@ -95,14 +95,14 @@ class HomeFeed extends React.Component {
       </TouchableOpacity>
     );
   }
- 
+
   render() {
     return (
       <ButtonBar/>
       );
   }
 }
- 
+
 export default HomeFeed;
 const styles = StyleSheet.create({
   containerStyle: {
@@ -132,4 +132,3 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
 });
-

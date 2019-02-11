@@ -13,13 +13,12 @@ import {
   UIManager,
   TextInput,
 } from "react-native";
-import {Menu, MenuProvider, MenuOptions, MenuOption, MenuTrigger} from "react-native-popup-menu";
-import OptionsMenu from "react-native-options-menu";
+
 import firebase from "react-native-firebase";
 
 import ActionSheet from 'react-native-actionsheet';
 
-const SettingsIcon = require('../images/setting.png');
+
 export default class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -37,21 +36,6 @@ export default class ProfileScreen extends React.Component {
   showActionSheet = () => {
     this.ActionSheet.show();
   };
-
-  handleClick = index => {
-    let optios = this.props.options;
-    for( var i = 0; i <options.length; i++){
-      if(index === i){
-        if(this.props.actions[i] !== null){
-          this.props.actions[i]();
-        }
-      }
-    }
-  };
-  handlePressWeb = () => {
-    this.setState({open: true});
-  };
-
 
   componentDidMount() {
     const authInfo = firebase.auth().currentUser;
@@ -273,32 +257,11 @@ const styles = StyleSheet.create({
 
 /*
 
-logout button:
-
-<TouchableOpacity onPress={this.logout}>
-<Image
-source={require('../images/logout.png')} style={{ width: 50, height: 40}}
-/>
-</TouchableOpacity>
-
 <Text>name: {this.state.name}</Text>
 <Text>email: {this.state.email}</Text>
 <Text>uid: {this.state.uid}</Text>
 <Text>username: {this.state.username}</Text>
 <Text>Following: {this.state.followingCnt}</Text>
 <Text>Followers: {this.state.followersCnt}</Text>
-
-
-
-{/*LOGGOUT BUTTON ICON*///}
-//<View style={styles.textSty2}>
-  //    <TouchableOpacity onPress={this.logout}>
-  //    <Image
-  //      source={require('../images/logout.png')} style={{ width: 50, height: 40}}
-  //    />
-//      </TouchableOpacity>
-//</View>
-
-
 
 //*/
