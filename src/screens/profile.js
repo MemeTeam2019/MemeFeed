@@ -104,18 +104,22 @@ export default class ProfileScreen extends React.Component {
           <Text style={styles.textSty2}>{this.state.name}</Text>
           <Text>      </Text>
           <Text>      </Text>
-        </View>
-        <View style={styles.textSty4}>
           <Button
             onPress={this.showActionSheet}
-            title="Settings"
+            title="User Settings"
             />
             <ActionSheet
               ref={o => (this.ActionSheet = o)}
-              title={'title'}
+              title={'User Settings'}
               options={optionArray}
               cancelButtonIndex={1}
               destructiveIndex={0}
+              onPress={index => {
+                if (optionArray[index] == 'Logout'){
+                  this.logout();
+                }
+                //alert(optionArray[index]);
+              }}
             />
         </View>
         {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
@@ -130,15 +134,6 @@ export default class ProfileScreen extends React.Component {
         source={require('../images/gridFeedF.png')} style={{ width: 100, height: 50}}
         />
         </TouchableOpacity>
-        </View>
-        {/*OPTIONS MENU*/}
-        <View>
-        <OptionsMenu
-          button={SettingsIcon}
-          buttonStyle={{ width: 50, height: 50, margin: 7.5, resizeMode: "contain" }}
-          destructiveIndex={1}
-          options={["Logout", "Change Profile Picture", "Cancel"]}
-          actions={[this.logout]}/>
         </View>
       </View>
     );
@@ -226,7 +221,7 @@ const styles = StyleSheet.create({
     paddingRight: 2,
     paddingLeft: 2,
     paddingHorizontal: 10,
-    fontWeight: 'bold',
+    //fontWeight: 'bold',
     //color: '#778899',
   },
   textSty4: {
@@ -303,15 +298,6 @@ source={require('../images/logout.png')} style={{ width: 50, height: 40}}
   //    />
 //      </TouchableOpacity>
 //</View>
-
-
-//              onPress={index => {
-//                if (optionArray[index] == 'Logout'){
-//                  this.logout;
-//                alert(optionArray[index]);
-//              }}
-
-
 
 
 
