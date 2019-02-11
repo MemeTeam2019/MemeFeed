@@ -7,11 +7,18 @@ import {
   Image,
   TouchableOpacity,
   Alert,
-  YellowBox
+  YellowBox,
+  Platform,
+  ActionSheetIOS,
+  UIManager,
+  TextInput,
 } from "react-native";
 import {Menu, MenuProvider, MenuOptions, MenuOption, MenuTrigger} from "react-native-popup-menu";
 import OptionsMenu from "react-native-options-menu";
 import firebase from "react-native-firebase";
+
+import ActionSheet from 'react-native-actionsheet';
+
 const SettingsIcon = require('../images/setting.png');
 export default class ProfileScreen extends React.Component {
   constructor(props) {
@@ -26,6 +33,25 @@ export default class ProfileScreen extends React.Component {
       open: false,
     }
   }
+
+  showActionSheet = () => {
+    this.ActionSheet.show();
+  };
+
+  handleClick = index => {
+    let optios = this.props.options;
+    for( var i = 0; i <options.length; i++){
+      if(index === i){
+        if(this.props.actions[i] !== null){
+          this.props.actions[i]();
+        }
+      }
+    }
+  };
+  handlePressWeb = () => {
+    this.setState({open: true});
+  };
+
 
   componentDidMount() {
     const authInfo = firebase.auth().currentUser;
@@ -49,8 +75,11 @@ export default class ProfileScreen extends React.Component {
       console.log(err);
     })
   }
-
   render() {
+    var optionArray = [
+      'Logout',
+      'Cancel',
+    ];
     return (
       <View style={styles.containerStyle}>
         {/*Display Username top center*/}
@@ -61,7 +90,7 @@ export default class ProfileScreen extends React.Component {
         <View style={styles.profilePic}>
         {/*PROFILE PICTURE*/}
         <Image
-        source={require('../images/profilePic.png')} style={{width: 80, height: 80, borderRadius: 80/2}}/>
+        source={require('../images/profilePic.png')} style={{width: 85, height: 85, borderRadius: 85/2}}/>
         <Text>      </Text>
         {/*FOLLOWING*/}
         <Text style={styles.textSty}> {this.state.followingCnt} {"\n"} <Text style={styles.textSty3}>Following</Text></Text>
@@ -75,23 +104,19 @@ export default class ProfileScreen extends React.Component {
           <Text style={styles.textSty2}>{this.state.name}</Text>
           <Text>      </Text>
           <Text>      </Text>
-          {/*USER SETTING TEXT BOX*/}
-          <Text style={styles.textSty5}>{" "}User Settings{"  "}</Text>
         </View>
-        {/*LOGGOUT BUTTON ICON*/}
-        <View style={styles.textSty2}>
-              <TouchableOpacity onPress={this.logout}>
-              <Image
-                source={require('../images/logout.png')} style={{ width: 50, height: 40}}
-              />
-              </TouchableOpacity>
-        </View>
-        {/*LOGOUT TEXT*/}
-        <View style={styles.textSty2}>
-            <Button
-                title="Log Out"
-                onPress={this.logout}
-              />
+        <View style={styles.textSty4}>
+          <Button
+            onPress={this.showActionSheet}
+            title="Settings"
+            />
+            <ActionSheet
+              ref={o => (this.ActionSheet = o)}
+              title={'title'}
+              options={optionArray}
+              cancelButtonIndex={1}
+              destructiveIndex={0}
+            />
         </View>
         {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
         <View style={styles.navBut}>
@@ -112,7 +137,7 @@ export default class ProfileScreen extends React.Component {
           button={SettingsIcon}
           buttonStyle={{ width: 50, height: 50, margin: 7.5, resizeMode: "contain" }}
           destructiveIndex={1}
-          options={["Edit Profile", "Change Profile Picture", "Logout"]}
+          options={["Logout", "Change Profile Picture", "Cancel"]}
           actions={[this.logout]}/>
         </View>
       </View>
@@ -202,11 +227,11 @@ const styles = StyleSheet.create({
     paddingLeft: 2,
     paddingHorizontal: 10,
     fontWeight: 'bold',
-    color: '#76A9BC',
+    //color: '#778899',
   },
   textSty4: {
     fontSize: 20,
-    fontFamily: 'AvenirNext-Regular',
+    fontFamily: 'HelveticaNeue-Bold',
     backgroundColor: 'white',
     paddingRight: 3,
     paddingHorizontal: 10,
@@ -220,8 +245,8 @@ const styles = StyleSheet.create({
     paddingRight: 2,
     paddingLeft: 2,
     paddingHorizontal: 10,
-    borderColor: '#76A9BC',
-    color: '#76A9BC',
+    borderColor: '#778899',
+    color: '#778899',
     borderWidth: 1,
     borderRadius: 5,
   },
@@ -269,4 +294,25 @@ source={require('../images/logout.png')} style={{ width: 50, height: 40}}
 <Text>Followers: {this.state.followersCnt}</Text>
 
 
-*/
+
+{/*LOGGOUT BUTTON ICON*///}
+//<View style={styles.textSty2}>
+  //    <TouchableOpacity onPress={this.logout}>
+  //    <Image
+  //      source={require('../images/logout.png')} style={{ width: 50, height: 40}}
+  //    />
+//      </TouchableOpacity>
+//</View>
+
+
+//              onPress={index => {
+//                if (optionArray[index] == 'Logout'){
+//                  this.logout;
+//                alert(optionArray[index]);
+//              }}
+
+
+
+
+
+//*/
