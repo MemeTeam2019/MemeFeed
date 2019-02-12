@@ -30,6 +30,8 @@ export default class ProfileScreen extends React.Component {
       followingCnt: 0,
       followersCnt: 0,
       open: false,
+      selectGridButtonP: true,
+      selectListButtonP: false,
     }
   }
 
@@ -49,6 +51,16 @@ export default class ProfileScreen extends React.Component {
     }).catch((err) => {
       console.log(err);
     })
+  }
+
+  onGridViewPressedP = () => {
+    this.setState({selectGridButtonP: true})
+    this.setState({selectListButtonP: false})
+  }
+
+  onListViewPressedP = () => {
+    this.setState({selectGridButtonP: false})
+    this.setState({selectListButtonP: true})
   }
 
   logout = () => {
@@ -102,20 +114,23 @@ export default class ProfileScreen extends React.Component {
                 if (optionArray[index] == 'Logout'){
                   this.logout();
                 }
-                //alert(optionArray[index]);
               }}
             />
         </View>
         {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
         <View style={styles.navBut}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => this.onListViewPressedP()}>
         <Image
-        source={require('../images/fullFeedF.png')} style={{ width: 100, height: 50}}
+        source={require('../images/fullFeedF.png')} style={{ opacity:  this.state.selectListButtonP
+                                                              ? 1 : 0.3,
+                                                            width: 100, height: 50}}
         />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => this.onGridViewPressedP()}>
         <Image
-        source={require('../images/gridFeedF.png')} style={{ width: 100, height: 50}}
+        source={require('../images/gridFeedF.png')} style={{ opacity:  this.state.selectGridButtonP
+                                                              ? 1 : 0.3,
+                                                            width: 100, height: 50}}
         />
         </TouchableOpacity>
         </View>
