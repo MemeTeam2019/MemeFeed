@@ -81,10 +81,7 @@ class ButtonBar extends React.Component {
       </TouchableOpacity>
   }
 
-
- 
   _renderPlaceholder = i => <View style={styles.item} key={i} />;
-
  
   render() {
     return (
@@ -180,32 +177,8 @@ class ButtonBar extends React.Component {
           </TouchableOpacity>
         </View>
       </View>
-      
-      // <Grid
-      //   style={styles.list}
-      //   renderItem={this._renderItem}
-      //   renderPlaceholder={this._renderPlaceholder}
-      //   data={['0','1','2','3','4']}
-      //   itemsPerRow={5}
-      // />
     );
   }
 }
 
-
 export default ButtonBar; 
- 
-const styles = StyleSheet.create({
-  // item: {
-  //   flex: 1,
-  //   height: 50,
-  //   margin: 1,
-  //   backgroundColor: '#fff'
-  // },
-  // list: {
-  //   flex: .5,
-  //   top: 25,
-  //   right: 9,
-  //   position: 'absolute',
-  // }
-});
