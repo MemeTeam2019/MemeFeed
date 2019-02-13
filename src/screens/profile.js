@@ -77,7 +77,7 @@ export default class ProfileScreen extends React.Component {
       'Cancel',
     ];
     return (
-      <View style={styles.containerStyle}>
+      <View style={styles.container}>
         {/*Display Username top center*/}
         <View style={styles.navBar}>
           <Text style={styles.textSty4}>{this.state.username}</Text>
@@ -142,8 +142,8 @@ export default class ProfileScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    height: '100%',
+    width: '100%',
     backgroundColor: "#ffffff"
   },
   headerSty: {
