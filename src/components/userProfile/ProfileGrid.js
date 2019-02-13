@@ -13,11 +13,11 @@ import {
 
 
 import Grid from 'react-native-grid-component';
- 
+const uid = firebase.auth().currentUser.uid;
 class ProfileGrid extends React.Component {
   constructor() {
     super();
-    this.ref = firebase.firestore().collection('Memes');
+    this.ref = firebase.firestore().collection('Reacts/'+uid+'/Likes');
     this.unsubscribe = null;
     this.state = {
       imageuri: '',
@@ -31,15 +31,28 @@ class ProfileGrid extends React.Component {
 
   // function for extracting Firebase responses to the state
   onCollectionUpdate = (querySnapshot) => {
+    console.log("screams");
     const memes = [];
     querySnapshot.forEach((doc) => {
-      const { url, time} = doc.data();
-      memes.push({
+      const {memeid,rating,time} = doc.data();
+      //const {url,time}=doc.data();
+      if(rating>2){
+        var url;
+       var dref = firebase.firestore().collection('Memes').doc(memeid)
+       dref.get().then(function(doc) {
+          if (doc.exists) {
+         url = doc.data().url;
+         memes.push({
         key: doc.id,
         doc, // DocumentSnapshot
         src: url,
         time,
       });
+        }
+      });
+      
+     }
+    
     });
     this.setState({
       memes,
