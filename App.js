@@ -15,12 +15,9 @@ export default createAppContainer(createSwitchNavigator(
     },
     Main: {
       screen: MainRouter
-    },
-    Tile: {
-      screen: Tile
     }
   },
   {
-    initialRouteName: "Tile"
+    initialRouteName: "Loading"
   }
 ));

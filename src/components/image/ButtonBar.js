@@ -89,17 +89,8 @@ class ButtonBar extends React.Component {
   render() {
     return (
 
-<<<<<<< HEAD
-      <View style={{flex: 1, flexDirection: 'row'}}>
-        <View style={{width: 10, height: 50}}>
-          
-        </View>
-
-        <View style={{width: 50, height: 50, alignItems: 'center', justifyContent: 'center'}}>
-=======
       <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
         <View style={{width: 50, height: 240, alignItems: 'center', justifyContent: 'center'}}>
->>>>>>> origin/sp2_term1_us4
           <TouchableOpacity
             style={{
               width: 35,
