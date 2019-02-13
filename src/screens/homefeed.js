@@ -22,7 +22,7 @@ import PhotoGrid from 'react-native-image-grid';
 class HomeFeed extends React.Component {
   constructor() {
     super();
-    this.ref = firebase.firestore().collection('MiaTestingMemePulling').orderBy('time', "desc");
+    this.ref = firebase.firestore().collection('Memes').orderBy('time', "desc");
     this.unsubscribe = null;
     this.state = {
       imageuri: '',
