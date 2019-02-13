@@ -13,7 +13,7 @@ import {
   UIManager,
   TextInput,
 } from "react-native";
-
+import ProfileGrid from '../components/userProfile/ProfileGrid';
 import firebase from "react-native-firebase";
 
 import ActionSheet from 'react-native-actionsheet';
@@ -83,8 +83,10 @@ export default class ProfileScreen extends React.Component {
       'Cancel',
     ];
     return (
-      <View style={styles.container}>
-        {/*Display Username top center*/}
+
+// <<<<<<< HEAD
+      <React.Fragment>
+      <View style={styles.containerStyle}>
         <View style={styles.navBar}>
           <Text style={styles.textSty4}>{this.state.username}</Text>
         </View>
@@ -140,20 +142,25 @@ export default class ProfileScreen extends React.Component {
         />
         </TouchableOpacity>
         </View>
+
       </View>
+
+
+      <ProfileGrid/>
+      </React.Fragment>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  containerStyle: {
     flex: 1,
-    height: '100%',
-    width: '100%',
+    // alignItems: "center",
+    // justifyContent: "center",
     backgroundColor: "#ffffff"
   },
   headerSty: {
-    height: 80,
+    height: 0,
     backgroundColor: 'white',
     elevation: 3,
     paddingHorizontal: 20,

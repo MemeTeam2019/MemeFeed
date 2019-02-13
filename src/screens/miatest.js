@@ -3,6 +3,7 @@ import * as React from 'react';
 import firebase from 'react-native-firebase';
 
 import Photo from '../components/image/Photo';
+import ProfileGrid from '../components/userProfile/ProfileGrid';
 import Tile from '../components/image/Tile';
 
 //import React in our project
