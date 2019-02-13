@@ -154,7 +154,7 @@ export default class ProfileScreen extends React.Component {
 
 const styles = StyleSheet.create({
   containerStyle: {
-    flex: 1,
+    flex: 0,
     // alignItems: "center",
     // justifyContent: "center",
     backgroundColor: "#ffffff"
