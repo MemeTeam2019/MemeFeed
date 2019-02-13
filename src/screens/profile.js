@@ -8,10 +8,16 @@ import {
   TouchableOpacity,
   Alert,
   YellowBox,
-  AsyncStorage
+  Platform,
+  ActionSheetIOS,
+  UIManager,
+  TextInput,
 } from "react-native";
-import {Menu, MenuProvider, MenuOptions, MenuOption, MenuTrigger} from "react-native-popup-menu";
+
 import firebase from "react-native-firebase";
+
+import ActionSheet from 'react-native-actionsheet';
+
 
 export default class ProfileScreen extends React.Component {
   constructor(props) {
@@ -22,15 +28,16 @@ export default class ProfileScreen extends React.Component {
       name: "",
       uid: "",
       followingCnt: 0,
-      followersCnt: 0
+      followersCnt: 0,
+      open: false,
+      selectGridButtonP: true,
+      selectListButtonP: false,
     }
   }
 
-  handleLogout = () => {
-    firebase.auth().signOut().then(() => {
-      this.props.navigation.navigate("Login");
-    });
-  }
+  showActionSheet = () => {
+    this.ActionSheet.show();
+  };
 
   componentDidMount() {
     const authInfo = firebase.auth().currentUser;
@@ -52,6 +59,16 @@ export default class ProfileScreen extends React.Component {
 
   }
 
+  onGridViewPressedP = () => {
+    this.setState({selectGridButtonP: true})
+    this.setState({selectListButtonP: false})
+  }
+
+  onListViewPressedP = () => {
+    this.setState({selectGridButtonP: false})
+    this.setState({selectListButtonP: true})
+  }
+
   logout = () => {
     firebase.auth().signOut().then(() => {
       this.props.navigation.navigate("Auth");
@@ -60,63 +77,66 @@ export default class ProfileScreen extends React.Component {
       console.log(err);
     })
   }
-
   render() {
+    var optionArray = [
+      'Logout',
+      'Cancel',
+    ];
     return (
-// <<<<<<< HEAD
-      <View style={styles.containerStyle}>
+      <View style={styles.container}>
+        {/*Display Username top center*/}
         <View style={styles.navBar}>
           <Text style={styles.textSty4}>{this.state.username}</Text>
         </View>
+        {/*Profile Pic, Follwers, Follwing Block*/}
         <View style={styles.profilePic}>
+        {/*PROFILE PICTURE*/}
         <Image
-        source={require('../images/proPic.png')} style={{ width: 70, height: 70}}/>
+        source={require('../images/profilePic.png')} style={{width: 85, height: 85, borderRadius: 85/2}}/>
         <Text>      </Text>
-        <Text>      </Text>
+        {/*FOLLOWING*/}
         <Text style={styles.textSty}> {this.state.followingCnt} {"\n"} <Text style={styles.textSty3}>Following</Text></Text>
         <Text>      </Text>
         <Text>      </Text>
+        {/*FOLLOWERS*/}
         <Text style={styles.textSty}>{this.state.followersCnt} {"\n"} <Text style={styles.textSty3}>Followers</Text> </Text>
         </View>
+        {/*DISPLAY NAME*/}
         <View style={styles.profilePic}>
           <Text style={styles.textSty2}>{this.state.name}</Text>
           <Text>      </Text>
           <Text>      </Text>
-          <Text style={styles.textSty5}>{" "}User Settings{"  "}</Text>
+          <Button
+            onPress={this.showActionSheet}
+            title="User Settings"
+            />
+            <ActionSheet
+              ref={o => (this.ActionSheet = o)}
+              title={'User Settings'}
+              options={optionArray}
+              cancelButtonIndex={1}
+              destructiveIndex={0}
+              onPress={index => {
+                if (optionArray[index] == 'Logout'){
+                  this.logout();
+                }
+              }}
+            />
         </View>
-        <View style={styles.textSty2}>
-              <TouchableOpacity onPress={this.logout}>
-              <Image
-                source={require('../images/logout.png')} style={{ width: 50, height: 40}}
-              />
-              </TouchableOpacity>
-        </View>
-        <View style={styles.textSty2}>
-            <Button
-                title="Log Out"
-                onPress={this.logout}
-              />
-        </View>
+        {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
         <View style={styles.navBut}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => this.onListViewPressedP()}>
         <Image
-        source={require('../images/fullFeedF.png')} style={{ width: 100, height: 50}}
-// =======
-//       <View style={styles.container}>
-//         <Text>name: {this.state.name}</Text>
-//         <Text>email: {this.state.email}</Text>
-//         <Text>uid: {this.state.uid}</Text>
-//         <Text>Following: {this.state.followingCnt}</Text>
-//         <Text>Followers: {this.state.followersCnt}</Text>
-//         <Button
-//           title="Logout"
-//           onPress={() => this.handleLogout()}
-// >>>>>>> sprint2_term1
+        source={require('../images/fullFeedF.png')} style={{ opacity:  this.state.selectListButtonP
+                                                              ? 1 : 0.3,
+                                                            width: 100, height: 50}}
         />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => this.onGridViewPressedP()}>
         <Image
-        source={require('../images/gridFeedF.png')} style={{ width: 100, height: 50}}
+        source={require('../images/gridFeedF.png')} style={{ opacity:  this.state.selectGridButtonP
+                                                              ? 1 : 0.3,
+                                                            width: 100, height: 50}}
         />
         </TouchableOpacity>
         </View>
@@ -128,8 +148,8 @@ export default class ProfileScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    height: '100%',
+    width: '100%',
     backgroundColor: "#ffffff"
   },
   headerSty: {
@@ -145,6 +165,17 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
+  },
+  animatedBox: {
+    flex: 1,
+    backgroundColor: "#38C8EC",
+    padding: 10,
+  },
+  body: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F04812',
   },
   navBar: {
     height:80,
@@ -179,9 +210,6 @@ const styles = StyleSheet.create({
     paddingRight: 2,
     paddingLeft: 2,
     paddingHorizontal: 10,
-    //borderColor: 'black',
-    //borderWidth: 1,
-    //borderRadius: 5,
   },
   textSty2: {
     fontSize: 20,
@@ -198,12 +226,12 @@ const styles = StyleSheet.create({
     paddingRight: 2,
     paddingLeft: 2,
     paddingHorizontal: 10,
-    fontWeight: 'bold',
-    color: '#848180',
+    //fontWeight: 'bold',
+    //color: '#778899',
   },
   textSty4: {
     fontSize: 20,
-    fontFamily: 'AvenirNext-Regular',
+    fontFamily: 'HelveticaNeue-Bold',
     backgroundColor: 'white',
     paddingRight: 3,
     paddingHorizontal: 10,
@@ -217,8 +245,8 @@ const styles = StyleSheet.create({
     paddingRight: 2,
     paddingLeft: 2,
     paddingHorizontal: 10,
-    borderColor: '#848180',
-    color: '#848180',
+    borderColor: '#778899',
+    color: '#778899',
     borderWidth: 1,
     borderRadius: 5,
   },
@@ -250,14 +278,6 @@ const styles = StyleSheet.create({
 
 /*
 
-logout button:
-
-<TouchableOpacity onPress={this.logout}>
-<Image
-source={require('../images/logout.png')} style={{ width: 50, height: 40}}
-/>
-</TouchableOpacity>
-
 <Text>name: {this.state.name}</Text>
 <Text>email: {this.state.email}</Text>
 <Text>uid: {this.state.uid}</Text>
@@ -265,5 +285,4 @@ source={require('../images/logout.png')} style={{ width: 50, height: 40}}
 <Text>Following: {this.state.followingCnt}</Text>
 <Text>Followers: {this.state.followersCnt}</Text>
 
-
-*/
+//*/

@@ -59,12 +59,13 @@ export default class LoginScreen extends React.Component {
 
   render() {
     return (
-      <ImageBackground 
+      <ImageBackground
         source={require('../images/bkgrnd.jpeg')}
         style={styles.background}>
       <View style={styles.container}>
         <KeyboardAvoidingView behavior='position'>
-          <Image 
+          {/* <Text style={styles.title}>MEME FEED</Text> */}
+          <Image
             style={styles.logo}
             source={require('../images/logo.png')}
           />
@@ -121,8 +122,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 1,
     shadowOffset: {
-      height: 1,
-      width: 1
+    height: 1,
+    width: 1
     }
   },
   background: {

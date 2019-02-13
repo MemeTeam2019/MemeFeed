@@ -10,22 +10,30 @@ import {
   View,
   Modal,
   StyleSheet,
+  FlatList
 } from 'react-native';
+
 //import all the needed components
+//tile component
+import Tile from '../components/image/Tile'
 
 import PhotoGrid from 'react-native-image-grid';
 
 class HomeFeed extends React.Component {
   constructor() {
     super();
-    this.ref = firebase.firestore().collection('Memes');
+    this.ref = firebase.firestore().collection('MiaTestingMemePulling').orderBy('time', "desc");
     this.unsubscribe = null;
     this.state = {
       imageuri: '',
       ModalVisibleStatus: false,
       isLoading: true,
+      inGridView: true,
+      inFullView: false,
       memes: [],
       items: [],
+      selectGridButton: true,
+      selectListButton: false,
     };
   }
 
@@ -66,6 +74,22 @@ class HomeFeed extends React.Component {
     });
   }
 
+  showGridView = () => {
+    //when grid button is pressed, show grid view
+    this.setState({
+      inGridView: true,
+      inFullView: false
+    })
+  }
+
+  showFullView = () => {
+    //when full button is bressed, show full view
+    this.setState({
+      inFullView: true,
+      inGridView: false
+    })
+  }
+
   renderItem(item, itemSize, itemPaddingHorizontal) {
     //Single item of Grid
     return (
@@ -88,6 +112,10 @@ class HomeFeed extends React.Component {
     );
   }
 
+  renderTile({item}){
+    return <Tile/>
+  }
+
   render() {
     if (this.state.ModalVisibleStatus) {
       //Modal to show full image with close button
@@ -100,10 +128,12 @@ class HomeFeed extends React.Component {
             this.ShowModalFunction(!this.state.ModalVisibleStatus,'');
           }}>
           <View style={styles.modelStyle}>
+            {/* Single Image - Tile */}
             <Image
               style={styles.fullImageStyle}
               source={{ uri: this.state.imageuri }}
             />
+            {/* Close Button */}
             <TouchableOpacity
               activeOpacity={0.5}
               style={styles.closeButtonStyle}
@@ -121,42 +151,74 @@ class HomeFeed extends React.Component {
           </View>
         </Modal>
       );
+    } else if (this.state.inFullView) {
+      //Photo List/Full View of images
+        return(
+          <View style={styles.containerStyle}>
+          <View style={styles.navBar}>
+            <Image source={require('../images/general.png')} style={{ width: 250, height: 50}} />
+          </View>
+          <View style={styles.navBut}>
+            <TouchableOpacity onPress={() => this.showFullView()}>
+              <Image
+              source={require('../images/fullFeedF.png')} style={{ opacity:  this.state.inFullView
+                                                                    ? 1 : 0.3,
+                                                                  width: 100, height: 50}}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.showGridView()}>
+              <Image
+              source={require('../images/gridFeedF.png')} style={{ opacity:  this.state.inGridView
+                                                                    ? 1 : 0.3,
+                                                                  width: 100, height: 50}}
+              />
+            </TouchableOpacity>
+          </View>
+            {/* List View */}
+            <FlatList 
+              data={this.state.memes}
+              renderItem={this.renderTile.bind(this)}
+            />
+          </View>
+        );
     } else {
       //Photo Grid of images
       return (
         <View style={styles.containerStyle}>
-        <View style={styles.navBar}>
-        <Image source={require('../images/general.png')} style={{ width: 250, height: 50}} />
+          <View style={styles.navBar}>
+            <Image source={require('../images/general.png')} style={{ width: 250, height: 50}} />
+          </View>
+          <View style={styles.navBut}>
+            <TouchableOpacity onPress={() => this.showFullView()}>
+              <Image
+              source={require('../images/fullFeedF.png')} style={{ opacity:  this.state.inFullView
+                                                                    ? 1 : 0.3,
+                                                                  width: 100, height: 50}}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.showGridView()}>
+              <Image
+              source={require('../images/gridFeedF.png')} style={{ opacity:  this.state.inGridView
+                                                                    ? 1 : 0.3,
+                                                                  width: 100, height: 50}}
+              />
+            </TouchableOpacity>
+          </View>
+          <PhotoGrid
+            data={this.state.memes}
+            itemsPerRow={3}
+            //You can decide the item per row
+            itemMargin={1}
+            itemPaddingHorizontal={1}
+            renderHeader={this.renderHeader}
+            renderItem={this.renderItem.bind(this)}
+          />
         </View>
-        <View style={styles.navBut}>
-        <TouchableOpacity>
-        <Image
-        source={require('../images/fullFeedF.png')} style={{ width: 100, height: 50}}
-        />
-        </TouchableOpacity>
-        <TouchableOpacity>
-        <Image
-        source={require('../images/gridFeedF.png')} style={{ width: 100, height: 50}}
-        />
-        </TouchableOpacity>
-        </View>
-
-        <PhotoGrid
-          data={this.state.memes}
-          itemsPerRow={3}
-          //You can decide the item per row
-          itemMargin={1}
-          itemPaddingHorizontal={1}
-          renderHeader={this.renderHeader}
-          renderItem={this.renderItem.bind(this)}
-        />
-        </View>
-      );
-    }
+      ); 
   }
-}
-
+}}
 export default HomeFeed;
+
 const styles = StyleSheet.create({
   containerStyle: {
     justifyContent: 'center',

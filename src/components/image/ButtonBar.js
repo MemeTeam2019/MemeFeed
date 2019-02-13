@@ -86,8 +86,8 @@ class ButtonBar extends React.Component {
   render() {
     return (
 
-      <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
-        <View style={{width: 50, height: 240, alignItems: 'center', justifyContent: 'center'}}>
+      <View style={styles.buttonBar}>
+        <View style={styles.button}>
           <TouchableOpacity
             style={{
               width: 35,
@@ -105,7 +105,7 @@ class ButtonBar extends React.Component {
           </TouchableOpacity>
         </View>
 
-        <View style={{width: 50, height: 240, alignItems: 'center', justifyContent: 'center'}}>
+        <View style={styles.button}>
           <TouchableOpacity
             style={{
               width: 35,
@@ -123,7 +123,7 @@ class ButtonBar extends React.Component {
           </TouchableOpacity>
         </View>
 
-        <View style={{width: 50, height: 240, alignItems: 'center', justifyContent: 'center'}}>
+        <View style={styles.button}>
           <TouchableOpacity
             style={{
               width: 35,
@@ -141,7 +141,7 @@ class ButtonBar extends React.Component {
           </TouchableOpacity>
         </View>
 
-        <View style={{width: 50, height: 240, alignItems: 'center', justifyContent: 'center'}}>
+        <View style={styles.button}>
           <TouchableOpacity
             style={{
               width: 35,
@@ -158,7 +158,7 @@ class ButtonBar extends React.Component {
             />
           </TouchableOpacity>
         </View>
-        <View style={{width: 50, height: 240, alignItems: 'center', justifyContent: 'center'}} >
+        <View style={styles.button} >
         <TouchableOpacity
             style={{
               width: 35,
@@ -182,3 +182,17 @@ class ButtonBar extends React.Component {
 }
 
 export default ButtonBar; 
+ 
+const styles = StyleSheet.create({
+  buttonBar: {
+    flexDirection: 'row', 
+    width: '100%', 
+    justifyContent: 'center'
+  },
+  button: {
+    width: 50,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center'
+  }
+});
