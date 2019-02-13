@@ -4,7 +4,7 @@ import {createBottomTabNavigator} from 'react-navigation';
 // import HomeFeed from '../screens/homefeed';
 import ProfileScreen from "../screens/profile";
 
-import HomeFeed from '../screens/miatest';
+import HomeFeed from '../screens/homefeed';
 
 const MainRouter = createBottomTabNavigator({
   Home: {

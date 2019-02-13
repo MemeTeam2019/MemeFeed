@@ -10,8 +10,12 @@ import {
   View,
   Modal,
   StyleSheet,
+  FlatList
 } from 'react-native';
+
 //import all the needed components
+//tile component
+import Tile from '../components/image/Tile'
 
 import PhotoGrid from 'react-native-image-grid';
 
@@ -24,6 +28,8 @@ class HomeFeed extends React.Component {
       imageuri: '',
       ModalVisibleStatus: false,
       isLoading: true,
+      inGridView: false,
+      inFullView: false,
       memes: [],
       items: [], 
     };
@@ -72,6 +78,22 @@ class HomeFeed extends React.Component {
     });
   }
 
+  showGridView = () => {
+    //when grid button is pressed, show grid view
+    this.setState({
+      inGridView: true,
+      inFullView: false
+    })
+  }
+
+  showFullView = () => {
+    //when full button is bressed, show full view
+    this.setState({
+      inFullView: true,
+      inGridView: false
+    })
+  }
+
   renderItem(item, itemSize, itemPaddingHorizontal) {
     //Single item of Grid
     return (
@@ -94,48 +116,10 @@ class HomeFeed extends React.Component {
     );
   }
 
-/*  Header Code ----------------
-  render() {
-    return (
-      <View style={styles.container}>
-        <View style={styles.navBar}>
-            <Image source={require('./images/banner3.png')} style={{ width: 230, height: 50}} />
-            <TouchableOpacity>
-            <Image
-            source={require('./images/fullFeed4.png')} style={{ width: 50, height: 50}}
-            />
-            </TouchableOpacity>
-            <TouchableOpacity>
-            <Image
-            source={require('./images/boxFeed4.png')} style={{ width: 50, height: 50}}
-            />
-            </TouchableOpacity>
-        </View>
-      </View>
-    );
+  renderTile({item}){
+    return <Tile/>
   }
 
-
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  navBar: {
-    height:100,
-    backgroundColor: 'white',
-    elevation: 3,
-    paddingHorizontal: 20,
-    paddingRight: 3,
-    paddingTop: 50,
-    flexDirection: 'row',
-    alignItems: 'center'
-  }
-});
-
-
-
- -----------------------------*/
   render() {
     if (this.state.ModalVisibleStatus) {
       //Modal to show full image with close button
@@ -148,10 +132,12 @@ const styles = StyleSheet.create({
             this.ShowModalFunction(!this.state.ModalVisibleStatus,'');
           }}>
           <View style={styles.modelStyle}>
+            {/* Single Image - Tile */}
             <Image
               style={styles.fullImageStyle}
               source={{ uri: this.state.imageuri }}
             />
+            {/* Close Button */}
             <TouchableOpacity
               activeOpacity={0.5}
               style={styles.closeButtonStyle}
@@ -169,34 +155,69 @@ const styles = StyleSheet.create({
           </View>
         </Modal>
       );
-    } else {
+    } else if (this.state.inGridView){
       //Photo Grid of images
       return (
         <View style={styles.containerStyle}>
-        <View style={styles.navBar}>
-        <Image source={require('../images/banner3.png')} style={{ width: 230, height: 50}} />
-        <TouchableOpacity>
-        <Image
-        source={require('../images/fullFeed4.png')} style={{ width: 50, height: 50}}
-        />
-        </TouchableOpacity>
-        <TouchableOpacity>
-        <Image
-        source={require('../images/boxFeed4.png')} style={{ width: 50, height: 50}}
-        />
-        </TouchableOpacity>
+          <View style={styles.navBar}>
+            {/* logo */}
+            <Image source={require('../images/banner3.png')} style={{ width: 230, height: 50}} />
+            {/* full feed button */}
+            <TouchableOpacity 
+              activeOpacity={0.5}
+              onPress={this.showFullView}>
+              <Image
+                source={require('../images/fullFeed4.png')} style={{ width: 50, height: 50}}
+              />
+            </TouchableOpacity>
+            {/* grid feed button */}
+            <TouchableOpacity>
+              <Image
+                source={require('../images/boxFeed4.png')} style={{ width: 50, height: 50}}
+              />
+            </TouchableOpacity>
+          </View>
+          <PhotoGrid
+            data={this.state.memes}
+            itemsPerRow={3}
+            //You can decide the item per row
+            itemMargin={1}
+            itemPaddingHorizontal={1}
+            renderHeader={this.renderHeader}
+            renderItem={this.renderItem.bind(this)}
+          />
         </View>
-        <PhotoGrid
-          data={this.state.memes}
-          itemsPerRow={3}
-          //You can decide the item per row
-          itemMargin={1}
-          itemPaddingHorizontal={1}
-          renderHeader={this.renderHeader}
-          renderItem={this.renderItem.bind(this)}
-        />
-        </View>
-      );
+      ); 
+    } else {
+      //Photo List/Full View of images
+        return(
+          <View style={styles.containerStyle}>
+            <View style={styles.navBar}>
+              {/* logo */}
+              <Image source={require('../images/banner3.png')} style={{ width: 230, height: 50}} />
+              {/* full feed button */}
+              <TouchableOpacity>
+                <Image
+                  source={require('../images/fullFeed4.png')} style={{ width: 50, height: 50}}
+                />
+              </TouchableOpacity>
+              {/* grid feed button */}
+              <TouchableOpacity 
+              activeOpacity={0.5}
+              onPress={this.showGridView}
+              >
+                <Image
+                  source={require('../images/boxFeed4.png')} style={{ width: 50, height: 50}}
+                />
+              </TouchableOpacity>
+            </View>
+            {/* List View */}
+            <FlatList 
+              data={this.state.memes}
+              renderItem={this.renderTile.bind(this)}
+            />
+          </View>
+        );
     }
   }
 }
