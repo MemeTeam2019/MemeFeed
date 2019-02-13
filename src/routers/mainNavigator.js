@@ -12,7 +12,7 @@ const MainRouter = createBottomTabNavigator({
   },
   Profile: {
     screen: ProfileScreen
-  }
+  },
 });
 
 export default MainRouter;

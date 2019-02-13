@@ -22,7 +22,7 @@ import PhotoGrid from 'react-native-image-grid';
 class HomeFeed extends React.Component {
   constructor() {
     super();
-    this.ref = firebase.firestore().collection('MiaTestingMemePulling');
+    this.ref = firebase.firestore().collection('MiaTestingMemePulling').orderBy('time', "desc");
     this.unsubscribe = null;
     this.state = {
       imageuri: '',
@@ -32,6 +32,8 @@ class HomeFeed extends React.Component {
       inFullView: false,
       memes: [],
       items: [],
+      selectGridButton: true,
+      selectListButton: false,
     };
   }
 
@@ -193,14 +195,18 @@ class HomeFeed extends React.Component {
         <Image source={require('../images/general.png')} style={{ width: 250, height: 50}} />
         </View>
         <View style={styles.navBut}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => this.onListViewPressed()}>
         <Image
-        source={require('../images/fullFeedF.png')} style={{ width: 100, height: 50}}
+        source={require('../images/fullFeedF.png')} style={{ opacity:  this.state.selectListButton
+                                                              ? 1 : 0.3,
+                                                            width: 100, height: 50}}
         />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => this.onGridViewPressed()}>
         <Image
-        source={require('../images/gridFeedF.png')} style={{ width: 100, height: 50}}
+        source={require('../images/gridFeedF.png')} style={{ opacity:  this.state.selectGridButton
+                                                              ? 1 : 0.3,
+                                                            width: 100, height: 50}}
         />
         </TouchableOpacity>
         </View>
