@@ -13,7 +13,6 @@ import {
 
 
 import Grid from 'react-native-grid-component';
-const uid = firebase.auth().currentUser.uid;
 class ProfileGrid extends React.Component {
   constructor() {
     super();
