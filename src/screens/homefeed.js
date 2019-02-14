@@ -113,7 +113,10 @@ class HomeFeed extends React.Component {
   }
 
   renderTile({item}){
-    return <Tile/>
+    //for list view
+    return <Tile 
+    key={item.id}
+    imageUrl={this.state.imageuri}/>
   }
 
   render() {
@@ -129,9 +132,8 @@ class HomeFeed extends React.Component {
           }}>
           <View style={styles.modelStyle}>
             {/* Single Image - Tile */}
-            <Image
-              style={styles.fullImageStyle}
-              source={{ uri: this.state.imageuri }}
+            <Tile
+              imageUrl={this.state.imageuri}
             />
             {/* Close Button */}
             <TouchableOpacity
