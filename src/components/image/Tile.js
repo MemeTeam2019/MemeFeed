@@ -10,12 +10,11 @@ import PostInfo from './PostInfo';
 class Tile extends React.Component {
 
   render() {
-    const{imageUrl} = this.props;
     return ( 
       <View style={styles.container}>
         <TileHeader/>
         <Photo imageUrl={this.props.imageUrl}/>
-        <ButtonBar/>
+        <ButtonBar memeId={this.props.memeId}/>
         <PostInfo/>
     </View>
     );

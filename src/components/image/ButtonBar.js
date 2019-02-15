@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { Alert, AppRegistry, Button, StyleSheet, View, TouchableOpacity, Image } from 'react-native';
 import firebase from "react-native-firebase";
  
-import Grid from 'react-native-grid-component';
- 
 class ButtonBar extends React.Component {
 
   constructor(props) {
@@ -26,16 +24,19 @@ class ButtonBar extends React.Component {
   componentDidMount() {
     const user = firebase.auth().currentUser;
     const ref = firebase.firestore().collection("Reacts").doc(user.uid);
-    const memeId = "dummy";
+    const memeId = this.props.memeId;
 
     ref.get().then(docSnapshot => {
       if (docSnapshot.exists) {
         let data = docSnapshot.data();
-        let react = data[memeId].rank;
-        this.setState({ selectedButton: react == -1 ? null : react })
-      } else {
-        return;
+        if (data[memeId]) {
+          let react = data[memeId].rank;
+          this.setState({ selectedButton: react == -1 ? null : react });
+        }
       }
+    })
+    .catch(error => {
+      console.log(error);
     })
   }
 
@@ -51,12 +52,15 @@ class ButtonBar extends React.Component {
     const user = firebase.auth().currentUser;
     const ref = firebase.firestore().collection("Reacts").doc(user.uid);
     const date = (new Date()).toString();
-    const memeId = "dummy";
+    const memeId = this.props.memeId;
 
     ref.get().then(docSnapshot => {
       const data = docSnapshot.data();
-      const oldRank = data[memeId].rank;
-      let newRank = oldRank === num ? -1 : num;
+      var newRank = num;
+      if (data[memeId]) {
+        const oldRank = data[memeId].rank;
+        newRank = oldRank === num ? -1 : num;
+      }
       ref.set({[memeId]: {
         rank: newRank,
         time: date
