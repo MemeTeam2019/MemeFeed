@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Alert, AppRegistry, Button, StyleSheet, View, TouchableOpacity, Image } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, TouchableOpacity, Image } from 'react-native';
 import firebase from "react-native-firebase";
  
 class ButtonBar extends React.Component {
