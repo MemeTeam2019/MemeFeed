@@ -19,6 +19,7 @@ class ProfileGrid extends React.Component {
     this.ref = firebase.firestore().collection("Memes");
     this.unsubscribe = null;
     this.state = {
+      memesLoaded: 30,
       imageuri: '',
       ModalVisibleStatus: false,
       isLoading: true,
@@ -30,8 +31,8 @@ class ProfileGrid extends React.Component {
 
   // function for extracting Firebase responses to the state
   onCollectionUpdate = (querySnapshot) => {
-    console.log("screams");
     const memes = [];
+
     querySnapshot.forEach((doc) => {
       const { url, time} = doc.data();
       console.log(url, time);
@@ -46,31 +47,6 @@ class ProfileGrid extends React.Component {
       memes,
       isLoading: false,
     });
-    // querySnapshot.forEach((doc) => {
-    //   const {memeid,rating,time} = doc.data();
-    //   //const {url,time}=doc.data();
-    //   if(rating>2){
-    //     var url;
-    //     var dref = firebase.firestore().collection('Memes').doc(memeid)
-    //       dref.get().then(function(doc) {
-    //         if (doc.exists) {
-    //         url = doc.data().url;
-    //         memes.push({
-    //       key: doc.id,
-    //       doc, // DocumentSnapshot
-    //       src: url,
-    //       time,
-    //     });
-    //     }
-    //   });
-      
-    //  }
-    
-    // });
-  //   this.setState({
-  //     memes,
-  //     isLoading: false,
-  //  });
   }
 
 
@@ -84,29 +60,21 @@ class ProfileGrid extends React.Component {
   }
 
   componentDidMount() {
-    this.unsubscribe = this.ref.limit(60).onSnapshot(this.onCollectionUpdate);
+    // this.state.memesLoaded += 60
+    this.unsubscribe = this.ref.limit(this.state.memesLoaded).onSnapshot(this.onCollectionUpdate);
+    return this.state.memes
   }
 
+  // LoadMoreMemes() {
 
-        // <Image
-        //   style={{ flex: 1 }}
-        //   source={{
-        //     uri:
-        //       data.src,
-        //   }}
-        // />
+  // }
+
 
   _renderItem = (data, i) => (
-
     <View style={[styles.item]} key={i}>
-
-
       <TouchableOpacity
         style={{
           flex: 1,
-          // width: itemSize,
-          // height: itemSize,
-          // paddingHorizontal: itemPaddingHorizontal,
         }}
         onPress={() => {
           this.ShowModalFunction(true, data.src);
@@ -119,8 +87,6 @@ class ProfileGrid extends React.Component {
           }}
         />
       </TouchableOpacity>
-
-
     </View>
   );
  
@@ -168,8 +134,15 @@ if (this.state.ModalVisibleStatus) {
         renderItem={this._renderItem}
         renderPlaceholder={this._renderPlaceholder}
         data={this.state.memes}
-        // data={['black', 'white', 'red', 'green', 'blue','black', 'white', 'red', 'green', 'blue','black', 'white', 'red', 'green', 'blue']}
         itemsPerRow={3}
+        onEndReached={() => {
+        newLoadCount = this.state.memesLoaded + 60;
+          this.setState({
+            memesLoaded: newLoadCount,
+          });
+          this.componentDidMount();
+        }}
+
       />
       );
     }
