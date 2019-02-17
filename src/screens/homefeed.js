@@ -15,9 +15,8 @@ import {
 
 //import all the needed components
 //tile component
-import Tile from '../components/image/Tile'
-
-import PhotoGrid from 'react-native-image-grid';
+import Tile from '../components/image/Tile';
+import Grid from 'react-native-grid-component';
 
 class HomeFeed extends React.Component {
   constructor() {
@@ -25,6 +24,7 @@ class HomeFeed extends React.Component {
     this.ref = firebase.firestore().collection('Memes').orderBy('time', "desc");
     this.unsubscribe = null;
     this.state = {
+      memesLoaded: 30,
       imageuri: '',
       ModalVisibleStatus: false,
       isLoading: true,
@@ -56,15 +56,11 @@ class HomeFeed extends React.Component {
   }
 
   componentDidMount() {
-    this.unsubscribe = this.ref.limit(60).onSnapshot(this.onCollectionUpdate);
-
+    // this.state.memesLoaded += 60
+    this.unsubscribe = this.ref.limit(this.state.memesLoaded).onSnapshot(this.onCollectionUpdate);
+    return this.state.memes
   }
-  // renderHeader() {
-  //   //Header of the Screen
-  //   return <Text style={{padding:19, fontSize:20, color:'black', backgroundColor:'white'}}>
-  //              Recent
-  //          </Text>;
-  // }
+
   ShowModalFunction(visible, imageURL) {
     //handler to handle the click on image of Grid
     //and close button on modal
@@ -90,27 +86,27 @@ class HomeFeed extends React.Component {
     })
   }
 
-  renderItem(item, itemSize, itemPaddingHorizontal) {
-    //Single item of Grid
-    return (
+  _renderItem = (data, i) => (
+    <View style={[styles.item]} key={i}>
       <TouchableOpacity
-        key={item.id}
         style={{
-          width: itemSize,
-          height: itemSize,
-          paddingHorizontal: itemPaddingHorizontal,
+          flex: 1,
         }}
         onPress={() => {
-          this.ShowModalFunction(true, item.src);
+          this.ShowModalFunction(true, data.src);
         }}>
         <Image
-          resizeMode="cover"
           style={{ flex: 1 }}
-          source={{ uri: item.src }}
+          source={{
+            uri:
+              data.src,
+          }}
         />
       </TouchableOpacity>
-    );
-  }
+    </View>
+  );
+ 
+  _renderPlaceholder = i => <View style={styles.item} key={i} />;
 
   renderTile({item}){
     return <Tile/>
@@ -204,14 +200,20 @@ class HomeFeed extends React.Component {
               />
             </TouchableOpacity>
           </View>
-          <PhotoGrid
+          <Grid
+            style={styles.list}
+            renderItem={this._renderItem}
+            renderPlaceholder={this._renderPlaceholder}
             data={this.state.memes}
             itemsPerRow={3}
-            //You can decide the item per row
-            itemMargin={1}
-            itemPaddingHorizontal={1}
-            renderHeader={this.renderHeader}
-            renderItem={this.renderItem.bind(this)}
+            onEndReached={() => {
+            newLoadCount = this.state.memesLoaded + 60;
+              this.setState({
+                memesLoaded: newLoadCount,
+              });
+              this.componentDidMount();
+            }}
+
           />
         </View>
       ); 
@@ -224,6 +226,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
     backgroundColor: 'rgba(255,255,255,1)',
+  },
+  item: {
+    flex: 1,
+    height: 160,
+    margin: 1,
+    aspectRatio: 1
+  },
+  list: {
+    flex: 1
   },
   fullImageStyle: {
     justifyContent: 'center',
