@@ -13,8 +13,8 @@ class Tile extends React.Component {
     return ( 
       <View style={styles.container}>
         <TileHeader/>
-        <Photo/>
-        <ButtonBar/>
+        <Photo imageUrl={this.props.imageUrl}/>
+        <ButtonBar memeId={this.props.memeId}/>
         <PostInfo/>
     </View>
     );

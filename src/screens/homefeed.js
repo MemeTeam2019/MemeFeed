@@ -41,7 +41,7 @@ class HomeFeed extends React.Component {
   onCollectionUpdate = (querySnapshot) => {
     const memes = [];
     querySnapshot.forEach((doc) => {
-      const { url, time} = doc.data();
+      const { url, time } = doc.data();
       memes.push({
         key: doc.id,
         doc, // DocumentSnapshot
@@ -61,12 +61,13 @@ class HomeFeed extends React.Component {
     return this.state.memes
   }
 
-  ShowModalFunction(visible, imageURL) {
+  ShowModalFunction(visible, imageURL, memeId) {
     //handler to handle the click on image of Grid
     //and close button on modal
     this.setState({
       ModalVisibleStatus: visible,
       imageuri: imageURL,
+      memeId: memeId
     });
   }
 
@@ -93,7 +94,7 @@ class HomeFeed extends React.Component {
           flex: 1,
         }}
         onPress={() => {
-          this.ShowModalFunction(true, data.src);
+          this.ShowModalFunction(true, item.src, item.key);
         }}>
         <Image
           style={{ flex: 1 }}
@@ -109,7 +110,10 @@ class HomeFeed extends React.Component {
   _renderPlaceholder = i => <View style={styles.item} key={i} />;
 
   renderTile({item}){
-    return <Tile/>
+    //for list view
+    return <Tile
+    memeId={item.key}
+    imageUrl={item.src}/>
   }
 
   render() {
@@ -125,9 +129,9 @@ class HomeFeed extends React.Component {
           }}>
           <View style={styles.modelStyle}>
             {/* Single Image - Tile */}
-            <Image
-              style={styles.fullImageStyle}
-              source={{ uri: this.state.imageuri }}
+            <Tile
+              memeId={this.state.memeId}
+              imageUrl={this.state.imageuri}
             />
             {/* Close Button */}
             <TouchableOpacity
