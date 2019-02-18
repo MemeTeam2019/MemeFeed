@@ -51,7 +51,7 @@ class ButtonBar extends React.Component {
 
     const user = firebase.auth().currentUser;
     const ref = firebase.firestore().collection("Reacts").doc(user.uid);
-    const date = (new Date()).toString();
+    const date = Math.round(+new Date()/1000);
     const memeId = this.props.memeId;
 
     ref.get().then(docSnapshot => {
@@ -85,8 +85,10 @@ class ButtonBar extends React.Component {
       </TouchableOpacity>
   }
 
+
   _renderPlaceholder = i => <View style={styles.item} key={i} />;
  
+  
   render() {
     return (
 
