@@ -114,9 +114,12 @@ class HomeFeed extends React.Component {
 
   renderTile({item}){
     //for list view
-    return <Tile 
-    key={item.id}
-    imageUrl={this.state.imageuri}/>
+    return (
+      <Tile 
+      key={item.key}
+      imageUrl={item.src}
+      />
+    )
   }
 
   render() {
