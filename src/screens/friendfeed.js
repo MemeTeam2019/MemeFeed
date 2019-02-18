@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
   closeButtonStyle: {
     width: 25,
     height: 25,
-    top: 9,
+    top: 20,
     right: 9,
     position: 'absolute',
   },

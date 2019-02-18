@@ -59,7 +59,7 @@ class HomeFeed extends React.Component {
     this.unsubscribe = this.ref.limit(60).onSnapshot(this.onCollectionUpdate);
 
   }
-  
+
   ShowModalFunction(visible, imageURL, memeId) {
     //handler to handle the click on image of Grid
     //and close button on modal
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   closeButtonStyle: {
     width: 25,
     height: 25,
-    top: 9,
+    top: 20,
     right: 9,
     position: 'absolute',
   },
