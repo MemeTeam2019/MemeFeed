@@ -94,7 +94,7 @@ class HomeFeed extends React.Component {
           flex: 1,
         }}
         onPress={() => {
-          this.ShowModalFunction(true, item.src, item.key);
+          this.ShowModalFunction(true, data.src, data.key);
         }}>
         <Image
           style={{ flex: 1 }}
