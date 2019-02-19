@@ -23,15 +23,16 @@ class ButtonBar extends React.Component {
 
   componentDidMount() {
     const user = firebase.auth().currentUser;
-    const ref = firebase.firestore().collection("Reacts").doc(user.uid);
     const memeId = this.props.memeId;
+    const ref = firebase.firestore().collection("Reacts").doc(user.uid)
+                  .collection("Likes").doc(memeId);
 
     ref.get().then(docSnapshot => {
       if (docSnapshot.exists) {
         let data = docSnapshot.data();
-        if (data[memeId]) {
-          let react = data[memeId].rank;
-          this.setState({ selectedButton: react == -1 ? null : react });
+        if (data) {
+          let rank = data.rank;
+          this.setState({ selectedButton: rank == -1 ? null : rank });
         }
       }
     })
@@ -50,21 +51,22 @@ class ButtonBar extends React.Component {
     this.setState({ selectedButton: val })
 
     const user = firebase.auth().currentUser;
-    const ref = firebase.firestore().collection("Reacts").doc(user.uid);
-    const date = Math.round(+new Date()/1000);
     const memeId = this.props.memeId;
+    const ref = firebase.firestore().collection("Reacts").doc(user.uid)
+                  .collection("Likes").doc(memeId);
+    const date = Math.round(+new Date()/1000);
 
     ref.get().then(docSnapshot => {
       const data = docSnapshot.data();
       var newRank = num;
-      if (data[memeId]) {
-        const oldRank = data[memeId].rank;
+      if (data) {
+        const oldRank = data.rank;
         newRank = oldRank === num ? -1 : num;
       }
-      ref.set({[memeId]: {
+      ref.set({
         rank: newRank,
         time: date
-      }}, {merge: true});
+      }, { merge: true });
     })
     .catch(error => console.log(error))
   }
