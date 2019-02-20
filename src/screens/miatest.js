@@ -5,6 +5,7 @@ import firebase from 'react-native-firebase';
 import Photo from '../components/image/Photo';
 import ProfileGrid from '../components/userProfile/ProfileGrid';
 import Tile from '../components/image/Tile';
+import CommentPage from '../components/image/CommentPage';
 
 //import React in our project
 import {
@@ -62,12 +63,7 @@ class HomeFeed extends React.Component {
     });
     that.setState({ items });
   }
-  // renderHeader() {
-  //   //Header of the Screen
-  //   return <Text style={{padding:19, fontSize:20, color:'black', backgroundColor:'white'}}>
-  //              Recent
-  //          </Text>;
-  // }
+
   ShowModalFunction(visible, imageURL) {
     //handler to handle the click on image of Grid
     //and close button on modal
@@ -102,7 +98,7 @@ class HomeFeed extends React.Component {
   render() {
     return (
       <View style={styles.tile}>
-        <Tile/>
+        <CommentPage/>
       </View>
       
       );
