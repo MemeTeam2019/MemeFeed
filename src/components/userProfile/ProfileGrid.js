@@ -13,6 +13,7 @@ import {
 
 
 import Grid from 'react-native-grid-component';
+
 class ProfileGrid extends React.Component {
   constructor() {
     super();
