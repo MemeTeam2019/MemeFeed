@@ -17,8 +17,7 @@ export default class LoginScreen extends React.Component {
     header: null
   }
 
-  constructor(props) {
-    super(props);
+  constructor() {
     this.state = {
       email: '',
       password: ''
