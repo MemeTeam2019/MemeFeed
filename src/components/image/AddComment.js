@@ -22,6 +22,39 @@ class AddComment extends React.Component {
     };
   }
 
+  _onPressButton = (content, memeId) => {
+    const user = firebase.auth().currentUser;
+    const date = Math.round(+new Date()/1000);
+
+    var ref = firebase.firestore().collection("Comments/"+memeId+"/Text")
+
+    var getDoc = ref.get()
+      .then(doc => {
+        if (!doc.exists) {
+          // Add necessary infrastruction
+          firebase.firestore().collection("Comments").doc(memeId);
+          firebase.firestore().collection("Comments").doc(memeId).collection("Text");
+        }
+
+        // Add this comment to the proper folder
+        firebase.firestore().collection("Comments/"+memeId+"/Text").add({
+          uid: user.uid,
+          text: this.state.text,
+          time: date
+        }).then(ref => {
+          this.setState({
+            text: "",
+          });
+          console.log('Added document with ID: ', ref.id);
+        });
+        console.log('Document data:', doc.data());
+        
+      })
+      .catch(err => {
+        console.log('Error getting document', err);
+      });
+  }
+
   render() {
     return (
       <KeyboardAvoidingView style={{position: 'absolute', left: 0, right: 0, bottom: 0}} behavior="position">
@@ -35,9 +68,8 @@ class AddComment extends React.Component {
               onChangeText={email => this.setState({email: email})}
               autoCapitalize="none"
 
-              onChangeText={(text) => {
-                this.setState({ text })
-              }}
+              onChangeText={(text) => this.setState({text})}
+
               onContentSizeChange={(event) => {
                 this.setState({ height: Math.min(120,event.nativeEvent.contentSize.height) })
               }}
@@ -48,6 +80,7 @@ class AddComment extends React.Component {
     
 
            <Button
+              onPress={this._onPressButton.bind(this,this.state.text, this.props.memeId)}
               style={[styles.postButton, {height: Math.max(35, this.state.height)}]}
               title="Post"
               color='#000'
@@ -88,3 +121,16 @@ const styles = StyleSheet.create({
 
   },
 });
+
+
+    //   var addDoc = firebase.firestore().collection("Comments").doc(this.props.memeId)
+    //               .collection("Text").add({
+    //   uid: user.uid,
+    //   text: this.state.text,
+    //   time: date
+    // }).then(ref => {
+    //   this.setState({
+    //     text: "",
+    //   });
+    //   console.log('Added document with ID: ', ref.id);
+    // });

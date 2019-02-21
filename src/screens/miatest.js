@@ -6,6 +6,8 @@ import Photo from '../components/image/Photo';
 import ProfileGrid from '../components/userProfile/ProfileGrid';
 import Tile from '../components/image/Tile';
 import CommentPage from '../components/image/CommentPage';
+import CommentHeader from '../components/image/CommentHeader';
+import Comment from '../components/image/Comment';
 
 //import React in our project
 import {
@@ -98,7 +100,7 @@ class HomeFeed extends React.Component {
   render() {
     return (
       <View style={styles.tile}>
-        <CommentPage/>
+        <Comment/>
       </View>
       
       );

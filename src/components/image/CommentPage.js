@@ -2,12 +2,14 @@ import React from 'react';
 import { Dimensions, StyleSheet, View, TouchableOpacity, Image, Text } from 'react-native';
 
 import AddComment from './AddComment';
+import CommentHeader from './CommentHeader';
 
 class CommentPage extends React.Component {
   render() {
     return ( 
       <View style={styles.container}>
-        <AddComment/>
+        <CommentHeader/>
+        <AddComment memeId={this.props.memeId}/>
       </View>
     );
   }
