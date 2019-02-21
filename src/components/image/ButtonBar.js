@@ -81,10 +81,12 @@ class ButtonBar extends React.Component {
           newReactCount = data.reactCount;
         }
         memeRef.update({ reactCount: newReactCount });
+        this.props.updateReacts(newReactCount);
+      })
+      .catch(err => {
+        console.log(err);
       })
     });
-
-
   }
 
 
