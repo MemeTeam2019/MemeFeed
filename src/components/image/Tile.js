@@ -15,7 +15,7 @@ class Tile extends React.Component {
         <TileHeader/>
         <Photo imageUrl={this.props.imageUrl}/>
         <ButtonBar memeId={this.props.memeId}/>
-        <PostInfo/>
+        <PostInfo memeId={this.props.memeId}/>
     </View>
     );
   }
