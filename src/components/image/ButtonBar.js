@@ -101,10 +101,8 @@ class ButtonBar extends React.Component {
       </TouchableOpacity>
   }
 
-
   _renderPlaceholder = i => <View style={styles.item} key={i} />;
  
-  
   render() {
     return (
 

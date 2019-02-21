@@ -20,7 +20,7 @@ import Grid from 'react-native-grid-component';
 
 class HomeFeed extends React.Component {
   constructor() {
-    super();
+    super(); 
     this.ref = firebase.firestore().collection('Memes').orderBy('time', "desc");
     this.unsubscribe = null;
     this.state = {
