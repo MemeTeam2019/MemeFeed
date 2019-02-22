@@ -4,6 +4,7 @@ import {createBottomTabNavigator} from 'react-navigation';
 import HomeFeed from '../screens/homefeed';
 import ProfileScreen from "../screens/profile";
 import FriendFeed from "../screens/friendfeed"
+import SearchTest from "../screens/siddhiTest"
 
 const MainRouter = createBottomTabNavigator({
   Home: {
@@ -15,6 +16,9 @@ const MainRouter = createBottomTabNavigator({
   Profile: {
     screen: ProfileScreen
   },
+  Search: {
+    screen: SearchTest
+  }
 
 });
 
