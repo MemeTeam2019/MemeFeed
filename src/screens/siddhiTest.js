@@ -164,25 +164,49 @@ class HomeFeed extends React.Component {
       //Photo List/Full View of images
         return(
           <View style={styles.containerStyle}>
-          <View style={styles.navBar}>
-            <Image source={require('../images/general.png')} style={{ width: 250, height: 50}} />
-          </View>
-          <View style={styles.navBut}>
-            <TouchableOpacity onPress={() => this.showFullView()}>
-              <Image
-              source={require('../images/fullFeedF.png')} style={{ opacity:  this.state.inFullView
-                                                                    ? 1 : 0.3,
-                                                                  width: 100, height: 50}}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.showGridView()}>
-              <Image
-              source={require('../images/gridFeedF.png')} style={{ opacity:  this.state.inGridView
-                                                                    ? 1 : 0.3,
-                                                                  width: 100, height: 50}}
-              />
-            </TouchableOpacity>
-          </View>
+            <View style={styles.navBar}>
+            <SearchBar
+              placeholder="Explore"
+              onChangeText={this.updateSearch}
+              value={search}
+              containerStyle={{
+                              backgroundColor: 'transparent',
+                              borderTopWidth: 0,
+                              borderBottomWidth: 0
+                          }}
+              inputStyle={{
+                              backgroundColor: 'lightgrey',
+                              color: 'black'
+                          }}
+              onClear={() => {
+
+              }}
+              onCancel={() => {
+
+              }}
+              platform="ios"
+              cancelButtonTitle="Cancel"
+            />
+            </View>
+            <View style={styles.navBar}>
+              <Image source={require('../images/general.png')} style={{ width: 250, height: 50}} />
+            </View>
+            <View style={styles.navBut}>
+              <TouchableOpacity onPress={() => this.showFullView()}>
+                <Image
+                source={require('../images/fullFeedF.png')} style={{ opacity:  this.state.inFullView
+                                                                      ? 1 : 0.3,
+                                                                    width: 100, height: 50}}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.showGridView()}>
+                <Image
+                source={require('../images/gridFeedF.png')} style={{ opacity:  this.state.inGridView
+                                                                      ? 1 : 0.3,
+                                                                    width: 100, height: 50}}
+                />
+              </TouchableOpacity>
+            </View>
             {/* List View */}
             <FlatList
               data={this.state.memes}
@@ -196,9 +220,24 @@ class HomeFeed extends React.Component {
         <View style={styles.containerStyle}>
           <View style={styles.navBar}>
           <SearchBar
-            placeholder="Type Here..."
+            placeholder="Explore"
             onChangeText={this.updateSearch}
             value={search}
+            containerStyle={{
+                            backgroundColor: 'transparent',
+                            borderTopWidth: 0,
+                            borderBottomWidth: 0
+                        }}
+            inputStyle={{
+                            backgroundColor: 'lightgrey',
+                            color: 'black'
+                        }}
+            onClear={() => {
+
+            }}
+            onCancel={() => {
+
+            }}
             platform="ios"
             cancelButtonTitle="Cancel"
           />
@@ -265,14 +304,13 @@ const styles = StyleSheet.create({
   },
   navBar: {
     height:80,
-    backgroundColor: 'white',
     elevation: 3,
     paddingHorizontal: 20,
-    paddingRight: 3,
     paddingTop: 50,//50
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'transparent'
   },
   navBut: {
     height:50,
