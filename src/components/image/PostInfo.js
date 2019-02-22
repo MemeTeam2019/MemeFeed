@@ -8,7 +8,6 @@ constructor(){
   super();
   this.state = {
     reactCount: 0,
-    source: "author"
   };
 }
 
@@ -25,14 +24,13 @@ getNumReaction(){
       console.log(data);
       const reactCount = data.reactCount || 0;
       this.setState({reactCount: reactCount})
-      //this.setState({source: author})
   })
 }
 
 render() {
   return (
     <View style={styles.postInfo}>
-      <Text style={{fontStyle: 'italic', fontWeight: 'bold', marginLeft: '2.5%'}}>{this.state.source}</Text>
+      <Text style={{fontStyle: 'italic', fontWeight: 'bold', marginLeft: '2.5%'}}>source</Text>
       <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>{this.state.reactCount} Reactions</Text>
       <Text style={{fontWeight: 'bold', paddingTop: 10, marginLeft: '2.5%'}}>username
           <Text style={{fontWeight: 'normal'}}> comment</Text>
