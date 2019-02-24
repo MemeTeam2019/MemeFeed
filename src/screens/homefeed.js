@@ -121,7 +121,9 @@ class HomeFeed extends React.Component {
   }
 
   renderTile({item}){
-    return <Tile/>
+    return <Tile
+    memeId={item.key}
+    imageUrl={item.src}/>
   }
 
   render() {
@@ -172,7 +174,7 @@ class HomeFeed extends React.Component {
               containerStyle={{
                               backgroundColor: 'transparent',
                               borderTopWidth: 0,
-                              borderBottomWidth: 0
+                              borderBottomWidth: 0,
                           }}
               inputStyle={{
                               backgroundColor: 'lightgrey',
@@ -187,9 +189,6 @@ class HomeFeed extends React.Component {
               platform="ios"
               cancelButtonTitle="Cancel"
             />
-            </View>
-            <View style={styles.navBar}>
-              <Image source={require('../images/general.png')} style={{ width: 250, height: 50}} />
             </View>
             <View style={styles.navBut}>
               <TouchableOpacity onPress={() => this.showFullView()}>
@@ -226,7 +225,7 @@ class HomeFeed extends React.Component {
             containerStyle={{
                             backgroundColor: 'transparent',
                             borderTopWidth: 0,
-                            borderBottomWidth: 0
+                            borderBottomWidth: 0,
                         }}
             inputStyle={{
                             backgroundColor: 'lightgrey',
@@ -241,9 +240,6 @@ class HomeFeed extends React.Component {
             platform="ios"
             cancelButtonTitle="Cancel"
           />
-          </View>
-          <View style={styles.navBar}>
-            <Image source={require('../images/general.png')} style={{ width: 250, height: 50}} />
           </View>
           <View style={styles.navBut}>
             <TouchableOpacity onPress={() => this.showFullView()}>
@@ -303,7 +299,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   navBar: {
-    height:80,
+    height:95,
     elevation: 3,
     paddingHorizontal: 20,
     paddingTop: 50,//50
