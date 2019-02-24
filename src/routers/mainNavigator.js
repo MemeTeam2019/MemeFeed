@@ -16,9 +16,6 @@ const MainRouter = createBottomTabNavigator({
   Profile: {
     screen: ProfileScreen
   },
-  Search: {
-    screen: SearchTest
-  }
 
 });
 
