@@ -11,17 +11,13 @@ import firebase from "react-native-firebase";
 class Tile extends React.Component {
   constructor(props) {
     super(props);
+    this.updateReactCount = this.updateReactCount.bind(this);
     this.state = {
       reactCount: 0,
     }
-    this.updateReactCount = this.updateReactCount.bind(this);
   }
 
   componentDidMount() {
-    this.getNumReaction();
-  }
-
-  getNumReaction() {
     const memeid = this.props.memeId;
     const ref = firebase.firestore().collection("Memes").doc(memeid)
   
@@ -30,11 +26,10 @@ class Tile extends React.Component {
         console.log(data);
         const reactCount = data.reactCount || 0;
         this.setState({reactCount: reactCount})
-    })
+    });
   }
 
   updateReactCount(newReactCount) {
-    console.log(newReactCount);
     this.setState({ reactCount: newReactCount });
   }
 

@@ -74,7 +74,7 @@ class ButtonBar extends React.Component {
         let newReactCount = 0;
         console.log(hasReacted);
         if (!hasReacted) {
-          newReactCount = data.reactCount + 1;
+          newReactCount = data.reactCount + 1 || 1;
         } else if (hasReacted && oldReact === newReact) {
           newReactCount = data.reactCount - 1;
         } else {
