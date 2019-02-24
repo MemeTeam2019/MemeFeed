@@ -11,23 +11,6 @@ constructor(props){
   };
 }
 
-// componentDidMount() {
-//     this.getNumReaction();
-// }
-
-// getNumReaction(){
-//   const memeid = this.props.memeId
-//   const ref = firebase.firestore().collection("Memes").doc(memeid)
-
-//   ref.get().then(docSnapshot => {
-//       const data = docSnapshot.data();
-//       console.log(data);
-//       const reactCount = data.reactCount || 0;
-//       this.setState({reactCount: reactCount})
-//       //this.setState({source: author})
-//   })
-// }
-
 render() {
   return (
     <View style={styles.postInfo}>
@@ -50,4 +33,19 @@ const styles = StyleSheet.create({
       width: '100%',
       height: 100,
   },
-});
+  modelStyle: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,1)',
+  },
+  closeButtonStyle: {
+    width: 25,
+    height: 25,
+    top: 20,
+    right: 9,
+    position: 'absolute',
+  },
+
+
+  });
