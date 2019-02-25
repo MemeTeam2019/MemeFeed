@@ -68,7 +68,7 @@ render() {
             <Text style={{fontStyle: 'italic', fontWeight: 'bold', marginLeft: '2.5%'}}>source</Text>
             <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>20 Reactions</Text>
             <Text style={{fontWeight: 'bold', paddingTop: 10, marginLeft: '2.5%'}}>username
-                <Text style={{fontWeight: 'normal'}}> {this.props.memeId} </Text>
+                <Text style={{fontWeight: 'normal'}}> comment </Text>
             </Text>
 
             <Button
@@ -76,7 +76,7 @@ render() {
                 this.ShowModalFunction(true, this.props.imageURL, this.props.memeId);
               }}
               style={{ marginLeft: '2.5%'}}
-              title="Comment"
+              title="View all comments"
               color='#3d97ff'
             />
 

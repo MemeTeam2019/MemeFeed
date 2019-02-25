@@ -193,6 +193,7 @@ export default ButtonBar;
  
 const styles = StyleSheet.create({
   buttonBar: {
+    flex: 1,
     flexDirection: 'row', 
     width: '100%', 
     justifyContent: 'center'

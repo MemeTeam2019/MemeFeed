@@ -105,6 +105,7 @@ const styles = StyleSheet.create({
     width: '100%', 
     flex: 1,
     position: 'absolute',
+    backgroundColor: '#fff',
     bottom:10
   },
   postButton: {

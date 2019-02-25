@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 
 //import all the needed components
+import ButtonBar from './ButtonBar';
 import Comment from './Comment';
 import PhotoGrid from 'react-native-image-grid';
 
@@ -24,8 +25,6 @@ class CommentList extends React.Component{
       comments: [],
     };
   }
-
-
 
         // db.collection('conversations').where('parent_id', '==', payload)
         // .onSnapshot({includeMetadataChanges: true}, (snapshot) => {
@@ -50,7 +49,7 @@ class CommentList extends React.Component{
 
   // function for extracting Firebase responses to the state
   onCollectionUpdate = (querySnapshot) => {
-          const comments = [];
+    const comments = [];
 
     querySnapshot.forEach((doc) => {
       const { text, uid, time } = doc.data();
@@ -84,6 +83,7 @@ class CommentList extends React.Component{
             }
 
             sortedComments = comments.sort(compareTime);
+
             this.setState({
               comments: sortedComments,
             });
@@ -130,7 +130,10 @@ class CommentList extends React.Component{
   render(){
     return(
       <View style={styles.containerStyle}>
-        {/* List of Comments */}
+      
+
+          <ButtonBar memeId={this.props.memeId}/>
+                  {/* List of Comments */}
         <FlatList 
           data={this.state.comments}
           renderItem={this.renderComment.bind(this)}
@@ -144,43 +147,10 @@ export default CommentList;
 
 const styles = StyleSheet.create({
   containerStyle: {
+    bottom: 50,
     justifyContent: 'center',
     flex: 1,
     backgroundColor: 'rgba(255,255,255,1)',
   },
-  modelStyle: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,1)',
-  },
-  closeButtonStyle: {
-    width: 25,
-    height: 25,
-    top: 20,
-    right: 9,
-    position: 'absolute',
-  },
-  navBar: {
-    height:80,
-    backgroundColor: 'white',
-    elevation: 3,
-    paddingHorizontal: 20,
-    paddingRight: 3,
-    paddingTop: 50,//50
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  navBut: {
-    height:50,
-    backgroundColor: 'white',
-    elevation: 3,
-    paddingHorizontal: 20,
-    paddingRight: 3,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
 
 })
