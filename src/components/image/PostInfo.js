@@ -110,10 +110,9 @@ const styles = StyleSheet.create({
   commentButtonStyle: {
       height: 32,
       width: 30,
-      marginLeft: 9,
+      marginLeft: 15,
       position: 'absolute',
-      bottom: 9
-
+      bottom: 8
   }
 
   });
