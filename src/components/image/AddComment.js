@@ -24,6 +24,7 @@ class AddComment extends React.Component {
 
   _onPressButton = (content, memeId) => {
     const user = firebase.auth().currentUser;
+    console.log("user "+user.uid+" commented ==============")
     const date = Math.round(+new Date()/1000);
 
     var ref = firebase.firestore().collection("Comments/"+memeId+"/Text")

@@ -41,7 +41,7 @@ class HomeFeed extends React.Component {
   onCollectionUpdate = (querySnapshot) => {
     const memes = [];
     querySnapshot.forEach((doc) => {
-      const { url, time } = doc.data();
+      const { url, time} = doc.data();
       memes.push({
         key: doc.id,
         doc, // DocumentSnapshot
@@ -56,18 +56,16 @@ class HomeFeed extends React.Component {
   }
 
   componentDidMount() {
-    // this.state.memesLoaded += 60
     this.unsubscribe = this.ref.limit(this.state.memesLoaded).onSnapshot(this.onCollectionUpdate);
     return this.state.memes
   }
 
-  ShowModalFunction(visible, imageURL, memeId) {
+  ShowModalFunction(visible, imageURL) {
     //handler to handle the click on image of Grid
     //and close button on modal
     this.setState({
       ModalVisibleStatus: visible,
       imageuri: imageURL,
-      memeId: memeId
     });
   }
 
@@ -94,7 +92,7 @@ class HomeFeed extends React.Component {
           flex: 1,
         }}
         onPress={() => {
-          this.ShowModalFunction(true, data.src, data.key);
+          this.ShowModalFunction(true, data.src);
         }}>
         <Image
           style={{ flex: 1 }}
@@ -110,10 +108,7 @@ class HomeFeed extends React.Component {
   _renderPlaceholder = i => <View style={styles.item} key={i} />;
 
   renderTile({item}){
-    //for list view
-    return <Tile
-    memeId={item.key}
-    imageUrl={item.src}/>
+    return <Tile/>
   }
 
   render() {
@@ -129,9 +124,9 @@ class HomeFeed extends React.Component {
           }}>
           <View style={styles.modelStyle}>
             {/* Single Image - Tile */}
-            <Tile
-              memeId={this.state.memeId}
-              imageUrl={this.state.imageuri}
+            <Image
+              style={styles.fullImageStyle}
+              source={{ uri: this.state.imageuri }}
             />
             {/* Close Button */}
             <TouchableOpacity
@@ -211,11 +206,9 @@ class HomeFeed extends React.Component {
             data={this.state.memes}
             itemsPerRow={3}
             onEndReached={() => {
-            newLoadCount = this.state.memesLoaded + 60;
               this.setState({
-                memesLoaded: newLoadCount,
+                memes: [this.state.memes,this.state.memes],
               });
-              this.componentDidMount();
             }}
 
           />
@@ -256,7 +249,7 @@ const styles = StyleSheet.create({
   closeButtonStyle: {
     width: 25,
     height: 25,
-    top: 20,
+    top: 9,
     right: 9,
     position: 'absolute',
   },

@@ -10,6 +10,7 @@ class PostInfo extends React.Component{
     super();
     this.state = {
       imageuri: '',
+      memeId: '',
       ModalVisibleStatus: false,
     };
   }
@@ -41,7 +42,7 @@ render() {
         <View style={styles.modelStyle}>
           <CommentPage
             memeId={this.props.memeId}
-            imageUrl={this.props.imageuri}
+            imageUrl={this.props.imageUrl}
           />
           {/* Close Button */}
           <TouchableOpacity
@@ -67,7 +68,7 @@ render() {
             <Text style={{fontStyle: 'italic', fontWeight: 'bold', marginLeft: '2.5%'}}>source</Text>
             <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>20 Reactions</Text>
             <Text style={{fontWeight: 'bold', paddingTop: 10, marginLeft: '2.5%'}}>username
-                <Text style={{fontWeight: 'normal'}}> comment</Text>
+                <Text style={{fontWeight: 'normal'}}> {this.props.memeId} </Text>
             </Text>
 
             <Button

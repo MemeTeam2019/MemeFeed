@@ -1,24 +1,19 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import {Button, StyleSheet, View, Image, Text, TouchableOpacity, Modal } from 'react-native';
 
-import CommentPage from './CommentPage';
-
 class Comment extends React.Component{
-
   constructor(){
     super();
     this.state = {
       username: '',
-      text: '',
     };
   }
-
 
   render() {
     return(
       <View style={styles.postInfo}>
-        <Text style={{fontWeight: 'bold', paddingTop: 10, marginLeft: '2.5%'}}>username
-            <Text style={{fontWeight: 'normal'}}> comment</Text>
+        <Text style={{fontWeight: 'bold', paddingTop: 10, marginLeft: '2.5%'}}> {this.props.username} 
+            <Text style={{fontWeight: 'normal'}}> {this.props.content} </Text>
         </Text>
       </View>
     );
