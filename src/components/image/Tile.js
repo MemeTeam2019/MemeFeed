@@ -45,6 +45,7 @@ class Tile extends React.Component {
         <PostInfo
           memeId={this.props.memeId}
           reactCount={this.state.reactCount}
+          imageUrl={this.props.imageUrl}
         />
     </View>
     );
