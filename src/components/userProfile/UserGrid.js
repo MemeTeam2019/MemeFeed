@@ -1,5 +1,6 @@
 import * as React from 'react';
 import firebase from 'react-native-firebase';
+import uid from "../../screens/userpg";
 
 //import React in our project
 import {
@@ -13,7 +14,6 @@ import {
 
 
 import Grid from 'react-native-grid-component';
-const uid = firebase.auth().currentUser.uid;
 class ProfileGrid extends React.Component {
   constructor() {
     super();
@@ -51,8 +51,7 @@ class ProfileGrid extends React.Component {
     console.log("screams");
     const memes = [];
     querySnapshot.forEach((doc) => {
-      const memeid=doc.id();
-      const {rating,time} = doc.data();
+      const {memeid,rating,time} = doc.data();
       console.log(memeid+rating);
       if(rating>2){
         var url;

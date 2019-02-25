@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Text, StyleSheet, View, Image } from 'react-native';
-import Username from "username";
+
  
 class TileHeader extends React.Component {
 
@@ -10,7 +10,7 @@ class TileHeader extends React.Component {
         <Image 
           style={styles.userImg}
           source={{uri:'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg'}}/>
-          <Username/>
+        <Text style={styles.text}>username</Text>
       </View>
     );
   }
@@ -40,15 +40,3 @@ const styles = StyleSheet.create({
     borderRadius: 20
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
