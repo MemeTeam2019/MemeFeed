@@ -43,6 +43,8 @@ export default class ProfileScreen extends React.Component {
       text: '',
       ModalVisibleStatus: false,
       imageuri: '',
+      isFollowing: false,
+      buttonText: 'Follow',
     }
   }
 
@@ -81,14 +83,10 @@ export default class ProfileScreen extends React.Component {
     this.setState({selectListButtonP: true})
   }
 
-  logout = () => {
-    firebase.auth().signOut().then(() => {
-      this.props.navigation.navigate("Auth");
-    })
-    .catch(err => {
-      console.log(err);
-    })
-  }
+  followButton = () => {
+    this.setState({buttonText: 'Unfollow'});
+}
+
   onCollectionUpdate = (querySnapshot) => {
     const memes = [];
     querySnapshot.forEach((doc) => {
@@ -193,7 +191,7 @@ export default class ProfileScreen extends React.Component {
                  <View style={styles.profilePic}>
                  {/*PROFILE PICTURE*/}
                  <Image
-                 source={require('../images/profilePic.png')} style={{width: 85, height: 85, borderRadius: 85/2}}/>
+                 source={require('../images/primePic.png')} style={{width: 85, height: 85, borderRadius: 85/2}}/>
                  <Text>      </Text>
                  {/*FOLLOWING*/}
                  <Text style={styles.textSty}> {this.state.followingCnt} {"\n"} <Text style={styles.textSty3}>Following</Text></Text>
@@ -205,24 +203,7 @@ export default class ProfileScreen extends React.Component {
                  {/*DISPLAY NAME*/}
                  <View style={styles.profilePic}>
                    <Text style={styles.textSty2}>{this.state.name}</Text>
-                   <Text>      </Text>
-                   <Text>      </Text>
-                   <Button
-                     onPress={this.showActionSheet}
-                     title="User Settings"
-                     />
-                     <ActionSheet
-                       ref={o => (this.ActionSheet = o)}
-                       title={'User Settings'}
-                       options={optionArray}
-                       cancelButtonIndex={1}
-                       destructiveIndex={0}
-                       onPress={index => {
-                         if (optionArray[index] == 'Logout'){
-                           this.logout();
-                         }
-                       }}
-                     />
+                   <Text style={styles.textSty2}> {this.buttonText} </Text>
                  </View>
                  {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
                  <View style={styles.navBut}>
@@ -259,7 +240,7 @@ export default class ProfileScreen extends React.Component {
      <View style={styles.profilePic}>
      {/*PROFILE PICTURE*/}
      <Image
-     source={require('../images/profilePic.png')} style={{width: 85, height: 85, borderRadius: 85/2}}/>
+     source={require('../images/primePic.png')} style={{width: 85, height: 85, borderRadius: 85/2}}/>
      <Text>      </Text>
      {/*FOLLOWING*/}
      <Text style={styles.textSty}> {this.state.followingCnt} {"\n"} <Text style={styles.textSty3}>Following</Text></Text>
@@ -273,22 +254,9 @@ export default class ProfileScreen extends React.Component {
        <Text style={styles.textSty2}>{this.state.name}</Text>
        <Text>      </Text>
        <Text>      </Text>
-       <Button
-         onPress={this.showActionSheet}
-         title="User Settings"
-         />
-         <ActionSheet
-           ref={o => (this.ActionSheet = o)}
-           title={'User Settings'}
-           options={optionArray}
-           cancelButtonIndex={1}
-           destructiveIndex={0}
-           onPress={index => {
-             if (optionArray[index] == 'Logout'){
-               this.logout();
-             }
-           }}
-         />
+       <Text onPress={this.followButton}> {this.buttonText} </Text>
+
+
      </View>
      {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
      <View style={styles.navBut}>
