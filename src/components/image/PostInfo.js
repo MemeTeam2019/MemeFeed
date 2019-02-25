@@ -7,6 +7,7 @@ class PostInfo extends React.Component{
 constructor(props){
   super(props);
   this.state = {
+<<<<<<< HEAD
     source: "author"
   };
 }
@@ -16,6 +17,33 @@ render() {
     <View style={styles.postInfo}>
       <Text style={{fontStyle: 'italic', fontWeight: 'bold', marginLeft: '2.5%'}}>{this.state.source}</Text>
       <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>{this.props.reactCount} Reactions</Text>
+=======
+    reactCount: 0,
+  };
+}
+
+componentDidMount() {
+    this.getNumReaction();
+}
+
+getNumReaction(){
+  const memeid = this.props.memeId
+  const ref = firebase.firestore().collection("Memes").doc(memeid)
+
+  ref.get().then(docSnapshot => {
+      const data = docSnapshot.data();
+      console.log(data);
+      const reactCount = data.reactCount || 0;
+      this.setState({reactCount: reactCount})
+  })
+}
+
+render() {
+  return (
+    <View style={styles.postInfo}>
+      <Text style={{fontStyle: 'italic', fontWeight: 'bold', marginLeft: '2.5%'}}>source</Text>
+      <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>{this.state.reactCount} Reactions</Text>
+>>>>>>> origin/emma_stuff2
       <Text style={{fontWeight: 'bold', paddingTop: 10, marginLeft: '2.5%'}}>username
           <Text style={{fontWeight: 'normal'}}> comment</Text>
       </Text>
