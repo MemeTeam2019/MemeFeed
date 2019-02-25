@@ -307,15 +307,15 @@ export default class ProfileScreen extends React.Component {
      />
      </TouchableOpacity>
      </View>
-
-          <PhotoGrid
-            data={this.state.memes}
-            itemsPerRow={3}
-            itemMargin={1}
-            itemPaddingHorizontal={1}
-            renderHeader={this.renderHeader}
-            renderItem={this.renderItem.bind(this)}
-          />
+     <PhotoGrid
+       data={this.state.memes}
+       itemsPerRow={3}
+       //You can decide the item per row
+       itemMargin={1}
+       itemPaddingHorizontal={1}
+       renderHeader={this.renderHeader}
+       renderItem={this.renderItem.bind(this)}
+     />
         </View>
      </React.Fragment>
       );

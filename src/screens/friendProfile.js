@@ -54,12 +54,9 @@ export default class ProfileScreen extends React.Component {
 
   componentDidMount() {
     this.unsubscribe = this.ref.limit(60).onSnapshot(this.onCollectionUpdate);
-    const authInfo = firebase.auth().currentUser;
-    this.setState({
-      email: authInfo.email,
-      uid: authInfo.uid
-    });
-    const docRef = firebase.firestore().collection("Users").doc(authInfo.uid);
+    const uid = this.props.uid;
+    this.setState({ uid: authInfo.uid });
+    const docRef = firebase.firestore().collection("Users").doc(uid);
     docRef.get().then(User => {
       let data = User.data();
       console.log(data);
