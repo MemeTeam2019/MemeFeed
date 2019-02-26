@@ -3,27 +3,20 @@ import {
   View,
   Text,
   StyleSheet,
-  Button,
   Image,
   TouchableOpacity,
-  Alert,
-  YellowBox,
-  ListView,
   FlatList,
-  Platform,
-  ActionSheetIOS,
-  UIManager,
-  TextInput,
+  Button
 } from "react-native";
 import ProfileGrid from '../components/userProfile/ProfileGrid';
-import firebase from "react-native-firebase";
 import Tile from '../components/image/Tile'
 
+import firebase from 'react-native-firebase';
 import PhotoGrid from 'react-native-image-grid';
 import ActionSheet from 'react-native-actionsheet';
 
 
-export default class ProfileScreen extends React.Component {
+export default class FriendProfileScreen extends React.Component {
   constructor(props) {
     super(props);
     this.ref = firebase.firestore().collection('Memes').orderBy('time', "desc");
@@ -32,7 +25,7 @@ export default class ProfileScreen extends React.Component {
       email: "",
       username: "",
       name: "",
-      uid: "",
+      uid: this.props.navigation.getParam("uid"),
       followingCnt: 0,
       followersCnt: 0,
       open: false,
@@ -44,7 +37,7 @@ export default class ProfileScreen extends React.Component {
       ModalVisibleStatus: false,
       imageuri: '',
       isFollowing: false,
-      buttonText: 'Follow',
+      buttonText: '',
     }
   }
 
@@ -54,9 +47,10 @@ export default class ProfileScreen extends React.Component {
 
   componentDidMount() {
     this.unsubscribe = this.ref.limit(60).onSnapshot(this.onCollectionUpdate);
-    const uid = this.props.uid;
-    this.setState({ uid: authInfo.uid });
-    const docRef = firebase.firestore().collection("Users").doc(uid);
+
+    const theirUid = this.props.navigation.getParam("uid");
+
+    const docRef = firebase.firestore().collection("Users").doc(theirUid);
     docRef.get().then(User => {
       let data = User.data();
       console.log(data);
@@ -68,6 +62,21 @@ export default class ProfileScreen extends React.Component {
       console.log(err);
     });
 
+    // Check if their uid is already in my followingLst
+    const myUid = firebase.auth().currentUser.uid;
+    const myUserRef = firebase.firestore().collection("Users").doc(myUid);
+
+    myUserRef.get().then(snapshot => {
+      const data = snapshot.data();
+      const followingLst = data.followingLst == null ? [] : data.followingLst;
+      const isFollowing = followingLst.indexOf(theirUid) > -1;
+
+      console.log(followingLst);
+      this.setState({
+        isFollowing: isFollowing,
+        buttonText: isFollowing ? "Unfollow" : "Follow"
+      })
+    })
   }
 
   onGridViewPressedP = () => {
@@ -81,8 +90,64 @@ export default class ProfileScreen extends React.Component {
   }
 
   followButton = () => {
-    this.setState({buttonText: 'Unfollow'});
-}
+    const myUid = firebase.auth().currentUser.uid;
+    const theirUid = this.state.uid;
+    const myUserRef = firebase.firestore().collection("Users").doc(myUid);
+    const theirUserRef = firebase.firestore().collection("Users").doc(theirUid);
+
+    let isFollowing = !this.state.isFollowing;
+
+    this.setState({
+      buttonText: isFollowing ? "Unfollow" : "Follow",
+      isFollowing: isFollowing
+    });
+
+    // Update my followingLst and followingCnt
+    myUserRef.get().then(mySnap => {
+      const myData = mySnap.data();
+
+      console.log(myData);
+
+      let followingCnt = myData.followingCnt;
+      let followingLst = myData.followingLst == null ? [] : myData.followingLst;
+
+      const index = followingLst.indexOf(theirUid);
+      if (isFollowing && index == -1) {
+        followingLst.push(theirUid);
+        followingCnt++;
+      } else if (!isFollowing && index > -1) {
+        followingLst.splice(index);
+        followingCnt--;
+      }
+
+      myUserRef.update({
+        followingCnt: followingCnt,
+        followingLst: followingLst
+      });
+    })
+
+    // Update their followersLst and followersCnt
+    theirUserRef.get().then(theirSnap => {
+      const theirData = theirSnap.data();
+      let followersCnt = theirData.followersCnt;
+      let followersLst = theirData.followersLst === null ? [] : theirData.followersLst;
+
+      const index = followersLst.indexOf(myUid);
+      if (isFollowing && index === -1) {
+        followersLst.push(myUid);
+        followersCnt++;
+      } else if (!isFollowing && index > -1) {
+        followersLst.splice(index);
+        followersCnt--;
+      }
+
+      theirUserRef.update({
+        followersCnt: followersCnt,
+        followersLst: followersLst
+      });
+      this.setState({followersCnt: followersCnt})
+    })
+  }
 
   onCollectionUpdate = (querySnapshot) => {
     const memes = [];
@@ -200,7 +265,6 @@ export default class ProfileScreen extends React.Component {
                  {/*DISPLAY NAME*/}
                  <View style={styles.profilePic}>
                    <Text style={styles.textSty2}>{this.state.name}</Text>
-                   <Text style={styles.textSty2}> {this.buttonText} </Text>
                  </View>
                  {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
                  <View style={styles.navBut}>
@@ -251,7 +315,9 @@ export default class ProfileScreen extends React.Component {
        <Text style={styles.textSty2}>{this.state.name}</Text>
        <Text>      </Text>
        <Text>      </Text>
-       <Text onPress={this.followButton}> {this.buttonText} </Text>
+       <TouchableOpacity onPress={() => this.followButton()}>
+        <Text> {this.state.buttonText} </Text>
+       </TouchableOpacity>
 
 
      </View>

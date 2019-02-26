@@ -22,10 +22,10 @@ class Tile extends React.Component {
     const ref = firebase.firestore().collection("Memes").doc(memeid)
   
     ref.get().then(docSnapshot => {
-        const data = docSnapshot.data();
-        console.log(data);
-        const reactCount = data.reactCount || 0;
-        this.setState({reactCount: reactCount})
+      const data = docSnapshot.data();
+      console.log(data);
+      const reactCount = data.reactCount || 0;
+      this.setState({reactCount: reactCount})
     });
   }
 
@@ -36,7 +36,7 @@ class Tile extends React.Component {
   render() {
     return ( 
       <View style={styles.container}>
-        <TileHeader/>
+        <TileHeader uid={"g9Nat9KDVMStAHjNOQNfPLVU9Sk1"}/>
         <Photo imageUrl={this.props.imageUrl}/>
         <ButtonBar
           memeId={this.props.memeId}
