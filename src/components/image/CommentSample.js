@@ -9,21 +9,18 @@ import {
   View,
   Modal,
   StyleSheet,
-  FlatList,
-  Button
+  FlatList
 } from 'react-native';
 
 //import all the needed components
-import ButtonBar from './ButtonBar';
 import Comment from './Comment';
 import PhotoGrid from 'react-native-image-grid';
 
-class CommentList extends React.Component{
+class CommentSample extends React.Component{
   constructor(){
     super();
     this.unsubscribe = null;
     this.state = {
-      commentsLoaded: 10,
       comments: [],
     };
   }
@@ -83,9 +80,17 @@ class CommentList extends React.Component{
   componentDidMount() {
     this.unsubscribe = firebase.firestore()
       .collection("Comments/"+this.props.memeId+"/Text")
-      .orderBy('time', 'desc').limit(this.state.commentsLoaded) // we choose decsending to get most recent
+      .orderBy('time', 'desc').limit(2) // we choose decsending to get most recent
       .onSnapshot(this.onCollectionUpdate);
   }
+
+  // componentWillUnmount() {
+  //   this.unsubscribe = null
+  //   this.setState({
+  //     comments: []
+  //   });
+
+  // }
 
   //Single comment
   renderComment({item}) {
@@ -101,21 +106,6 @@ class CommentList extends React.Component{
   render(){
     return(
       <View style={styles.containerStyle}>
-      
-
-        <ButtonBar memeId={this.props.memeId}/>
-        <Button
-          onPress={() => {          
-            newLoadCount = this.state.commentsLoaded + 10;
-            this.setState({
-              commentsLoaded: newLoadCount,
-            });
-            this.componentDidMount();
-        }}
-          style={{fontSize: 1}}
-          title="Load older comments"
-          color='#3d97ff'
-        />
         <FlatList 
           data={this.state.comments}
           renderItem={this.renderComment.bind(this)}
@@ -125,11 +115,10 @@ class CommentList extends React.Component{
   }
 }
 
-export default CommentList;
+export default CommentSample;
 
 const styles = StyleSheet.create({
   containerStyle: {
-    bottom: 50,
     justifyContent: 'center',
     flex: 1,
     backgroundColor: 'rgba(255,255,255,1)',

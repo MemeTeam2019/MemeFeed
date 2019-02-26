@@ -3,6 +3,7 @@ import {Button, StyleSheet, View, Image, Text, TouchableOpacity, Modal } from 'r
 
 
 import CommentPage from './CommentPage';
+import CommentSample from './CommentSample';
 
 class PostInfo extends React.Component{
 
@@ -67,18 +68,19 @@ render() {
           <View style={styles.postInfo}>
             <Text style={{fontStyle: 'italic', fontWeight: 'bold', marginLeft: '2.5%'}}>source</Text>
             <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>20 Reactions</Text>
-            <Text style={{fontWeight: 'bold', paddingTop: 10, marginLeft: '2.5%'}}>username
-                <Text style={{fontWeight: 'normal'}}> comment </Text>
-            </Text>
+            <CommentSample memeId={this.props.memeId}/>
 
-            <Button
-              onPress={() => {
-                this.ShowModalFunction(true, this.props.imageURL, this.props.memeId);
-              }}
-              style={{ marginLeft: '2.5%'}}
-              title="View all comments"
-              color='#3d97ff'
-            />
+
+            <View style={{flex: 1, flexDirection: 'row'}}>
+              <Button
+                onPress={() => {
+                  this.ShowModalFunction(true, this.props.imageURL, this.props.memeId);
+                }}
+                style={{fontSize: 1}}
+                title="View all comments"
+                color='#3d97ff'
+              />
+            </View>
 
           </View>
         );
@@ -86,17 +88,6 @@ render() {
     }
 }
 
-// <TouchableOpacity
-//     style={{
-//       width: '100%',
-//       height: 100,
-//     }}
-//     onPress={this._onPressButton.bind(this,4)}>
-//     <Image
-//       style={{ height: 20,width: 200}}
-//       source={require('../../images/Tile/addComment.png')} 
-//     />
-//   </TouchableOpacity>
 
 
 export default PostInfo;

@@ -30,8 +30,6 @@ const styles = StyleSheet.create({
   },
   containerStyle: {
     flex: 0,
-    // alignItems: "center",
-    // justifyContent: "center",
     backgroundColor: "#ffffff"
   },
 });

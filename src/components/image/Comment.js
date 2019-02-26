@@ -12,8 +12,8 @@ class Comment extends React.Component{
   render() {
     return(
       <View style={styles.postInfo}>
-        <Text style={{fontWeight: 'bold', paddingTop: 10, marginLeft: '2.5%'}}> {this.props.username} 
-            <Text style={{fontWeight: 'normal'}}> {this.props.content} </Text>
+        <Text style={{fontWeight: 'bold', paddingTop: 10, marginLeft: '2%',  marginRight: '2.5%'}}>{this.props.username} 
+            <Text style={{fontWeight: 'normal',  marginRight: '2%'}}> {this.props.content} </Text>
         </Text>
       </View>
     );

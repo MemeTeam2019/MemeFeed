@@ -23,7 +23,6 @@ class CommentPage extends React.Component {
         <KeyboardAvoidingView behavior="position">
           <TileHeader/>
           <Photo imageUrl={this.props.imageUrl}/>  
-          <ButtonBar style={styles.containerA} memeId={this.props.memeId}/>
           <CommentList memeId={this.props.memeId}/>
         </KeyboardAvoidingView>
         </ScrollView>

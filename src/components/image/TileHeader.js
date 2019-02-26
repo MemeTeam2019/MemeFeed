@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {Text, StyleSheet, View, Image } from 'react-native';
-
  
 class TileHeader extends React.Component {
 
@@ -40,15 +39,3 @@ const styles = StyleSheet.create({
     borderRadius: 20
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
