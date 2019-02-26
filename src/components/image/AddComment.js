@@ -27,6 +27,35 @@ class AddComment extends React.Component {
     console.log("user "+user.uid+" commented ==============")
     const date = Math.round(+new Date()/1000);
 
+
+
+
+    var countRef = firebase.firestore().collection("Comments/"+memeId+"/Info").doc('CommentInfo');
+    var getDoc = countRef.get()
+      .then(doc => {
+        if (!doc.exists) {
+
+          countRef.set({
+            count: 1
+          }, {merge: true});
+
+        } else {
+
+          const {count} = doc.data();
+          newCount = count + 1
+
+          countRef.set({
+            count: newCount
+          }, {merge: true});
+
+        }
+    
+    })
+    .catch(err => {
+      console.log('Error getting document', err);
+    });
+
+
     var ref = firebase.firestore().collection("Comments/"+memeId+"/Text")
 
     var getDoc = ref.get()
