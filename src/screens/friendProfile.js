@@ -272,22 +272,14 @@ export default class ProfileScreen extends React.Component {
      />
      </TouchableOpacity>
      </View>
-
-          <PhotoGrid
-            data={this.state.memes}
-            itemsPerRow={3}
-            itemMargin={1}
-            itemPaddingHorizontal={1}
-            renderHeader={this.renderHeader}
-            renderItem={this.renderItem.bind(this)}
-          />
-        </View>
+     </View>
+     <ProfileGrid/>
      </React.Fragment>
       );
     }
   }
 }
-
+//import friend grid and pass the uid as a prop instead of the <ProfileGrid/> component ^^^
 const styles = StyleSheet.create({
   containerStyle: {
     flex: 0,
@@ -422,17 +414,20 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '98%',
     resizeMode: 'contain',
+    backgroundColor: 'white'
   },
   modelStyle: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,1)',
+    //backgroundColor: 'rgba(255,255,255,1)',
+    backgroundColor: 'white'
   },
   closeButtonStyle: {
     width: 25,
     height: 25,
     top: 9,
+    backgroundColor: 'white',
     right: 9,
     position: 'absolute',
   },
