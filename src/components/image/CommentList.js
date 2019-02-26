@@ -34,7 +34,6 @@ class CommentList extends React.Component{
 
     querySnapshot.forEach((doc) => {
       const { text, uid, time } = doc.data();
-      console.log("\n\n\n~~~~~~~~~~~"+text+" "+time+" "+"\n\n\n");
 
       var userRef = firebase.firestore().collection('Users').doc(uid);
       var getDoc = userRef.get()
@@ -80,10 +79,10 @@ class CommentList extends React.Component{
 
   }
 
-  componentDidMount() {
+  componentDidMount(num) {
     this.unsubscribe = firebase.firestore()
       .collection("Comments/"+this.props.memeId+"/Text")
-      .orderBy('time', 'desc').limit(this.state.commentsLoaded) // we choose decsending to get most recent
+      .orderBy('time', 'desc')//.limit(num) // we choose decsending to get most recent
       .onSnapshot(this.onCollectionUpdate);
   }
 
@@ -98,24 +97,24 @@ class CommentList extends React.Component{
   }
 
 
+ // <Button
+        //   onPress={() => {
+        //     newLoadCount = this.state.commentsLoaded + 10;
+        //     this.setState({
+        //       commentsLoaded: newLoadCount,
+        //     });
+        //     this.componentDidMount.bind(this,newLoadCount);
+        //   }}
+        //   style={{fontSize: 1}}
+        //   title="Load older comments"
+        //   color='#3d97ff'
+        // />
+
   render(){
     return(
       <View style={styles.containerStyle}>
-      
-
         <ButtonBar memeId={this.props.memeId}/>
-        <Button
-          onPress={() => {          
-            newLoadCount = this.state.commentsLoaded + 10;
-            this.setState({
-              commentsLoaded: newLoadCount,
-            });
-            this.componentDidMount();
-        }}
-          style={{fontSize: 1}}
-          title="Load older comments"
-          color='#3d97ff'
-        />
+       
         <FlatList 
           data={this.state.comments}
           renderItem={this.renderComment.bind(this)}

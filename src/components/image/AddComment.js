@@ -88,7 +88,7 @@ class AddComment extends React.Component {
   render() {
     return (
       <KeyboardAvoidingView style={{position: 'absolute', left: 0, right: 0, bottom: 0}} behavior="position">
-        <View style={styles.container}>
+        <View style={[styles.container, {height: Math.max(35, this.state.height)+10} ]}>
 
             <TextInput
               {...this.props}
@@ -131,11 +131,11 @@ export default AddComment;
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row', 
-    width: '100%', 
+    width: '100%',
     flex: 1,
     position: 'absolute',
     backgroundColor: '#fff',
-    bottom:10
+    bottom:0
   },
   postButton: {
 
@@ -148,8 +148,7 @@ const styles = StyleSheet.create({
     marginLeft: '3%',
     fontSize: 18,
     borderWidth: 0.5,
-    borderColor: '#d6d7da',
-
+    borderColor: '#d6d7da'
   },
 });
 

@@ -12,23 +12,20 @@ class CommentPage extends React.Component {
   render() {
     return ( 
       <View style={styles.container}>
-      <CommentHeader/>
+        <CommentHeader/>
         <ScrollView
           ref={ref => this.scrollView = ref}
-
           onContentSizeChange={(contentWidth, contentHeight)=>{        
             this.scrollView.scrollToEnd({animated: true});
           }}
         >
-        <KeyboardAvoidingView behavior="position">
-          <TileHeader/>
-          <Photo imageUrl={this.props.imageUrl}/>  
-          <CommentList memeId={this.props.memeId}/>
-        </KeyboardAvoidingView>
+
+            <TileHeader/>
+            <Photo imageUrl={this.props.imageUrl}/>  
+            <CommentList memeId={this.props.memeId}/>
+
         </ScrollView>
         <AddComment memeId={this.props.memeId}/>
-
-
 
       </View>
     );
@@ -45,11 +42,5 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom:0
   },
-    containerA: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
-
 });
  
