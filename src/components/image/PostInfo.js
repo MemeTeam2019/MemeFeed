@@ -94,6 +94,15 @@ render() {
       } else if (this.state.commentCount > 2) {
         return(
           <View style={styles.postInfo}>
+            <TouchableOpacity
+              onPress={() => {
+                this.ShowModalFunction(true, this.props.imageURL, this.props.memeId);
+              }}>
+              <Image
+                style={styles.commentButtonStyle}
+                source={require('../../images/Tile/chatLogo2.png')}
+              />
+            </TouchableOpacity>
             <Text style={{fontStyle: 'italic', fontWeight: 'bold', marginLeft: '2.5%'}}>source</Text>
             <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>20 Reactions</Text>
             <CommentSample memeId={this.props.memeId}/>
@@ -114,6 +123,15 @@ render() {
       } else {
         return(
           <View style={styles.postInfo}>
+              <TouchableOpacity
+              onPress={() => {
+                this.ShowModalFunction(true, this.props.imageURL, this.props.memeId);
+              }}>
+              <Image
+                style={styles.commentButtonStyle}
+                source={require('../../images/Tile/chatLogo2.png')}
+              />
+            </TouchableOpacity>
             <Text style={{fontStyle: 'italic', fontWeight: 'bold', marginLeft: '2.5%'}}>source</Text>
             <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>20 Reactions</Text>
             <CommentSample memeId={this.props.memeId}/>
@@ -122,7 +140,6 @@ render() {
       }
     }
 }
-
 
 
 export default PostInfo;
@@ -147,6 +164,12 @@ const styles = StyleSheet.create({
     right: 9,
     position: 'absolute',
   },
-
+  commentButtonStyle: {
+      height: 32,
+      width: 30,
+      marginLeft: 15,
+      position: 'absolute',
+      bottom: 8
+  }
 
   });

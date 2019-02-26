@@ -1,6 +1,8 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity, Image } from 'react-native';
 import firebase from "react-native-firebase";
+
+import PostInfo from "../image/PostInfo"
  
 class ButtonBar extends React.Component {
 
