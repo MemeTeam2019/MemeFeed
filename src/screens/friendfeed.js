@@ -55,7 +55,9 @@ class FriendFeed extends React.Component{
   }
 
   componentDidMount() {
-    this.unsubscribe = this.ref.limit(60).onSnapshot(this.onCollectionUpdate);
+    console.log(this.state.memesLoaded)    
+    this.unsubscribe = this.ref.limit(this.state.memesLoaded).onSnapshot(this.onCollectionUpdate);
+    return this.state.memes
   }
 
   ShowModalFunction(visible, imageURL, memeId) {

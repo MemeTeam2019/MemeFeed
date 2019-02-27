@@ -56,6 +56,8 @@ class HomeFeed extends React.Component {
   }
 
   componentDidMount() {
+    
+    console.log(this.state.memesLoaded)
     this.unsubscribe = this.ref.limit(this.state.memesLoaded).onSnapshot(this.onCollectionUpdate);
     return this.state.memes
   }
@@ -206,9 +208,11 @@ class HomeFeed extends React.Component {
             data={this.state.memes}
             itemsPerRow={3}
             onEndReached={() => {
+              newLoadCount = this.state.memesLoaded + 60;
               this.setState({
-                memes: [this.state.memes,this.state.memes],
+                memesLoaded: newLoadCount,
               });
+              this.componentDidMount();
             }}
 
           />
