@@ -12,7 +12,7 @@ class Tile extends React.Component {
   render() {
     return ( 
       <View style={styles.container}>
-        <TileHeader/>
+        <TileHeader navigation={this.props.navigation}/>
         <Photo/>
         <ButtonBar/>
         <PostInfo/>

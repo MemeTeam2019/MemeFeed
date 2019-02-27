@@ -19,6 +19,9 @@ import Tile from '../components/image/Tile';
 import Grid from 'react-native-grid-component';
 
 class HomeFeed extends React.Component {
+  static navigationOptions = {
+    header: null
+  }
   constructor() {
     super();
     this.ref = firebase.firestore().collection('Memes').orderBy('time', "desc");
@@ -109,7 +112,7 @@ class HomeFeed extends React.Component {
   _renderPlaceholder = i => <View style={styles.item} key={i} />;
 
   renderTile({item}){
-    return <Tile/>
+    return <Tile navigation = {this.props.navigation}/>
   }
 
   render() {

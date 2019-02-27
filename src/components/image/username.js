@@ -1,22 +1,49 @@
 import React, { Component } from 'react';
-import {Text, StyleSheet, View, Image } from 'react-native';
-
+import {Text, StyleSheet, View, Image,TouchableOpacity } from 'react-native';
+import firebase from 'react-native-firebase';
+import HomeFeed from '../../screens/homefeed';
  
-class TileHeader extends React.Component {
+class Username extends React.Component {
+  constructor(props){
+    super(props);
+  this.state= {username: ""};
+}
+static navigationOptions = {
+    header: null
+  }
+goToUser(){
+  console.log("touchy touch");
+  this.props.navigation.navigate("User");
+  }
+componentDidMount() {
+    const ref = firebase.firestore()
+                .collection("Users").doc(this.props.uid);
+
+    ref.get().then(docSnapshot => {
+      if (docSnapshot.exists) {
+        let data = docSnapshot.data();
+        if (data) {
+          let username = data.username;
+          this.setState({ username: username });
+        }
+      }
+    })
+    .catch(error => {
+      console.log(error);
+    })
+  }
+
 
   render() {
     return (
-      <View style={styles.container}>
-        <Image 
-          style={styles.userImg}
-          source={{uri:'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg'}}/>
-        <Text style={styles.text}>username</Text>
-      </View>
+      <TouchableOpacity onPress={() => this.goToUser()}>
+        <Text style={styles.text}> {this.state.username} </Text>
+      </TouchableOpacity>
     );
   }
 }
 
-export default TileHeader; 
+export default Username; 
  
 const styles = StyleSheet.create({
   container: {
@@ -34,9 +61,4 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     marginLeft: 10
   },
-  userImg: {
-    width: 40,
-    height: 40,
-    borderRadius: 20
-  }
 });

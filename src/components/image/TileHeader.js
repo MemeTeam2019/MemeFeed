@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {Text, StyleSheet, View, Image } from 'react-native';
-import Username from "username";
+import Username from "./username";
  
 class TileHeader extends React.Component {
 
@@ -10,7 +10,7 @@ class TileHeader extends React.Component {
         <Image 
           style={styles.userImg}
           source={{uri:'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg'}}/>
-          <Username/>
+          <Username uid='F5bA3qC0dkca7h1INfoNNq4GIRh2' navigation={this.props.navigation} />
       </View>
     );
   }

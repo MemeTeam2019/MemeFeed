@@ -17,7 +17,7 @@ const uid = firebase.auth().currentUser.uid;
 class ProfileGrid extends React.Component {
   constructor() {
     super();
-    this.ref = firebase.firestore().collection("Reacts/"+uid+"/Likes");
+    this.ref = firebase.firestore().collection("Reacts/"+uid+"/Likes").orderBy('time', "desc");
     this.unsubscribe = null;
     this.state = {
       memesLoaded: 30,
@@ -49,26 +49,20 @@ class ProfileGrid extends React.Component {
     // isLoading: false,
     //});
     console.log("screams");
+    console.log(uid);
     const memes = [];
     querySnapshot.forEach((doc) => {
-      const memeid=doc.id();
-      const {rating,time} = doc.data();
-      console.log(memeid+rating);
-      if(rating>2){
-        var url;
-       var dref = firebase.firestore().collection('Memes').doc(memeid);
-       dref.get().then(function(doc) {
-          if (doc.exists) {
-        url = doc.data().url;
-        console.log(url);
+      const {rank,time,url} = doc.data();
+      console.log(rank+url);
+      if(rank>2){
+     
         memes.push({
          key: doc.id,
          doc, // DocumentSnapshot
          src: url,
          time,
          });
-        }
-      });
+
       
      }
     
