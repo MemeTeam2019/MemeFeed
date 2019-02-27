@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
 import {Button, StyleSheet, View, Image, Text, TouchableOpacity, Modal } from 'react-native';
+import firebase from 'react-native-firebase';
 
 
 import CommentPage from './CommentPage';
+import CommentSample from './CommentSample';
 
 class PostInfo extends React.Component{
 
   constructor(){
     super();
+    this.unsubscribe = null;
     this.state = {
+      commentCount: 0,
+      commentString: "view all comments plz chng",
       imageuri: '',
+      memeId: '',
       ModalVisibleStatus: false,
     };
   }
@@ -24,6 +30,30 @@ class PostInfo extends React.Component{
     });
   }
 
+  // function for extracting Firebase responses to the state
+  onCollectionUpdate = (querySnapshot) => {
+    var countRef = firebase.firestore().collection("Comments/"+this.props.memeId+"/Info").doc('CommentInfo');
+    var getDoc = countRef.get()
+      .then(doc => {
+        if (doc.exists) {
+
+          const {count} = doc.data();
+          this.setState({
+            commentString: "View all "+count+" comments",
+            commentCount: count
+          });
+
+        }
+    
+    })
+    .catch(err => {
+      console.log('Error getting document', err);
+    });
+  }
+
+  componentDidMount() {
+    this.unsubscribe = firebase.firestore().collection("Comments/"+this.props.memeId+"/Info").doc('CommentInfo').onSnapshot(this.onCollectionUpdate); // we choose decsending to get most recent
+  }
 
 render() {
 
@@ -41,7 +71,7 @@ render() {
         <View style={styles.modelStyle}>
           <CommentPage
             memeId={this.props.memeId}
-            imageUrl={this.props.imageuri}
+            imageUrl={this.props.imageUrl}
           />
           {/* Close Button */}
           <TouchableOpacity
@@ -61,7 +91,7 @@ render() {
         </View>
       </Modal>
       );
-      } else {
+      } else if (this.state.commentCount > 2) {
         return(
           <View style={styles.postInfo}>
             <TouchableOpacity
@@ -75,10 +105,37 @@ render() {
             </TouchableOpacity>
             <Text style={{fontStyle: 'italic', fontWeight: 'bold', marginLeft: '2.5%'}}>source</Text>
             <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>20 Reactions</Text>
-            <Text style={{fontWeight: 'bold', paddingTop: 10, marginLeft: '2.5%'}}>username
-                <Text style={{fontWeight: 'normal'}}> comment</Text>
-            </Text>
+            <CommentSample memeId={this.props.memeId}/>
+
+            <View style={{flex: 1, flexDirection: 'row'}}>
+              <Button
+                onPress={() => {
+                  this.ShowModalFunction(true, this.props.imageURL, this.props.memeId);
+                }}
+                style={{fontSize: 1}}
+                title={this.state.commentString}
+                color='#3d97ff'
+              />
+            </View>
+
           </View>
+        );
+      } else {
+        return(
+          <View style={styles.postInfo}>
+              <TouchableOpacity
+              onPress={() => {
+                this.ShowModalFunction(true, this.props.imageURL, this.props.memeId);
+              }}>
+              <Image
+                style={styles.commentButtonStyle}
+                source={require('../../images/Tile/chatLogo2.png')}
+              />
+            </TouchableOpacity>
+            <Text style={{fontStyle: 'italic', fontWeight: 'bold', marginLeft: '2.5%'}}>source</Text>
+            <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>20 Reactions</Text>
+            <CommentSample memeId={this.props.memeId}/>
+           </View>
         );
       }
     }
@@ -110,10 +167,9 @@ const styles = StyleSheet.create({
   commentButtonStyle: {
       height: 32,
       width: 30,
-      marginLeft: 9,
+      marginLeft: 15,
       position: 'absolute',
-      bottom: 9
-
+      bottom: 8
   }
 
   });

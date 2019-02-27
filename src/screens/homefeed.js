@@ -64,15 +64,12 @@ class HomeFeed extends React.Component {
   }
 
   componentDidMount() {
-    this.unsubscribe = this.ref.limit(60).onSnapshot(this.onCollectionUpdate);
-
+    
+    console.log(this.state.memesLoaded)
+    this.unsubscribe = this.ref.limit(this.state.memesLoaded).onSnapshot(this.onCollectionUpdate);
+    return this.state.memes
   }
-  // renderHeader() {
-  //   //Header of the Screen
-  //   return <Text style={{padding:19, fontSize:20, color:'black', backgroundColor:'white'}}>
-  //              Recent
-  //          </Text>;
-  // }
+
   ShowModalFunction(visible, imageURL) {
     //handler to handle the click on image of Grid
     //and close button on modal
@@ -109,7 +106,11 @@ class HomeFeed extends React.Component {
           paddingHorizontal: itemPaddingHorizontal,
         }}
         onPress={() => {
+<<<<<<< HEAD
           this.ShowModalFunction(true, item.src);
+=======
+          this.ShowModalFunction(true, data.src);
+>>>>>>> sprint3_term1
         }}>
         <Image
           resizeMode="cover"
@@ -121,9 +122,13 @@ class HomeFeed extends React.Component {
   }
 
   renderTile({item}){
+<<<<<<< HEAD
     return <Tile
     memeId={item.key}
     imageUrl={item.src}/>
+=======
+    return <Tile/>
+>>>>>>> sprint3_term1
   }
 
   render() {
@@ -260,11 +265,22 @@ class HomeFeed extends React.Component {
           <PhotoGrid
             data={this.state.memes}
             itemsPerRow={3}
+<<<<<<< HEAD
             //You can decide the item per row
             itemMargin={1}
             itemPaddingHorizontal={1}
             renderHeader={this.renderHeader}
             renderItem={this.renderItem.bind(this)}
+=======
+            onEndReached={() => {
+              newLoadCount = this.state.memesLoaded + 60;
+              this.setState({
+                memesLoaded: newLoadCount,
+              });
+              this.componentDidMount();
+            }}
+
+>>>>>>> sprint3_term1
           />
         </View>
       );

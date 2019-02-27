@@ -1,15 +1,32 @@
 import React from 'react';
-import { Dimensions, StyleSheet, View, TouchableOpacity, Image, Text } from 'react-native';
+import { Dimensions, StyleSheet, View, TouchableOpacity, Image, Text, ScrollView, KeyboardAvoidingView } from 'react-native';
 
 import AddComment from './AddComment';
+import ButtonBar from './ButtonBar';
 import CommentHeader from './CommentHeader';
+import CommentList from './CommentList';
+import TileHeader from './TileHeader';
+import Photo from './Photo';
 
 class CommentPage extends React.Component {
   render() {
     return ( 
       <View style={styles.container}>
         <CommentHeader/>
+        <ScrollView
+          ref={ref => this.scrollView = ref}
+          onContentSizeChange={(contentWidth, contentHeight)=>{        
+            this.scrollView.scrollToEnd({animated: true});
+          }}
+        >
+
+            <TileHeader/>
+            <Photo imageUrl={this.props.imageUrl}/>  
+            <CommentList memeId={this.props.memeId}/>
+
+        </ScrollView>
         <AddComment memeId={this.props.memeId}/>
+
       </View>
     );
   }
@@ -22,8 +39,8 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-      position: 'absolute',
-  bottom:0
+    position: 'absolute',
+    bottom:0
   },
 });
  

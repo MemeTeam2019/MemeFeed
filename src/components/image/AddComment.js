@@ -24,7 +24,37 @@ class AddComment extends React.Component {
 
   _onPressButton = (content, memeId) => {
     const user = firebase.auth().currentUser;
+    console.log("user "+user.uid+" commented ==============")
     const date = Math.round(+new Date()/1000);
+
+
+
+
+    var countRef = firebase.firestore().collection("Comments/"+memeId+"/Info").doc('CommentInfo');
+    var getDoc = countRef.get()
+      .then(doc => {
+        if (!doc.exists) {
+
+          countRef.set({
+            count: 1
+          }, {merge: true});
+
+        } else {
+
+          const {count} = doc.data();
+          newCount = count + 1
+
+          countRef.set({
+            count: newCount
+          }, {merge: true});
+
+        }
+    
+    })
+    .catch(err => {
+      console.log('Error getting document', err);
+    });
+
 
     var ref = firebase.firestore().collection("Comments/"+memeId+"/Text")
 
@@ -58,7 +88,7 @@ class AddComment extends React.Component {
   render() {
     return (
       <KeyboardAvoidingView style={{position: 'absolute', left: 0, right: 0, bottom: 0}} behavior="position">
-        <View style={styles.container}>
+        <View style={[styles.container, {height: Math.max(35, this.state.height)+10} ]}>
 
             <TextInput
               {...this.props}
@@ -101,10 +131,11 @@ export default AddComment;
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row', 
-    width: '100%', 
+    width: '100%',
     flex: 1,
     position: 'absolute',
-    bottom:10
+    backgroundColor: '#fff',
+    bottom:0
   },
   postButton: {
 
@@ -117,8 +148,7 @@ const styles = StyleSheet.create({
     marginLeft: '3%',
     fontSize: 18,
     borderWidth: 0.5,
-    borderColor: '#d6d7da',
-
+    borderColor: '#d6d7da'
   },
 });
 

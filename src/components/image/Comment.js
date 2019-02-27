@@ -1,7 +1,5 @@
-import React, { Component } from 'react';
+import * as React from 'react';
 import {Button, StyleSheet, View, Image, Text, TouchableOpacity, Modal } from 'react-native';
-
-import CommentPage from './CommentPage';
 
 class Comment extends React.Component{
 
@@ -11,7 +9,6 @@ class Comment extends React.Component{
       memeId: this.props.memeId,
       uid: this.props.uid,
       username: '',
-      text: '',
     };
   }
 

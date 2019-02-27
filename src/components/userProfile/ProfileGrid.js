@@ -17,7 +17,7 @@ import Grid from 'react-native-grid-component';
 class ProfileGrid extends React.Component {
   constructor() {
     super();
-    this.ref = firebase.firestore().collection("Memes");
+    this.ref = firebase.firestore().collection("Memes").orderBy('time', "desc");
     this.unsubscribe = null;
     this.state = {
       memesLoaded: 30,
@@ -61,15 +61,9 @@ class ProfileGrid extends React.Component {
   }
 
   componentDidMount() {
-    // this.state.memesLoaded += 60
     this.unsubscribe = this.ref.limit(this.state.memesLoaded).onSnapshot(this.onCollectionUpdate);
     return this.state.memes
   }
-
-  // LoadMoreMemes() {
-
-  // }
-
 
   _renderItem = (data, i) => (
     <View style={[styles.item]} key={i}>
@@ -137,7 +131,7 @@ if (this.state.ModalVisibleStatus) {
         data={this.state.memes}
         itemsPerRow={3}
         onEndReached={() => {
-        newLoadCount = this.state.memesLoaded + 60;
+          newLoadCount = this.state.memesLoaded + 60;
           this.setState({
             memesLoaded: newLoadCount,
           });

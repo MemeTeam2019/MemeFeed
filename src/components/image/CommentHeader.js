@@ -7,7 +7,7 @@ class CommentHeader extends React.Component {
     return (
         <View style={styles.containerStyle}>
           <View style={styles.navBar}>
-            <Image source={require('../../images/general.png')} style={{ width: 250, height: 50}} />
+            <Image source={require('../../images/Tile/comments.png')} style={{ width: 250, height: 50}} />
           </View>
         </View>
     );
@@ -30,8 +30,6 @@ const styles = StyleSheet.create({
   },
   containerStyle: {
     flex: 0,
-    // alignItems: "center",
-    // justifyContent: "center",
     backgroundColor: "#ffffff"
   },
 });
