@@ -87,15 +87,9 @@ class ProfileGrid extends React.Component {
   }
 
   componentDidMount() {
-    // this.state.memesLoaded += 60
     this.unsubscribe = this.ref.limit(this.state.memesLoaded).onSnapshot(this.onCollectionUpdate);
     return this.state.memes
   }
-
-  // LoadMoreMemes() {
-
-  // }
-
 
   _renderItem = (data, i) => (
     <View style={[styles.item]} key={i}>

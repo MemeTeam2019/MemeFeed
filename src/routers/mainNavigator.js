@@ -4,10 +4,11 @@ import {createStackNavigator} from "react-navigation";
 
 import HomeFeed from '../screens/homefeed';
 import ProfileScreen from "../screens/profile";
-import UserScreen from "../screens/userpg";
+import FriendFeed from "../screens/friendfeed"
+import UserScreen from "../screens/friendprofile";
 import Username from "../components/image/username";
 
-export const UserStack = createStackNavigator({
+export const HomeStack = createStackNavigator({
   Home:{
     screen: HomeFeed,
   },
@@ -20,13 +21,31 @@ export const UserStack = createStackNavigator({
     initialRouteName: "Home"
   });
 
+export const FriendStack = createStackNavigator({
+  Friend:{
+    screen: FriendFeed,
+  },
+  User: {
+    screen: UserScreen,
+  },
+
+},
+  {
+    initialRouteName: "Friend"
+  });
+
+
 const MainRouter = createBottomTabNavigator({
   Home: {
-    screen: UserStack
+    screen: FriendStack
+  },
+  Explore:{
+    screen: HomeStack
   },
   Profile: {
     screen: ProfileScreen
   },
+
 });
 
 export default MainRouter;

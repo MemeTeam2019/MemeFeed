@@ -12,7 +12,7 @@ class Photo extends React.Component {
         <View style={styles.modelStyle}>
             <AutoHeightImage
               width={Dimensions.get("window").width}
-              source={{ uri: 'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg' }}
+              source={{ uri: this.props.imageUrl }}
             />
         </View>
     );

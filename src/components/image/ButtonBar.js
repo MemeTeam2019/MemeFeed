@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { Alert, AppRegistry, Button, StyleSheet, View, TouchableOpacity, Image } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, TouchableOpacity, Image } from 'react-native';
 import firebase from "react-native-firebase";
- 
-import Grid from 'react-native-grid-component';
+
+import PostInfo from "../image/PostInfo"
  
 class ButtonBar extends React.Component {
 
@@ -25,17 +25,21 @@ class ButtonBar extends React.Component {
 
   componentDidMount() {
     const user = firebase.auth().currentUser;
-    const ref = firebase.firestore().collection("Reacts").doc(user.uid);
-    const memeId = "dummy";
+    const memeId = this.props.memeId;
+    const ref = firebase.firestore().collection("Reacts").doc(user.uid)
+                  .collection("Likes").doc(memeId);
 
     ref.get().then(docSnapshot => {
       if (docSnapshot.exists) {
         let data = docSnapshot.data();
-        let react = data[memeId].rank;
-        this.setState({ selectedButton: react == -1 ? null : react })
-      } else {
-        return;
+        if (data) {
+          let rank = data.rank;
+          this.setState({ selectedButton: rank == -1 ? null : rank });
+        }
       }
+    })
+    .catch(error => {
+      console.log(error);
     })
   }
 
@@ -49,18 +53,22 @@ class ButtonBar extends React.Component {
     this.setState({ selectedButton: val })
 
     const user = firebase.auth().currentUser;
-    const ref = firebase.firestore().collection("Reacts").doc(user.uid);
-    const date = (new Date()).toString();
-    const memeId = "dummy";
+    const memeId = this.props.memeId;
+    const ref = firebase.firestore().collection("Reacts").doc(user.uid)
+                  .collection("Likes").doc(memeId);
+    const date = Math.round(+new Date()/1000);
 
     ref.get().then(docSnapshot => {
       const data = docSnapshot.data();
-      const oldRank = data[memeId].rank;
-      let newRank = oldRank === num ? -1 : num;
-      ref.set({[memeId]: {
+      var newRank = num;
+      if (data) {
+        const oldRank = data.rank;
+        newRank = oldRank === num ? -1 : num;
+      }
+      ref.set({
         rank: newRank,
         time: date
-      }}, {merge: true});
+      }, { merge: true });
     })
     .catch(error => console.log(error))
   }
@@ -81,8 +89,10 @@ class ButtonBar extends React.Component {
       </TouchableOpacity>
   }
 
+
   _renderPlaceholder = i => <View style={styles.item} key={i} />;
  
+  
   render() {
     return (
 

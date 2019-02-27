@@ -13,9 +13,9 @@ class Tile extends React.Component {
     return ( 
       <View style={styles.container}>
         <TileHeader navigation={this.props.navigation}/>
-        <Photo/>
-        <ButtonBar/>
-        <PostInfo/>
+        <Photo imageUrl={this.props.imageUrl}/>
+        <ButtonBar memeId={this.props.memeId}/>
+        <PostInfo imageUrl={this.props.imageUrl} memeId={this.props.memeId}/>
     </View>
     );
   }
