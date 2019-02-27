@@ -22,6 +22,9 @@ import Tile from '../components/image/Tile'
 import PhotoGrid from 'react-native-image-grid';
 
 class HomeFeed extends React.Component {
+  static navigationOptions = {
+    header: null
+  }
   constructor() {
     super(); 
     this.ref = firebase.firestore().collection('Memes').orderBy('time', "desc");
@@ -95,40 +98,28 @@ class HomeFeed extends React.Component {
     })
   }
 
-  renderItem(item, itemSize, itemPaddingHorizontal) {
-    //Single item of Grid
-    return (
+  _renderItem = (data, i) => (
+    <View style={[styles.item]} key={i}>
       <TouchableOpacity
-        key={item.id}
         style={{
-          width: itemSize,
-          height: itemSize,
-          paddingHorizontal: itemPaddingHorizontal,
+          flex: 1,
         }}
         onPress={() => {
-<<<<<<< HEAD
-          this.ShowModalFunction(true, item.src);
-=======
           this.ShowModalFunction(true, data.src);
->>>>>>> sprint3_term1
         }}>
         <Image
-          resizeMode="cover"
           style={{ flex: 1 }}
-          source={{ uri: item.src }}
+          source={{
+            uri:
+              data.src,
+          }}
         />
       </TouchableOpacity>
-    );
-  }
+    </View>
+  );
 
-  renderTile({item}){
-<<<<<<< HEAD
-    return <Tile
-    memeId={item.key}
-    imageUrl={item.src}/>
-=======
-    return <Tile/>
->>>>>>> sprint3_term1
+  renderTile(){
+    return <Tile/>;
   }
 
   render() {
@@ -262,16 +253,12 @@ class HomeFeed extends React.Component {
               />
             </TouchableOpacity>
           </View>
-          <PhotoGrid
+          <Grid
+            style={styles.list}
+            renderItem={this._renderItem}
+            renderPlaceholder={this._renderPlaceholder}
             data={this.state.memes}
             itemsPerRow={3}
-<<<<<<< HEAD
-            //You can decide the item per row
-            itemMargin={1}
-            itemPaddingHorizontal={1}
-            renderHeader={this.renderHeader}
-            renderItem={this.renderItem.bind(this)}
-=======
             onEndReached={() => {
               newLoadCount = this.state.memesLoaded + 60;
               this.setState({
@@ -279,8 +266,6 @@ class HomeFeed extends React.Component {
               });
               this.componentDidMount();
             }}
-
->>>>>>> sprint3_term1
           />
         </View>
       );

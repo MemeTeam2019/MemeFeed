@@ -1,7 +1,6 @@
-import React from 'react';
-import { Text, StyleSheet, View, Image, TouchableOpacity } from 'react-native';
-import { withNavigation } from 'react-navigation';
-import firebase from 'react-native-firebase';
+import React, { Component } from 'react';
+import {Text, StyleSheet, View, Image, TouchableOpacity} from 'react-native';
+import Username from "./username";
  
 class TileHeader extends React.Component {
   constructor(props) {
@@ -31,14 +30,8 @@ class TileHeader extends React.Component {
       <View style={styles.container}>
         <Image 
           style={styles.userImg}
-          source={{uri:'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg'}}
-        />
-        <TouchableOpacity
-          onPress={() => this.navigateToFriendProfile()}
-          uid={this.props.uid}
-        >
-          <Text style={styles.text}>{this.state.username}</Text>
-        </TouchableOpacity>
+          source={{uri:'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg'}}/>
+          <Username uid='F5bA3qC0dkca7h1INfoNNq4GIRh2' navigation={this.props.navigation} />
       </View>
     );
   }

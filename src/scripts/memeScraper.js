@@ -57,7 +57,8 @@ function sendToFirebase(filename,url,author,sub,time,score){
 		author: author,
 		sub: sub,
 		time: time,
-		score: score
+		score: score,
+		reacts: 0
 	};
 	dbRef.set(data);
 	fs.unlink(filename);

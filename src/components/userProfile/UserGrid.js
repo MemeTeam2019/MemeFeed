@@ -13,7 +13,7 @@ import {
 
 
 import Grid from 'react-native-grid-component';
-const uid = firebase.auth().currentUser.uid;
+const uid = this.props.uid;
 class ProfileGrid extends React.Component {
   constructor() {
     super();
@@ -49,12 +49,11 @@ class ProfileGrid extends React.Component {
     // isLoading: false,
     //});
     console.log("screams");
-    console.log(uid);
     const memes = [];
     querySnapshot.forEach((doc) => {
-      const {rank,time,url} = doc.data();
-      console.log(rank+url);
-      if(rank>2){
+      const {rating,time,url} = doc.data();
+      console.log(memeid+rating);
+      if(rating>2){
      
         memes.push({
          key: doc.id,
@@ -87,9 +86,15 @@ class ProfileGrid extends React.Component {
   }
 
   componentDidMount() {
+    // this.state.memesLoaded += 60
     this.unsubscribe = this.ref.limit(this.state.memesLoaded).onSnapshot(this.onCollectionUpdate);
     return this.state.memes
   }
+
+  // LoadMoreMemes() {
+
+  // }
+
 
   _renderItem = (data, i) => (
     <View style={[styles.item]} key={i}>
@@ -214,3 +219,4 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
 });
+

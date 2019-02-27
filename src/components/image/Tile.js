@@ -36,7 +36,7 @@ class Tile extends React.Component {
   render() {
     return ( 
       <View style={styles.container}>
-        <TileHeader uid={"g9Nat9KDVMStAHjNOQNfPLVU9Sk1"}/>
+        <TileHeader navigation={this.props.navigation}/>
         <Photo imageUrl={this.props.imageUrl}/>
         <ButtonBar
           memeId={this.props.memeId}
