@@ -112,9 +112,8 @@ class CommentList extends React.Component{
 
   render(){
     return(
-      <View style={styles.containerStyle}>
+      <View style={[styles.containerStyle]}>
         <ButtonBar memeId={this.props.memeId}/>
-       
         <FlatList 
           data={this.state.comments}
           renderItem={this.renderComment.bind(this)}
@@ -128,6 +127,7 @@ export default CommentList;
 
 const styles = StyleSheet.create({
   containerStyle: {
+    marginTop: 50,
     bottom: 50,
     justifyContent: 'center',
     flex: 1,
