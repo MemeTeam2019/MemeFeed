@@ -44,9 +44,6 @@ const MainRouter = createBottomTabNavigator({
   },
   Profile: {
     screen: ProfileScreen
-  },
-  FriendProfile: {
-    screen: FriendProfileScreen
   }
 });
 

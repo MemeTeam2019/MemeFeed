@@ -23,9 +23,8 @@ class Tile extends React.Component {
   
     ref.get().then(docSnapshot => {
       const data = docSnapshot.data();
-      console.log(data);
       const reactCount = data.reactCount || 0;
-      this.setState({reactCount: reactCount})
+      this.setState({ reactCount: reactCount })
     });
   }
 
@@ -36,7 +35,7 @@ class Tile extends React.Component {
   render() {
     return ( 
       <View style={styles.container}>
-        <TileHeader navigation={this.props.navigation}/>
+        <TileHeader uid="F5bA3qC0dkca7h1INfoNNq4GIRh2"/>
         <Photo imageUrl={this.props.imageUrl}/>
         <ButtonBar
           memeId={this.props.memeId}

@@ -104,7 +104,7 @@ render() {
               />
             </TouchableOpacity>
             <Text style={{fontStyle: 'italic', fontWeight: 'bold', marginLeft: '2.5%'}}>source</Text>
-            <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>20 Reactions</Text>
+            <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>{this.props.reactCount} Reactions</Text>
             <CommentSample memeId={this.props.memeId}/>
 
             <View style={{flex: 1, flexDirection: 'row'}}>
@@ -133,7 +133,7 @@ render() {
               />
             </TouchableOpacity>
             <Text style={{fontStyle: 'italic', fontWeight: 'bold', marginLeft: '2.5%'}}>source</Text>
-            <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>20 Reactions</Text>
+            <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>{this.props.reactCount} Reactions</Text>
             <CommentSample memeId={this.props.memeId}/>
            </View>
         );

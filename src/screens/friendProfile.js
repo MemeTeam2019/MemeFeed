@@ -55,10 +55,8 @@ export default class FriendProfileScreen extends React.Component {
       let data = User.data();
       console.log(data);
       this.setState(data);
-      for (const key in data) {
-        AsyncStorage.setItem(key, data[key].toString());
-      }
-    }).catch(err => {
+    })
+    .catch(err => {
       console.log(err);
     });
 
@@ -69,14 +67,16 @@ export default class FriendProfileScreen extends React.Component {
     myUserRef.get().then(snapshot => {
       const data = snapshot.data();
       const followingLst = data.followingLst == null ? [] : data.followingLst;
-      const isFollowing = followingLst.indexOf(theirUid) > -1;
 
       console.log(followingLst);
+      const isFollowing = followingLst.indexOf(theirUid) > -1;
+
       this.setState({
         isFollowing: isFollowing,
         buttonText: isFollowing ? "Unfollow" : "Follow"
       })
     })
+    .catch(err => console.log(err));
   }
 
   onGridViewPressedP = () => {
@@ -110,8 +110,8 @@ export default class FriendProfileScreen extends React.Component {
 
       let followingCnt = myData.followingCnt;
       let followingLst = myData.followingLst == null ? [] : myData.followingLst;
-
       const index = followingLst.indexOf(theirUid);
+
       if (isFollowing && index == -1) {
         followingLst.push(theirUid);
         followingCnt++;
@@ -131,8 +131,8 @@ export default class FriendProfileScreen extends React.Component {
       const theirData = theirSnap.data();
       let followersCnt = theirData.followersCnt;
       let followersLst = theirData.followersLst === null ? [] : theirData.followersLst;
-
       const index = followersLst.indexOf(myUid);
+
       if (isFollowing && index === -1) {
         followersLst.push(myUid);
         followersCnt++;
