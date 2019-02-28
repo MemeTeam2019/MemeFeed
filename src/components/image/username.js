@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
 import {Text, StyleSheet, View, Image,TouchableOpacity } from 'react-native';
 import firebase from 'react-native-firebase';
+import { withNavigation } from 'react-navigation';
 import HomeFeed from '../../screens/homefeed';
  
 class Username extends React.Component {
   constructor(props){
     super(props);
-  this.state= {username: ""};
-}
+    this.state= {username: ""};
+  }
 static navigationOptions = {
     header: null
-  }
-goToUser(){
+}
+goToUser() {
   console.log("touchy touch");
   this.props.navigation.navigate("User");
-  }
+}
+
 componentDidMount() {
     const ref = firebase.firestore()
                 .collection("Users").doc(this.props.uid);
@@ -43,7 +45,7 @@ componentDidMount() {
   }
 }
 
-export default Username; 
+export default withNavigation(Username); 
  
 const styles = StyleSheet.create({
   container: {
