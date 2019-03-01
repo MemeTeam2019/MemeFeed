@@ -5,7 +5,7 @@ import {createStackNavigator} from "react-navigation";
 import HomeFeed from '../screens/homefeed';
 import ProfileScreen from "../screens/profile";
 import FriendFeed from "../screens/friendfeed"
-import UserScreen from "../screens/friendprofile";
+import UserScreen from "../screens/userpg";
 import Username from "../components/image/username";
 
 export const HomeStack = createStackNavigator({

@@ -98,17 +98,17 @@ class CommentList extends React.Component{
 
 
  // <Button
-        //   onPress={() => {
-        //     newLoadCount = this.state.commentsLoaded + 10;
-        //     this.setState({
-        //       commentsLoaded: newLoadCount,
-        //     });
-        //     this.componentDidMount.bind(this,newLoadCount);
-        //   }}
-        //   style={{fontSize: 1}}
-        //   title="Load older comments"
-        //   color='#3d97ff'
-        // />
+ //          onPress={() => {
+ //            newLoadCount = this.state.commentsLoaded + 10;
+ //            this.setState({
+ //              commentsLoaded: newLoadCount,
+ //            });
+ //            this.componentDidMount.bind(this,newLoadCount);
+ //          }}
+ //          style={{fontSize: 1}}
+ //          title="Load older comments"
+ //          color='#3d97ff'
+ //        />
 
   render(){
     return(
