@@ -13,12 +13,10 @@ import {
 
 
 import Grid from 'react-native-grid-component';
-const uid = firebase.auth().currentUser.uid;
 class ProfileGrid extends React.Component {
-  constructor() {
-    super();
-    this.ref = firebase.firestore().collection("Reacts/"+uid+"/Likes").orderBy('time', "desc");
-    this.unsubscribe = null;
+  constructor(props) {
+    super(props);
+
     this.state = {
       memesLoaded: 30,
       imageuri: '',
@@ -26,7 +24,14 @@ class ProfileGrid extends React.Component {
       isLoading: true,
       memes: [],
       items: [],
+      uid: firebase.auth().currentUser.uid
     };
+    this.ref = firebase.firestore().collection("Reacts/"+this.state.uid+"/Likes").orderBy('time', "desc");
+    this.unsubscribe = null;
+  }
+
+  componentDidMount() {
+    this.setState({uid: firebase.auth().currentUser.uid});
   }
 
 
@@ -49,7 +54,6 @@ class ProfileGrid extends React.Component {
     // isLoading: false,
     //});
     console.log("screams");
-    console.log(uid);
     const memes = [];
     querySnapshot.forEach((doc) => {
       const {rank,time,url} = doc.data();
