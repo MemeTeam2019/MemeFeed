@@ -1,25 +1,18 @@
-/*This is an Example of Grid Image Gallery in React Native*/
 import * as React from 'react';
 import firebase from 'react-native-firebase';
-
-//import React in our project
+import {SearchBar} from 'react-native-elements';
+import Grid from 'react-native-grid-component';
 import {
   Image,
   TouchableOpacity,
-  Text,
   View,
   Modal,
   StyleSheet,
   FlatList
 } from 'react-native';
 
-import {SearchBar} from 'react-native-elements';
 
-//import all the needed components
-//tile component
 import Tile from '../components/image/Tile'
-
-import PhotoGrid from 'react-native-image-grid';
 
 class HomeFeed extends React.Component {
   static navigationOptions = {
