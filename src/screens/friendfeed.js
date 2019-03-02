@@ -19,6 +19,9 @@ import Tile from '../components/image/Tile'
 import PhotoGrid from 'react-native-image-grid';
 
 class FriendFeed extends React.Component{
+  static navigationOptions = {
+    header: null
+  }
   constructor(){
     super();
     this.ref = firebase.firestore().collection('Memes').orderBy('time', "desc");
