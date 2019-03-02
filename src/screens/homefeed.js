@@ -1,6 +1,7 @@
 /*This is an Example of Grid Image Gallery in React Native*/
 import * as React from 'react';
 import firebase from 'react-native-firebase';
+import Grid from 'react-native-grid-component';
 
 //import React in our project
 import {
@@ -18,7 +19,6 @@ import {SearchBar} from 'react-native-elements';
 //import all the needed components
 //tile component
 import Tile from '../components/image/Tile'
-
 import PhotoGrid from 'react-native-image-grid';
 
 class HomeFeed extends React.Component {
@@ -30,6 +30,7 @@ class HomeFeed extends React.Component {
     this.ref = firebase.firestore().collection('Memes').orderBy('time', "desc");
     this.unsubscribe = null;
     this.state = {
+      memesLoaded: 30,
       imageuri: '',
       ModalVisibleStatus: false,
       isLoading: true,
@@ -67,7 +68,6 @@ class HomeFeed extends React.Component {
   }
 
   componentDidMount() {
-    
     console.log(this.state.memesLoaded)
     this.unsubscribe = this.ref.limit(this.state.memesLoaded).onSnapshot(this.onCollectionUpdate);
     return this.state.memes

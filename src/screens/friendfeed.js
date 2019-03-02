@@ -27,6 +27,7 @@ class FriendFeed extends React.Component{
     this.ref = firebase.firestore().collection('Memes').orderBy('time', "desc");
     this.unsubscribe = null;
     this.state = {
+      memesLoaded: 30,
       imageuri: '',
       ModalVisibleStatus: false,
       isLoading: true,
