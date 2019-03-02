@@ -19,7 +19,7 @@ import {SearchBar} from 'react-native-elements';
 //tile component
 import Tile from '../components/image/Tile'
 
-import PhotoGrid from 'react-native-image-grid';
+import Grid from 'react-native-grid-component';
 
 class HomeFeed extends React.Component {
   static navigationOptions = {

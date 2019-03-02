@@ -1,16 +1,18 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Image } from 'react-native';
+import { Button, StyleSheet, View, Image, Text, TouchableOpacity, Modal} from 'react-native';
 import firebase from "react-native-firebase";
 
 import PostInfo from "../image/PostInfo"
+
  
 class ButtonBar extends React.Component {
 
   constructor(props) {
     super(props);
+    this.unsubscribe = null;
     this.state = {
       selectedButton: null,
-      userHasReacted: false
+      userHasReacted: false,
     };
     this.emojiRank= {0: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/ImagesForApplicationDesign%2FExpressionless.png?alt=media&token=b53082db-03bd-4fad-9322-d0827253eee1',
       1:'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/ImagesForApplicationDesign%2FNuetral.png?alt=media&token=c9f280e5-a6a8-4f29-ab83-1171b76eac45',
@@ -25,6 +27,7 @@ class ButtonBar extends React.Component {
       4:'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/ImagesForApplicationDesign%2FLaughingTearsOfJoyFade.png?alt=media&token=d992a83a-ec9a-4bba-9859-60000523fd99'
     };  
   }
+
 
   componentDidMount() {
     const user = firebase.auth().currentUser;
@@ -108,8 +111,41 @@ class ButtonBar extends React.Component {
   _renderPlaceholder = i => <View style={styles.item} key={i} />;
  
   render() {
+    if (this.state.ModalVisibleStatus) {
+      //Modal to show full image with close button
+      return (
+        <Modal
+          transparent={false}
+          animationType={'fade'}
+          visible={this.state.ModalVisibleStatus}
+          onRequestClose={() => {
+            this.ShowModalFunction(!this.state.ModalVisibleStatus);
+          }}
+        >
+          <View style={styles.modelStyle}>
+            <CommentPage
+              memeId={this.props.memeId}
+              imageUrl={this.props.imageUrl}
+            />
+            {/* Close Button */}
+            <TouchableOpacity
+              activeOpacity={0.5}
+              style={styles.closeButtonStyle}
+              onPress={() => {
+                this.ShowModalFunction(!this.state.ModalVisibleStatus);
+              }}>
+              <Image
+                source={{
+                  uri:
+                    'https://aboutreact.com/wp-content/uploads/2018/09/close.png',
+                  }}
+                  style={{ width: 25, height: 25, marginTop:16 }}
+              />
+            </TouchableOpacity>
+          </View>
+        </Modal>
+        );} else {
     return (
-
       <View style={styles.buttonBar}>
         <View style={styles.button}>
           <TouchableOpacity
@@ -204,6 +240,7 @@ class ButtonBar extends React.Component {
     );
   }
 }
+}
 
 export default ButtonBar; 
  
@@ -211,12 +248,13 @@ const styles = StyleSheet.create({
   buttonBar: {
     flexDirection: 'row', 
     width: '100%', 
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   button: {
     width: 50,
     height: 50,
     alignItems: 'center',
     justifyContent: 'center'
-  }
+  },
+
 });
