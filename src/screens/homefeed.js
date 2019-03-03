@@ -16,6 +16,7 @@ import {
 //import all the needed components
 //tile component
 import Tile from '../components/image/Tile';
+import MemeGrid from '../components/general/MemeGrid';
 import Grid from 'react-native-grid-component';
 
 class HomeFeed extends React.Component {
@@ -58,10 +59,9 @@ class HomeFeed extends React.Component {
    });
   }
 
-  componentDidMount() {
-    
-    console.log(this.state.memesLoaded)
-    this.unsubscribe = this.ref.limit(this.state.memesLoaded).onSnapshot(this.onCollectionUpdate);
+  componentDidMount(memesLoaded) {
+    console.log('loading memes rn')
+    this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
     return this.state.memes
   }
 
@@ -204,21 +204,12 @@ class HomeFeed extends React.Component {
               />
             </TouchableOpacity>
           </View>
-          <Grid
-            style={styles.list}
-            renderItem={this._renderItem}
-            renderPlaceholder={this._renderPlaceholder}
-            data={this.state.memes}
-            itemsPerRow={3}
-            onEndReached={() => {
-              newLoadCount = this.state.memesLoaded + 60;
-              this.setState({
-                memesLoaded: newLoadCount,
-              });
-              this.componentDidMount();
-            }}
 
+          <MemeGrid
+            loadMemes={this.componentDidMount}
+            memes={this.state.memes}
           />
+
         </View>
       ); 
   }

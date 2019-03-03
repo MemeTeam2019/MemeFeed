@@ -15,7 +15,7 @@ import {
 //import all the needed components
 //tile component
 import Tile from '../components/image/Tile'
-
+import MemeGrid from '../components/general/MemeGrid';
 import PhotoGrid from 'react-native-image-grid';
 
 class FriendFeed extends React.Component{
@@ -175,15 +175,12 @@ class FriendFeed extends React.Component{
                   />
                 </TouchableOpacity>
               </View>
-              <PhotoGrid
-                data={this.state.memes}
-                itemsPerRow={3}
-                //You can decide the item per row
-                itemMargin={1}
-                itemPaddingHorizontal={1}
-                renderHeader={this.renderHeader}
-                renderItem={this.renderItem.bind(this)}
+
+              <MemeGrid
+                loadMemes={this.componentDidMount}
+                memes={this.state.memes}
               />
+
             </View>
           );
       } else{

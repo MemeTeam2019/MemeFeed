@@ -15,14 +15,18 @@ import {
 } from "react-native";
 import ProfileGrid from '../components/userProfile/ProfileGrid';
 import firebase from "react-native-firebase";
-
 import ActionSheet from 'react-native-actionsheet';
+import MemeGrid from '../components/general/MemeGrid';
 
-
+const user = firebase.auth().currentUser;
 export default class ProfileScreen extends React.Component {
+
   constructor(props) {
     super(props);
+    this.ref = firebase.firestore().collection("Reacts/"+user.uid+"/Likes").orderBy('time', "desc");
+    this.unsubscribe = null;
     this.state = {
+      memes: [],
       email: "",
       username: "",
       name: "",
@@ -39,7 +43,34 @@ export default class ProfileScreen extends React.Component {
     this.ActionSheet.show();
   };
 
-  componentDidMount() {
+  // function for extracting Firebase responses to the state
+  onCollectionUpdate = (querySnapshot) => {
+    const memes = [];
+    querySnapshot.forEach((doc) => {
+      const {rank,time,url} = doc.data();
+      if(rank>2){    
+        memes.push({
+         key: doc.id,
+         doc, // DocumentSnapshot
+         src: url,
+         time,
+         });
+     }
+    
+    });
+    this.setState({
+      memes,
+      isLoading: false,
+    });
+  }
+
+  componentDidMount(memesLoaded) {
+    // This if else guarentees that we do the correct action depending on what needs to be done
+    if (memesLoaded != null){
+      this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
+      return this.state.memes
+    } 
+
     const authInfo = firebase.auth().currentUser;
     this.setState({
       email: authInfo.email,
@@ -56,7 +87,6 @@ export default class ProfileScreen extends React.Component {
     }).catch(err => {
       console.log(err);
     });
-
   }
 
   onGridViewPressedP = () => {
@@ -83,8 +113,6 @@ export default class ProfileScreen extends React.Component {
       'Cancel',
     ];
     return (
-
-// <<<<<<< HEAD
       <React.Fragment>
       <View style={styles.containerStyle}>
         <View style={styles.navBar}>
@@ -146,7 +174,10 @@ export default class ProfileScreen extends React.Component {
       </View>
 
 
-      <ProfileGrid/>
+      <MemeGrid
+        loadMemes={this.componentDidMount}
+        memes={this.state.memes}
+      />
       </React.Fragment>
     );
   }
