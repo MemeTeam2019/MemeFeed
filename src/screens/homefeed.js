@@ -1,7 +1,7 @@
 import * as React from 'react';
 import firebase from 'react-native-firebase';
-import {SearchBar} from 'react-native-elements';
-
+import { SearchBar } from 'react-native-elements';
+import MemeGrid from '../components/general/MemeGrid';
 import {
   Image,
   TouchableOpacity,
@@ -11,19 +11,15 @@ import {
   FlatList
 } from 'react-native';
 
-import PhotoGrid from 'react-native-image-grid';
-import Tile from '../components/image/Tile';
-import MemeGrid from '../components/general/MemeGrid';
-import Grid from 'react-native-grid-component';
-
+import Tile from '../components/image/Tile'
 
 class HomeFeed extends React.Component {
   static navigationOptions = {
     header: null
   }
-  constructor() {
-    super(); 
-    this.ref = firebase.firestore().collection('Memes').orderBy('time', "desc");
+  constructor(props) {
+    super(props); 
+    this.ref = firebase.firestore().collection('Memes').orderBy('time', 'desc');
     this.unsubscribe = null;
     this.state = {
       memesLoaded: 30,
@@ -161,7 +157,7 @@ class HomeFeed extends React.Component {
           <View style={styles.containerStyle}>
             <View style={styles.navBar}>
             <SearchBar
-              placeholder="Explore"
+              placeholder="Find User"
               onChangeText={this.updateSearch}
               value={search}
               containerStyle={{
