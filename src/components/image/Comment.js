@@ -25,6 +25,9 @@ class Comment extends React.Component{
           </Text>
         </TouchableOpacity>
         <Text style={{fontFamily: 'AvenirNext-Regular'}}> comment</Text>
+          <Text style={{fontWeight: 'bold', paddingTop: 10, marginLeft: '2.5%'}}>{this.props.username}
+            <Text style={{fontWeight: 'normal'}}> {this.props.content}</Text>
+          </Text>
       </View>
     );
 

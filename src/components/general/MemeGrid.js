@@ -1,58 +1,29 @@
 import * as React from 'react';
+import firebase from 'react-native-firebase';
+
+//import React in our project
 import {
   Image,
   TouchableOpacity,
+  Text,
   View,
   Modal,
   StyleSheet,
 } from 'react-native';
-import firebase from 'react-native-firebase';
 
 import Grid from 'react-native-grid-component';
 
-class ProfileGrid extends React.Component {
-  constructor(props) {
-    super(props);
-    this.unsubscribe = null;
+class MemeGrid extends React.Component {
+  constructor() {
+    super();
     this.state = {
       memesLoaded: 30,
       imageuri: '',
       ModalVisibleStatus: false,
       isLoading: true,
-      memes: [],
-      items: []
-    }
+      items: [],
+    };
   }
-
-  componentDidMount() {
-    this.setState({uid: firebase.auth().currentUser.uid});
-    this.ref = firebase.firestore().collection("Reacts/"+this.state.uid+"/Likes").orderBy('time', "desc");
-    this.unsubscribe = this.ref.limit(this.state.memesLoaded).onSnapshot(this.onCollectionUpdate);
-    return this.state.memes
-  }
-
-
-  // function for extracting Firebase responses to the state
-  onCollectionUpdate = (querySnapshot) => {
-    const memes = [];
-    querySnapshot.forEach((doc) => {
-      const { rank,time,url } = doc.data();
-      console.log(rank+url);
-      if (rank > 2) {
-        memes.push({
-         key: doc.id,
-         doc, // DocumentSnapshot
-         src: url,
-         time,
-        });
-      }
-    });
-    this.setState({
-      memes,
-      isLoading: false,
-   });
-  }
-
 
   ShowModalFunction(visible, imageURL) {
     //handler to handle the click on image of Grid
@@ -86,7 +57,8 @@ class ProfileGrid extends React.Component {
   _renderPlaceholder = i => <View style={styles.item} key={i} />;
  
   render() {
-    if (this.state.ModalVisibleStatus) {
+
+if (this.state.ModalVisibleStatus) {
       //Modal to show full image with close button
       return (
         <Modal
@@ -117,32 +89,35 @@ class ProfileGrid extends React.Component {
             </TouchableOpacity>
           </View>
         </Modal>
-        );
-      } else {
+      );
+    } else {
         return (
           <Grid
             style={styles.list}
             renderItem={this._renderItem}
             renderPlaceholder={this._renderPlaceholder}
-            data={this.state.memes}
+            data={this.props.memes}
             itemsPerRow={3}
             onEndReached={() => {
-              console.log(this.state.memes.length);
-              console.log(this.state.memesLoaded);
-              if (this.state.memes.length == this.state.memesLoaded){
+              {/* ensuring there are actually memes to load */}
+              if(this.props.memes.length ==  this.state.memesLoaded){
                 newLoadCount = this.state.memesLoaded + 60;
                 this.setState({
                   memesLoaded: newLoadCount,
                 });
-                this.componentDidMount();
-            }}}
+
+                {/* call parent function */}
+                this.props.loadMemes(newLoadCount);
+              }
+            }}
           />
-        );
-      }
+      );
     }
+    
+  }
 }
 
-export default ProfileGrid; 
+export default MemeGrid; 
  
 const styles = StyleSheet.create({
   item: {

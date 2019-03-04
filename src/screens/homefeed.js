@@ -1,22 +1,16 @@
-/*This is an Example of Grid Image Gallery in React Native*/
 import * as React from 'react';
 import firebase from 'react-native-firebase';
-
-//import React in our project
+import { SearchBar } from 'react-native-elements';
+import MemeGrid from '../components/general/MemeGrid';
 import {
   Image,
   TouchableOpacity,
-  Text,
   View,
   Modal,
   StyleSheet,
   FlatList
 } from 'react-native';
 
-import {SearchBar} from 'react-native-elements';
-
-//import all the needed components
-//tile component
 import Tile from '../components/image/Tile'
 
 import Grid from 'react-native-grid-component';
@@ -25,11 +19,12 @@ class HomeFeed extends React.Component {
   static navigationOptions = {
     header: null
   }
-  constructor() {
-    super(); 
-    this.ref = firebase.firestore().collection('Memes').orderBy('time', "desc");
+  constructor(props) {
+    super(props); 
+    this.ref = firebase.firestore().collection('Memes').orderBy('time', 'desc');
     this.unsubscribe = null;
     this.state = {
+      memesLoaded: 30,
       imageuri: '',
       ModalVisibleStatus: false,
       isLoading: true,
@@ -66,10 +61,10 @@ class HomeFeed extends React.Component {
    });
   }
 
-  componentDidMount() {
-    
-    console.log(this.state.memesLoaded)
-    this.unsubscribe = this.ref.limit(this.state.memesLoaded).onSnapshot(this.onCollectionUpdate);
+
+  componentDidMount(memesLoaded) {
+    console.log('loading memes rn')
+    this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
     return this.state.memes
   }
 
@@ -164,7 +159,7 @@ class HomeFeed extends React.Component {
           <View style={styles.containerStyle}>
             <View style={styles.navBar}>
             <SearchBar
-              placeholder="Explore"
+              placeholder="Find User"
               onChangeText={this.updateSearch}
               value={search}
               containerStyle={{
@@ -253,20 +248,12 @@ class HomeFeed extends React.Component {
               />
             </TouchableOpacity>
           </View>
-          <Grid
-            style={styles.list}
-            renderItem={this._renderItem}
-            renderPlaceholder={this._renderPlaceholder}
-            data={this.state.memes}
-            itemsPerRow={3}
-            onEndReached={() => {
-              newLoadCount = this.state.memesLoaded + 60;
-              this.setState({
-                memesLoaded: newLoadCount,
-              });
-              this.componentDidMount();
-            }}
+
+          <MemeGrid
+            loadMemes={this.componentDidMount}
+            memes={this.state.memes}
           />
+
         </View>
       );
   }

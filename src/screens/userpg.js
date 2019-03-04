@@ -6,15 +6,12 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  FlatList,
-  Button
+  FlatList
 } from "react-native";
 import ProfileGrid from '../components/userProfile/ProfileGrid';
 import Tile from '../components/image/Tile'
 
 import firebase from 'react-native-firebase';
-import PhotoGrid from 'react-native-image-grid';
-import ActionSheet from 'react-native-actionsheet';
 
 
 export default class FriendProfileScreen extends React.Component {
