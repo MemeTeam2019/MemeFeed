@@ -15,25 +15,23 @@ import {
   UIManager,
   TextInput,
 } from "react-native";
-
 import ProfileGrid from '../components/userProfile/ProfileGrid';
 import firebase from "react-native-firebase";
 import Tile from '../components/image/Tile'
+
 import PhotoGrid from 'react-native-image-grid';
 import ActionSheet from 'react-native-actionsheet';
-import MemeGrid from '../components/general/MemeGrid';
 
-const user = firebase.auth().currentUser;
+
 export default class ProfileScreen extends React.Component {
   static navigationOptions = {
-    header: null
-  }
+   header: null
+ }
   constructor(props) {
     super(props);
-    this.ref = firebase.firestore().collection("Reacts/"+user.uid+"/Likes").orderBy('time', "desc");
+    this.ref = firebase.firestore().collection('Memes').orderBy('time', "desc");
     this.unsubscribe = null;
     this.state = {
-      memes: [],
       email: "",
       username: "",
       name: "",
@@ -55,35 +53,8 @@ export default class ProfileScreen extends React.Component {
     this.ActionSheet.show();
   };
 
-
-  // function for extracting Firebase responses to the state
-  onCollectionUpdate = (querySnapshot) => {
-    const memes = [];
-    querySnapshot.forEach((doc) => {
-      const {rank,time,url} = doc.data();
-      if(rank>2){    
-        memes.push({
-         key: doc.id,
-         doc, // DocumentSnapshot
-         src: url,
-         time,
-         });
-     }
-    
-    });
-    this.setState({
-      memes,
-      isLoading: false,
-    });
-  }
-
-  componentDidMount(memesLoaded) {
-    // This if else guarentees that we do the correct action depending on what needs to be done
-    if (memesLoaded != null){
-      this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
-      return this.state.memes
-    } 
-
+  componentDidMount() {
+    this.unsubscribe = this.ref.limit(60).onSnapshot(this.onCollectionUpdate);
     const authInfo = firebase.auth().currentUser;
     this.setState({
       email: authInfo.email,
@@ -100,6 +71,7 @@ export default class ProfileScreen extends React.Component {
     }).catch(err => {
       console.log(err);
     });
+
   }
 
   onGridViewPressedP = () => {
@@ -217,8 +189,33 @@ export default class ProfileScreen extends React.Component {
       //Photo List/Full View of images
         return(
           <View style={styles.containerStyle}>
-          <View style={styles.navBar}>
-                   <Text style={styles.textSty4}>{this.state.username}</Text>
+          <View style={styles.navBar1}>
+          <View style={styles.leftContainer1}>
+                      <Text style={[styles.text, {textAlign: 'left'}]}>
+                        {}
+                      </Text>
+                    </View>
+                    <Text style={styles.textSty4}>
+                      {this.state.username}
+                    </Text>
+                    <View style={styles.rightContainer1}>
+                      <View style={styles.rightIcon1}/>
+                      <TouchableOpacity onPress={this.showActionSheet}>
+                         <Image source={require('../images/setting.png')} style={{width: 80, height: 40}} />
+                      </TouchableOpacity>
+                      <ActionSheet
+                        ref={o => (this.ActionSheet = o)}
+                        title={'User Settings'}
+                        options={optionArray}
+                        cancelButtonIndex={1}
+                        destructiveIndex={0}
+                        onPress={index => {
+                          if (optionArray[index] == 'Logout'){
+                            this.logout();
+                          }
+                        }}
+                      />
+                     </View>
                  </View>
                  {/*Profile Pic, Follwers, Follwing Block*/}
                  <View style={styles.profilePic}>
@@ -238,22 +235,7 @@ export default class ProfileScreen extends React.Component {
                    <Text style={styles.textSty2}>{this.state.name}</Text>
                    <Text>      </Text>
                    <Text>      </Text>
-                   <Button
-                     onPress={this.showActionSheet}
-                     title="User Settings"
-                     />
-                     <ActionSheet
-                       ref={o => (this.ActionSheet = o)}
-                       title={'User Settings'}
-                       options={optionArray}
-                       cancelButtonIndex={1}
-                       destructiveIndex={0}
-                       onPress={index => {
-                         if (optionArray[index] == 'Logout'){
-                           this.logout();
-                         }
-                       }}
-                     />
+
                  </View>
                  {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
                  <View style={styles.navBut}>
@@ -283,8 +265,33 @@ export default class ProfileScreen extends React.Component {
       return (
         <React.Fragment>
         <View style={styles.containerStyle}>
-        <View style={styles.navBar}>
-       <Text style={styles.textSty4}>{this.state.username}</Text>
+        <View style={styles.navBar1}>
+        <View style={styles.leftContainer1}>
+                    <Text style={[styles.text, {textAlign: 'left'}]}>
+                      {}
+                    </Text>
+                  </View>
+                  <Text style={styles.textSty4}>
+                    {this.state.username}
+                  </Text>
+                  <View style={styles.rightContainer1}>
+                    <View style={styles.rightIcon1}/>
+                    <TouchableOpacity onPress={this.showActionSheet}>
+                       <Image source={require('../images/setting.png')} style={{width: 80, height: 40}} />
+                    </TouchableOpacity>
+                    <ActionSheet
+                      ref={o => (this.ActionSheet = o)}
+                      title={'User Settings'}
+                      options={optionArray}
+                      cancelButtonIndex={1}
+                      destructiveIndex={0}
+                      onPress={index => {
+                        if (optionArray[index] == 'Logout'){
+                          this.logout();
+                        }
+                      }}
+                    />
+                   </View>
      </View>
      {/*Profile Pic, Follwers, Follwing Block*/}
      <View style={styles.profilePic}>
@@ -304,22 +311,7 @@ export default class ProfileScreen extends React.Component {
        <Text style={styles.textSty2}>{this.state.name}</Text>
        <Text>      </Text>
        <Text>      </Text>
-       <Button
-         onPress={this.showActionSheet}
-         title="User Settings"
-         />
-         <ActionSheet
-           ref={o => (this.ActionSheet = o)}
-           title={'User Settings'}
-           options={optionArray}
-           cancelButtonIndex={1}
-           destructiveIndex={0}
-           onPress={index => {
-             if (optionArray[index] == 'Logout'){
-               this.logout();
-             }
-           }}
-         />
+
      </View>
      {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
      <View style={styles.navBut}>
@@ -340,16 +332,11 @@ export default class ProfileScreen extends React.Component {
      </View>
 
         </View>
-        <MemeGrid
-          loadMemes={this.componentDidMount}
-          memes={this.state.memes}
-        />
-
+        <ProfileGrid/>
 
      </React.Fragment>
       );
     }
-
   }
 }
 
@@ -501,16 +488,48 @@ const styles = StyleSheet.create({
     right: 9,
     position: 'absolute',
   },
+  navBar1: {
+ height:95,
+ paddingTop: 50,//50
+ flexDirection: 'row',
+ justifyContent: 'space-between',
+ alignItems: 'center',
+ backgroundColor: 'white',
+},
+leftContainer1: {
+ flex: 1,
+ flexDirection: 'row',
+ justifyContent: 'flex-start',
+ backgroundColor: 'white'
+},
+rightContainer1: {
+ flex: 1,
+ width: 20,
+ flexDirection: 'row',
+ justifyContent: 'flex-end',
+ alignItems: 'center',
+ backgroundColor: 'white',
+},
+rightIcon1: {
+ height: 10,
+ width: 20,
+ resizeMode: 'contain',
+ backgroundColor: 'white',
+},
+followBut: {
+  fontSize: 17,
+  fontFamily: 'AvenirNext-Regular',
+  borderColor: '#A4A4A4',
+  color: '#5B5B5B',
+  justifyContent: 'center'
+},
+followBut2: {
+  borderWidth: 0.6,
+  width: '25%',
+  borderRadius: 3.5,
+  marginLeft: 25,
+  flexDirection: 'row',
+  justifyContent: 'center',
+  marginTop: 10,
+}
 })
-
-
-/*
-
-<Text>name: {this.state.name}</Text>
-<Text>email: {this.state.email}</Text>
-<Text>uid: {this.state.uid}</Text>
-<Text>username: {this.state.username}</Text>
-<Text>Following: {this.state.followingCnt}</Text>
-<Text>Followers: {this.state.followersCnt}</Text>
-
-//*/

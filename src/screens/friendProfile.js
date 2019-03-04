@@ -55,8 +55,10 @@ export default class FriendProfileScreen extends React.Component {
       let data = User.data();
       console.log(data);
       this.setState(data);
-    })
-    .catch(err => {
+      for (const key in data) {
+        AsyncStorage.setItem(key, data[key].toString());
+      }
+    }).catch(err => {
       console.log(err);
     });
 
@@ -67,16 +69,14 @@ export default class FriendProfileScreen extends React.Component {
     myUserRef.get().then(snapshot => {
       const data = snapshot.data();
       const followingLst = data.followingLst == null ? [] : data.followingLst;
-
-      console.log(followingLst);
       const isFollowing = followingLst.indexOf(theirUid) > -1;
 
+      console.log(followingLst);
       this.setState({
         isFollowing: isFollowing,
         buttonText: isFollowing ? "Unfollow" : "Follow"
       })
     })
-    .catch(err => console.log(err));
   }
 
   onGridViewPressedP = () => {
@@ -110,8 +110,8 @@ export default class FriendProfileScreen extends React.Component {
 
       let followingCnt = myData.followingCnt;
       let followingLst = myData.followingLst == null ? [] : myData.followingLst;
-      const index = followingLst.indexOf(theirUid);
 
+      const index = followingLst.indexOf(theirUid);
       if (isFollowing && index == -1) {
         followingLst.push(theirUid);
         followingCnt++;
@@ -131,8 +131,8 @@ export default class FriendProfileScreen extends React.Component {
       const theirData = theirSnap.data();
       let followersCnt = theirData.followersCnt;
       let followersLst = theirData.followersLst === null ? [] : theirData.followersLst;
-      const index = followersLst.indexOf(myUid);
 
+      const index = followersLst.indexOf(myUid);
       if (isFollowing && index === -1) {
         followersLst.push(myUid);
         followersCnt++;
@@ -265,6 +265,12 @@ export default class FriendProfileScreen extends React.Component {
                  {/*DISPLAY NAME*/}
                  <View style={styles.profilePic}>
                    <Text style={styles.textSty2}>{this.state.name}</Text>
+                   <View  style={styles.followBut2}>
+                   <TouchableOpacity onPress={() => this.followButton()}>
+                    <Text style={styles.followBut}> {this.state.buttonText} <Image source={require('../images/follower2.png')}style={{width: 17, height: 17}} /></Text>
+
+                   </TouchableOpacity>
+                   </View>
                  </View>
                  {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
                  <View style={styles.navBut}>
@@ -315,12 +321,25 @@ export default class FriendProfileScreen extends React.Component {
        <Text style={styles.textSty2}>{this.state.name}</Text>
        <Text>      </Text>
        <Text>      </Text>
+       <Text>      </Text>
+       <Text>      </Text>
+       <Text>      </Text>
+       <Text>      </Text>
+       <View  style={styles.followBut2}>
        <TouchableOpacity onPress={() => this.followButton()}>
-        <Text> {this.state.buttonText} </Text>
+        <Text style={styles.followBut}> {this.state.buttonText} <Image source={require('../images/follower2.png')}style={{width: 17, height: 17}} /></Text>
+
        </TouchableOpacity>
-
-
+       </View>
      </View>
+          {/*
+            <View  style={styles.followBut2}>
+            <TouchableOpacity onPress={() => this.followButton()}>
+             <Text style={styles.followBut}> {this.state.buttonText} <Image source={require('../images/follower2.png')}style={{width: 17, height: 17}} /></Text>
+            </TouchableOpacity>
+            </View>
+            */}
+
      {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
      <View style={styles.navBut}>
      <TouchableOpacity onPress={() => this.onListViewPressedP()}>
@@ -497,16 +516,20 @@ const styles = StyleSheet.create({
     right: 9,
     position: 'absolute',
   },
+  followBut: {
+    fontSize: 17,
+    fontFamily: 'AvenirNext-Regular',
+    borderColor: '#A4A4A4',
+    //color: '#5B5B5B',
+    justifyContent: 'center'
+  },
+  followBut2: {
+    //borderWidth: 0.6,
+    width: '30%',
+    //borderRadius: 3.5,
+    marginLeft: 10, //20
+    flexDirection: 'row',
+    justifyContent: 'center',
+    //marginTop: 10,
+  }
 })
-
-
-/*
-
-<Text>name: {this.state.name}</Text>
-<Text>email: {this.state.email}</Text>
-<Text>uid: {this.state.uid}</Text>
-<Text>username: {this.state.username}</Text>
-<Text>Following: {this.state.followingCnt}</Text>
-<Text>Followers: {this.state.followersCnt}</Text>
-
-//*/

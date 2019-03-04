@@ -1,4 +1,3 @@
-
 import React from "react";
 import {
   View,
@@ -6,12 +5,15 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  Button
 } from "react-native";
 import ProfileGrid from '../components/userProfile/ProfileGrid';
 import Tile from '../components/image/Tile'
 
 import firebase from 'react-native-firebase';
+import PhotoGrid from 'react-native-image-grid';
+import ActionSheet from 'react-native-actionsheet';
 
 
 export default class FriendProfileScreen extends React.Component {
@@ -48,8 +50,6 @@ export default class FriendProfileScreen extends React.Component {
 
     const theirUid = this.props.navigation.getParam("uid");
 
-    console.log(theirUid);
-
     const docRef = firebase.firestore().collection("Users").doc(theirUid);
     docRef.get().then(User => {
       let data = User.data();
@@ -68,8 +68,7 @@ export default class FriendProfileScreen extends React.Component {
 
     myUserRef.get().then(snapshot => {
       const data = snapshot.data();
-      const followingLst = data.followingLst ? data.followingLst : [];
-      console.log(followingLst);
+      const followingLst = data.followingLst == null ? [] : data.followingLst;
       const isFollowing = followingLst.indexOf(theirUid) > -1;
 
       console.log(followingLst);
@@ -77,9 +76,6 @@ export default class FriendProfileScreen extends React.Component {
         isFollowing: isFollowing,
         buttonText: isFollowing ? "Unfollow" : "Follow"
       })
-    })
-    .catch(err => {
-      console.log(err);
     })
   }
 
@@ -95,11 +91,9 @@ export default class FriendProfileScreen extends React.Component {
 
   followButton = () => {
     const myUid = firebase.auth().currentUser.uid;
-    const theirUid = this.props.navigation.getParam("uid");
+    const theirUid = this.state.uid;
     const myUserRef = firebase.firestore().collection("Users").doc(myUid);
     const theirUserRef = firebase.firestore().collection("Users").doc(theirUid);
-
-    console.log(myUid, theirUid);
 
     let isFollowing = !this.state.isFollowing;
 
@@ -111,9 +105,11 @@ export default class FriendProfileScreen extends React.Component {
     // Update my followingLst and followingCnt
     myUserRef.get().then(mySnap => {
       const myData = mySnap.data();
+
+      console.log(myData);
+
       let followingCnt = myData.followingCnt;
-      let followingLst = myData.followingLst ? myData.followingLst : [];
-      console.log(followingLst);
+      let followingLst = myData.followingLst == null ? [] : myData.followingLst;
 
       const index = followingLst.indexOf(theirUid);
       if (isFollowing && index == -1) {
@@ -134,8 +130,7 @@ export default class FriendProfileScreen extends React.Component {
     theirUserRef.get().then(theirSnap => {
       const theirData = theirSnap.data();
       let followersCnt = theirData.followersCnt;
-      let followersLst = theirData.followersLst ? theirData.followersLst : [];
-      console.log(followersLst);
+      let followersLst = theirData.followersLst === null ? [] : theirData.followersLst;
 
       const index = followersLst.indexOf(myUid);
       if (isFollowing && index === -1) {
@@ -170,7 +165,6 @@ export default class FriendProfileScreen extends React.Component {
       isLoading: false,
    });
   }
-
   ShowModalFunction(visible, imageUrl) {
     //handler to handle the click on image of Grid
     //and close button on modal
@@ -321,12 +315,21 @@ export default class FriendProfileScreen extends React.Component {
        <Text style={styles.textSty2}>{this.state.name}</Text>
        <Text>      </Text>
        <Text>      </Text>
+       <View  style={styles.followBut2}>
        <TouchableOpacity onPress={() => this.followButton()}>
-        <Text> {this.state.buttonText} </Text>
+        <Text style={styles.followBut}> {this.state.buttonText} <Image source={require('../images/follower2.png')}style={{width: 17, height: 17}} /></Text>
+
        </TouchableOpacity>
-
-
+       </View>
      </View>
+          {/*
+            <View  style={styles.followBut2}>
+            <TouchableOpacity onPress={() => this.followButton()}>
+             <Text style={styles.followBut}> {this.state.buttonText} <Image source={require('../images/follower2.png')}style={{width: 17, height: 17}} /></Text>
+            </TouchableOpacity>
+            </View>
+            */}
+
      {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
      <View style={styles.navBut}>
      <TouchableOpacity onPress={() => this.onListViewPressedP()}>
@@ -503,4 +506,20 @@ const styles = StyleSheet.create({
     right: 9,
     position: 'absolute',
   },
+  followBut: {
+    fontSize: 17,
+    fontFamily: 'AvenirNext-Regular',
+    borderColor: '#A4A4A4',
+    //color: '#5B5B5B',
+    justifyContent: 'center'
+  },
+  followBut2: {
+    //borderWidth: 0.6,
+    width: '30%',
+    //borderRadius: 3.5,
+    marginLeft: 10, //20
+    flexDirection: 'row',
+    justifyContent: 'center',
+    //marginTop: 10,
+  }
 })
