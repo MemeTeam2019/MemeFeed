@@ -17,17 +17,17 @@ export default class LoginScreen extends React.Component {
     header: null
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: '',
+  componentDidMount() {
+    this.setState({
+      username: '',
       password: ''
-    };
+    });
   }
 
   handleLogin = () => {
     let email = this.state.email;
     let password = this.state.password;
+
     firebase.auth().signInWithEmailAndPassword(email, password)
       .then(user => {
         if (!user.user.emailVerified) {
@@ -53,7 +53,7 @@ export default class LoginScreen extends React.Component {
             errorMessage = "Wrong email or password";
             break;
         }
-        Alert.alert("Login Failed", errorMessage, [{text: 'OK'}])
+        Alert.alert("Login Failed", errorMessage, [{text: "OK"}])
       });
   }
 

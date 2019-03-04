@@ -2,19 +2,28 @@ import * as React from 'react';
 import {Button, StyleSheet, View, Image, Text, TouchableOpacity, Modal } from 'react-native';
 
 class Comment extends React.Component{
-  constructor(){
-    super();
+
+  constructor(props){
+    super(props);
     this.state = {
+      memeId: this.props.memeId,
+      uid: this.props.uid,
       username: '',
     };
+  }
+
+  handleUsernameClick() {
+
   }
 
   render() {
     return(
       <View style={styles.postInfo}>
-        <Text style={{fontWeight: 'bold', paddingTop: 10, marginLeft: '2%',  marginRight: '2.5%'}}>{this.props.username} 
-            <Text style={{fontWeight: 'normal',  marginRight: '2%'}}> {this.props.content} </Text>
-        </Text>
+        <TouchableOpacity onPress={() => this.handleUsernameClick()}>
+          <Text style={{fontWeight: 'bold', paddingTop: 10, marginLeft: '2.5%'}}>{this.props.username}
+            <Text style={{fontWeight: 'normal'}}> {this.props.content}</Text>
+          </Text>
+        </TouchableOpacity>
       </View>
     );
 

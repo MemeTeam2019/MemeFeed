@@ -20,7 +20,7 @@ class PostInfo extends React.Component{
     };
   }
 
-  ShowModalFunction(visible, imageURL, memeId) {
+  ShowModalFunction(visible) {
     //handler to handle the click on image of Grid
     //and close button on modal
     this.setState({
@@ -31,12 +31,10 @@ class PostInfo extends React.Component{
   }
 
   // function for extracting Firebase responses to the state
-  onCollectionUpdate = (querySnapshot) => {
+  onCollectionUpdate = () => {
     var countRef = firebase.firestore().collection("Comments/"+this.props.memeId+"/Info").doc('CommentInfo');
-    var getDoc = countRef.get()
-      .then(doc => {
+    countRef.get().then(doc => {
         if (doc.exists) {
-
           const {count} = doc.data();
           this.setState({
             commentString: "View all "+count+" comments",
@@ -65,7 +63,7 @@ render() {
         animationType={'fade'}
         visible={this.state.ModalVisibleStatus}
         onRequestClose={() => {
-          this.ShowModalFunction(!this.state.ModalVisibleStatus,'');
+          this.ShowModalFunction(!this.state.ModalVisibleStatus);
         }}
       >
         <View style={styles.modelStyle}>
@@ -78,7 +76,7 @@ render() {
             activeOpacity={0.5}
             style={styles.closeButtonStyle}
             onPress={() => {
-              this.ShowModalFunction(!this.state.ModalVisibleStatus,'');
+              this.ShowModalFunction(!this.state.ModalVisibleStatus);
             }}>
             <Image
               source={{
@@ -96,7 +94,7 @@ render() {
           <View style={styles.postInfo}>
             <TouchableOpacity
               onPress={() => {
-                this.ShowModalFunction(true, this.props.imageURL, this.props.memeId);
+                this.ShowModalFunction(true);
               }}>
               <Image
                 style={styles.commentButtonStyle}
@@ -104,13 +102,13 @@ render() {
               />
             </TouchableOpacity>
             <Text style={{fontStyle: 'italic', fontWeight: 'bold', marginLeft: '2.5%'}}>source</Text>
-            <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>20 Reactions</Text>
+            <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>{this.props.reactCount} Reactions</Text>
             <CommentSample memeId={this.props.memeId}/>
 
             <View style={{flex: 1, flexDirection: 'row'}}>
               <Button
                 onPress={() => {
-                  this.ShowModalFunction(true, this.props.imageURL, this.props.memeId);
+                  this.ShowModalFunction(true);
                 }}
                 style={{fontSize: 1}}
                 title={this.state.commentString}
@@ -125,7 +123,7 @@ render() {
           <View style={styles.postInfo}>
               <TouchableOpacity
               onPress={() => {
-                this.ShowModalFunction(true, this.props.imageURL, this.props.memeId);
+                this.ShowModalFunction(true);
               }}>
               <Image
                 style={styles.commentButtonStyle}
@@ -133,7 +131,7 @@ render() {
               />
             </TouchableOpacity>
             <Text style={{fontStyle: 'italic', fontWeight: 'bold', marginLeft: '2.5%'}}>source</Text>
-            <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>20 Reactions</Text>
+            <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>{this.props.reactCount} Reactions</Text>
             <CommentSample memeId={this.props.memeId}/>
            </View>
         );

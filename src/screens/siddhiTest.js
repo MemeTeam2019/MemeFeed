@@ -1,28 +1,32 @@
+/*This is an Example of Grid Image Gallery in React Native*/
 import * as React from 'react';
 import firebase from 'react-native-firebase';
-import { SearchBar } from 'react-native-elements';
-import MemeGrid from '../components/general/MemeGrid';
+
+//import React in our project
 import {
   Image,
   TouchableOpacity,
+  Text,
   View,
   Modal,
   StyleSheet,
   FlatList
 } from 'react-native';
 
+import {SearchBar} from 'react-native-elements';
+
+//import all the needed components
+//tile component
 import Tile from '../components/image/Tile'
 
+import PhotoGrid from 'react-native-image-grid';
+
 class HomeFeed extends React.Component {
-  static navigationOptions = {
-    header: null
-  }
-  constructor(props) {
-    super(props); 
-    this.ref = firebase.firestore().collection('Memes').orderBy('time', 'desc');
+  constructor() {
+    super();
+    this.ref = firebase.firestore().collection('Memes').orderBy('time', "desc");
     this.unsubscribe = null;
     this.state = {
-      memesLoaded: 30,
       imageuri: '',
       ModalVisibleStatus: false,
       isLoading: true,
@@ -59,13 +63,16 @@ class HomeFeed extends React.Component {
    });
   }
 
+  componentDidMount() {
+    this.unsubscribe = this.ref.limit(60).onSnapshot(this.onCollectionUpdate);
 
-  componentDidMount(memesLoaded) {
-    console.log('loading memes rn')
-    this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
-    return this.state.memes
   }
-
+  // renderHeader() {
+  //   //Header of the Screen
+  //   return <Text style={{padding:19, fontSize:20, color:'black', backgroundColor:'white'}}>
+  //              Recent
+  //          </Text>;
+  // }
   ShowModalFunction(visible, imageURL) {
     //handler to handle the click on image of Grid
     //and close button on modal
@@ -91,28 +98,30 @@ class HomeFeed extends React.Component {
     })
   }
 
-  _renderItem = (data, i) => (
-    <View style={[styles.item]} key={i}>
+  renderItem(item, itemSize, itemPaddingHorizontal) {
+    //Single item of Grid
+    return (
       <TouchableOpacity
+        key={item.id}
         style={{
-          flex: 1,
+          width: itemSize,
+          height: itemSize,
+          paddingHorizontal: itemPaddingHorizontal,
         }}
         onPress={() => {
-          this.ShowModalFunction(true, data.src);
+          this.ShowModalFunction(true, item.src);
         }}>
         <Image
+          resizeMode="cover"
           style={{ flex: 1 }}
-          source={{
-            uri:
-              data.src,
-          }}
+          source={{ uri: item.src }}
         />
       </TouchableOpacity>
-    </View>
-  );
+    );
+  }
 
-  renderTile(){
-    return <Tile/>;
+  renderTile({item}){
+    return <Tile/>
   }
 
   render() {
@@ -157,13 +166,13 @@ class HomeFeed extends React.Component {
           <View style={styles.containerStyle}>
             <View style={styles.navBar}>
             <SearchBar
-              placeholder="Find User"
+              placeholder="Explore"
               onChangeText={this.updateSearch}
               value={search}
               containerStyle={{
                               backgroundColor: 'transparent',
                               borderTopWidth: 0,
-                              borderBottomWidth: 0,
+                              borderBottomWidth: 0
                           }}
               inputStyle={{
                               backgroundColor: 'lightgrey',
@@ -178,6 +187,9 @@ class HomeFeed extends React.Component {
               platform="ios"
               cancelButtonTitle="Cancel"
             />
+            </View>
+            <View style={styles.navBar}>
+              <Image source={require('../images/general.png')} style={{ width: 250, height: 50}} />
             </View>
             <View style={styles.navBut}>
               <TouchableOpacity onPress={() => this.showFullView()}>
@@ -214,7 +226,7 @@ class HomeFeed extends React.Component {
             containerStyle={{
                             backgroundColor: 'transparent',
                             borderTopWidth: 0,
-                            borderBottomWidth: 0,
+                            borderBottomWidth: 0
                         }}
             inputStyle={{
                             backgroundColor: 'lightgrey',
@@ -229,6 +241,9 @@ class HomeFeed extends React.Component {
             platform="ios"
             cancelButtonTitle="Cancel"
           />
+          </View>
+          <View style={styles.navBar}>
+            <Image source={require('../images/general.png')} style={{ width: 250, height: 50}} />
           </View>
           <View style={styles.navBut}>
             <TouchableOpacity onPress={() => this.showFullView()}>
@@ -246,12 +261,15 @@ class HomeFeed extends React.Component {
               />
             </TouchableOpacity>
           </View>
-
-          <MemeGrid
-            loadMemes={this.componentDidMount}
-            memes={this.state.memes}
+          <PhotoGrid
+            data={this.state.memes}
+            itemsPerRow={3}
+            //You can decide the item per row
+            itemMargin={1}
+            itemPaddingHorizontal={1}
+            renderHeader={this.renderHeader}
+            renderItem={this.renderItem.bind(this)}
           />
-
         </View>
       );
   }
@@ -285,7 +303,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   navBar: {
-    height:95,
+    height:80,
     elevation: 3,
     paddingHorizontal: 20,
     paddingTop: 50,//50
