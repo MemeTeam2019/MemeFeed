@@ -17,11 +17,15 @@ import {
 } from "react-native";
 import ProfileGrid from '../components/userProfile/ProfileGrid';
 import firebase from "react-native-firebase";
-import Tile from '../components/image/Tile'
+import Tile from '../components/image/Tile';
+import MemeGrid from '../components/general/MemeGrid';
+import MemeList from '../components/general/MemeList';
 
 import PhotoGrid from 'react-native-image-grid';
 import ActionSheet from 'react-native-actionsheet';
 
+
+const user = firebase.auth().currentUser;
 
 export default class ProfileScreen extends React.Component {
   static navigationOptions = {
@@ -29,8 +33,10 @@ export default class ProfileScreen extends React.Component {
  }
   constructor(props) {
     super(props);
-    this.ref = firebase.firestore().collection('Memes').orderBy('time', "desc");
     this.unsubscribe = null;
+    // ZACS ref 
+    // this.ref = firebase.firestore().collection("Reacts/"+user.uid+"/Likes").orderBy('time', "desc");
+    this.ref = firebase.firestore().collection('Memes').orderBy('time', 'desc');
     this.state = {
       email: "",
       username: "",
@@ -53,26 +59,63 @@ export default class ProfileScreen extends React.Component {
     this.ActionSheet.show();
   };
 
-  componentDidMount() {
-    this.unsubscribe = this.ref.limit(60).onSnapshot(this.onCollectionUpdate);
-    const authInfo = firebase.auth().currentUser;
-    this.setState({
-      email: authInfo.email,
-      uid: authInfo.uid
-    });
-    const docRef = firebase.firestore().collection("Users").doc(authInfo.uid);
-    docRef.get().then(User => {
-      let data = User.data();
-      console.log(data);
-      this.setState(data);
-      for (const key in data) {
-        AsyncStorage.setItem(key, data[key].toString());
-      }
-    }).catch(err => {
-      console.log(err);
-    });
+  // ZACS CODE --- Zac when I pulled your code was gone so I put it back right here! Idk who removed it 
+  // componentDidMount(memesLoaded) {
+  //   console.log(user.uid)
+  //   this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
+  //   return this.state.memes
+  // }
 
+
+  // // function for extracting Firebase responses to the state
+  // onCollectionUpdate = (querySnapshot) => {
+  //   console.log("\n\n\n\n\n\n")
+  //   const memes = [];
+  //   querySnapshot.forEach((doc) => {
+  //     const { rank, time, url } = doc.data();
+  //     console.log("==========\n"+rank+" "+url);
+  //     if (rank > 2) {
+  //       memes.push({
+  //        key: doc.id,
+  //        doc, // DocumentSnapshot
+  //        src: url,
+  //        time,
+  //       });
+  //     }
+  //   });
+  //   this.setState({
+  //     memes,
+  //     isLoading: false,
+  //  });
+  // }
+
+
+  // function for extracting Firebase responses to the state
+  onCollectionUpdate = (querySnapshot) => {
+    const memes = [];
+    querySnapshot.forEach((doc) => {
+      const { url, time} = doc.data();
+      memes.push({
+        key: doc.id,
+        doc, // DocumentSnapshot
+        src: url,
+        time,
+      });
+    });
+    this.setState({
+      memes,
+      isLoading: false,
+   });
   }
+
+
+  componentDidMount(memesLoaded) {
+    console.log('loading memes rn')
+    this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
+    return this.state.memes
+  }
+
+
 
   onGridViewPressedP = () => {
     this.setState({selectGridButtonP: true})
@@ -191,36 +234,36 @@ export default class ProfileScreen extends React.Component {
           <View style={styles.containerStyle}>
           <View style={styles.navBar1}>
           <View style={styles.leftContainer1}>
-                      <Text style={[styles.text, {textAlign: 'left'}]}>
-                        {}
-                      </Text>
-                    </View>
-                    <Text style={styles.textSty4}>
-                      {this.state.username}
-                    </Text>
-                    <View style={styles.rightContainer1}>
-                      <View style={styles.rightIcon1}/>
-                      <TouchableOpacity onPress={this.showActionSheet}>
-                         <Image source={require('../images/setting.png')} style={{width: 80, height: 40}} />
-                      </TouchableOpacity>
-                      <ActionSheet
-                        ref={o => (this.ActionSheet = o)}
-                        title={'User Settings'}
-                        options={optionArray}
-                        cancelButtonIndex={1}
-                        destructiveIndex={0}
-                        onPress={index => {
-                          if (optionArray[index] == 'Logout'){
-                            this.logout();
-                          }
-                        }}
-                      />
-                     </View>
-                 </View>
-                 {/*Profile Pic, Follwers, Follwing Block*/}
-                 <View style={styles.profilePic}>
-                 {/*PROFILE PICTURE*/}
-                 <Image
+            <Text style={[styles.text, {textAlign: 'left'}]}>
+              {}
+            </Text>
+          </View>
+          <Text style={styles.textSty4}>
+            {this.state.username}
+          </Text>
+          <View style={styles.rightContainer1}>
+            <View style={styles.rightIcon1}/>
+              <TouchableOpacity onPress={this.showActionSheet}>
+                <Image source={require('../images/setting.png')} style={{width: 80, height: 40}} />
+              </TouchableOpacity>
+                <ActionSheet
+                  ref={o => (this.ActionSheet = o)}
+                  title={'User Settings'}
+                  options={optionArray}
+                  cancelButtonIndex={1}
+                  destructiveIndex={0}
+                  onPress={index => {
+                    if (optionArray[index] == 'Logout'){
+                      this.logout();
+                    }
+                  }}
+                />
+              </View>
+            </View>
+            {/*Profile Pic, Follwers, Follwing Block*/}
+            <View style={styles.profilePic}>
+              {/*PROFILE PICTURE*/}
+              <Image
                  source={require('../images/profilePic.png')} style={{width: 85, height: 85, borderRadius: 85/2}}/>
                  <Text>      </Text>
                  {/*FOLLOWING*/}
@@ -235,28 +278,27 @@ export default class ProfileScreen extends React.Component {
                    <Text style={styles.textSty2}>{this.state.name}</Text>
                    <Text>      </Text>
                    <Text>      </Text>
-
                  </View>
                  {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
                  <View style={styles.navBut}>
-                 <TouchableOpacity onPress={() => this.onListViewPressedP()}>
-                 <Image
-                 source={require('../images/fullFeedF.png')} style={{ opacity:  this.state.selectListButtonP
-                                                                       ? 1 : 0.3,
-                                                                     width: 100, height: 50}}
-                 />
-                 </TouchableOpacity>
+                  <TouchableOpacity onPress={() => this.onListViewPressedP()}>
+                    <Image
+                    source={require('../images/fullFeedF.png')} style={{ opacity:  this.state.selectListButtonP
+                                                                         ? 1 : 0.3,
+                                                                       width: 100, height: 50}}
+                    />
+                  </TouchableOpacity>
                  <TouchableOpacity onPress={() => this.onGridViewPressedP()}>
-                 <Image
-                 source={require('../images/gridFeedF.png')} style={{ opacity:  this.state.selectGridButtonP
+                  <Image
+                  source={require('../images/gridFeedF.png')} style={{ opacity:  this.state.selectGridButtonP
                                                                        ? 1 : 0.3,
                                                                      width: 100, height: 50}}
-                 />
-                 </TouchableOpacity>
-                 </View>
-            <FlatList
-              data={this.state.memes}
-              renderItem={this.renderTile.bind(this)}
+                  />
+                </TouchableOpacity>
+            </View>
+            <MemeList
+              loadMemes={this.componentDidMount}
+              memes={this.state.memes}
             />
           </View>
         );
@@ -332,7 +374,11 @@ export default class ProfileScreen extends React.Component {
      </View>
 
         </View>
-        <ProfileGrid/>
+        
+        <MemeGrid
+          loadMemes={this.componentDidMount}
+          memes={this.state.memes}
+        />
 
      </React.Fragment>
       );

@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import firebase from 'react-native-firebase';
 
-
+const user = firebase.auth().currentUser;
 class AddComment extends React.Component {
 
   constructor(props) {
@@ -26,9 +26,6 @@ class AddComment extends React.Component {
     const user = firebase.auth().currentUser;
     console.log("user "+user.uid+" commented ==============")
     const date = Math.round(+new Date()/1000);
-
-
-
 
     var countRef = firebase.firestore().collection("Comments/"+memeId+"/Info").doc('CommentInfo');
     var getDoc = countRef.get()
