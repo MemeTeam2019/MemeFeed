@@ -54,10 +54,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 30
   },
-  text: { 
-    fontWeight: 'bold', 
+  text: {  
     fontSize: 16,
-    fontFamily: 'AvenirNext-Regular',
+    fontFamily: 'AvenirNext-Bold',
     marginLeft: 10
   },
   userImg: {

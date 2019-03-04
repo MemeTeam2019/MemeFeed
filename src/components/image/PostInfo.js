@@ -20,16 +20,6 @@ class PostInfo extends React.Component{
     };
   }
 
-  ShowModalFunction(visible) {
-    //handler to handle the click on image of Grid
-    //and close button on modal
-    this.setState({
-      ModalVisibleStatus: visible,
-      imageuri: this.props.imageURL,
-      memeId: this.props.memeId
-    });
-  }
-
   // function for extracting Firebase responses to the state
   onCollectionUpdate = () => {
     var countRef = firebase.firestore().collection("Comments/"+this.props.memeId+"/Info").doc('CommentInfo');
@@ -51,6 +41,16 @@ class PostInfo extends React.Component{
 
   componentDidMount() {
     this.unsubscribe = firebase.firestore().collection("Comments/"+this.props.memeId+"/Info").doc('CommentInfo').onSnapshot(this.onCollectionUpdate); // we choose decsending to get most recent
+  }
+
+  ShowModalFunction(visible) {
+    //handler to handle the click on image of Grid
+    //and close button on modal
+    this.setState({
+      ModalVisibleStatus: visible,
+      imageuri: this.props.imageURL,
+      memeId: this.props.memeId
+    });
   }
 
 render() {
@@ -88,11 +88,11 @@ render() {
           </TouchableOpacity>
         </View>
       </Modal>
-      );
-      } else if (this.state.commentCount > 2) {
+      );} 
+      else if (this.state.commentCount > 2) {
         return(
-          <View style={styles.postInfo}>
-            <TouchableOpacity
+         <View style={styles.postInfo}>
+           <TouchableOpacity
               onPress={() => {
                 this.ShowModalFunction(true);
               }}>
@@ -101,19 +101,19 @@ render() {
                 source={require('../../images/Tile/chatLogo2.png')}
               />
             </TouchableOpacity>
-            <Text style={{fontStyle: 'italic', fontWeight: 'bold', marginLeft: '2.5%'}}>source</Text>
-            <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>{this.props.reactCount} Reactions</Text>
+            <Text style={{fontStyle: 'italic', fontFamily: 'AvenirNext-Bold', marginLeft: '2.5%'}}>source</Text>
+            <Text style={{fonFamily: 'AvenirNext-Regular', paddingTop: 3, marginLeft: '2.5%'}}>{this.props.reactCount} Reactions</Text>
             <CommentSample memeId={this.props.memeId}/>
 
             <View style={{flex: 1, flexDirection: 'row'}}>
-              <Button
-                onPress={() => {
+              <TouchableOpacity
+                 onPress={() => {
                   this.ShowModalFunction(true);
                 }}
-                style={{fontSize: 1}}
-                title={this.state.commentString}
-                color='#3d97ff'
-              />
+              >
+              <Text style={styles.commentStringStyle}>{this.state.commentString}</Text>
+              </TouchableOpacity>
+
             </View>
 
           </View>
@@ -163,11 +163,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   commentButtonStyle: {
-      height: 32,
-      width: 30,
-      marginLeft: 15,
-      position: 'absolute',
-      bottom: 8
+    height: 32,
+    width: 30,
+    marginLeft: 15,
+    position: 'absolute',
+    bottom: 8
+  },
+  commentStringStyle: {
+    fontFamily: 'AvenirNext-Bold',
+    paddingTop: 10,
+    marginLeft: 10,
+    //color: '#383838'
   }
 
   });

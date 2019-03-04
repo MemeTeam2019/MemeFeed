@@ -14,6 +14,8 @@ import {
 import Tile from '../components/image/Tile';
 import SearchResult from '../components/home/SearchResults';
 
+import Grid from 'react-native-grid-component';
+
 class HomeFeed extends React.Component {
   static navigationOptions = {
     header: null

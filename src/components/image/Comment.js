@@ -20,10 +20,14 @@ class Comment extends React.Component{
     return(
       <View style={styles.postInfo}>
         <TouchableOpacity onPress={() => this.handleUsernameClick()}>
+          <Text style={{fontFamily: 'AvenirNext-Bold', paddingTop: 10, marginLeft: '2.5%'}}>
+            username
+          </Text>
+        </TouchableOpacity>
+        <Text style={{fontFamily: 'AvenirNext-Regular'}}> comment</Text>
           <Text style={{fontWeight: 'bold', paddingTop: 10, marginLeft: '2.5%'}}>{this.props.username}
             <Text style={{fontWeight: 'normal'}}> {this.props.content}</Text>
           </Text>
-        </TouchableOpacity>
       </View>
     );
 
