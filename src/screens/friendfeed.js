@@ -19,7 +19,7 @@ import MemeGrid from '../components/general/MemeGrid';
 import PhotoGrid from 'react-native-image-grid';
 
 class FriendFeed extends React.Component{
-    static navigationOptions = {
+  static navigationOptions = {
     header: null
   }
   constructor(){

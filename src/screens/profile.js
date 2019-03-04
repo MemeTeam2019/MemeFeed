@@ -25,7 +25,9 @@ import MemeGrid from '../components/general/MemeGrid';
 
 const user = firebase.auth().currentUser;
 export default class ProfileScreen extends React.Component {
-
+  static navigationOptions = {
+    header: null
+  }
   constructor(props) {
     super(props);
     this.ref = firebase.firestore().collection("Reacts/"+user.uid+"/Likes").orderBy('time', "desc");
