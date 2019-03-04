@@ -7,11 +7,11 @@ import React from 'react';
 import HomeFeed from '../screens/homefeed';
 import ProfileScreen from "../screens/profile";
 import FriendFeed from "../screens/friendfeed"
-import UserScreen from "../screens/friendprofile";
+import UserScreen from "../screens/friendProfile";
 import Username from "../components/image/username";
 
 export const HomeStack = createStackNavigator({
-  Home:{
+  Explore:{
     screen: HomeFeed,
   },
   User: {
@@ -20,7 +20,7 @@ export const HomeStack = createStackNavigator({
 
 },
   {
-    initialRouteName: "Home"
+    initialRouteName: "Explore"
   });
 
 export const FriendStack = createStackNavigator({
