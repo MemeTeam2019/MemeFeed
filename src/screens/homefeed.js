@@ -289,7 +289,7 @@ class HomeFeed extends React.Component {
         <View style={styles.containerStyle}>
           <View style={styles.navBar}>
           <SearchBar
-            placeholder="Explore"
+            placeholder="Search User"
             onChangeText={this.updateSearch}
             value={searchTerm}
             containerStyle={{
@@ -336,6 +336,7 @@ class HomeFeed extends React.Component {
       );
   }
 }}
+
 export default HomeFeed;
 
 const styles = StyleSheet.create({

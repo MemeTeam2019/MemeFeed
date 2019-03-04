@@ -1,3 +1,4 @@
+
 import React from "react";
 import {
   View,
@@ -5,15 +6,12 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  FlatList,
-  Button
+  FlatList
 } from "react-native";
 import ProfileGrid from '../components/userProfile/ProfileGrid';
 import Tile from '../components/image/Tile'
 
 import firebase from 'react-native-firebase';
-import PhotoGrid from 'react-native-image-grid';
-import ActionSheet from 'react-native-actionsheet';
 
 
 export default class FriendProfileScreen extends React.Component {
@@ -50,15 +48,17 @@ export default class FriendProfileScreen extends React.Component {
 
     const theirUid = this.props.navigation.getParam("uid");
 
+    console.log(theirUid);
+
     const docRef = firebase.firestore().collection("Users").doc(theirUid);
     docRef.get().then(User => {
       let data = User.data();
       console.log(data);
       this.setState(data);
-    })
-    .catch(err => {
+    }).catch(err => {
       console.log(err);
     });
+
 
     // Check if their uid is already in my followingLst
     const myUid = firebase.auth().currentUser.uid;
@@ -66,17 +66,19 @@ export default class FriendProfileScreen extends React.Component {
 
     myUserRef.get().then(snapshot => {
       const data = snapshot.data();
-      const followingLst = data.followingLst == null ? [] : data.followingLst;
-
+      const followingLst = data.followingLst || [];
       console.log(followingLst);
       const isFollowing = followingLst.indexOf(theirUid) > -1;
 
+      console.log(followingLst);
       this.setState({
         isFollowing: isFollowing,
         buttonText: isFollowing ? "Unfollow" : "Follow"
       })
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      console.log(err);
+    })
   }
 
   onGridViewPressedP = () => {
@@ -89,11 +91,13 @@ export default class FriendProfileScreen extends React.Component {
     this.setState({selectListButtonP: true})
   }
 
-  followButton = () => {
+  followButtonPress = () => {
     const myUid = firebase.auth().currentUser.uid;
-    const theirUid = this.state.uid;
+    const theirUid = this.props.navigation.getParam("uid");
     const myUserRef = firebase.firestore().collection("Users").doc(myUid);
     const theirUserRef = firebase.firestore().collection("Users").doc(theirUid);
+
+    console.log(myUid, theirUid);
 
     let isFollowing = !this.state.isFollowing;
 
@@ -105,13 +109,11 @@ export default class FriendProfileScreen extends React.Component {
     // Update my followingLst and followingCnt
     myUserRef.get().then(mySnap => {
       const myData = mySnap.data();
-
-      console.log(myData);
-
       let followingCnt = myData.followingCnt;
-      let followingLst = myData.followingLst == null ? [] : myData.followingLst;
-      const index = followingLst.indexOf(theirUid);
+      let followingLst = myData.followingLst || [];
+      console.log(followingLst);
 
+      const index = followingLst.indexOf(theirUid);
       if (isFollowing && index == -1) {
         followingLst.push(theirUid);
         followingCnt++;
@@ -130,9 +132,10 @@ export default class FriendProfileScreen extends React.Component {
     theirUserRef.get().then(theirSnap => {
       const theirData = theirSnap.data();
       let followersCnt = theirData.followersCnt;
-      let followersLst = theirData.followersLst === null ? [] : theirData.followersLst;
-      const index = followersLst.indexOf(myUid);
+      let followersLst = theirData.followersLst || [];
+      console.log(followersLst);
 
+      const index = followersLst.indexOf(myUid);
       if (isFollowing && index === -1) {
         followersLst.push(myUid);
         followersCnt++;
@@ -165,6 +168,7 @@ export default class FriendProfileScreen extends React.Component {
       isLoading: false,
    });
   }
+
   ShowModalFunction(visible, imageUrl) {
     //handler to handle the click on image of Grid
     //and close button on modal
@@ -315,7 +319,7 @@ export default class FriendProfileScreen extends React.Component {
        <Text style={styles.textSty2}>{this.state.name}</Text>
        <Text>      </Text>
        <Text>      </Text>
-       <TouchableOpacity onPress={() => this.followButton()}>
+       <TouchableOpacity onPress={() => this.followButtonPress()}>
         <Text> {this.state.buttonText} </Text>
        </TouchableOpacity>
 
@@ -498,15 +502,3 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
 })
-
-
-/*
-
-<Text>name: {this.state.name}</Text>
-<Text>email: {this.state.email}</Text>
-<Text>uid: {this.state.uid}</Text>
-<Text>username: {this.state.username}</Text>
-<Text>Following: {this.state.followingCnt}</Text>
-<Text>Followers: {this.state.followersCnt}</Text>
-
-//*/

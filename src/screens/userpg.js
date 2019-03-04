@@ -55,12 +55,10 @@ export default class FriendProfileScreen extends React.Component {
       let data = User.data();
       console.log(data);
       this.setState(data);
-      for (const key in data) {
-        AsyncStorage.setItem(key, data[key].toString());
-      }
     }).catch(err => {
       console.log(err);
     });
+
 
     // Check if their uid is already in my followingLst
     const myUid = firebase.auth().currentUser.uid;
@@ -68,7 +66,7 @@ export default class FriendProfileScreen extends React.Component {
 
     myUserRef.get().then(snapshot => {
       const data = snapshot.data();
-      const followingLst = data.followingLst ? data.followingLst : [];
+      const followingLst = data.followingLst || [];
       console.log(followingLst);
       const isFollowing = followingLst.indexOf(theirUid) > -1;
 
@@ -93,7 +91,7 @@ export default class FriendProfileScreen extends React.Component {
     this.setState({selectListButtonP: true})
   }
 
-  followButton = () => {
+  followButtonPress = () => {
     const myUid = firebase.auth().currentUser.uid;
     const theirUid = this.props.navigation.getParam("uid");
     const myUserRef = firebase.firestore().collection("Users").doc(myUid);
@@ -112,7 +110,7 @@ export default class FriendProfileScreen extends React.Component {
     myUserRef.get().then(mySnap => {
       const myData = mySnap.data();
       let followingCnt = myData.followingCnt;
-      let followingLst = myData.followingLst ? myData.followingLst : [];
+      let followingLst = myData.followingLst || [];
       console.log(followingLst);
 
       const index = followingLst.indexOf(theirUid);
@@ -134,7 +132,7 @@ export default class FriendProfileScreen extends React.Component {
     theirUserRef.get().then(theirSnap => {
       const theirData = theirSnap.data();
       let followersCnt = theirData.followersCnt;
-      let followersLst = theirData.followersLst ? theirData.followersLst : [];
+      let followersLst = theirData.followersLst || [];
       console.log(followersLst);
 
       const index = followersLst.indexOf(myUid);
@@ -321,7 +319,7 @@ export default class FriendProfileScreen extends React.Component {
        <Text style={styles.textSty2}>{this.state.name}</Text>
        <Text>      </Text>
        <Text>      </Text>
-       <TouchableOpacity onPress={() => this.followButton()}>
+       <TouchableOpacity onPress={() => this.followButtonPress()}>
         <Text> {this.state.buttonText} </Text>
        </TouchableOpacity>
 
