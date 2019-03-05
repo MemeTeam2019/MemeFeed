@@ -16,6 +16,7 @@ import {
 //tile component
 import Tile from '../components/image/Tile'
 import MemeGrid from '../components/general/MemeGrid';
+import MemeList from '../components/general/MemeList';
 import PhotoGrid from 'react-native-image-grid';
 
 class FriendFeed extends React.Component{
@@ -208,9 +209,9 @@ class FriendFeed extends React.Component{
                 </TouchableOpacity>
               </View>
               {/* List View */}
-              <FlatList 
-                data={this.state.memes}
-                renderItem={this.renderTile.bind(this)}
+              <MemeList
+                loadMemes={this.componentDidMount}
+                memes={this.state.memes}
               />
             </View>
           );

@@ -2,6 +2,7 @@ import * as React from 'react';
 import firebase from 'react-native-firebase';
 import { SearchBar } from 'react-native-elements';
 import MemeGrid from '../components/general/MemeGrid';
+import MemeList from '../components/general/MemeList';
 import {
   Image,
   TouchableOpacity,
@@ -11,10 +12,7 @@ import {
   FlatList
 } from 'react-native';
 
-import Tile from '../components/image/Tile';
 import SearchResult from '../components/home/SearchResults';
-
-import Grid from 'react-native-grid-component';
 
 class HomeFeed extends React.Component {
   static navigationOptions = {
@@ -51,7 +49,10 @@ class HomeFeed extends React.Component {
   updateSearch = (searchTerm) => {
     let results = this.state.allUsers.filter(doc => {
       const username = doc.data().username.toLowerCase();
-      return username.startsWith(searchTerm.toLowerCase()) && doc.ref.id !== this.state.myUid;
+      const name = doc.data().name.toLowerCase();
+      return username.startsWith(searchTerm.toLowerCase())
+              || name.startsWith(searchTerm.toLowerCase())
+              && doc.ref.id !== this.state.myUid;
     });
     console.log(results);
     if (!searchTerm) results = [];
@@ -114,29 +115,6 @@ class HomeFeed extends React.Component {
     })
   }
 
-  _renderItem = (data, i) => (
-    <View style={[styles.item]} key={i}>
-      <TouchableOpacity
-        style={{
-          flex: 1,
-        }}
-        onPress={() => {
-          this.ShowModalFunction(true, data.src);
-        }}>
-        <Image
-          style={{ flex: 1 }}
-          source={{
-            uri:
-              data.src,
-          }}
-        />
-      </TouchableOpacity>
-    </View>
-  );
-
-  renderTile(){
-    return <Tile/>;
-  }
 
   renderSearchResult = (userRef) => {
     const data = userRef.item.data();
@@ -277,9 +255,9 @@ class HomeFeed extends React.Component {
               </TouchableOpacity>
             </View>
             {/* List View */}
-            <FlatList
-              data={this.state.memes}
-              renderItem={this.renderTile.bind(this)}
+            <MemeList
+              loadMemes={this.componentDidMount}
+              memes={this.state.memes}
             />
           </View>
         );
