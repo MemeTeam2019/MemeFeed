@@ -3,31 +3,18 @@ import {
   View,
   Text,
   StyleSheet,
-  Button,
   Image,
   TouchableOpacity,
-  Alert,
-  YellowBox,
-  ListView,
-  FlatList,
-  Platform,
-  ActionSheetIOS,
-  UIManager,
-  TextInput,
 } from "react-native";
-import ProfileGrid from '../components/userProfile/ProfileGrid';
+import { withNavigationFocus } from "react-navigation";
 import firebase from "react-native-firebase";
+import ActionSheet from 'react-native-actionsheet';
+
 import Tile from '../components/image/Tile';
 import MemeGrid from '../components/general/MemeGrid';
 import MemeList from '../components/general/MemeList';
 
-import PhotoGrid from 'react-native-image-grid';
-import ActionSheet from 'react-native-actionsheet';
-
-
-const user = firebase.auth().currentUser;
-
-export default class ProfileScreen extends React.Component {
+class ProfileScreen extends React.Component {
   static navigationOptions = {
    header: null
  }
@@ -56,9 +43,29 @@ export default class ProfileScreen extends React.Component {
     }
   }
 
-  showActionSheet = () => {
-    this.ActionSheet.show();
-  };
+  componentDidMount(memesLoaded) {
+    console.log('loading memes rn');
+    this.getUserInfo();
+    this.unsubscribe = this.ref.limit(memesLoaded)
+                        .onSnapshot(this.onCollectionUpdate);
+    return this.state.memes
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.isFocused !== this.props.isFocused) {
+      this.getUserInfo();
+    }
+  }
+
+  getUserInfo = () => {
+    let firestore = firebase.firestore();
+    const uid = firebase.auth().currentUser.uid;
+    firestore.collection("Users").doc(uid).get()
+      .then(s => {
+        const data = s.data();
+        this.setState(Object.assign(data, { uid: uid }));
+    });
+  }
 
   // ZACS CODE --- Zac when I pulled your code was gone so I put it back right here! Idk who removed it 
   // componentDidMount(memesLoaded) {
@@ -90,6 +97,9 @@ export default class ProfileScreen extends React.Component {
   //  });
   // }
 
+  showActionSheet = () => {
+    this.ActionSheet.show();
+  }
 
   // function for extracting Firebase responses to the state
   onCollectionUpdate = (querySnapshot) => {
@@ -108,24 +118,6 @@ export default class ProfileScreen extends React.Component {
       isLoading: false,
    });
   }
-
-
-  componentDidMount(memesLoaded) {
-    console.log('loading memes rn');
-    let firestore = firebase.firestore();
-    const uid = firebase.auth().currentUser.uid;
-    firestore.collection("Users").doc(uid).get()
-      .then(s => {
-        const data = s.data();
-        this.setState(Object.assign(data, { uid: uid }));
-    });
-
-    this.unsubscribe = this.ref.limit(memesLoaded)
-                        .onSnapshot(this.onCollectionUpdate);
-    return this.state.memes
-  }
-
-
 
   onGridViewPressedP = () => {
     this.setState({selectGridButtonP: true})
@@ -204,7 +196,6 @@ export default class ProfileScreen extends React.Component {
       'Cancel',
     ];
     if (this.state.ModalVisibleStatus) {
-
       //Modal to show full image with close button
       return (
         <Modal
@@ -589,3 +580,5 @@ followBut2: {
   marginTop: 10,
 }
 })
+
+export default withNavigationFocus(ProfileScreen);
