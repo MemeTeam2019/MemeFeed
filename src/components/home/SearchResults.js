@@ -42,7 +42,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderBottomColor: '#bbb',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    marginHorizontal: "5%"
+    marginHorizontal: "5%",
+    paddingVertical: "2.5%"
   },
   primaryText: {
     color: "#000",
@@ -50,7 +51,7 @@ const styles = StyleSheet.create({
   },
   secondaryText: {
     color: "#6C757D",
-    fontSize: 24
+    fontSize: 18
   },
   profilePic: {
     height: 50
