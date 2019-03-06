@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {Text, StyleSheet, View, Image,TouchableOpacity } from 'react-native';
 import firebase from 'react-native-firebase';
 // import { withNavigation } from 'react-navigation';
-import HomeFeed from '../../screens/homefeed';
  
 class Username extends React.Component {
   constructor(props){

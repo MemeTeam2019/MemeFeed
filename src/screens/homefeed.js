@@ -12,9 +12,7 @@ import {
   FlatList
 } from 'react-native';
 
-import Tile from '../components/image/Tile'
-
-import Grid from 'react-native-grid-component';
+import SearchResult from '../components/home/SearchResults';
 
 class HomeFeed extends React.Component {
   static navigationOptions = {
@@ -22,7 +20,6 @@ class HomeFeed extends React.Component {
   }
   constructor(props) {
     super(props); 
-    this.ref = firebase.firestore().collection('Memes').orderBy('time', 'desc');
     this.unsubscribe = null;
     this.state = {
       memesLoaded: 30,
@@ -33,22 +30,54 @@ class HomeFeed extends React.Component {
       inFullView: false,
       memes: [],
       items: [],
+      allUsers: [],
+      searchResults: [],
       selectGridButton: true,
       selectListButton: false,
-      search: '',
+      searchTerm: ''
     };
   }
 
+  componentDidMount (memesLoaded) {
+    this.ref = firebase.firestore().collection('Memes').orderBy('time', 'desc');
+    this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
+    this.getAllUsers();
+    this.setState({ myUid: firebase.auth().currentUser.uid })
+    return this.state.memes;
+  }
 
-  updateSearch = search => {
-    this.setState({ search });
-  };
+  updateSearch = (searchTerm) => {
+    let results = this.state.allUsers.filter(doc => {
+      const lowerSearchTerm = searchTerm.toLowerCase();
+      const username = doc.data().username.toLowerCase();
+      const name = doc.data().name.toLowerCase();
+      return (username.startsWith(lowerSearchTerm)
+              || name.startsWith(lowerSearchTerm))
+              && doc.ref.id !== this.state.myUid;
+    });
+    console.log(results);
+    if (!searchTerm) results = [];
+    this.setState({
+      searchResults: results,
+      searchTerm: searchTerm
+    });
+  }
+
+  getAllUsers = () => {
+    firebase.firestore().collection("Users").get().then(snapshot => {
+      this.setState({ allUsers: snapshot.docs });
+    });
+  }
+
+  renderSearchResults = (userRef) => {
+    return <SearchResult userRef={userRef}/>;
+  }
 
   // function for extracting Firebase responses to the state
   onCollectionUpdate = (querySnapshot) => {
     const memes = [];
     querySnapshot.forEach((doc) => {
-      const { url, time} = doc.data();
+      const { url, time } = doc.data();
       memes.push({
         key: doc.id,
         doc, // DocumentSnapshot
@@ -60,13 +89,6 @@ class HomeFeed extends React.Component {
       memes,
       isLoading: false,
    });
-  }
-
-
-  componentDidMount(memesLoaded) {
-    console.log('loading memes rn')
-    this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
-    return this.state.memes
   }
 
   ShowModalFunction(visible, imageURL) {
@@ -95,9 +117,67 @@ class HomeFeed extends React.Component {
   }
 
 
+  renderSearchResult = (userRef) => {
+    const data = userRef.item.data();
+    const uid = userRef.item.ref.id;
+    return <SearchResult data={data} uid={uid}/>;
+  }
+
   render() {
-    const { search } = this.state;
-    if (this.state.ModalVisibleStatus) {
+    const searchTerm = this.state.searchTerm;
+    if (this.state.searchTerm) {
+      return (
+        <View style={styles.containerStyle}>
+        <View style={styles.navBar}>
+        <SearchBar
+          placeholder="Find User"
+          onChangeText={this.updateSearch}
+          value={searchTerm}
+          containerStyle={{
+                          backgroundColor: 'transparent',
+                          borderTopWidth: 0,
+                          borderBottomWidth: 0,
+                      }}
+          inputStyle={{
+                          backgroundColor: 'lightgrey',
+                          color: 'black'
+                      }}
+          onClear={() => {
+  
+          }}
+          onCancel={() => {
+            this.setState({ searchTerm: "" })
+          }}
+          platform="ios"
+          cancelButtonTitle="Cancel"
+        />
+        </View>
+        <View style={styles.navBut}>
+          <TouchableOpacity onPress={() => this.showFullView()}>
+            <Image
+            source={require('../images/fullFeedF.png')} style={{ opacity:  this.state.inFullView
+                                                                  ? 1 : 0.3,
+                                                                width: 100, height: 50}}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.showGridView()}>
+            <Image
+            source={require('../images/gridFeedF.png')} style={{ opacity:  this.state.inGridView
+                                                                  ? 1 : 0.3,
+                                                                width: 100, height: 50}}
+            />
+          </TouchableOpacity>
+        </View>
+        {/* List View */}
+        <FlatList
+          data={this.state.searchResults}
+          renderItem={userRef => this.renderSearchResult(userRef)}
+          keyExtractor={(item, index) => item.ref.id}
+        />
+      </View>
+      );
+    }
+    else if (this.state.ModalVisibleStatus) {
       //Modal to show full image with close button
       return (
         <Modal
@@ -139,7 +219,7 @@ class HomeFeed extends React.Component {
             <SearchBar
               placeholder="Find User"
               onChangeText={this.updateSearch}
-              value={search}
+              value={searchTerm}
               containerStyle={{
                               backgroundColor: 'transparent',
                               borderTopWidth: 0,
@@ -153,7 +233,7 @@ class HomeFeed extends React.Component {
 
               }}
               onCancel={() => {
-
+                this.setState({ searchTerm: "" })
               }}
               platform="ios"
               cancelButtonTitle="Cancel"
@@ -188,9 +268,9 @@ class HomeFeed extends React.Component {
         <View style={styles.containerStyle}>
           <View style={styles.navBar}>
           <SearchBar
-            placeholder="Explore"
+            placeholder="Search User"
             onChangeText={this.updateSearch}
-            value={search}
+            value={searchTerm}
             containerStyle={{
                             backgroundColor: 'transparent',
                             borderTopWidth: 0,
@@ -231,11 +311,11 @@ class HomeFeed extends React.Component {
             loadMemes={this.componentDidMount}
             memes={this.state.memes}
           />
-
         </View>
       );
   }
 }}
+
 export default HomeFeed;
 
 const styles = StyleSheet.create({

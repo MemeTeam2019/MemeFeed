@@ -1,3 +1,4 @@
+
 import React from "react";
 import {
   View,
@@ -5,15 +6,12 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  FlatList,
-  Button
+  FlatList
 } from "react-native";
 import ProfileGrid from '../components/userProfile/ProfileGrid';
 import Tile from '../components/image/Tile'
 
 import firebase from 'react-native-firebase';
-import PhotoGrid from 'react-native-image-grid';
-import ActionSheet from 'react-native-actionsheet';
 
 
 export default class FriendProfileScreen extends React.Component {
@@ -49,18 +47,15 @@ export default class FriendProfileScreen extends React.Component {
     this.unsubscribe = this.ref.limit(60).onSnapshot(this.onCollectionUpdate);
 
     const theirUid = this.props.navigation.getParam("uid");
-
     const docRef = firebase.firestore().collection("Users").doc(theirUid);
+
     docRef.get().then(User => {
-      let data = User.data();
-      console.log(data);
-      this.setState(data);
-      for (const key in data) {
-        AsyncStorage.setItem(key, data[key].toString());
-      }
-    }).catch(err => {
+      this.setState(User.data());
+    })
+    .catch(err => {
       console.log(err);
     });
+
 
     // Check if their uid is already in my followingLst
     const myUid = firebase.auth().currentUser.uid;
@@ -68,7 +63,7 @@ export default class FriendProfileScreen extends React.Component {
 
     myUserRef.get().then(snapshot => {
       const data = snapshot.data();
-      const followingLst = data.followingLst == null ? [] : data.followingLst;
+      const followingLst = data.followingLst || [];
       const isFollowing = followingLst.indexOf(theirUid) > -1;
 
       console.log(followingLst);
@@ -76,6 +71,9 @@ export default class FriendProfileScreen extends React.Component {
         isFollowing: isFollowing,
         buttonText: isFollowing ? "Unfollow" : "Follow"
       })
+    })
+    .catch(err => {
+      console.log(err);
     })
   }
 
@@ -89,9 +87,9 @@ export default class FriendProfileScreen extends React.Component {
     this.setState({selectListButtonP: true})
   }
 
-  followButton = () => {
+  followButtonPress = () => {
     const myUid = firebase.auth().currentUser.uid;
-    const theirUid = this.state.uid;
+    const theirUid = this.props.navigation.getParam("uid");
     const myUserRef = firebase.firestore().collection("Users").doc(myUid);
     const theirUserRef = firebase.firestore().collection("Users").doc(theirUid);
 
@@ -105,11 +103,8 @@ export default class FriendProfileScreen extends React.Component {
     // Update my followingLst and followingCnt
     myUserRef.get().then(mySnap => {
       const myData = mySnap.data();
-
-      console.log(myData);
-
       let followingCnt = myData.followingCnt;
-      let followingLst = myData.followingLst == null ? [] : myData.followingLst;
+      let followingLst = myData.followingLst || [];
 
       const index = followingLst.indexOf(theirUid);
       if (isFollowing && index == -1) {
@@ -130,7 +125,7 @@ export default class FriendProfileScreen extends React.Component {
     theirUserRef.get().then(theirSnap => {
       const theirData = theirSnap.data();
       let followersCnt = theirData.followersCnt;
-      let followersLst = theirData.followersLst === null ? [] : theirData.followersLst;
+      let followersLst = theirData.followersLst || [];
 
       const index = followersLst.indexOf(myUid);
       if (isFollowing && index === -1) {
@@ -165,6 +160,7 @@ export default class FriendProfileScreen extends React.Component {
       isLoading: false,
    });
   }
+
   ShowModalFunction(visible, imageUrl) {
     //handler to handle the click on image of Grid
     //and close button on modal
@@ -326,7 +322,7 @@ export default class FriendProfileScreen extends React.Component {
        <Text>      </Text>
        <Text>      </Text>
        <View  style={styles.followBut2}>
-       <TouchableOpacity onPress={() => this.followButton()}>
+       <TouchableOpacity onPress={() => this.followButtonPress()}>
         <Text style={styles.followBut}> {this.state.buttonText} <Image source={require('../images/follower2.png')}style={{width: 17, height: 17}} /></Text>
 
        </TouchableOpacity>

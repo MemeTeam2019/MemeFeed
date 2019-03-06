@@ -102,7 +102,7 @@ render() {
               />
             </TouchableOpacity>
             <Text style={{fontStyle: 'italic', fontFamily: 'AvenirNext-Bold', marginLeft: '2.5%'}}>source</Text>
-            <Text style={{fonFamily: 'AvenirNext-Regular', paddingTop: 3, marginLeft: '2.5%'}}>{this.props.reactCount} Reactions</Text>
+            <Text style={{fontFamily: 'AvenirNext-Regular', paddingTop: 3, marginLeft: '2.5%'}}>{this.props.reactCount} Reactions</Text>
             <CommentSample memeId={this.props.memeId}/>
 
             <View style={{flex: 1, flexDirection: 'row'}}>
