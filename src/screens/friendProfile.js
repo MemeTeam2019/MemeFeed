@@ -246,27 +246,33 @@ export default class FriendProfileScreen extends React.Component {
                    <Text style={styles.textSty4}>{this.state.username}</Text>
                  </View>
                  {/*Profile Pic, Follwers, Follwing Block*/}
-                 <View style={styles.profilePic}>
-                 {/*PROFILE PICTURE*/}
-                 <Image
-                 source={require('../images/primePic.png')} style={{width: 85, height: 85, borderRadius: 85/2}}/>
-                 <Text>      </Text>
-                 {/*FOLLOWING*/}
-                 <Text style={styles.textSty}> {this.state.followingCnt} {"\n"} <Text style={styles.textSty3}>Following</Text></Text>
-                 <Text>      </Text>
-                 <Text>      </Text>
-                 {/*FOLLOWERS*/}
-                 <Text style={styles.textSty}>{this.state.followersCnt} {"\n"} <Text style={styles.textSty3}>Followers</Text> </Text>
-                 </View>
-                 {/*DISPLAY NAME*/}
-                 <View style={styles.profilePic}>
-                   <Text style={styles.textSty2}>{this.state.name}</Text>
-                   <View  style={styles.followBut2}>
-                   <TouchableOpacity onPress={() => this.followButton()}>
-                    <Text style={styles.followBut}> {this.state.buttonText} <Image source={require('../images/follower2.png')}style={{width: 17, height: 17}} /></Text>
+                 <View style={styles.navBar2}>
+                   <View style={styles.leftContainer2}>
+                       <Image
+                       source={require('../images/primePic.png')} style={{width: 85, height: 85, borderRadius: 85/2}}/>
 
-                   </TouchableOpacity>
                    </View>
+                      <Text style={styles.textSty}> {this.state.followingCnt} {"\n"} <Text style={styles.textSty3}>Following</Text></Text>
+                   <View style={styles.rightContainer2}>
+                      <Text style={styles.textSty}>{this.state.followersCnt} {"\n"} <Text style={styles.textSty3}>Followers</Text> </Text>
+                   </View>
+                 </View>
+
+                 {/*DISPLAY NAME*/}
+                 <View style={styles.navBar1}>
+                         <View style={styles.leftContainer1}>
+                               <Text style={[styles.textSty2, {textAlign: 'left'}]}>
+                                 { <Text style={styles.textSty2}>{this.state.name}</Text>}
+                               </Text>
+                         </View>
+
+                         <View style={styles.rightContainer1}>
+                           <TouchableOpacity onPress={() => this.followButtonPress()}>
+                            <Text style={styles.followBut}> {this.state.buttonText} <Image source={require('../images/follower2.png')}style={{width: 17, height: 17}} /></Text>
+
+                           </TouchableOpacity>
+
+                         </View>
                  </View>
                  {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
                  <View style={styles.navBut}>
@@ -300,33 +306,37 @@ export default class FriendProfileScreen extends React.Component {
        <Text style={styles.textSty4}>{this.state.username}</Text>
      </View>
      {/*Profile Pic, Follwers, Follwing Block*/}
-     <View style={styles.profilePic}>
-     {/*PROFILE PICTURE*/}
-     <Image
-     source={require('../images/primePic.png')} style={{width: 85, height: 85, borderRadius: 85/2}}/>
-     <Text>      </Text>
-     {/*FOLLOWING*/}
-     <Text style={styles.textSty}> {this.state.followingCnt} {"\n"} <Text style={styles.textSty3}>Following</Text></Text>
-     <Text>      </Text>
-     <Text>      </Text>
-     {/*FOLLOWERS*/}
-     <Text style={styles.textSty}>{this.state.followersCnt} {"\n"} <Text style={styles.textSty3}>Followers</Text> </Text>
-     </View>
-     {/*DISPLAY NAME*/}
-     <View style={styles.profilePic}>
-       <Text style={styles.textSty2}>{this.state.name}</Text>
-       <Text>      </Text>
-       <Text>      </Text>
-       <Text>      </Text>
-       <Text>      </Text>
-       <Text>      </Text>
-       <Text>      </Text>
-       <View  style={styles.followBut2}>
-       <TouchableOpacity onPress={() => this.followButtonPress()}>
-        <Text style={styles.followBut}> {this.state.buttonText} <Image source={require('../images/follower2.png')}style={{width: 17, height: 17}} /></Text>
+     <View style={styles.navBar2}>
+       <View style={styles.leftContainer2}>
+           <Image
+           source={require('../images/primePic.png')} style={{width: 85, height: 85, borderRadius: 85/2}}/>
 
-       </TouchableOpacity>
        </View>
+          <Text style={styles.textSty}> {this.state.followingCnt} {"\n"} <Text style={styles.textSty3}>Following</Text></Text>
+       <View style={styles.rightContainer2}>
+          <Text style={styles.textSty}>{this.state.followersCnt} {"\n"} <Text style={styles.textSty3}>Followers</Text> </Text>
+       </View>
+     </View>
+
+
+
+
+     {/*DISPLAY NAME*/}
+     <View style={styles.navBar1}>
+             <View style={styles.leftContainer1}>
+                   <Text style={[styles.textSty2, {textAlign: 'left'}]}>
+                     { <Text style={styles.textSty2}>{this.state.name}</Text>}
+                   </Text>
+             </View>
+
+             <View style={styles.rightContainer1}>
+               <View style={styles.rightIcon1}/>
+               <TouchableOpacity onPress={() => this.followButtonPress()}>
+                <Text style={styles.followBut}> {this.state.buttonText} <Image source={require('../images/follower2.png')}style={{width: 17, height: 17}} /></Text>
+
+               </TouchableOpacity>
+
+             </View>
      </View>
           {/*
             <View  style={styles.followBut2}>
@@ -394,12 +404,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#F04812',
   },
   navBar: {
-    height:95,
+    height:55,
     backgroundColor: 'white',
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 50,//50
+    paddingTop: 0,//50
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -468,10 +478,10 @@ const styles = StyleSheet.create({
   },
   profilePic: {
     backgroundColor: 'white',
-    elevation: 3,
+    elevation: 1,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 10,//50
+    paddingTop: 0,//10
     flexDirection: 'row',
     alignItems: 'center',
     fontSize: 360,
@@ -527,5 +537,63 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     //marginTop: 10,
-  }
+  },
+  navBar1: {
+  height: 60,
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+},
+leftContainer1: {
+  flex: 1,
+  flexDirection: 'row',
+  paddingRight: 3,
+  paddingHorizontal: 25,
+  backgroundColor: 'green'
+},
+rightContainer1: {
+  flex: 1,
+  flexDirection: 'row',
+  justifyContent: 'flex-end',
+  alignItems: 'center',
+  backgroundColor: 'red',
+  paddingLeft: 3,
+  paddingHorizontal: 25,
+},
+rightIcon1: {
+  height: 10,
+  width: 10,
+  resizeMode: 'contain',
+  backgroundColor: 'white',
+},
+navBar2: {
+  height: 60,
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  backgroundColor: 'blue',
+},
+leftContainer2: {
+  flex: 1,
+  flexDirection: 'row',
+  paddingRight: 3,
+  paddingHorizontal: 25,
+  backgroundColor: 'green'
+},
+rightContainer2: {
+  flex: 1,
+  flexDirection: 'row',
+  justifyContent: 'flex-end',
+  alignItems: 'center',
+  backgroundColor: 'red',
+  paddingLeft: 3,
+  paddingHorizontal: 25,
+},
+rightIcon2: {
+  height: 10,
+  width: 10,
+  resizeMode: 'contain',
+  backgroundColor: 'white',
+}
+
 })
