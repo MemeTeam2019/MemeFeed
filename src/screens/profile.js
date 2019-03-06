@@ -31,6 +31,7 @@ export default class ProfileScreen extends React.Component {
   static navigationOptions = {
    header: null
  }
+
   constructor(props) {
     super(props);
     this.unsubscribe = null;
@@ -110,8 +111,17 @@ export default class ProfileScreen extends React.Component {
 
 
   componentDidMount(memesLoaded) {
-    console.log('loading memes rn')
-    this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
+    console.log('loading memes rn');
+    let firestore = firebase.firestore();
+    const uid = firebase.auth().currentUser.uid;
+    firestore.collection("Users").doc(uid).get()
+      .then(s => {
+        const data = s.data();
+        this.setState(Object.assign(data, { uid: uid }));
+    });
+
+    this.unsubscribe = this.ref.limit(memesLoaded)
+                        .onSnapshot(this.onCollectionUpdate);
     return this.state.memes
   }
 

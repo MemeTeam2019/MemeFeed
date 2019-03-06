@@ -3,7 +3,8 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  View
+  View,
+  Image
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
 
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderBottomColor: '#bbb',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    marginHorizontal: "10%"
+    marginHorizontal: "5%"
   },
   primaryText: {
     color: "#000",

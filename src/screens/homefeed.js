@@ -48,10 +48,11 @@ class HomeFeed extends React.Component {
 
   updateSearch = (searchTerm) => {
     let results = this.state.allUsers.filter(doc => {
+      const lowerSearchTerm = searchTerm.toLowerCase();
       const username = doc.data().username.toLowerCase();
       const name = doc.data().name.toLowerCase();
-      return username.startsWith(searchTerm.toLowerCase())
-              || name.startsWith(searchTerm.toLowerCase())
+      return (username.startsWith(lowerSearchTerm)
+              || name.startsWith(lowerSearchTerm))
               && doc.ref.id !== this.state.myUid;
     });
     console.log(results);
