@@ -5,10 +5,9 @@ import {
   StyleSheet,
   ActivityIndicator
 } from "react-native";
-import {NavigationEvents} from "react-navigation";
 import firebase from "react-native-firebase";
 
-export default class LoadingScreen extends React.Component {
+class LoadingScreen extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -44,3 +43,5 @@ const styles = StyleSheet.create({
     padding: 20
   }
 })
+
+export default LoadingScreen;
