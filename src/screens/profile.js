@@ -35,7 +35,7 @@ export default class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
     this.unsubscribe = null;
-    // ZACS ref 
+    // ZACS ref
     // this.ref = firebase.firestore().collection("Reacts/"+user.uid+"/Likes").orderBy('time', "desc");
     this.ref = firebase.firestore().collection('Memes').orderBy('time', 'desc');
     this.state = {
@@ -60,7 +60,7 @@ export default class ProfileScreen extends React.Component {
     this.ActionSheet.show();
   };
 
-  // ZACS CODE --- Zac when I pulled your code was gone so I put it back right here! Idk who removed it 
+  // ZACS CODE --- Zac when I pulled your code was gone so I put it back right here! Idk who removed it
   // componentDidMount(memesLoaded) {
   //   console.log(user.uid)
   //   this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
@@ -254,7 +254,7 @@ export default class ProfileScreen extends React.Component {
           <View style={styles.rightContainer1}>
             <View style={styles.rightIcon1}/>
               <TouchableOpacity onPress={this.showActionSheet}>
-                <Image source={require('../images/setting.png')} style={{width: 80, height: 40}} />
+                <Image source={require('../images/setting.png')} style={{width: 60, height: 30}} />
               </TouchableOpacity>
                 <ActionSheet
                   ref={o => (this.ActionSheet = o)}
@@ -271,18 +271,17 @@ export default class ProfileScreen extends React.Component {
               </View>
             </View>
             {/*Profile Pic, Follwers, Follwing Block*/}
-            <View style={styles.profilePic}>
-              {/*PROFILE PICTURE*/}
-              <Image
-                 source={require('../images/profilePic.png')} style={{width: 85, height: 85, borderRadius: 85/2}}/>
-                 <Text>      </Text>
-                 {/*FOLLOWING*/}
-                 <Text style={styles.textSty}> {this.state.followingCnt} {"\n"} <Text style={styles.textSty3}>Following</Text></Text>
-                 <Text>      </Text>
-                 <Text>      </Text>
-                 {/*FOLLOWERS*/}
-                 <Text style={styles.textSty}>{this.state.followersCnt} {"\n"} <Text style={styles.textSty3}>Followers</Text> </Text>
-                 </View>
+            <View style={styles.navBar2}>
+              <View style={styles.leftContainer2}>
+                  <Image
+                  source={require('../images/profilePic.png')} style={{width: 85, height: 85, borderRadius: 85/2}}/>
+
+              </View>
+                      <Text style={styles.textSty}> {this.state.followingCnt} {"\n"} <Text style={styles.textSty3}>Following</Text></Text>
+              <View style={styles.rightContainer2}>
+              <Text style={styles.textSty}>{this.state.followersCnt} {"\n"} <Text style={styles.textSty3}>Followers</Text> </Text>
+            </View>
+            </View>
                  {/*DISPLAY NAME*/}
                  <View style={styles.profilePic}>
                    <Text style={styles.textSty2}>{this.state.name}</Text>
@@ -329,7 +328,7 @@ export default class ProfileScreen extends React.Component {
                   <View style={styles.rightContainer1}>
                     <View style={styles.rightIcon1}/>
                     <TouchableOpacity onPress={this.showActionSheet}>
-                       <Image source={require('../images/setting.png')} style={{width: 80, height: 40}} />
+                       <Image source={require('../images/setting.png')} style={{width: 60, height: 30}} />
                     </TouchableOpacity>
                     <ActionSheet
                       ref={o => (this.ActionSheet = o)}
@@ -345,25 +344,24 @@ export default class ProfileScreen extends React.Component {
                     />
                    </View>
      </View>
-     {/*Profile Pic, Follwers, Follwing Block*/}
-     <View style={styles.profilePic}>
-     {/*PROFILE PICTURE*/}
-     <Image
-     source={require('../images/profilePic.png')} style={{width: 85, height: 85, borderRadius: 85/2}}/>
-     <Text>      </Text>
-     {/*FOLLOWING*/}
-     <Text style={styles.textSty}> {this.state.followingCnt} {"\n"} <Text style={styles.textSty3}>Following</Text></Text>
-     <Text>      </Text>
-     <Text>      </Text>
-     {/*FOLLOWERS*/}
-     <Text style={styles.textSty}>{this.state.followersCnt} {"\n"} <Text style={styles.textSty3}>Followers</Text> </Text>
+
+    {/*Profile Pic, Follwers, Follwing Block*/}
+
+     <View style={styles.navBar2}>
+       <View style={styles.leftContainer2}>
+           <Image
+           source={require('../images/profilePic.png')} style={{width: 85, height: 85, borderRadius: 85/2}}/>
+
+       </View>
+               <Text style={styles.textSty}> {this.state.followingCnt} {"\n"} <Text style={styles.textSty3}>Following</Text></Text>
+       <View style={styles.rightContainer2}>
+       <Text style={styles.textSty}>{this.state.followersCnt} {"\n"} <Text style={styles.textSty3}>Followers</Text> </Text>
      </View>
+     </View>
+
      {/*DISPLAY NAME*/}
      <View style={styles.profilePic}>
        <Text style={styles.textSty2}>{this.state.name}</Text>
-       <Text>      </Text>
-       <Text>      </Text>
-
      </View>
      {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
      <View style={styles.navBut}>
@@ -384,7 +382,7 @@ export default class ProfileScreen extends React.Component {
      </View>
 
         </View>
-        
+
         <MemeGrid
           loadMemes={this.componentDidMount}
           memes={this.state.memes}
@@ -587,5 +585,32 @@ followBut2: {
   flexDirection: 'row',
   justifyContent: 'center',
   marginTop: 10,
+},
+
+navBar2: {
+  height: 100,
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+},
+leftContainer2: {
+  flex: 1,
+  flexDirection: 'row',
+  paddingRight: 3,
+  paddingHorizontal: 25,
+},
+rightContainer2: {
+  flex: 1,
+  flexDirection: 'row',
+  justifyContent: 'flex-end',
+  alignItems: 'center',
+  paddingLeft: 3,
+  paddingHorizontal: 25,
+},
+rightIcon2: {
+  height: 10,
+  width: 10,
+  resizeMode: 'contain',
+  backgroundColor: 'white',
 }
 })

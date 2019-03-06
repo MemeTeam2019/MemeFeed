@@ -328,9 +328,7 @@ export default class FriendProfileScreen extends React.Component {
                      { <Text style={styles.textSty2}>{this.state.name}</Text>}
                    </Text>
              </View>
-
              <View style={styles.rightContainer1}>
-               <View style={styles.rightIcon1}/>
                <TouchableOpacity onPress={() => this.followButtonPress()}>
                 <Text style={styles.followBut}> {this.state.buttonText} <Image source={require('../images/follower2.png')}style={{width: 17, height: 17}} /></Text>
 
@@ -511,7 +509,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    //backgroundColor: 'rgba(255,255,255,1)',
     backgroundColor: 'white'
   },
   closeButtonStyle: {
@@ -526,17 +523,13 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontFamily: 'AvenirNext-Regular',
     borderColor: '#A4A4A4',
-    //color: '#5B5B5B',
     justifyContent: 'center'
   },
   followBut2: {
-    //borderWidth: 0.6,
     width: '30%',
-    //borderRadius: 3.5,
     marginLeft: 10, //20
     flexDirection: 'row',
     justifyContent: 'center',
-    //marginTop: 10,
   },
   navBar1: {
   height: 60,
@@ -548,15 +541,13 @@ leftContainer1: {
   flex: 1,
   flexDirection: 'row',
   paddingRight: 3,
-  paddingHorizontal: 25,
-  backgroundColor: 'green'
+  paddingHorizontal: 20,
 },
 rightContainer1: {
   flex: 1,
   flexDirection: 'row',
   justifyContent: 'flex-end',
   alignItems: 'center',
-  backgroundColor: 'red',
   paddingLeft: 3,
   paddingHorizontal: 25,
 },
@@ -567,25 +558,22 @@ rightIcon1: {
   backgroundColor: 'white',
 },
 navBar2: {
-  height: 60,
+  height: 100,
   flexDirection: 'row',
   justifyContent: 'space-between',
   alignItems: 'center',
-  backgroundColor: 'blue',
 },
 leftContainer2: {
   flex: 1,
   flexDirection: 'row',
   paddingRight: 3,
   paddingHorizontal: 25,
-  backgroundColor: 'green'
 },
 rightContainer2: {
   flex: 1,
   flexDirection: 'row',
   justifyContent: 'flex-end',
   alignItems: 'center',
-  backgroundColor: 'red',
   paddingLeft: 3,
   paddingHorizontal: 25,
 },

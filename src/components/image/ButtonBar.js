@@ -34,7 +34,7 @@ class ButtonBar extends React.Component {
     const memeId = this.props.memeId;
     const ref = firebase.firestore().collection("Reacts").doc(user.uid)
                   .collection("Likes").doc(memeId);
-
+    const source = this.props.source;
     ref.get().then(docSnapshot => {
       if (docSnapshot.exists) {
         let data = docSnapshot.data();
@@ -71,8 +71,8 @@ class ButtonBar extends React.Component {
       reactRef.set({
         rank: oldReact === newReact ? -1 : newReact,
         time: date,
-        //liked from tester
-        likedFrom: "testing"
+        likedFrom: "testing",
+        //likedFrom: this.props.source, //this.props.source pass down later
       });
       memeRef.get().then(async memeSnapshot => {
         const data = memeSnapshot.data();
