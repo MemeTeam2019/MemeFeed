@@ -101,7 +101,6 @@ render() {
                 source={require('../../images/Tile/chatLogo2.png')}
               />
             </TouchableOpacity>
-            <Text style={{fontStyle: 'italic', fontFamily: 'AvenirNext-Bold', marginLeft: '2.5%'}}>source</Text>
             <Text style={{fonFamily: 'AvenirNext-Regular', paddingTop: 3, marginLeft: '2.5%'}}>{this.props.reactCount} Reactions</Text>
             <CommentSample memeId={this.props.memeId}/>
 
@@ -130,9 +129,8 @@ render() {
                 source={require('../../images/Tile/chatLogo2.png')}
               />
             </TouchableOpacity>
-            <Text style={{fontStyle: 'italic', fontWeight: 'bold', marginLeft: '2.5%'}}>source</Text>
             <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>{this.props.reactCount} Reactions</Text>
-            <CommentSample memeId={this.props.memeId}/>
+            <CommentSample memeId={this.props.memeId} navigation={this.props.navigate}/>
            </View>
         );
       }
