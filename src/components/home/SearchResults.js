@@ -4,9 +4,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-  Image
+  Image,
+  FlatList
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
+import firebase from 'react-native-firebase';
 
 
 class SearchResult extends React.Component {
@@ -23,15 +25,62 @@ class SearchResult extends React.Component {
     return (
       <React.Fragment>
         <TouchableOpacity
-          onPress={() => this.props.navigation.navigate("User", {uid: this.state.uid})}
+          onPress={() => this.props.navigation.navigate("User", {
+            uid: this.state.uid
+          })}
           style={styles.resultContainer}
         >
+          <View>
+            <Image
+              style={styles.profilePic}
+              source={require("../../images/primePic.png")}
+            />
+          </View>
           <View>
             <Text style={styles.primaryText}>{this.state.username}</Text>
             <Text style={styles.secondaryText}>{this.state.name}</Text>
           </View>
         </TouchableOpacity>
       </React.Fragment>
+    );
+  }
+}
+
+/**
+ * Lists following and followers for uid passed down through props
+ */
+class FollowList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      uid: this.props.navigation.getParam("uid"),
+      listToRender: this.props.navigation.getParam("listToRender")
+    }
+  }
+
+  componentDidMount() {
+    const uid = this.props.uid;
+    const myRef = firebase.firestore().collection("Users").doc(uid);
+    myRef.get().then(snapshot => {
+      
+    })
+  }
+
+  renderSearchResult = (userRef) => {
+    const data = userRef.item.data();
+    const uid  = userRef.item.ref.id;
+    return <SearchResult data={data} uid={uid}/>;
+  }
+
+  render() {
+    return (
+      <View>
+        <FlatList
+          data={this.state.results}
+          renderItem={(userRef) => this.renderSearchResult(userRef)}
+          keyExtractor={(item) => item.ref.id}
+        />
+      </View>
     );
   }
 }
@@ -54,8 +103,16 @@ const styles = StyleSheet.create({
     fontSize: 18
   },
   profilePic: {
-    height: 50
+    height: 50,
+    width: 50,
+    marginRight: "5%"
   }
 })
 
-export default withNavigation(SearchResult);
+const SearchResultNav = withNavigation(SearchResult);
+const FollowListNav   = withNavigation(FollowList);
+
+export {
+  SearchResultNav as SearchResult,
+  FollowListNav as FollowList
+}

@@ -6,7 +6,6 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { withNavigationFocus } from "react-navigation";
 import firebase from "react-native-firebase";
 import ActionSheet from 'react-native-actionsheet';
 
@@ -14,10 +13,10 @@ import Tile from '../components/image/Tile';
 import MemeGrid from '../components/general/MemeGrid';
 import MemeList from '../components/general/MemeList';
 
-class ProfileScreen extends React.Component {
+export default class ProfileScreen extends React.Component {
   static navigationOptions = {
-   header: null
- }
+    header: null
+  }
 
   constructor(props) {
     super(props);
@@ -580,5 +579,3 @@ followBut2: {
   marginTop: 10,
 }
 })
-
-export default withNavigationFocus(ProfileScreen);
