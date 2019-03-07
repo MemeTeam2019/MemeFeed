@@ -16,7 +16,7 @@ class Comment extends React.Component{
   }
 
   componentDidMount() {
-    const uid = this.props.uid;
+    const uid = this.state.uid;
     const userRef = firebase.firestore().collection("Users").doc(uid);
     userRef.get().then(snapshot => {
       const data = snapshot.data();

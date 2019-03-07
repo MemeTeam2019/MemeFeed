@@ -130,7 +130,7 @@ render() {
               />
             </TouchableOpacity>
             <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>{this.props.reactCount} Reactions</Text>
-            <CommentSample memeId={this.props.memeId} navigation={this.props.navigate}/>
+            <CommentSample memeId={this.props.memeId}/>
            </View>
         );
       }
