@@ -19,8 +19,7 @@ class Tile extends React.Component {
 
   componentDidMount() {
     const memeid = this.props.memeId;
-    const ref = firebase.firestore().collection("Memes").doc(memeid)
-  
+    const ref = firebase.firestore().collection("Memes").doc(memeid);
     ref.get().then(docSnapshot => {
       const data = docSnapshot.data();
       const reactCount = data.reactCount || 0;
@@ -33,7 +32,7 @@ class Tile extends React.Component {
   }
 
   render() {
-    return ( 
+    return (
       <View style={styles.container}>
         <TileHeader uid="F5bA3qC0dkca7h1INfoNNq4GIRh2"/>
         <Photo imageUrl={this.props.imageUrl}/>
@@ -58,5 +57,4 @@ const styles = StyleSheet.create({
     height: '100%',
   },
 });
-export default Tile; 
- 
+export default Tile;

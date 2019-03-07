@@ -17,6 +17,7 @@ class PostInfo extends React.Component{
       imageuri: '',
       memeId: '',
       ModalVisibleStatus: false,
+      source: 'testing',
     };
   }
 
@@ -32,7 +33,7 @@ class PostInfo extends React.Component{
           });
 
         }
-    
+
     })
     .catch(err => {
       console.log('Error getting document', err);
@@ -49,7 +50,8 @@ class PostInfo extends React.Component{
     this.setState({
       ModalVisibleStatus: visible,
       imageuri: this.props.imageURL,
-      memeId: this.props.memeId
+      memeId: this.props.memeId,
+      source: this.props.source,
     });
   }
 
@@ -88,7 +90,7 @@ render() {
           </TouchableOpacity>
         </View>
       </Modal>
-      );} 
+      );}
       else if (this.state.commentCount > 2) {
         return(
          <View style={styles.postInfo}>
