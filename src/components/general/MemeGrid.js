@@ -1,5 +1,6 @@
 import * as React from 'react';
 import firebase from 'react-native-firebase';
+import { withNavigation } from 'react-navigation';
 
 //import React in our project
 import {
@@ -14,6 +15,7 @@ import {
 import Grid from 'react-native-grid-component';
 
 class MemeGrid extends React.Component {
+
   constructor() {
     super();
     this.state = {
@@ -34,6 +36,18 @@ class MemeGrid extends React.Component {
     });
   }
 
+  static navigationOptions = {
+    header: null
+  }
+
+  navigateToTilePage(data) {
+    console.log('yoooooooo')
+    this.props.navigation.navigate("Tile", {
+      src: data.src,
+      memeId: data.key
+    });
+  }
+
   _renderItem = (data, i) => (
     <View style={[styles.item]} key={i}>
       <TouchableOpacity
@@ -41,7 +55,8 @@ class MemeGrid extends React.Component {
           flex: 1,
         }}
         onPress={() => {
-          this.ShowModalFunction(true, data.src);
+          // this.ShowModalFunction(true, data.src);
+          this.navigateToTilePage(data);
         }}>
         <Image
           style={{ flex: 1 }}
@@ -57,67 +72,31 @@ class MemeGrid extends React.Component {
   _renderPlaceholder = i => <View style={styles.item} key={i} />;
  
   render() {
+    return (
+      <Grid
+        style={styles.list}
+        renderItem={this._renderItem}
+        renderPlaceholder={this._renderPlaceholder}
+        data={this.props.memes}
+        itemsPerRow={3}
+        onEndReached={() => {
+          {/* ensuring there are actually memes to load */}
+          if(this.props.memes.length ==  this.state.memesLoaded){
+            newLoadCount = this.state.memesLoaded + 60;
+            this.setState({
+              memesLoaded: newLoadCount,
+            });
 
-if (this.state.ModalVisibleStatus) {
-      //Modal to show full image with close button
-      return (
-        <Modal
-          transparent={false}
-          animationType={'fade'}
-          visible={this.state.ModalVisibleStatus}
-          onRequestClose={() => {
-            this.ShowModalFunction(!this.state.ModalVisibleStatus,'');
-          }}>
-          <View style={styles.modelStyle}>
-            <Image
-              style={styles.fullImageStyle}
-              source={{ uri: this.state.imageuri }}
-            />
-            <TouchableOpacity
-              activeOpacity={0.5}
-              style={styles.closeButtonStyle}
-              onPress={() => {
-                this.ShowModalFunction(!this.state.ModalVisibleStatus,'');
-              }}>
-              <Image
-                source={{
-                  uri:
-                    'https://aboutreact.com/wp-content/uploads/2018/09/close.png',
-                }}
-                style={{ width: 25, height: 25, marginTop:16 }}
-              />
-            </TouchableOpacity>
-          </View>
-        </Modal>
-      );
-    } else {
-        return (
-          <Grid
-            style={styles.list}
-            renderItem={this._renderItem}
-            renderPlaceholder={this._renderPlaceholder}
-            data={this.props.memes}
-            itemsPerRow={3}
-            onEndReached={() => {
-              {/* ensuring there are actually memes to load */}
-              if(this.props.memes.length ==  this.state.memesLoaded){
-                newLoadCount = this.state.memesLoaded + 60;
-                this.setState({
-                  memesLoaded: newLoadCount,
-                });
-
-                {/* call parent function */}
-                this.props.loadMemes(newLoadCount);
-              }
-            }}
-          />
-      );
-    }
-    
+            {/* call parent function */}
+            this.props.loadMemes(newLoadCount);
+          }
+        }}
+      />
+  );
   }
 }
 
-export default MemeGrid; 
+export default withNavigation(MemeGrid);
  
 const styles = StyleSheet.create({
   item: {

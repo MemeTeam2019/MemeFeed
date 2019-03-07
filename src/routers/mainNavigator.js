@@ -5,6 +5,7 @@ import { Icon } from 'react-native-elements';
 import React from 'react';
 
 import HomeFeed from '../screens/homefeed';
+import TilePage from '../screens/tilePage'
 import ProfileScreen from "../screens/profile";
 import FriendFeed from "../screens/friendfeed"
 import UserScreen from "../screens/friendProfile";
@@ -16,6 +17,9 @@ export const HomeStack = createStackNavigator({
   },
   User: {
     screen: UserScreen,
+  },
+  Tile: {
+    screen: TilePage,
   },
 
 },
@@ -30,6 +34,9 @@ export const FriendStack = createStackNavigator({
   User: {
     screen: UserScreen,
   },
+  Tile: {
+    screen: TilePage,
+  },
 
 },
   {
@@ -37,11 +44,14 @@ export const FriendStack = createStackNavigator({
   });
 
 export const ProfileStack = createStackNavigator({
-   Profile:{
+  Profile:{
     screen: ProfileScreen,
   },
   User: {
     screen: UserScreen,
+  },
+  Tile: {
+    screen: TilePage,
   },
 
 },
