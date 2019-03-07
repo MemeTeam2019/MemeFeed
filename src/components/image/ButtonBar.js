@@ -4,7 +4,7 @@ import firebase from "react-native-firebase";
 
 import PostInfo from "../image/PostInfo"
 
- 
+
 class ButtonBar extends React.Component {
 
   constructor(props) {
@@ -25,7 +25,7 @@ class ButtonBar extends React.Component {
       2:'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/ImagesForApplicationDesign%2FSlightlySmileFade.png?alt=media&token=fd66c2bf-a68c-4095-b6ee-e48b7642a55a',
       3:'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/ImagesForApplicationDesign%2FBeamingGrinFade.png?alt=media&token=c27709fc-3395-4619-ae3e-09a651935c4b',
       4:'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/ImagesForApplicationDesign%2FLaughingTearsOfJoyFade.png?alt=media&token=d992a83a-ec9a-4bba-9859-60000523fd99'
-    };  
+    };
   }
 
 
@@ -34,7 +34,7 @@ class ButtonBar extends React.Component {
     const memeId = this.props.memeId;
     const ref = firebase.firestore().collection("Reacts").doc(user.uid)
                   .collection("Likes").doc(memeId);
-
+    const source = this.props.source;
     ref.get().then(docSnapshot => {
       if (docSnapshot.exists) {
         let data = docSnapshot.data();
@@ -64,13 +64,15 @@ class ButtonBar extends React.Component {
                       .collection("Likes").doc(memeId);
     const memeRef = firebase.firestore().collection("Memes").doc(memeId);
     const date = Math.round(+new Date()/1000);
-    
+
     reactRef.get().then(likesSnapshot => {
       const data = likesSnapshot.data();
       var hasReacted = likesSnapshot.exists && data.rank !== -1;
       reactRef.set({
         rank: oldReact === newReact ? -1 : newReact,
-        time: date
+        time: date,
+        likedFrom: "testing",
+        //likedFrom: this.props.source, //this.props.source pass down later
       });
       memeRef.get().then(async memeSnapshot => {
         const data = memeSnapshot.data();
@@ -109,7 +111,7 @@ class ButtonBar extends React.Component {
   }
 
   _renderPlaceholder = i => <View style={styles.item} key={i} />;
- 
+
   render() {
     if (this.state.ModalVisibleStatus) {
       //Modal to show full image with close button
@@ -157,7 +159,7 @@ class ButtonBar extends React.Component {
             <Image
               resizeMode="cover"
               style={{ flex: 1 }}
-              source={{ uri: 
+              source={{ uri:
                 this.state.selectedButton === 0 || this.state.selectedButton === null
                   ? this.emojiRank[0]
                   : this.UnclickedEmojiRank[0]}}
@@ -175,7 +177,7 @@ class ButtonBar extends React.Component {
             <Image
               resizeMode="cover"
               style={{ flex: 1 }}
-              source={{ uri: 
+              source={{ uri:
                 this.state.selectedButton === 1 || this.state.selectedButton === null
                   ? this.emojiRank[1]
                   : this.UnclickedEmojiRank[1]}}
@@ -193,7 +195,7 @@ class ButtonBar extends React.Component {
             <Image
               resizeMode="cover"
               style={{ flex: 1 }}
-              source={{ uri: 
+              source={{ uri:
                 this.state.selectedButton === 2 || this.state.selectedButton === null
                   ? this.emojiRank[2]
                   : this.UnclickedEmojiRank[2]}}
@@ -211,7 +213,7 @@ class ButtonBar extends React.Component {
             <Image
               resizeMode="cover"
               style={{ flex: 1 }}
-              source={{ uri: 
+              source={{ uri:
                 this.state.selectedButton === 3 || this.state.selectedButton === null
                   ? this.emojiRank[3]
                   : this.UnclickedEmojiRank[3]}}
@@ -229,7 +231,7 @@ class ButtonBar extends React.Component {
             <Image
               resizeMode="cover"
               style={{ flex: 1 }}
-              source={{ uri: 
+              source={{ uri:
                 this.state.selectedButton === 4 || this.state.selectedButton === null
                                 ? this.emojiRank[4]
                                 : this.UnclickedEmojiRank[4]}}
@@ -242,12 +244,12 @@ class ButtonBar extends React.Component {
 }
 }
 
-export default ButtonBar; 
- 
+export default ButtonBar;
+
 const styles = StyleSheet.create({
   buttonBar: {
-    flexDirection: 'row', 
-    width: '100%', 
+    flexDirection: 'row',
+    width: '100%',
     justifyContent: 'center',
   },
   button: {
