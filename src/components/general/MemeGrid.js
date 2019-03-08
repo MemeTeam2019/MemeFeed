@@ -43,8 +43,7 @@ class MemeGrid extends React.Component {
   navigateToTilePage(data) {
     console.log('yoooooooo')
     this.props.navigation.navigate("Tile", {
-      src: data.src,
-      memeId: data.key
+      memes: [data]
     });
   }
 
