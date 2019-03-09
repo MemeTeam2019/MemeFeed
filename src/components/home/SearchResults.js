@@ -11,6 +11,12 @@ import { withNavigation } from 'react-navigation';
 import firebase from 'react-native-firebase';
 
 
+/**
+ * Component to display a search result when using the search feature.
+ * On press will navigate to the profile of the user in question.
+ * 
+ * Props - username: string, name: string, uid: string
+ */
 class SearchResult extends React.Component {
   constructor(props) {
     super(props);
@@ -47,23 +53,18 @@ class SearchResult extends React.Component {
 }
 
 /**
- * Lists following and followers for uid passed down through props
+ * Generates a FlatList of SearchResults to display in search results or
+ * when the user is viewing someone's following or follower list.
+ * 
+ * Props - listToRender: Array[DocumentSnapshot]
+ * 
  */
 class FollowList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      uid: this.props.navigation.getParam("uid"),
-      listToRender: this.props.navigation.getParam("listToRender")
+      listToRender: this.props.listToRender
     }
-  }
-
-  componentDidMount() {
-    const uid = this.props.uid;
-    const myRef = firebase.firestore().collection("Users").doc(uid);
-    myRef.get().then(snapshot => {
-      
-    })
   }
 
   renderSearchResult = (userRef) => {
@@ -109,8 +110,9 @@ const styles = StyleSheet.create({
   }
 })
 
+// Both components depend on navigation props to route to ProfileScreen
+const FollowListNav = withNavigation(FollowList);
 const SearchResultNav = withNavigation(SearchResult);
-const FollowListNav   = withNavigation(FollowList);
 
 export {
   SearchResultNav as SearchResult,

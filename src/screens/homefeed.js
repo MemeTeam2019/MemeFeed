@@ -18,6 +18,7 @@ class HomeFeed extends React.Component {
   static navigationOptions = {
     header: null
   }
+
   constructor(props) {
     super(props); 
     this.unsubscribe = null;
@@ -38,36 +39,44 @@ class HomeFeed extends React.Component {
     };
   }
 
-  componentDidMount (memesLoaded) {
+  componentDidMount(memesLoaded) {
     this.ref = firebase.firestore().collection('Memes').orderBy('time', 'desc');
     this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
-    this.getAllUsers();
-    this.setState({ myUid: firebase.auth().currentUser.uid })
     return this.state.memes;
   }
 
-  updateSearch = (searchTerm) => {
-    let results = this.state.allUsers.filter(doc => {
-      const lowerSearchTerm = searchTerm.toLowerCase();
-      const username = doc.data().username.toLowerCase();
-      const name = doc.data().name.toLowerCase();
-      return (username.startsWith(lowerSearchTerm)
-              || name.startsWith(lowerSearchTerm))
-              && doc.ref.id !== this.state.myUid;
-    });
-    console.log(results);
-    if (!searchTerm)
-      results = [];
-    this.setState({
-      searchResults: results,
-      searchTerm: searchTerm
-    });
-  }
+  /**
+   * Pulls all users whose username starts with the searchTerm
+   * 
+   * TODO: also filter by name
+   */
+  updateSearch = (searchTerm = '') => {
+    this.setState({ searchTerm: searchTerm });
+    const usersRef = firebase.firestore().collection('Users');
+    usersRef
+      .where('username', '>=', searchTerm)
+      .where('username', '<',  searchTerm + '\uf8ff')
+      .get()
+      .then((snapshot) => {
+        const myUid = firebase.auth().currentUser.uid;
+        let results = [];
 
-  getAllUsers = () => {
-    firebase.firestore().collection("Users").get().then(snapshot => {
-      this.setState({ allUsers: snapshot.docs });
-    });
+        // Filter own profile out of search
+        results = snapshot.docs.filter(doc => {
+          const uid = doc.ref.id;
+          return uid !== myUid;
+        });
+        if (!results || !searchTerm)
+          results = [];
+
+        // Trigger rerender to display updated search results
+        this.setState({
+          searchResults: results
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   // function for extracting Firebase responses to the state
@@ -120,61 +129,30 @@ class HomeFeed extends React.Component {
     return <SearchResult data={data} uid={uid}/>;
   }
 
+  componentToRender = () => {
+    if (this.state.searchTerm) {
+      return <FlatList
+               data={this.state.searchResults}
+               renderItem={(userRef) => this.renderSearchResult(userRef)}
+               keyExtractor={(item) => item.ref.id}
+             />;
+    } else if (this.state.inFullView) {
+      return <MemeList
+              loadMemes={this.componentDidMount}
+              memes={this.state.memes}
+            />;
+    } else {
+      return <MemeGrid
+              loadMemes={this.componentDidMount}
+              memes={this.state.memes}
+            />;
+    }
+  }
+
   render() {
     const searchTerm = this.state.searchTerm;
-    if (this.state.searchTerm) {
-      return (
-        <View style={styles.containerStyle}>
-        <View style={styles.navBar}>
-        <SearchBar
-          placeholder="Find User"
-          onChangeText={this.updateSearch}
-          value={searchTerm}
-          containerStyle={{
-                          backgroundColor: 'transparent',
-                          borderTopWidth: 0,
-                          borderBottomWidth: 0,
-                      }}
-          inputStyle={{
-                          backgroundColor: 'lightgrey',
-                          color: 'black'
-                      }}
-          onClear={() => {
-  
-          }}
-          onCancel={() => {
-            this.setState({ searchTerm: "" })
-          }}
-          platform="ios"
-          cancelButtonTitle="Cancel"
-        />
-        </View>
-        <View style={styles.navBut}>
-          <TouchableOpacity onPress={() => this.showFullView()}>
-            <Image
-            source={require('../images/fullFeedF.png')} style={{ opacity:  this.state.inFullView
-                                                                  ? 1 : 0.3,
-                                                                width: 100, height: 50}}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.showGridView()}>
-            <Image
-            source={require('../images/gridFeedF.png')} style={{ opacity:  this.state.inGridView
-                                                                  ? 1 : 0.3,
-                                                                width: 100, height: 50}}
-            />
-          </TouchableOpacity>
-        </View>
-        {/* List View */}
-        <FlatList
-          data={this.state.searchResults}
-          renderItem={(userRef) => this.renderSearchResult(userRef)}
-          keyExtractor={(item) => item.ref.id}
-        />
-      </View>
-      );
-    }
-    else if (this.state.ModalVisibleStatus) {
+
+    if (this.state.ModalVisibleStatus) {
       //Modal to show full image with close button
       return (
         <Modal
@@ -208,112 +186,55 @@ class HomeFeed extends React.Component {
           </View>
         </Modal>
       );
-    } else if (this.state.inFullView) {
-      //Photo List/Full View of images
-        return(
-          <View style={styles.containerStyle}>
-            <View style={styles.navBar}>
-            <SearchBar
-              placeholder="Find User"
-              onChangeText={this.updateSearch}
-              value={searchTerm}
-              containerStyle={{
-                              backgroundColor: 'transparent',
-                              borderTopWidth: 0,
-                              borderBottomWidth: 0,
-                          }}
-              inputStyle={{
-                              backgroundColor: 'lightgrey',
-                              color: 'black'
-                          }}
-              onClear={() => {
-
-              }}
-              onCancel={() => {
-                this.setState({ searchTerm: "" })
-              }}
-              platform="ios"
-              cancelButtonTitle="Cancel"
-            />
-            </View>
-            <View style={styles.navBut}>
-              <TouchableOpacity onPress={() => this.showFullView()}>
-                <Image
-                source={require('../images/fullFeedF.png')} style={{ opacity:  this.state.inFullView
-                                                                      ? 1 : 0.3,
-                                                                    width: 100, height: 50}}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.showGridView()}>
-                <Image
-                source={require('../images/gridFeedF.png')} style={{ opacity:  this.state.inGridView
-                                                                      ? 1 : 0.3,
-                                                                    width: 100, height: 50}}
-                />
-              </TouchableOpacity>
-            </View>
-            {/* List View */}
-            <MemeList
-              loadMemes={this.componentDidMount}
-              memes={this.state.memes}
-            />
-          </View>
-        );
     } else {
-      //Photo Grid of images
       return (
-        <View style={styles.containerStyle}>
-          <View style={styles.navBar}>
-          <SearchBar
-            placeholder="Search User"
-            onChangeText={this.updateSearch}
-            value={searchTerm}
-            containerStyle={{
-                            backgroundColor: 'transparent',
-                            borderTopWidth: 0,
-                            borderBottomWidth: 0,
-                        }}
-            inputStyle={{
-                            backgroundColor: 'lightgrey',
-                            color: 'black'
-                        }}
-            onClear={() => {
-
-            }}
-            onCancel={() => {
-
-            }}
-            platform="ios"
-            cancelButtonTitle="Cancel"
-          />
-          </View>
-          <View style={styles.navBut}>
-            <TouchableOpacity onPress={() => this.showFullView()}>
-              <Image
-              source={require('../images/fullFeedF.png')} style={{ opacity:  this.state.inFullView
-                                                                    ? 1 : 0.3,
-                                                                  width: 100, height: 50}}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.showGridView()}>
-              <Image
-              source={require('../images/gridFeedF.png')} style={{ opacity:  this.state.inGridView
-                                                                    ? 1 : 0.3,
-                                                                  width: 100, height: 50}}
-              />
-            </TouchableOpacity>
-          </View>
-
-          <MemeGrid
-            loadMemes={this.componentDidMount}
-            memes={this.state.memes}
-          />
+        <View style={ styles.containerStyle }>
+        <View style={ styles.navBar }>
+        <SearchBar
+          placeholder="Find User"
+          onChangeText={ (query) => this.updateSearch(query) }
+          value={ searchTerm }
+          containerStyle={{
+            backgroundColor: 'transparent',
+            borderTopWidth: 0,
+            borderBottomWidth: 0,
+          }}
+          inputStyle={{
+            backgroundColor: 'lightgrey',
+            color: 'black'
+          }}
+          onClear={() => {
+  
+          }}
+          onCancel={() => {
+            this.setState({ searchTerm: '' })
+          }}
+          platform="ios"
+          cancelButtonTitle="Cancel"
+        />
         </View>
+        <View style={styles.navBut}>
+          <TouchableOpacity onPress={() => this.showFullView()}>
+            <Image
+            source={require('../images/fullFeedF.png')} style={{ opacity:  this.state.inFullView
+                                                                  ? 1 : 0.3,
+                                                                width: 100, height: 50}}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.showGridView()}>
+            <Image
+            source={require('../images/gridFeedF.png')} style={{ opacity:  this.state.inGridView
+                                                                  ? 1 : 0.3,
+                                                                width: 100, height: 50}}
+            />
+          </TouchableOpacity>
+        </View>
+        {this.componentToRender()}
+      </View>
       );
+    }
   }
-}}
-
-export default HomeFeed;
+}
 
 const styles = StyleSheet.create({
   containerStyle: {
@@ -362,3 +283,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   }
 });
+
+export default HomeFeed;
