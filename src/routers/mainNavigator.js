@@ -1,89 +1,99 @@
 // Main tabbed navigator goes here
-import {createBottomTabNavigator} from 'react-navigation';
-import {createStackNavigator} from "react-navigation";
+import { createBottomTabNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation';
 import { Icon } from 'react-native-elements';
 import React from 'react';
 
 import HomeFeed from '../screens/homefeed';
-import TilePage from '../screens/tilePage'
-import ProfileScreen from "../screens/profile";
-import FriendFeed from "../screens/friendfeed"
-import UserScreen from "../screens/friendProfile";
-import Username from "../components/image/username";
+import TilePage from '../screens/tilePage';
+import ProfileScreen from '../screens/profile';
+import FriendFeed from '../screens/friendfeed';
+import UserScreen from '../screens/friendProfile';
 
-export const HomeStack = createStackNavigator({
-  Explore:{
-    screen: HomeFeed,
-  },
-  User: {
-    screen: UserScreen,
-  },
-  Tile: {
-    screen: TilePage,
-  },
+import { FollowList } from '../components/home/SearchResults';
 
-},
+export const HomeStack = createStackNavigator(
   {
-    initialRouteName: "Explore"
-  });
-
-export const FriendStack = createStackNavigator({
-  Friend:{
-    screen: FriendFeed,
+    Explore: {
+      screen: HomeFeed,
+    },
+    User: {
+      screen: UserScreen,
+    },
+    Tile: {
+      screen: TilePage,
+    },
   },
-  User: {
-    screen: UserScreen,
-  },
-  Tile: {
-    screen: TilePage,
-  },
-
-},
   {
-    initialRouteName: "Friend"
-  });
+    initialRouteName: 'Explore',
+  }
+);
 
-export const ProfileStack = createStackNavigator({
-  Profile:{
-    screen: ProfileScreen,
-  },
-  User: {
-    screen: UserScreen,
-  },
-  Tile: {
-    screen: TilePage,
-  },
-
-},
+export const FriendStack = createStackNavigator(
   {
-    initialRouteName: "Profile"
-})
+    Friend: {
+      screen: FriendFeed,
+    },
+    User: {
+      screen: UserScreen,
+    },
+    Tile: {
+      screen: TilePage,
+    },
+  },
+  {
+    initialRouteName: 'Friend',
+  }
+);
 
+export const ProfileStack = createStackNavigator(
+  {
+    Profile: {
+      screen: ProfileScreen,
+    },
+    User: {
+      screen: UserScreen,
+    },
+    Tile: {
+      screen: TilePage,
+    },
+    FollowList: {
+      screen: FollowList,
+    },
+  },
+  {
+    initialRouteName: 'Profile',
+  }
+);
 
 const MainRouter = createBottomTabNavigator({
   Home: {
     screen: FriendStack,
     navigationOptions: {
       tabBarLabel: 'Home',
-      tabBarIcon: ({ tintColor }) => <Icon name="home" size={35} color={tintColor} />
-    }
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name="home" size={35} color={tintColor} />
+      ),
+    },
   },
-  Explore:{
+  Explore: {
     screen: HomeStack,
     navigationOptions: {
       tabBarLabel: 'Explore',
-      tabBarIcon: ({ tintColor }) => <Icon name="list" size={35} color={tintColor} />
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name="list" size={35} color={tintColor} />
+      ),
     },
   },
   Profile: {
     screen: ProfileStack,
     navigationOptions: {
       tabBarLabel: 'Profile',
-      tabBarIcon: ({ tintColor }) => <Icon name="face" size={35} color={tintColor} />
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name="face" size={35} color={tintColor} />
+      ),
     },
   },
-
-
 });
 
 export default MainRouter;
