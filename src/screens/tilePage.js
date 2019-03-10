@@ -19,6 +19,7 @@ class TilePage extends React.Component {
 
   renderTile({item}){
     //for list view
+    console.log(item.key)
     return <Tile
       memeId={item.key}
       imageUrl={item.src}
