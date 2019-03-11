@@ -44,7 +44,6 @@ export default class ProfileScreen extends React.Component {
   }
 
   componentDidMount(memesLoaded) {
-    console.log('loading memes rn');
     this.getUserInfo();
     this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
   }
@@ -87,38 +86,6 @@ export default class ProfileScreen extends React.Component {
     });
   }
 
-
-
-  // ZACS CODE --- Zac when I pulled your code was gone so I put it back right here! Idk who removed it
-  // componentDidMount(memesLoaded) {
-  //   console.log(user.uid)
-  //   this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
-  //   return this.state.memes
-  // }
-
-
-  // // function for extracting Firebase responses to the state
-  // onCollectionUpdate = (querySnapshot) => {
-  //   console.log("\n\n\n\n\n\n")
-  //   const memes = [];
-  //   querySnapshot.forEach((doc) => {
-  //     const { rank, time, url } = doc.data();
-  //     console.log("==========\n"+rank+" "+url);
-  //     if (rank > 2) {
-  //       memes.push({
-  //        key: doc.id,
-  //        doc, // DocumentSnapshot
-  //        src: url,
-  //        time,
-  //       });
-  //     }
-  //   });
-  //   this.setState({
-  //     memes,
-  //     isLoading: false,
-  //  });
-  // }
-
   showActionSheet = () => {
     this.ActionSheet.show();
   }
@@ -141,22 +108,7 @@ export default class ProfileScreen extends React.Component {
       console.log(err);
     })
   }
-  // onCollectionUpdate = (querySnapshot) => {
-  //   const memes = [];
-  //   querySnapshot.forEach((doc) => {
-  //     const { url, time} = doc.data();
-  //     memes.push({
-  //       key: doc.id,
-  //       doc, // DocumentSnapshot
-  //       src: url,
-  //       time,
-  //     });
-  //   });
-  //   this.setState({
-  //     memes,
-  //     isLoading: false,
-  //  });
-  // }
+
   ShowModalFunction(visible, imageUrl) {
     //handler to handle the click on image of Grid
     //and close button on modal
