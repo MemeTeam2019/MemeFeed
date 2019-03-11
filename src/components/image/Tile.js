@@ -32,14 +32,22 @@ class Tile extends React.Component {
   }
 
   render() {
+      console.log('OPENING DAS TILE MIA ALTIERI')
+      console.log(this.props.postedBy)
     return (
       <View style={styles.container}>
-        <TileHeader uid="F5bA3qC0dkca7h1INfoNNq4GIRh2"/>
+        <TileHeader 
+          uid="F5bA3qC0dkca7h1INfoNNq4GIRh2"
+          sub={this.props.sub} 
+          likedFrom={this.props.likedFrom} 
+          poster={this.props.poster}
+        />
         <Photo imageUrl={this.props.imageUrl}/>
         <ButtonBar
           imageUrl={this.props.imageUrl}
           memeId={this.props.memeId}
           imageUrl={this.props.imageUrl}
+          postedBy={this.props.postedBy}
           updateReacts={this.updateReactCount}
         />
         <PostInfo

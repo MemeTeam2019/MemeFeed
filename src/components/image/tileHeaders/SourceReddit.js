@@ -13,22 +13,6 @@ class SourceReddit extends React.Component {
     }
   }
 
-  componentDidMount() {
-    const uid = this.props.uid;
-    const userRef = firebase.firestore().collection("Users").doc(uid);
-    userRef.get().then(snapshot => {
-      const data = snapshot.data();
-      this.setState({username: data.username})
-    })
-    .catch(err => console.log(err));
-  }
-
-  navigateToFriendProfile() {
-    this.props.navigation.navigate("FriendProfile", {
-      uid: this.props.uid
-    });
-  }
-
   render() {
     // if just from reddit (a.k.a. on the explore page)
     return (
@@ -37,7 +21,7 @@ class SourceReddit extends React.Component {
           <Text style={{fontSize: 15}}>sourced from</Text>
         </View>
         <View style={styles.container}>
-          <Text style={{fontSize: 15, fontWeight: 'bold', fontStyle: 'italic'}}>'r/ThreadName'</Text>
+          <Text style={{fontSize: 15, fontWeight: 'bold', fontStyle: 'italic'}}>'r/{this.props.sub}'</Text>
         </View>
       </View>
     );

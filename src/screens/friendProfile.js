@@ -159,13 +159,16 @@ export default class FriendProfileScreen extends React.Component {
    const memes = [];
     querySnapshot.forEach((doc) => {
       console.log(doc.data(), )
-      const { time, url,rank } = doc.data();
+      const { time, url, rank, likedFrom } = doc.data();
         if (rank > 1)
         memes.push({
          key: doc.id,
          doc, // DocumentSnapshot
          src: url,
          time,
+         likedFrom,
+         postedBy: this.props.navigation.getParam("uid"),
+         poster: this.props.navigation.getParam("uid"),
         });
 
         this.setState({

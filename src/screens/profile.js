@@ -54,13 +54,18 @@ export default class ProfileScreen extends React.Component {
    const memes = [];
     querySnapshot.forEach((doc) => {
       console.log(doc.data(), )
-      const { time, url,rank } = doc.data();
+      const { time, url, rank, likedFrom } = doc.data();
         if (rank > 1)
         memes.push({
          key: doc.id,
          doc, // DocumentSnapshot
          src: url,
          time,
+         likedFrom,
+         // this is to ensure that if a user changes their reaction to a meme
+         // on their own page that the liked from source is still the same
+         postedBy: likedFrom, 
+         poster: firebase.auth().currentUser.uid,
         });
 
         this.setState({

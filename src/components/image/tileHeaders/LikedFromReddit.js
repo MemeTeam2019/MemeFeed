@@ -31,6 +31,7 @@ class LikedFromReddit extends React.Component {
 
   render() {
     // if just from reddit (a.k.a. on the explore page)
+    console.log(this.props.sub)
     return (
       <View style={styles.containerA}>
         <View style={styles.container}>
@@ -43,7 +44,7 @@ class LikedFromReddit extends React.Component {
         <View style={styles.container}>
           <View style={styles.container}>
             <Text style={{fontSize: 15}}>liked from from</Text>
-            <Text style={{fontSize: 15, fontWeight: 'bold', fontStyle: 'italic'}}> 'r/ThreadName'</Text>
+            <Text style={{fontSize: 15, fontWeight: 'bold', fontStyle: 'italic'}}> 'r/{this.props.sub}'</Text>
           </View>
         </View>
       </View>
