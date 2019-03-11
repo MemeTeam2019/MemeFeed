@@ -67,7 +67,7 @@ export default class SignupScreen extends React.Component {
         let uid = user.user.uid;
         this.addUserDoc(uid, email, name, username);
         console.log("yuh");
-        this.props.navigation.push("Confirm");
+        this.props.navigation.push("About");
       } else {
         Alert.alert("Error", "Couldn't create acount. Please try again", [{text: "OK"}]);
       }

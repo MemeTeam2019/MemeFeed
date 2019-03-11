@@ -43,6 +43,7 @@ export default class FriendProfileScreen extends React.Component {
     this.ActionSheet.show();
   };
 
+
   componentDidMount() {
     this.unsubscribe = this.ref.limit(60).onSnapshot(this.onCollectionUpdate);
 

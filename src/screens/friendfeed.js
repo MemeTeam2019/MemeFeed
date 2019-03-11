@@ -60,7 +60,7 @@ class FriendFeed extends React.Component{
   }
 
   componentDidMount(memesLoaded) {
-    console.log(memesLoaded)    
+    console.log(memesLoaded)
     this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
     return this.state.memes
   }
@@ -82,7 +82,7 @@ class FriendFeed extends React.Component{
       inFullView: false
     })
   }
-    
+
   showFullView = () => {
     //when full button is bressed, show full view
     this.setState({
@@ -155,7 +155,7 @@ class FriendFeed extends React.Component{
           </View>
         </Modal>
       );
-      } else if(this.state.inGridView){
+    } else if(this.state.inGridView){
           return(
             <View style={styles.containerStyle}>
               <View style={styles.navBar}>

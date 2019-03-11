@@ -3,16 +3,13 @@ import { Dimensions, StyleSheet, View, TouchableOpacity, Image, Text } from 'rea
 
 
 class EmptyFriendFeed extends React.Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     return (
       <View style={styles.container}>
       <Image
       source={require('../emptyFriendTile.png')}
-      style={{width: 85, height: 85, borderRadius: 85/2}}
+      style={{width: '100%', height: '100%'}}
       />
     </View>
     );

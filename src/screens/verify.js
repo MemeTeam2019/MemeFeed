@@ -3,7 +3,8 @@ import {
   View,
   Text,
   TextInput,
-  Button
+  Button,
+  ImageBackground,
 } from "react-native";
 import firebase from "react-native-firebase";
 
@@ -26,9 +27,31 @@ export default class VerifyScreen extends React.Component {
 
   render() {
     return (
+    <ImageBackground
+        source={require('../images/bkgrnd.jpeg')}
+        style={styles.background}>
       <View>
-        <Text>Check your email, {}, for a verification link</Text>
+        <Text style={styles.aboutText}>Check your email, {}, for a verification link</Text>
       </View>
+    </ImageBackground>
     )
   }
 }
+
+const styles = StyleSheet.create({
+    aboutText: {
+      fontSize: 16,
+      fontFamily: 'AvenirNext-Regular',
+      color: 'white',
+      paddingHorizontal: '3%',
+      marginBottom: '3%',
+      textAlign: 'center',
+      paddingRight: 5,
+      paddingTop: 5,//50
+      paddingLeft: 5,
+      shadowColor: 'black',
+      shadowOffset: { width: 0, height: .5 },
+      shadowOpacity: 0.5,
+      shadowRadius: .4,
+    },
+});

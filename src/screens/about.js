@@ -49,7 +49,14 @@ export default class LoginScreen extends React.Component {
       <Text style={styles.aboutText}>
         01100010
       </Text>
+      <Button
+        title="Next"
+        color='#fff'
+        onPress={() => this.props.navigation.push("Confirm")}
+      />
       </View>
+
+
 
       </ImageBackground>
     );
@@ -77,7 +84,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: '5%',
     marginBottom: '5%',
     textAlign: 'center',
-
   },
   aboutText: {
     fontSize: 16,
@@ -89,6 +95,10 @@ const styles = StyleSheet.create({
     paddingRight: 5,
     paddingTop: 5,//50
     paddingLeft: 5,
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: .5 },
+    shadowOpacity: 0.5,
+    shadowRadius: .4,
   },
   input: {
     height: '12%',
