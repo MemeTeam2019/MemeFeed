@@ -11,13 +11,20 @@ import {
 import ProfileGrid from '../components/userProfile/ProfileGrid';
 import Tile from '../components/image/Tile'
 
+import MemeGrid from '../components/general/MemeGrid';
+import MemeList from '../components/general/MemeList';
+
 import firebase from 'react-native-firebase';
 
 
 export default class FriendProfileScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.ref = firebase.firestore().collection('Memes').orderBy('time', "desc");
+
+    this.ref = firebase.firestore().collection("Reacts")
+      .doc(this.props.navigation.getParam("uid"))
+      .collection("Likes").orderBy('time', "desc");
+
     this.unsubscribe = null;
     this.state = {
       email: "",
@@ -45,6 +52,7 @@ export default class FriendProfileScreen extends React.Component {
 
   componentDidMount() {
     this.unsubscribe = this.ref.limit(60).onSnapshot(this.onCollectionUpdate);
+  
 
     const theirUid = this.props.navigation.getParam("uid");
     const docRef = firebase.firestore().collection("Users").doc(theirUid);
@@ -146,22 +154,27 @@ export default class FriendProfileScreen extends React.Component {
     })
   }
 
+  // function for extracting Firebase responses to the state
   onCollectionUpdate = (querySnapshot) => {
-    const memes = [];
+   const memes = [];
     querySnapshot.forEach((doc) => {
-      const { url, time} = doc.data();
-      memes.push({
-        key: doc.id,
-        doc, // DocumentSnapshot
-        src: url,
-        time,
-      });
+      console.log(doc.data(), )
+      const { time, url,rank } = doc.data();
+        if (rank > 1)
+        memes.push({
+         key: doc.id,
+         doc, // DocumentSnapshot
+         src: url,
+         time,
+        });
+
+        this.setState({
+          memes,
+          isLoading: false,
+        });
     });
-    this.setState({
-      memes,
-      isLoading: false,
-   });
   }
+
 
   ShowModalFunction(visible, imageUrl) {
     //handler to handle the click on image of Grid
@@ -205,42 +218,7 @@ export default class FriendProfileScreen extends React.Component {
       'Logout',
       'Cancel',
     ];
-    if (this.state.ModalVisibleStatus) {
-
-      //Modal to show full image with close button
-      return (
-        <Modal
-          transparent={false}
-          animationType={'fade'}
-          visible={this.state.ModalVisibleStatus}
-          onRequestClose={() => {
-            this.ShowModalFunction(!this.state.ModalVisibleStatus,'');
-          }}>
-          <View style={styles.modelStyle}>
-            {/* Single Image - Tile */}
-            <Image
-              style={styles.fullImageStyle}
-              source={{ uri: this.state.imageuri }}
-            />
-            {/* Close Button */}
-            <TouchableOpacity
-              activeOpacity={0.5}
-              style={styles.closeButtonStyle}
-              onPress={() => {
-                this.ShowModalFunction(!this.state.ModalVisibleStatus,'');
-              }}>
-              <Image
-                source={{
-                  uri:
-                    'https://aboutreact.com/wp-content/uploads/2018/09/close.png',
-                }}
-                style={{ width: 25, height: 25, marginTop:16 }}
-              />
-            </TouchableOpacity>
-          </View>
-        </Modal>
-      );
-    } else if (this.state.selectListButtonP) {
+      if (this.state.selectListButtonP) {
       //Photo List/Full View of images
         return(
           <View style={styles.containerStyle}>
@@ -293,10 +271,13 @@ export default class FriendProfileScreen extends React.Component {
                  />
                  </TouchableOpacity>
                  </View>
-            <FlatList
-              data={this.state.memes}
-              renderItem={this.renderTile.bind(this)}
-            />
+
+                  <MemeList
+                    loadMemes={this.componentDidMount}
+                    memes={this.state.memes}
+                  />
+
+
           </View>
         );
     } else {
@@ -338,13 +319,7 @@ export default class FriendProfileScreen extends React.Component {
 
              </View>
      </View>
-          {/*
-            <View  style={styles.followBut2}>
-            <TouchableOpacity onPress={() => this.followButton()}>
-             <Text style={styles.followBut}> {this.state.buttonText} <Image source={require('../images/follower2.png')}style={{width: 17, height: 17}} /></Text>
-            </TouchableOpacity>
-            </View>
-            */}
+
 
      {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
      <View style={styles.navBut}>
@@ -364,7 +339,13 @@ export default class FriendProfileScreen extends React.Component {
      </TouchableOpacity>
      </View>
      </View>
-     <ProfileGrid/>
+     
+      <MemeGrid
+        loadMemes={this.componentDidMount}
+        memes={this.state.memes}
+      />
+
+
      </React.Fragment>
       );
     }
