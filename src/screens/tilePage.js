@@ -23,9 +23,12 @@ class TilePage extends React.Component {
     return <Tile
       memeId={item.key}
       imageUrl={item.src}
+      sub={item.sub}
+      likedFrom={item.likedFrom}
+      postedBy={item.postedBy}
+      poster={item.poster}
     />
   }
-
 
 
   render() {
@@ -38,15 +41,6 @@ class TilePage extends React.Component {
     )
   }
 }
-
-// return (
-//       <View style={styles.containerStyle}>
-//         <Tile
-//           memeId={this.props.navigation.getParam("memeId")}
-//           imageUrl={this.props.navigation.getParam("src")}
-//         />
-//       </View>
-//     );
 
 export default TilePage;
 

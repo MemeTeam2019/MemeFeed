@@ -70,11 +70,13 @@ class ButtonBar extends React.Component {
     reactRef.get().then(likesSnapshot => {
       const data = likesSnapshot.data();
       var hasReacted = likesSnapshot.exists && data.rank !== -1;
+      console.log('LIKIND DAS MEME MIA ALTIERI')
+      console.log(this.props.postedBy)
       reactRef.set({
         rank: oldReact === newReact ? -1 : newReact,
         time: date,
         url: this.props.imageUrl,
-        likedFrom: "testing",
+        likedFrom: this.props.postedBy,
       });
       memeRef.get().then(async memeSnapshot => {
         const data = memeSnapshot.data();

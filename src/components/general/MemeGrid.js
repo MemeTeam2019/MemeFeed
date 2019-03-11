@@ -54,7 +54,6 @@ class MemeGrid extends React.Component {
           flex: 1,
         }}
         onPress={() => {
-          // this.ShowModalFunction(true, data.src);
           this.navigateToTilePage(data);
         }}>
         <Image

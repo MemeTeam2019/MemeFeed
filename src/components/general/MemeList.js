@@ -29,6 +29,10 @@ class MemeList extends React.Component {
     return <Tile
       memeId={item.key}
       imageUrl={item.src}
+      sub={item.sub}
+      likedFrom={item.likedFrom}
+      postedBy={item.postedBy}
+      poster={item.poster}
     />
   }
 

@@ -5,7 +5,7 @@ import Username from '../username';
 
 import firebase from 'react-native-firebase';
  
-class SourceReddit extends React.Component {
+class LikedFromReddit extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -31,36 +31,44 @@ class SourceReddit extends React.Component {
 
   render() {
     // if just from reddit (a.k.a. on the explore page)
+    console.log(this.props.sub)
     return (
       <View style={styles.containerA}>
         <View style={styles.container}>
-          <Text style={{fontSize: 15}}>sourced from</Text>
+          <Image 
+            style={styles.userImg}
+            source={{uri:'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg'}}
+          />
+          <Username uid={this.props.uid} navigation={this.props.navigation} />
         </View>
         <View style={styles.container}>
-          <Text style={{fontSize: 15, fontWeight: 'bold', fontStyle: 'italic'}}>'r/ThreadName'</Text>
+          <View style={styles.container}>
+            <Text style={{fontSize: 15}}>liked from from</Text>
+            <Text style={{fontSize: 15, fontWeight: 'bold', fontStyle: 'italic'}}> 'r/{this.props.sub}'</Text>
+          </View>
         </View>
       </View>
     );
   }
 }
 
-export default withNavigation(SourceReddit);
+export default withNavigation(LikedFromReddit);
  
 const styles = StyleSheet.create({
-  container: {
+   container: {
     flexDirection: 'row',
     backgroundColor: '#fff',
     width: '100%',
-    height: 25,
+    height: 40,
     paddingHorizontal: 10,
     alignItems: 'center',
-    marginTop: 0
+    marginTop: 5
   },
   containerA: {
     flexDirection: 'column',
     backgroundColor: '#fff',
     width: '100%',
-    height: 60,
+    height: 100,
     alignItems: 'center',
     marginTop: 30
   },
@@ -79,4 +87,5 @@ const styles = StyleSheet.create({
     height: 30,
     borderRadius: 15
   }
+
 });

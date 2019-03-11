@@ -15,63 +15,43 @@ class TileHeader extends React.Component {
     }
   }
 
+  componentDidMount() {
+    var userRef = firebase.firestore().collection("Users").doc(this.props.likedFrom);
+    var getDoc = userRef.get()
+    .then(doc => {
+      if (doc.exists) {
+        const { username } = doc.data();
+        this.setState({
+          username,
+        });
+      }
+    })
+    .catch(err => {
+      console.log('Error getting document', err);
+    });
+
+  }
+
   render() {
-    return (
-      <LikedFromReddit uid="F5bA3qC0dkca7h1INfoNNq4GIRh2"/>
-    );
-
-    // if just from reddit (a.k.a. on the explore page)
-    // return (
-    //   <View style={styles.containerA}>
-    //     <View style={styles.container}>
-    //       <Text style={{fontSize: 15}}>sourced from</Text>
-    //     </View>
-    //     <View style={styles.container}>
-    //       <Text style={{fontSize: 15, fontWeight: 'bold'}}>'r/ThreadName'</Text>
-    //     </View>
-    //   </View>
-    // );
-
-    // // if someone liked from reddit
-    // return (
-    //   <View style={styles.containerA}>
-    //     <View style={styles.container}>
-    //       <Image 
-    //         style={styles.userImg}
-    //         source={{uri:'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg'}}
-    //       />
-    //       <Username uid={this.props.uid} navigation={this.props.navigation} />
-    //     </View>
-    //     <View style={styles.container}>
-    //       <Text style={{fontSize: 15}}>liked from   </Text>
-    //       <Image 
-    //         style={styles.likedFromImg}
-    //         source={{uri:'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg'}}
-    //       />
-    //       <Username uid={this.props.uid} navigation={this.props.navigation} />
-    //     </View>
-    //   </View>
-    // );
-    // // if there is someone that was liked from
-    // return (
-    //   <View style={styles.containerA}>
-    //     <View style={styles.container}>
-    //       <Image 
-    //         style={styles.userImg}
-    //         source={{uri:'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg'}}
-    //       />
-    //       <Username uid={this.props.uid} navigation={this.props.navigation} />
-    //     </View>
-    //     <View style={styles.container}>
-    //       <Text style={{fontSize: 15}}>liked from   </Text>
-    //       <Image 
-    //         style={styles.likedFromImg}
-    //         source={{uri:'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg'}}
-    //       />
-    //       <Username uid={this.props.uid} navigation={this.props.navigation} />
-    //     </View>
-    //   </View>
-    // );
+    console.log(this.props.likedFrom)
+    // if meme is just from a sub reddit
+    if (this.props.sub) {
+      return (
+        <SourceReddit sub={this.props.sub}/>
+      );
+    }
+    // if meme liked from reddit
+    else if (this.state.username == "") {
+      return (
+        <LikedFromReddit poster={this.props.poster} sub={this.props.likedFrom}/>
+      );
+    } 
+    // if meme liked from user
+    else {
+      return (
+        <LikedFromUser poster={this.props.poster} likedFrom={this.props.likedFrom}/>
+      );
+    }
   }
 }
 
