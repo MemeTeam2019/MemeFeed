@@ -10,6 +10,7 @@ import ProfileScreen from "../screens/profile";
 import FriendFeed from "../screens/friendfeed"
 import UserScreen from "../screens/friendProfile";
 import Username from "../components/image/username";
+import CommentPage from "../screens/CommentPage";
 
 export const HomeStack = createStackNavigator({
   Explore:{
@@ -21,6 +22,9 @@ export const HomeStack = createStackNavigator({
   Tile: {
     screen: TilePage,
   },
+  Comment:{
+    screen: CommentPage
+  }
 
 },
   {
@@ -37,6 +41,9 @@ export const FriendStack = createStackNavigator({
   Tile: {
     screen: TilePage,
   },
+  Comment:{
+    screen: CommentPage
+  }
 
 },
   {
@@ -53,6 +60,9 @@ export const ProfileStack = createStackNavigator({
   Tile: {
     screen: TilePage,
   },
+  Comment:{
+    screen: CommentPage
+  }
 
 },
   {

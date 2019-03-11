@@ -57,6 +57,8 @@ export default class FriendProfileScreen extends React.Component {
     const theirUid = this.props.navigation.getParam("uid");
     const docRef = firebase.firestore().collection("Users").doc(theirUid);
 
+    console.log(theirUid);
+
     docRef.get().then(User => {
       this.setState(User.data());
     })

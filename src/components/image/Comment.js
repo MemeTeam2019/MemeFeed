@@ -1,5 +1,8 @@
 import * as React from 'react';
 import {Button, StyleSheet, View, Image, Text, TouchableOpacity, Modal } from 'react-native';
+import Username from './username';
+import firebase from 'react-native-firebase';
+import { withNavigation } from "react-navigation";
 
 class Comment extends React.Component{
 
@@ -12,46 +15,47 @@ class Comment extends React.Component{
     };
   }
 
-  handleUsernameClick() {
+  componentDidMount() {
+    const uid = this.state.uid;
+    const userRef = firebase.firestore().collection("Users").doc(uid);
+    userRef.get().then(snapshot => {
+      const data = snapshot.data();
+      this.setState({username: data.username})
+    })
+    .catch(err => console.log(err));
+  }
 
+  handleUsernameClick() {
+    this.props.navigation.navigate("User", {
+      uid: this.props.uid
+    });
   }
 
   render() {
     return(
-      <View style={styles.postInfo}>
+      <View style={styles.container}>
         <TouchableOpacity onPress={() => this.handleUsernameClick()}>
-          <Text style={{fontWeight: 'bold', paddingTop: 10, marginLeft: '2.5%'}}>{this.props.username}
-            <Text style={{fontWeight: 'normal'}}> {this.props.content}</Text>
-          </Text>
+          <Text style={styles.userText}>{this.props.username}</Text>
         </TouchableOpacity>
+        <Text> {this.props.content}</Text>
       </View>
     );
 
   }
 }
 
-export default Comment;
+export default withNavigation(Comment);
 
 
 const styles = StyleSheet.create({
   container: {
-      fontSize: 16,
-      fontFamily: 'AvenirNext-Regular',
-      width: '100%',
-      height: 100,
+    fontFamily: 'AvenirNext-Regular',
+    fontSize: 16,
+    flexDirection: 'row',
+    marginLeft: '2.5%',
+    paddingTop: 10
   },
-  modelStyle: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,1)',
+  userText: {
+    fontWeight: 'bold'
   },
-  closeButtonStyle: {
-    width: 25,
-    height: 25,
-    top: 20,
-    right: 9,
-    position: 'absolute',
-  },
-
 });
