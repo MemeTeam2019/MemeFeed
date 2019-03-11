@@ -7,15 +7,15 @@ import {
   TouchableOpacity,
   FlatList,
 } from 'react-native';
+import firebase from 'react-native-firebase';
+
 import ProfileGrid from '../components/userProfile/ProfileGrid';
 import Tile from '../components/image/Tile';
-
-import firebase from 'react-native-firebase';
 
 class FriendProfileScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.ref = firebase
+    this.memeRef = firebase
       .firestore()
       .collection('Memes')
       .orderBy('time', 'desc');
@@ -40,12 +40,10 @@ class FriendProfileScreen extends React.Component {
     };
   }
 
-  showActionSheet = () => {
-    this.ActionSheet.show();
-  };
-
   componentDidMount() {
-    this.unsubscribe = this.ref.limit(60).onSnapshot(this.onCollectionUpdate);
+    this.unsubscribe = this.memeRef
+      .limit(60)
+      .onSnapshot(this.onCollectionUpdate);
 
     const theirUid = this.props.navigation.getParam('uid');
     const docRef = firebase
@@ -86,6 +84,10 @@ class FriendProfileScreen extends React.Component {
         console.log(err);
       });
   }
+
+  showActionSheet = () => {
+    this.ActionSheet.show();
+  };
 
   onGridViewPressedP = () => {
     this.setState({ selectGridButtonP: true });
@@ -177,7 +179,7 @@ class FriendProfileScreen extends React.Component {
     });
   };
 
-  ShowModalFunction(visible, imageUrl) {
+  ShowModalFunction = (visible, imageUrl) => {
     //handler to handle the click on image of Grid
     //and close button on modal
     this.setState({
@@ -185,9 +187,9 @@ class FriendProfileScreen extends React.Component {
       imageuri: imageUrl,
       memeId: memeId,
     });
-  }
+  };
 
-  renderItem(item, itemSize, itemPaddingHorizontal) {
+  renderItem = (item, itemSize, itemPaddingHorizontal) => {
     //Single item of Grid
     return (
       <TouchableOpacity
@@ -208,10 +210,11 @@ class FriendProfileScreen extends React.Component {
         />
       </TouchableOpacity>
     );
-  }
-  renderTile({ item }) {
+  };
+
+  renderTile = ({ item }) => {
     return <Tile memeId={item.key} imageUrl={item.src} />;
-  }
+  };
 
   render() {
     var optionArray = ['Logout', 'Cancel'];

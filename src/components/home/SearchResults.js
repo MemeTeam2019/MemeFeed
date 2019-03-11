@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   Text,
   StyleSheet,
@@ -6,25 +6,25 @@ import {
   View,
   Image,
   FlatList,
-} from 'react-native'
-import { withNavigation } from 'react-navigation'
-import { SearchBar } from 'react-native-elements'
+} from 'react-native';
+import { withNavigation } from 'react-navigation';
+import { SearchBar } from 'react-native-elements';
 
 /**
  * Component to display a search result when using the search feature.
  * onPress will navigate to the profile of the user in question, passing down
  * the appropriate props
  *
- * Props - username: string, name: string, uid: string
+ * Props - username: String, name: String, uid: String
  */
 class SearchResult extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       username: this.props.data.username,
       name: this.props.data.name,
       uid: this.props.uid,
-    }
+    };
   }
 
   render() {
@@ -50,7 +50,7 @@ class SearchResult extends React.Component {
           </View>
         </TouchableOpacity>
       </React.Fragment>
-    )
+    );
   }
 }
 
@@ -63,52 +63,53 @@ class SearchResult extends React.Component {
  */
 class FollowList extends React.Component {
   static navigationOptions = ({ navigation }) => {
-    return { title: navigation.getParam('title', '') }
-  }
+    return { title: navigation.getParam('title', '') };
+  };
 
   constructor(props) {
-    super(props)
-    this.allResults = this.props.navigation.getParam('allResults', [])
-    this.title = this.props.navigation.getParam('title', '')
+    super(props);
+    this.allResults = this.props.navigation.getParam('allResults', []);
+    this.title = this.props.navigation.getParam('title', '');
 
-    console.log(this.allResults)
+    console.log(this.allResults);
     this.state = {
       filteredResults: [],
       searchTerm: '',
-    }
+    };
   }
 
-  renderResult = userRef => {
-    const data = userRef.item.data()
-    const uid = userRef.item.ref.id
-    return <SearchResult data={data} uid={uid} />
-  }
+  renderResult = (userRef = null) => {
+    if (userRef) {
+      const data = userRef.item.data();
+      const uid = userRef.item.ref.id;
+      return <SearchResult data={data} uid={uid} />;
+    }
+  };
 
   updateFilteredResults = (searchTerm = '') => {
-    let filtered = this.allResults
+    let filtered = this.allResults;
     if (searchTerm) {
       filtered = this.allResults.filter(doc => {
-        const { username, name } = doc.data()
+        const { username, name } = doc.data();
         return (
           username.toLowerCase().startsWith(searchTerm.toLowerCase()) ||
           name.toLowerCase().startsWith(searchTerm.toLowerCase())
-        )
-      })
+        );
+      });
     }
-    return filtered
-  }
+    return filtered;
+  };
 
   render() {
     return (
       <View>
-        <SearchBar />
         <FlatList
           data={this.allResults}
           renderItem={userRef => this.renderResult(userRef)}
           keyExtractor={item => item.ref.id}
         />
       </View>
-    )
+    );
   }
 }
 
@@ -134,10 +135,10 @@ const styles = StyleSheet.create({
     width: 50,
     marginRight: '5%',
   },
-})
+});
 
 // Both components depend on navigation props to route to ProfileScreen
-const FollowListNav = withNavigation(FollowList)
-const SearchResultNav = withNavigation(SearchResult)
+const FollowListNav = withNavigation(FollowList);
+const SearchResultNav = withNavigation(SearchResult);
 
-export { SearchResultNav as SearchResult, FollowListNav as FollowList }
+export { SearchResultNav as SearchResult, FollowListNav as FollowList };
