@@ -38,6 +38,7 @@ class Tile extends React.Component {
         <Photo imageUrl={this.props.imageUrl}/>
         <ButtonBar
           memeId={this.props.memeId}
+          imageUrl={this.props.imageUrl}
           updateReacts={this.updateReactCount}
         />
         <PostInfo

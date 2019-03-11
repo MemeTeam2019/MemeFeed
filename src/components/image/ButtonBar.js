@@ -71,8 +71,8 @@ class ButtonBar extends React.Component {
       reactRef.set({
         rank: oldReact === newReact ? -1 : newReact,
         time: date,
+        url: this.props.imageUrl,
         likedFrom: "testing",
-        //likedFrom: this.props.source, //this.props.source pass down later
       });
       memeRef.get().then(async memeSnapshot => {
         const data = memeSnapshot.data();

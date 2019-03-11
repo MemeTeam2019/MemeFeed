@@ -21,9 +21,10 @@ export default class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
     this.unsubscribe = null;
-    // ZACS ref
-    // this.ref = firebase.firestore().collection("Reacts/"+user.uid+"/Likes").orderBy('time', "desc");
-    this.ref = firebase.firestore().collection('Memes').orderBy('time', 'desc');
+    this.ref = firebase.firestore().collection("Reacts")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("Likes").orderBy('time', "desc");
+
     this.state = {
       email: "",
       username: "",
@@ -45,9 +46,29 @@ export default class ProfileScreen extends React.Component {
   componentDidMount(memesLoaded) {
     console.log('loading memes rn');
     this.getUserInfo();
-    this.unsubscribe = this.ref.limit(memesLoaded)
-                        .onSnapshot(this.onCollectionUpdate);
-    return this.state.memes
+    this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
+  }
+
+
+  // function for extracting Firebase responses to the state
+  onCollectionUpdate = (querySnapshot) => {
+   const memes = [];
+    querySnapshot.forEach((doc) => {
+      console.log(doc.data(), )
+      const { time, url,rank } = doc.data();
+        if (rank > 1)
+        memes.push({
+         key: doc.id,
+         doc, // DocumentSnapshot
+         src: url,
+         time,
+        });
+
+        this.setState({
+          memes,
+          isLoading: false,
+        });
+    });
   }
 
   componentDidUpdate(prevProps) {
@@ -65,6 +86,8 @@ export default class ProfileScreen extends React.Component {
         this.setState(Object.assign(data, { uid: uid }));
     });
   }
+
+
 
   // ZACS CODE --- Zac when I pulled your code was gone so I put it back right here! Idk who removed it
   // componentDidMount(memesLoaded) {
@@ -100,24 +123,6 @@ export default class ProfileScreen extends React.Component {
     this.ActionSheet.show();
   }
 
-  // function for extracting Firebase responses to the state
-  onCollectionUpdate = (querySnapshot) => {
-    const memes = [];
-    querySnapshot.forEach((doc) => {
-      const { url, time} = doc.data();
-      memes.push({
-        key: doc.id,
-        doc, // DocumentSnapshot
-        src: url,
-        time,
-      });
-    });
-    this.setState({
-      memes,
-      isLoading: false,
-   });
-  }
-
   onGridViewPressedP = () => {
     this.setState({selectGridButtonP: true})
     this.setState({selectListButtonP: false})
@@ -136,22 +141,22 @@ export default class ProfileScreen extends React.Component {
       console.log(err);
     })
   }
-  onCollectionUpdate = (querySnapshot) => {
-    const memes = [];
-    querySnapshot.forEach((doc) => {
-      const { url, time} = doc.data();
-      memes.push({
-        key: doc.id,
-        doc, // DocumentSnapshot
-        src: url,
-        time,
-      });
-    });
-    this.setState({
-      memes,
-      isLoading: false,
-   });
-  }
+  // onCollectionUpdate = (querySnapshot) => {
+  //   const memes = [];
+  //   querySnapshot.forEach((doc) => {
+  //     const { url, time} = doc.data();
+  //     memes.push({
+  //       key: doc.id,
+  //       doc, // DocumentSnapshot
+  //       src: url,
+  //       time,
+  //     });
+  //   });
+  //   this.setState({
+  //     memes,
+  //     isLoading: false,
+  //  });
+  // }
   ShowModalFunction(visible, imageUrl) {
     //handler to handle the click on image of Grid
     //and close button on modal
