@@ -16,16 +16,16 @@ class ButtonBar extends React.Component {
       selectedButton: null,
       userHasReacted: false,
     };
-    this.emojiRank= {0: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/ImagesForApplicationDesign%2FExpressionless.png?alt=media&token=b53082db-03bd-4fad-9322-d0827253eee1',
-      1:'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/ImagesForApplicationDesign%2FNuetral.png?alt=media&token=c9f280e5-a6a8-4f29-ab83-1171b76eac45',
-      2:'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/ImagesForApplicationDesign%2FSlightlySmiling.png?alt=media&token=4daf97e4-0b31-4e79-8866-07a3c8bf4ba8',
-      3:'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/ImagesForApplicationDesign%2FBeamingGrin.png?alt=media&token=5d935569-352a-4bf2-b637-63ef8ad0c2d2',
-      4:'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/ImagesForApplicationDesign%2FLaughingTearsOfJoy.png?alt=media&token=e10f32c5-6e0e-401a-aab1-8d4ee6c3b72c'
+    this.emojiRank= {0: '../../images/Tile/Expressionless.png',
+      1:'../../images/Tile/Neutral.png',
+      2:'../../images/Tile/SlightlySmiling.png',
+      3:'../../images/Tile/BeamingGrin.png',
+      4:'../../images/Tile/LaughingTearsOfJoy.png'
     };
-    this.UnclickedEmojiRank = {0: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/ImagesForApplicationDesign%2FExpressionlessFade.png?alt=media&token=d457c087-e638-4f5b-b77e-ad3b0a3b362c',
-      1:'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/ImagesForApplicationDesign%2FNuetralFade.png?alt=media&token=a002b01e-9f47-4601-90d9-5d981eeecea2',
-      2:'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/ImagesForApplicationDesign%2FSlightlySmileFade.png?alt=media&token=fd66c2bf-a68c-4095-b6ee-e48b7642a55a',
-      3:'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/ImagesForApplicationDesign%2FBeamingGrinFade.png?alt=media&token=c27709fc-3395-4619-ae3e-09a651935c4b',
+    this.UnclickedEmojiRank = {0: '../../images/Tile/ExpressionlessFade.png',
+      1:'../../images/Tile/NeutralFade.png',
+      2:'../../images/Tile/SlightlySmileFade.png',
+      3:'../../images/Tile/BeamingGrinFade.png',
       4:'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/ImagesForApplicationDesign%2FLaughingTearsOfJoyFade.png?alt=media&token=d992a83a-ec9a-4bba-9859-60000523fd99'
     };
   }
@@ -139,72 +139,57 @@ class ButtonBar extends React.Component {
         </TouchableOpacity>
         <View style={styles.button}>
           <TouchableOpacity
-            style={{
-              width: 35,
-              height: 35,
-            }}
             onPress={this._onPressButton.bind(this,0)}>
             <Image
               resizeMode="cover"
-              style={{ flex: 1 }}
-              source={{ uri:
-                this.state.selectedButton === 0 || this.state.selectedButton === null
-                  ? this.emojiRank[0]
-                  : this.UnclickedEmojiRank[0]}}
+              style={{ height: 35, width: 35 }}
+              source={ this.state.selectedButton === 0 || this.state.selectedButton === null
+                ? require('../../images/Tile/Expressionless.png')
+                : require('../../images/Tile/ExpressionlessFade.png')
+              }
             />
           </TouchableOpacity>
         </View>
 
         <View style={styles.button}>
           <TouchableOpacity
-            style={{
-              width: 35,
-              height: 35,
-            }}
+            // style={{
+            //   width: 35,
+            //   height: 35,
+            // }}
             onPress={this._onPressButton.bind(this,1)}>
             <Image
               resizeMode="cover"
-              style={{ flex: 1 }}
-              source={{ uri:
-                this.state.selectedButton === 1 || this.state.selectedButton === null
-                  ? this.emojiRank[1]
-                  : this.UnclickedEmojiRank[1]}}
+              style={{ height: 35, width: 35 }}
+              source={ this.state.selectedButton === 1 || this.state.selectedButton === null
+                  ? require('../../images/Tile/Neutral.png')
+                  : require('../../images/Tile/NeutralFade.png')}
             />
           </TouchableOpacity>
         </View>
 
         <View style={styles.button}>
           <TouchableOpacity
-            style={{
-              width: 35,
-              height: 35,
-            }}
             onPress={this._onPressButton.bind(this,2)}>
             <Image
               resizeMode="cover"
-              style={{ flex: 1 }}
-              source={{ uri:
-                this.state.selectedButton === 2 || this.state.selectedButton === null
-                  ? this.emojiRank[2]
-                  : this.UnclickedEmojiRank[2]}}
+              style={{ height: 35, width: 35 }}
+              source={ this.state.selectedButton === 2 || this.state.selectedButton === null
+                  ? require('../../images/Tile/SlightlySmiling.png')
+                  : require('../../images/Tile/SlightlySmileFade.png')}
             />
           </TouchableOpacity>
         </View>
 
         <View style={styles.button}>
           <TouchableOpacity
-            style={{
-              width: 35,
-              height: 35,
-            }}
             onPress={this._onPressButton.bind(this,3)}>
             <Image
               resizeMode="cover"
-              style={{ flex: 1 }}
-              source={{ uri:
-                this.state.selectedButton === 3 || this.state.selectedButton === null
-                  ? this.emojiRank[3]
-                  : this.UnclickedEmojiRank[3]}}
+              style={{ height: 35, width: 35 }}
+              source={ this.state.selectedButton === 3 || this.state.selectedButton === null
+                  ? require('../../images/Tile/BeamingGrin.png')
+                  : require('../../images/Tile/BeamingGrinFade.png')}
             />
           </TouchableOpacity>
         </View>
@@ -218,11 +203,10 @@ class ButtonBar extends React.Component {
             onPress={this._onPressButton.bind(this,4)}>
             <Image
               resizeMode="cover"
-              style={{ flex: 1 }}
-              source={{ uri:
-                this.state.selectedButton === 4 || this.state.selectedButton === null
-                                ? this.emojiRank[4]
-                                : this.UnclickedEmojiRank[4]}}
+              style={{ height: 35, width: 35 }}
+              source={ this.state.selectedButton === 4 || this.state.selectedButton === null
+                    ? require('../../images/Tile/LaughingTearsOfJoy.png')
+                    : this.UnclickedEmojiRank[4]}
             />
           </TouchableOpacity>
         </View>
