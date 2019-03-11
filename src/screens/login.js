@@ -111,20 +111,16 @@ const styles = StyleSheet.create({
     color: '#5C5B5A'
   },
   input: {
-    height: 55,
-    width: 325,
+    height: '12%',
+    width: '100%',
     backgroundColor: '#fff',
     borderRadius: 5,
-    paddingHorizontal: 15,
-    margin: '5%',
+    paddingHorizontal: '5%',
+    marginBottom: '5%',
     fontSize: 18,
     shadowColor: '#000',
     shadowOpacity: 0.2,
     shadowRadius: 1,
-    shadowOffset: {
-    height: 1,
-    width: 1
-    }
   },
   background: {
     flex: 1,

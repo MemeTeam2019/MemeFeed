@@ -3,41 +3,28 @@ import {
   View,
   Text,
   StyleSheet,
-  Button,
   Image,
   TouchableOpacity,
-  Alert,
-  YellowBox,
-  ListView,
-  FlatList,
-  Platform,
-  ActionSheetIOS,
-  UIManager,
-  TextInput,
 } from "react-native";
-import ProfileGrid from '../components/userProfile/ProfileGrid';
 import firebase from "react-native-firebase";
+import ActionSheet from 'react-native-actionsheet';
+
 import Tile from '../components/image/Tile';
 import MemeGrid from '../components/general/MemeGrid';
 import MemeList from '../components/general/MemeList';
 
-import PhotoGrid from 'react-native-image-grid';
-import ActionSheet from 'react-native-actionsheet';
-
-
-const user = firebase.auth().currentUser;
-
 export default class ProfileScreen extends React.Component {
   static navigationOptions = {
-   header: null
- }
+    header: null
+  }
 
   constructor(props) {
     super(props);
     this.unsubscribe = null;
-    // ZACS ref
-    // this.ref = firebase.firestore().collection("Reacts/"+user.uid+"/Likes").orderBy('time', "desc");
-    this.ref = firebase.firestore().collection('Memes').orderBy('time', 'desc');
+    this.ref = firebase.firestore().collection("Reacts")
+      .doc(firebase.auth().currentUser.uid)
+      .collection("Likes").orderBy('time', "desc");
+
     this.state = {
       email: "",
       username: "",
@@ -56,9 +43,51 @@ export default class ProfileScreen extends React.Component {
     }
   }
 
-  showActionSheet = () => {
-    this.ActionSheet.show();
-  };
+  componentDidMount(memesLoaded) {
+    console.log('loading memes rn');
+    this.getUserInfo();
+    this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
+  }
+
+
+  // function for extracting Firebase responses to the state
+  onCollectionUpdate = (querySnapshot) => {
+   const memes = [];
+    querySnapshot.forEach((doc) => {
+      console.log(doc.data(), )
+      const { time, url,rank } = doc.data();
+        if (rank > 1)
+        memes.push({
+         key: doc.id,
+         doc, // DocumentSnapshot
+         src: url,
+         time,
+        });
+
+        this.setState({
+          memes,
+          isLoading: false,
+        });
+    });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.isFocused !== this.props.isFocused) {
+      this.getUserInfo();
+    }
+  }
+
+  getUserInfo = () => {
+    let firestore = firebase.firestore();
+    const uid = firebase.auth().currentUser.uid;
+    firestore.collection("Users").doc(uid).get()
+      .then(s => {
+        const data = s.data();
+        this.setState(Object.assign(data, { uid: uid }));
+    });
+  }
+
+
 
   // ZACS CODE --- Zac when I pulled your code was gone so I put it back right here! Idk who removed it
   // componentDidMount(memesLoaded) {
@@ -90,42 +119,9 @@ export default class ProfileScreen extends React.Component {
   //  });
   // }
 
-
-  // function for extracting Firebase responses to the state
-  onCollectionUpdate = (querySnapshot) => {
-    const memes = [];
-    querySnapshot.forEach((doc) => {
-      const { url, time} = doc.data();
-      memes.push({
-        key: doc.id,
-        doc, // DocumentSnapshot
-        src: url,
-        time,
-      });
-    });
-    this.setState({
-      memes,
-      isLoading: false,
-   });
+  showActionSheet = () => {
+    this.ActionSheet.show();
   }
-
-
-  componentDidMount(memesLoaded) {
-    console.log('loading memes rn');
-    let firestore = firebase.firestore();
-    const uid = firebase.auth().currentUser.uid;
-    firestore.collection("Users").doc(uid).get()
-      .then(s => {
-        const data = s.data();
-        this.setState(Object.assign(data, { uid: uid }));
-    });
-
-    this.unsubscribe = this.ref.limit(memesLoaded)
-                        .onSnapshot(this.onCollectionUpdate);
-    return this.state.memes
-  }
-
-
 
   onGridViewPressedP = () => {
     this.setState({selectGridButtonP: true})
@@ -145,22 +141,22 @@ export default class ProfileScreen extends React.Component {
       console.log(err);
     })
   }
-  onCollectionUpdate = (querySnapshot) => {
-    const memes = [];
-    querySnapshot.forEach((doc) => {
-      const { url, time} = doc.data();
-      memes.push({
-        key: doc.id,
-        doc, // DocumentSnapshot
-        src: url,
-        time,
-      });
-    });
-    this.setState({
-      memes,
-      isLoading: false,
-   });
-  }
+  // onCollectionUpdate = (querySnapshot) => {
+  //   const memes = [];
+  //   querySnapshot.forEach((doc) => {
+  //     const { url, time} = doc.data();
+  //     memes.push({
+  //       key: doc.id,
+  //       doc, // DocumentSnapshot
+  //       src: url,
+  //       time,
+  //     });
+  //   });
+  //   this.setState({
+  //     memes,
+  //     isLoading: false,
+  //  });
+  // }
   ShowModalFunction(visible, imageUrl) {
     //handler to handle the click on image of Grid
     //and close button on modal
@@ -204,7 +200,6 @@ export default class ProfileScreen extends React.Component {
       'Cancel',
     ];
     if (this.state.ModalVisibleStatus) {
-
       //Modal to show full image with close button
       return (
         <Modal

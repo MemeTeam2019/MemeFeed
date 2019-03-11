@@ -12,7 +12,7 @@ import {
   FlatList
 } from 'react-native';
 
-import SearchResult from '../components/home/SearchResults';
+import { SearchResult } from '../components/home/SearchResults';
 
 class HomeFeed extends React.Component {
   static navigationOptions = {
@@ -56,7 +56,8 @@ class HomeFeed extends React.Component {
               && doc.ref.id !== this.state.myUid;
     });
     console.log(results);
-    if (!searchTerm) results = [];
+    if (!searchTerm)
+      results = [];
     this.setState({
       searchResults: results,
       searchTerm: searchTerm
@@ -67,10 +68,6 @@ class HomeFeed extends React.Component {
     firebase.firestore().collection("Users").get().then(snapshot => {
       this.setState({ allUsers: snapshot.docs });
     });
-  }
-
-  renderSearchResults = (userRef) => {
-    return <SearchResult userRef={userRef}/>;
   }
 
   // function for extracting Firebase responses to the state
@@ -171,8 +168,8 @@ class HomeFeed extends React.Component {
         {/* List View */}
         <FlatList
           data={this.state.searchResults}
-          renderItem={userRef => this.renderSearchResult(userRef)}
-          keyExtractor={(item, index) => item.ref.id}
+          renderItem={(userRef) => this.renderSearchResult(userRef)}
+          keyExtractor={(item) => item.ref.id}
         />
       </View>
       );

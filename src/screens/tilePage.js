@@ -2,42 +2,57 @@ import React from "react";
 import firebase from 'react-native-firebase';
 import {
   StyleSheet,
+  View,
+  FlatList,
 } from "react-native";
 import Tile from '../components/image/Tile';
+import PostInfo from '../components/image/PostInfo';
 
 const user = firebase.auth().currentUser;
 
 class TilePage extends React.Component {
-  static navigationOptions = {
-    header: null
-  }
 
   constructor(props) {
     super(props);
   }
 
+
+  renderTile({item}){
+    //for list view
+    console.log(item.key)
+    return <Tile
+      memeId={item.key}
+      imageUrl={item.src}
+    />
+  }
+
+
+
   render() {
     return (
-      <Tile
-        memeId={this.props.navigation.getParam("memeId")}
-        imageUrl={this.props.navigation.getParam("src")}
+      <FlatList 
+        style={styles.containerStyle}
+        data={this.props.navigation.getParam("memes")}
+        renderItem={this.renderTile.bind(this)}
       />
-    );
+    )
   }
 }
+
+// return (
+//       <View style={styles.containerStyle}>
+//         <Tile
+//           memeId={this.props.navigation.getParam("memeId")}
+//           imageUrl={this.props.navigation.getParam("src")}
+//         />
+//       </View>
+//     );
 
 export default TilePage;
 
 const styles = StyleSheet.create({
   containerStyle: {
-    flex: 0,
-    backgroundColor: "#ffffff"
-  },
-  fullImageStyle: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100%',
-    width: '98%',
-    resizeMode: 'contain',
+    flex: 1,
+    backgroundColor: 'rgba(255,255,255,1)',
   },
 })
