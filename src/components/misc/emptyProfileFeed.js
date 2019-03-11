@@ -11,7 +11,7 @@ class EmptyFriendFeed extends React.Component {
     return (
       <View style={styles.container}>
       <Image
-      source={require('../emptyFriendTile.png')}
+      source={require('../noPosts.png')}
       style={{width: 85, height: 85, borderRadius: 85/2}}
       />
     </View>

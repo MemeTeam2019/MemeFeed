@@ -123,6 +123,11 @@ export default class SignupScreen extends React.Component {
               color= '#fff'
               onPress={() => this.handleSubmit()}
             />
+            <Button
+              title="About"
+              color='#fff'
+              onPress={() => this.props.navigation.push("About")}
+            />
           </KeyboardAvoidingView>
         </View>
       </ImageBackground>
