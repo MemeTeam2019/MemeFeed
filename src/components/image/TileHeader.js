@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import {Text, StyleSheet, View, Image, TouchableOpacity} from 'react-native';
 import { withNavigation } from 'react-navigation';
-import LikedFromReddit from './tileHeaders/likedFromReddit';
-import LikedFromUser from './tileHeaders/likedFromUser';
-import SourceReddit from './tileHeaders/sourceReddit';
+import LikedFromReddit from './tileHeaders/LikedFromReddit';
+import LikedFromUser from './tileHeaders/LikedFromUser';
+import SourceReddit from './tileHeaders/SourceReddit';
 
 import firebase from 'react-native-firebase';
  
