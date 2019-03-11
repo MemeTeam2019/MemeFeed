@@ -45,16 +45,6 @@ class PostInfo extends React.Component{
     this.unsubscribe = firebase.firestore().collection("Comments/"+this.props.memeId+"/Info").doc('CommentInfo').onSnapshot(this.onCollectionUpdate); // we choose decsending to get most recent
   }
 
-  ShowModalFunction(visible) {
-    //handler to handle the click on image of Grid
-    //and close button on modal
-    this.setState({
-      ModalVisibleStatus: visible,
-      imageuri: this.props.imageURL,
-      memeId: this.props.memeId,
-      source: this.props.source,
-    });
-  }
 
   handleCommentClick() {
     this.props.navigation.navigate("Comment", {
@@ -64,45 +54,10 @@ class PostInfo extends React.Component{
   }
 
 render() {
-
-//   if (this.state.ModalVisibleStatus) {
-//     //Modal to show full image with close button
-//     return (
-//       <Modal
-//         transparent={false}
-//         animationType={'fade'}
-//         visible={this.state.ModalVisibleStatus}
-//         onRequestClose={() => {
-//           this.ShowModalFunction(!this.state.ModalVisibleStatus);
-//         }}
-//       >
-//         <View style={styles.modelStyle}>
-//           <CommentPage
-//             memeId={this.props.memeId}
-//             imageUrl={this.props.imageUrl}
-//           />
-//           {/* Close Button */}
-//           <TouchableOpacity
-//             activeOpacity={0.5}
-//             style={styles.closeButtonStyle}
-//             onPress={() => {
-//               this.ShowModalFunction(!this.state.ModalVisibleStatus);
-//             }}>
-//             <Image
-//               source={{
-//                 uri:
-//                   'https://aboutreact.com/wp-content/uploads/2018/09/close.png',
-//                 }}
-//                 style={{ width: 25, height: 25, marginTop:16 }}
-//             />
-//           </TouchableOpacity>
-//         </View>
-//       </Modal>
-//       );} else
        if (this.state.commentCount > 2) {
         return(
          <View style={styles.postInfo}>
-           <TouchableOpacity
+           {/* <TouchableOpacity
               onPress={() => {
                 this.handleCommentClick();
               }}>
@@ -110,7 +65,7 @@ render() {
                 style={styles.commentButtonStyle}
                 source={require('../../images/Tile/chatLogo2.png')}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <Text style={{fontFamily: 'AvenirNext-Regular', paddingTop: 3, marginLeft: '2.5%'}}>{this.props.reactCount} Reactions</Text>
             <CommentSample memeId={this.props.memeId}/>
 
@@ -130,7 +85,7 @@ render() {
       } else {
         return(
           <View style={styles.postInfo}>
-              <TouchableOpacity
+              {/* <TouchableOpacity
               onPress={() => {
                 this.handleCommentClick();
               }}>
@@ -138,7 +93,7 @@ render() {
                 style={styles.commentButtonStyle}
                 source={require('../../images/Tile/chatLogo2.png')}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>{this.props.reactCount} Reactions</Text>
             <CommentSample memeId={this.props.memeId}/>
            </View>
