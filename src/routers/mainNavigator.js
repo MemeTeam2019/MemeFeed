@@ -43,6 +43,9 @@ export const FriendStack = createStackNavigator(
     },
     Comment: {
       screen: CommentPage
+    },
+    FollowList: {
+      screen: FollowList
     }
   },
   {

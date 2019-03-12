@@ -32,7 +32,7 @@ class SearchResult extends React.Component {
       <React.Fragment>
         <TouchableOpacity
           onPress={() =>
-            this.props.navigation.navigate('User', {
+            this.props.navigation.push('User', {
               uid: this.state.uid,
             })
           }

@@ -18,9 +18,12 @@ class FriendProfileScreen extends React.Component {
   constructor(props) {
     super(props);
     this._isMounted = false;
-    this.memeRef = firebase.firestore().collection("Reacts")
-      .doc(this.props.navigation.getParam("uid"))
-      .collection("Likes").orderBy('time', "desc");
+    this.memeRef = firebase
+      .firestore()
+      .collection('Reacts')
+      .doc(this.props.navigation.getParam('uid'))
+      .collection('Likes')
+      .orderBy('time', 'desc');
 
     this.unsubscribe = null;
     this.state = {
@@ -28,8 +31,8 @@ class FriendProfileScreen extends React.Component {
       username: '',
       name: '',
       uid: '',
-      followingCnt: 0,
-      followersCnt: 0,
+      followingLst: [],
+      followersLst: [],
       open: false,
       selectGridButtonP: true,
       selectListButtonP: false,
@@ -45,45 +48,31 @@ class FriendProfileScreen extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
-    if (this._isMounted){
+    if (this._isMounted) {
       this.unsubscribe = this.memeRef
         .limit(60)
         .onSnapshot(this.onCollectionUpdate);
 
       const theirUid = this.props.navigation.getParam('uid');
-      const docRef = firebase
+      const theirUserRef = firebase
         .firestore()
         .collection('Users')
         .doc(theirUid);
 
-      docRef
-        .get()
-        .then(User => {
-          this.setState(User.data());
-        })
-        .catch(err => {
-          console.log(err);
-        });
-
-      // Check if their uid is already in my followingLst
-      const myUid = firebase.auth().currentUser.uid;
-      const myUserRef = firebase
-        .firestore()
-        .collection('Users')
-        .doc(myUid);
-
-      myUserRef
+      theirUserRef
         .get()
         .then(snapshot => {
+          const myUid = firebase.auth().currentUser.uid;
           const data = snapshot.data();
-          const followingLst = data.followingLst || [];
-          const isFollowing = followingLst.indexOf(theirUid) > -1;
-
-          console.log(followingLst);
-          this.setState({
-            isFollowing: isFollowing,
-            buttonText: isFollowing ? 'Unfollow' : 'Follow',
-          });
+          const followersLst = data.followersLst || [];
+          const isFollowing = followersLst.indexOf(myUid) > -1;
+          console.log(followersLst, myUid, isFollowing);
+          this.setState(
+            Object.assign(snapshot.data(), {
+              isFollowing: isFollowing,
+              buttonText: isFollowing ? 'Unfollow' : 'Follow',
+            })
+          );
         })
         .catch(err => {
           console.log(err);
@@ -117,75 +106,82 @@ class FriendProfileScreen extends React.Component {
       .collection('Users')
       .doc(theirUid);
 
-    let isFollowing = !this.state.isFollowing;
+    let isNowFollowing = !this.state.isFollowing;
 
     this.setState({
-      buttonText: isFollowing ? 'Unfollow' : 'Follow',
-      isFollowing: isFollowing,
+      buttonText: isNowFollowing ? 'Unfollow' : 'Follow',
+      isFollowing: isNowFollowing,
     });
 
     // Update my followingLst and followingCnt
-    myUserRef.get().then(mySnap => {
-      const myData = mySnap.data();
-      let followingLst = myData.followingLst || [];
+    myUserRef
+      .get()
+      .then(mySnap => {
+        const myData = mySnap.data();
+        let followingLst = myData.followingLst || [];
 
-      const index = followingLst.indexOf(theirUid);
-      if (isFollowing && index == -1) {
-        followingLst.push(theirUid);
-      } else if (!isFollowing && index > -1) {
-        followingLst.splice(index);
-      }
-
-      myUserRef.update({
-        followingCnt: followingLst.length,
-        followingLst: followingLst,
-      });
-    });
+        const index = followingLst.indexOf(theirUid);
+        if (isNowFollowing) {
+          followingLst.push(theirUid);
+        } else {
+          followingLst.splice(index);
+        }
+        console.log(followingLst);
+        myUserRef.update({
+          followingCnt: followingLst.length,
+          followingLst: followingLst,
+        });
+      })
+      .catch(err => console.log(err));
 
     // Update their followersLst and followersCnt
-    theirUserRef.get().then(theirSnap => {
-      const theirData = theirSnap.data();
-      let followersLst = theirData.followersLst || [];
+    theirUserRef
+      .get()
+      .then(theirSnap => {
+        const theirData = theirSnap.data();
+        let followersLst = theirData.followersLst || [];
 
-      const index = followersLst.indexOf(myUid);
-      if (isFollowing && index === -1) {
-        followersLst.push(myUid);
-      } else if (!isFollowing && index > -1) {
-        followersLst.splice(index);
-      }
+        const index = followersLst.indexOf(myUid);
+        if (isNowFollowing) {
+          followersLst.push(myUid);
+        } else {
+          followersLst.splice(index);
+        }
 
-      theirUserRef.update({
-        followersCnt: followersLst.length,
-        followersLst: followersLst,
-      });
-      this.setState({ followersCnt: followersLst.length });
-    });
+        theirUserRef.update({
+          followersCnt: followersLst.length,
+          followersLst: followersLst,
+        });
+        this.setState({
+          followersCnt: followersLst.length,
+          followersLst: followersLst
+        });
+      })
+      .catch(err => console.log(err));
   };
 
   // function for extracting Firebase responses to the state
-  onCollectionUpdate = (querySnapshot) => {
-   const memes = [];
-    querySnapshot.forEach((doc) => {
-      console.log(doc.data(), )
+  onCollectionUpdate = querySnapshot => {
+    const memes = [];
+    querySnapshot.forEach(doc => {
       const { time, url, rank, likedFrom } = doc.data();
-        if (rank > 1)
+      if (rank > 1)
         memes.push({
-         key: doc.id,
-         doc, // DocumentSnapshot
-         src: url,
-         time,
-         likedFrom,
-         postedBy: this.props.navigation.getParam("uid"),
-         poster: this.props.navigation.getParam("uid"),
+          key: doc.id,
+          doc, // DocumentSnapshot
+          src: url,
+          time,
+          likedFrom,
+          postedBy: this.props.navigation.getParam('uid'),
+          poster: this.props.navigation.getParam('uid'),
         });
 
-        this.setState({
-          memes,
-          isLoading: false,
-        });
+      this.setState({
+        memes,
+        isLoading: false,
+      });
     });
-  }
-
+  };
 
   ShowModalFunction(visible, imageUrl) {
     //handler to handle the click on image of Grid
@@ -195,7 +191,7 @@ class FriendProfileScreen extends React.Component {
       imageuri: imageUrl,
       memeId: memeId,
     });
-  };
+  }
 
   renderItem = (item, itemSize, itemPaddingHorizontal) => {
     //Single item of Grid
@@ -225,11 +221,7 @@ class FriendProfileScreen extends React.Component {
   };
 
   render() {
-    var optionArray = [
-      'Logout',
-      'Cancel',
-    ];
-      if (this.state.selectListButtonP) {
+    var optionArray = ['Logout', 'Cancel'];
       //Photo List/Full View of images
       return (
         <View style={styles.containerStyle}>
@@ -244,17 +236,37 @@ class FriendProfileScreen extends React.Component {
                 style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
               />
             </View>
-            <Text style={styles.textSty}>
-              {' '}
-              {this.state.followingCnt} {'\n'}{' '}
-              <Text style={styles.textSty3}>Following</Text>
-            </Text>
-            <View style={styles.rightContainer2}>
+
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.push('FollowList', {
+                  arrayOfUids: this.state.followingLst,
+                  title: 'Following',
+                });
+              }}
+            >
               <Text style={styles.textSty}>
-                {this.state.followersCnt} {'\n'}{' '}
-                <Text style={styles.textSty3}>Followers</Text>{' '}
+                {' '}
+                {this.state.followingCnt} {'\n'}{' '}
+                <Text style={styles.textSty3}>Following</Text>
               </Text>
-            </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.push('FollowList', {
+                  arrayOfUids: this.state.followersLst,
+                  title: 'Followers',
+                });
+              }}
+            >
+              <View style={styles.rightContainer2}>
+                <Text style={styles.textSty}>
+                  {this.state.followersCnt} {'\n'}{' '}
+                  <Text style={styles.textSty3}>Followers</Text>{' '}
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
 
           {/*DISPLAY NAME*/}
@@ -301,87 +313,19 @@ class FriendProfileScreen extends React.Component {
               />
             </TouchableOpacity>
           </View>
-          <MemeList loadMemes={this.componentDidMount} memes={this.state.memes} />
+          {this.state.selectListButtonP ? (
+            <MemeList
+              loadMemes={this.componentDidMount}
+              memes={this.state.memes}
+            />
+          ) : (
+            <MemeGrid
+              loadMemes={this.componentDidMount}
+              memes={this.state.memes}
+            />
+          )}
         </View>
-      );
-    } else {
-      //Photo Grid of images
-      return (
-        <React.Fragment>
-          <View style={styles.containerStyle}>
-            <View style={styles.navBar}>
-              <Text style={styles.textSty4}>{this.state.username}</Text>
-            </View>
-            {/*Profile Pic, Follwers, Follwing Block*/}
-            <View style={styles.navBar2}>
-              <View style={styles.leftContainer2}>
-                <Image
-                  source={require('../images/primePic.png')}
-                  style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
-                />
-              </View>
-              <Text style={styles.textSty}>
-                {' '}
-                {this.state.followingCnt} {'\n'}{' '}
-                <Text style={styles.textSty3}>Following</Text>
-              </Text>
-              <View style={styles.rightContainer2}>
-                <Text style={styles.textSty}>
-                  {this.state.followersCnt} {'\n'}{' '}
-                  <Text style={styles.textSty3}>Followers</Text>{' '}
-                </Text>
-              </View>
-            </View>
-
-            {/*DISPLAY NAME*/}
-            <View style={styles.navBar1}>
-              <View style={styles.leftContainer1}>
-                <Text style={[styles.textSty2, { textAlign: 'left' }]}>
-                  {<Text style={styles.textSty2}>{this.state.name}</Text>}
-                </Text>
-              </View>
-              <View style={styles.rightContainer1}>
-                <TouchableOpacity onPress={() => this.followButtonPress()}>
-                  <Text style={styles.followBut}>
-                    {' '}
-                    {this.state.buttonText}{' '}
-                    <Image
-                      source={require('../images/follower2.png')}
-                      style={{ width: 17, height: 17 }}
-                    />
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
-            <View style={styles.navBut}>
-              <TouchableOpacity onPress={() => this.onListViewPressedP()}>
-                <Image
-                  source={require('../images/fullFeedF.png')}
-                  style={{
-                    opacity: this.state.selectListButtonP ? 1 : 0.3,
-                    width: 100,
-                    height: 50,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.onGridViewPressedP()}>
-                <Image
-                  source={require('../images/gridFeedF.png')}
-                  style={{
-                    opacity: this.state.selectGridButtonP ? 1 : 0.3,
-                    width: 100,
-                    height: 50,
-                  }}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <MemeGrid loadMemes={this.componentDidMount} memes={this.state.memes} />
-        </React.Fragment>
-      );
-    }
+    );
   }
 }
 //import friend grid and pass the uid as a prop instead of the <ProfileGrid/> component ^^^
