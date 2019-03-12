@@ -15,17 +15,17 @@ class ButtonBar extends React.Component {
       selectedButton: null,
       userHasReacted: false,
     };
-    this.emojiRank= {0: '../../images/Tile/Expressionless.png',
-      1:'../../images/Tile/Neutral.png',
-      2:'../../images/Tile/SlightlySmiling.png',
-      3:'../../images/Tile/BeamingGrin.png',
-      4:'../../images/Tile/LaughingTearsOfJoy.png'
+    this.emojiRank= {0: '../../images/Tile/button0.png',
+      1:'../../images/Tile/button1.png',
+      2:'../../images/Tile/button2.png',
+      3:'../../images/Tile/button3.png',
+      4:'../../images/Tile/button4.png'
     };
-    this.UnclickedEmojiRank = {0: '../../images/Tile/ExpressionlessFade.png',
-      1:'../../images/Tile/NeutralFade.png',
-      2:'../../images/Tile/SlightlySmileFade.png',
-      3:'../../images/Tile/BeamingGrinFade.png',
-      4:'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/ImagesForApplicationDesign%2FLaughingTearsOfJoyFade.png?alt=media&token=d992a83a-ec9a-4bba-9859-60000523fd99'
+    this.UnclickedEmojiRank = {0: '../../images/Tile/button0Fade.png',
+      1:'../../images/Tile/button1Fade.png',
+      2:'../../images/Tile/button2Fade.png',
+      3:'../../images/Tile/button3Fade.png',
+      4:'../../images/Tile/button4Fade.png'
     };
   }
 
@@ -159,8 +159,8 @@ class ButtonBar extends React.Component {
               resizeMode="cover"
               style={{ height: 35, width: 35 }}
               source={ this.state.selectedButton === 0 || this.state.selectedButton === null
-                ? require('../../images/Tile/Expressionless.png')
-                : require('../../images/Tile/ExpressionlessFade.png')
+                ? require('../../images/Tile/button0.png')
+                : require('../../images/Tile/button0Fade.png')
               }
             />
           </TouchableOpacity>
@@ -177,8 +177,8 @@ class ButtonBar extends React.Component {
               resizeMode="cover"
               style={{ height: 35, width: 35 }}
               source={ this.state.selectedButton === 1 || this.state.selectedButton === null
-                  ? require('../../images/Tile/Neutral.png')
-                  : require('../../images/Tile/NeutralFade.png')}
+                  ? require('../../images/Tile/button1.png')
+                  : require('../../images/Tile/button1Fade.png')}
             />
           </TouchableOpacity>
         </View>
@@ -190,8 +190,8 @@ class ButtonBar extends React.Component {
               resizeMode="cover"
               style={{ height: 35, width: 35 }}
               source={ this.state.selectedButton === 2 || this.state.selectedButton === null
-                  ? require('../../images/Tile/SlightlySmiling.png')
-                  : require('../../images/Tile/SlightlySmileFade.png')}
+                  ? require('../../images/Tile/button2.png')
+                  : require('../../images/Tile/button2Fade.png')}
             />
           </TouchableOpacity>
         </View>
@@ -203,8 +203,8 @@ class ButtonBar extends React.Component {
               resizeMode="cover"
               style={{ height: 35, width: 35 }}
               source={ this.state.selectedButton === 3 || this.state.selectedButton === null
-                  ? require('../../images/Tile/BeamingGrin.png')
-                  : require('../../images/Tile/BeamingGrinFade.png')}
+                  ? require('../../images/Tile/button3.png')
+                  : require('../../images/Tile/button3Fade.png')}
             />
           </TouchableOpacity>
         </View>
@@ -220,8 +220,8 @@ class ButtonBar extends React.Component {
               resizeMode="cover"
               style={{ height: 35, width: 35 }}
               source={ this.state.selectedButton === 4 || this.state.selectedButton === null
-                    ? require('../../images/Tile/LaughingTearsOfJoy.png')
-                    : this.UnclickedEmojiRank[4]}
+                    ? require('../../images/Tile/button4.png')
+                    : require('../../images/Tile/button4Fade.png')}
             />
           </TouchableOpacity>
         </View>
