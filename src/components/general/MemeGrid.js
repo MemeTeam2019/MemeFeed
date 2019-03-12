@@ -18,6 +18,7 @@ class MemeGrid extends React.Component {
 
   constructor() {
     super();
+    this._isMounted = false;
     this.state = {
       memesLoaded: 30,
       imageuri: '',
@@ -38,6 +39,13 @@ class MemeGrid extends React.Component {
 
   static navigationOptions = {
     header: null
+  }
+
+  componentDidMount(memesLoaded) {
+    this._isMounted = true;
+    if (this._isMounted){
+      this.props.loadMemes(9);
+    }
   }
 
   navigateToTilePage(data) {

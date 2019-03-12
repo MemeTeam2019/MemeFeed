@@ -378,7 +378,10 @@ class FriendProfileScreen extends React.Component {
               </TouchableOpacity>
             </View>
           </View>
-          <MemeGrid loadMemes={this.componentDidMount} memes={this.state.memes} />
+          <MemeGrid
+            loadMemes={this.componentDidMount}
+            memes={this.state.memes}
+          />
         </React.Fragment>
       );
     }
