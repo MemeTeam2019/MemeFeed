@@ -11,11 +11,13 @@ import firebase from 'react-native-firebase';
 
 import ProfileGrid from '../components/userProfile/ProfileGrid';
 import Tile from '../components/image/Tile';
+import MemeGrid from '../components/general/MemeGrid';
+import MemeList from '../components/general/MemeList';
 
 class FriendProfileScreen extends React.Component {
   constructor(props) {
     super(props);
-
+    this._isMounted = false;
     this.memeRef = firebase.firestore().collection("Reacts")
       .doc(this.props.navigation.getParam("uid"))
       .collection("Likes").orderBy('time', "desc");
@@ -42,48 +44,51 @@ class FriendProfileScreen extends React.Component {
   }
 
   componentDidMount() {
-    this.unsubscribe = this.memeRef
-      .limit(60)
-      .onSnapshot(this.onCollectionUpdate);
+    this._isMounted = true;
+    if (this._isMounted){
+      this.unsubscribe = this.memeRef
+        .limit(60)
+        .onSnapshot(this.onCollectionUpdate);
 
-    const theirUid = this.props.navigation.getParam('uid');
-    const docRef = firebase
-      .firestore()
-      .collection('Users')
-      .doc(theirUid);
+      const theirUid = this.props.navigation.getParam('uid');
+      const docRef = firebase
+        .firestore()
+        .collection('Users')
+        .doc(theirUid);
 
-    docRef
-      .get()
-      .then(User => {
-        this.setState(User.data());
-      })
-      .catch(err => {
-        console.log(err);
-      });
-
-    // Check if their uid is already in my followingLst
-    const myUid = firebase.auth().currentUser.uid;
-    const myUserRef = firebase
-      .firestore()
-      .collection('Users')
-      .doc(myUid);
-
-    myUserRef
-      .get()
-      .then(snapshot => {
-        const data = snapshot.data();
-        const followingLst = data.followingLst || [];
-        const isFollowing = followingLst.indexOf(theirUid) > -1;
-
-        console.log(followingLst);
-        this.setState({
-          isFollowing: isFollowing,
-          buttonText: isFollowing ? 'Unfollow' : 'Follow',
+      docRef
+        .get()
+        .then(User => {
+          this.setState(User.data());
+        })
+        .catch(err => {
+          console.log(err);
         });
-      })
-      .catch(err => {
-        console.log(err);
-      });
+
+      // Check if their uid is already in my followingLst
+      const myUid = firebase.auth().currentUser.uid;
+      const myUserRef = firebase
+        .firestore()
+        .collection('Users')
+        .doc(myUid);
+
+      myUserRef
+        .get()
+        .then(snapshot => {
+          const data = snapshot.data();
+          const followingLst = data.followingLst || [];
+          const isFollowing = followingLst.indexOf(theirUid) > -1;
+
+          console.log(followingLst);
+          this.setState({
+            isFollowing: isFollowing,
+            buttonText: isFollowing ? 'Unfollow' : 'Follow',
+          });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   }
 
   showActionSheet = () => {
@@ -296,10 +301,7 @@ class FriendProfileScreen extends React.Component {
               />
             </TouchableOpacity>
           </View>
-          <FlatList
-            data={this.state.memes}
-            renderItem={this.renderTile.bind(this)}
-          />
+          <MemeList loadMemes={this.componentDidMount} memes={this.state.memes} />
         </View>
       );
     } else {
@@ -376,7 +378,7 @@ class FriendProfileScreen extends React.Component {
               </TouchableOpacity>
             </View>
           </View>
-          <ProfileGrid />
+          <MemeGrid loadMemes={this.componentDidMount} memes={this.state.memes} />
         </React.Fragment>
       );
     }

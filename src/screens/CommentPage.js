@@ -18,6 +18,10 @@ class CommentPage extends React.Component {
       memeId: this.props.navigation.getParam("memeId")
     };
   }
+
+  static navigationOptions = {
+    tabBarVisible: false,
+  }
   
   // static navigationOptions = {
   //   header: null

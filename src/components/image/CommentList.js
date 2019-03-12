@@ -21,9 +21,11 @@ import PhotoGrid from 'react-native-image-grid';
 class CommentList extends React.Component{
   constructor(){
     super();
+    this._isMounted= false;
     this.unsubscribe = null;
     this.state = {
       commentsLoaded: 10,
+      commentCount: 0,
       comments: [],
     };
   }
@@ -52,7 +54,6 @@ class CommentList extends React.Component{
 
             // resort comments since nested asynchronous function
             function compareTime(a,b) {
-              console.log("sorting comments bb")
               if (a.time < b.time)
                 return -1;
               if (a.time > b.time)
@@ -61,29 +62,44 @@ class CommentList extends React.Component{
             }
 
             sortedComments = comments.sort(compareTime);
-
             this.setState({
               comments: sortedComments,
             });
-
           }
-
         })
         .catch(err => {
           console.log('Error getting document', err);
         });
-      
-
     });
-
-
   }
 
   componentDidMount() {
-    this.unsubscribe = firebase.firestore()
-      .collection("Comments/"+this.props.memeId+"/Text")
-      .orderBy('time', 'desc').limit(this.state.commentsLoaded) // we choose decsending to get most recent
-      .onSnapshot(this.onCollectionUpdate);
+    this._isMounted = true;
+    if (this._isMounted){
+
+      // Grab total # of comments
+      var countRef = firebase.firestore().collection("Comments/"+this.props.memeId+"/Info").doc('CommentInfo');
+      countRef.get().then(doc => {
+        if (doc.exists) {
+          const {count} = doc.data();
+          this.setState({
+            commentCount: count
+          });
+
+          this.unsubscribe = firebase.firestore()
+            .collection("Comments/"+this.props.memeId+"/Text")
+            .orderBy('time', 'desc') // we choose decsending to get most recent
+            .limit(Math.min(this.state.commentCount, this.state.commentsLoaded)) // limiting the comments we load
+            .onSnapshot(this.onCollectionUpdate);
+        }
+      })
+      .catch(err => {
+        console.log('Error getting document', err);
+      });
+
+
+     
+    }
   }
 
   //Single comment
@@ -100,28 +116,42 @@ class CommentList extends React.Component{
 
 
   render(){
-    return(
-      <View style={[styles.containerStyle]}>
-        <ButtonBar memeId={this.props.memeId}/>
-        <Button
-          onPress={() => {          
-            newLoadCount = this.state.commentsLoaded + 10;
-            this.setState({
-              commentsLoaded: newLoadCount,
-            });
-            this.componentDidMount();
-          }}
-          style={{fontSize: 1}}
-          title="Load older comments"
-          color='#3d97ff'
-        />
+    // if there are more comments to load
+    if (this.state.commentsLoaded < this.state.commentCount){
+      return(
+        <View style={[styles.containerStyle]}>
+          <ButtonBar memeId={this.props.memeId}/>
+          <Button
+            onPress={() => {          
+              newLoadCount = this.state.commentsLoaded + 10;
+              this.setState({
+                commentsLoaded: newLoadCount,
+                comments: [],
+              });
+              this.componentDidMount();
+            }}
+            style={{fontSize: 1}}
+            title="Load older comments"
+            color='#3d97ff'
+          />
 
-        <FlatList 
-          data={this.state.comments}
-          renderItem={this.renderComment.bind(this)}
-        />
-      </View>
-    );  
+          <FlatList 
+            data={this.state.comments}
+            renderItem={this.renderComment.bind(this)}
+          />
+        </View>
+      );  
+    } else { // no more comments to load
+      return(
+        <View style={[styles.containerStyle]}>
+          <ButtonBar memeId={this.props.memeId}/>
+          <FlatList 
+            data={this.state.comments}
+            renderItem={this.renderComment.bind(this)}
+          />
+        </View>
+      );  
+    }
   }
 }
 
