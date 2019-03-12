@@ -4,6 +4,8 @@ import firebase from "react-native-firebase";
 
 import PostInfo from "../image/PostInfo"
 
+import { withNavigation } from "react-navigation";
+
 
 class ButtonBar extends React.Component {
 
@@ -68,11 +70,13 @@ class ButtonBar extends React.Component {
     reactRef.get().then(likesSnapshot => {
       const data = likesSnapshot.data();
       var hasReacted = likesSnapshot.exists && data.rank !== -1;
+      console.log('LIKIND DAS MEME MIA ALTIERI')
+      console.log(this.props.postedBy)
       reactRef.set({
         rank: oldReact === newReact ? -1 : newReact,
         time: date,
         url: this.props.imageUrl,
-        likedFrom: "testing",
+        likedFrom: this.props.postedBy,
       });
       memeRef.get().then(async memeSnapshot => {
         const data = memeSnapshot.data();
@@ -91,6 +95,13 @@ class ButtonBar extends React.Component {
       .catch(err => {
         console.log(err);
       })
+    });
+  }
+
+  handleCommentClick() {
+    this.props.navigation.navigate("Comment", {
+      memeId: this.props.memeId,
+      uri: this.props.imageUrl
     });
   }
 
@@ -113,42 +124,21 @@ class ButtonBar extends React.Component {
   _renderPlaceholder = i => <View style={styles.item} key={i} />;
 
   render() {
-    if (this.state.ModalVisibleStatus) {
-      //Modal to show full image with close button
-      return (
-        <Modal
-          transparent={false}
-          animationType={'fade'}
-          visible={this.state.ModalVisibleStatus}
-          onRequestClose={() => {
-            this.ShowModalFunction(!this.state.ModalVisibleStatus);
-          }}
-        >
-          <View style={styles.modelStyle}>
-            <CommentPage
-              memeId={this.props.memeId}
-              imageUrl={this.props.imageUrl}
-            />
-            {/* Close Button */}
-            <TouchableOpacity
-              activeOpacity={0.5}
-              style={styles.closeButtonStyle}
-              onPress={() => {
-                this.ShowModalFunction(!this.state.ModalVisibleStatus);
-              }}>
-              <Image
-                source={{
-                  uri:
-                    'https://aboutreact.com/wp-content/uploads/2018/09/close.png',
-                  }}
-                  style={{ width: 25, height: 25, marginTop:16 }}
-              />
-            </TouchableOpacity>
-          </View>
-        </Modal>
-        );} else {
     return (
       <View style={styles.buttonBar}>
+        <TouchableOpacity
+            style={{
+              flex: 1,
+              justifyContent: 'flex-start',
+            }}
+            onPress={() => {
+              this.handleCommentClick();
+            }}>
+            <Image
+              style={styles.button1}
+              source={require('../../images/Tile/chatLogo2.png')}
+            />
+        </TouchableOpacity>
         <View style={styles.button}>
           <TouchableOpacity
             style={{
@@ -242,15 +232,16 @@ class ButtonBar extends React.Component {
     );
   }
 }
-}
 
-export default ButtonBar;
+
+export default withNavigation(ButtonBar);
 
 const styles = StyleSheet.create({
   buttonBar: {
     flexDirection: 'row',
-    width: '100%',
+    width: '85%',
     justifyContent: 'center',
+    alignItems: 'center'
   },
   button: {
     width: 50,
@@ -258,5 +249,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-
+  button1: {
+    width: 30,
+    height: 32,
+    marginLeft: '20%',
+    marginTop: '3%',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
 });

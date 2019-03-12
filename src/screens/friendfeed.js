@@ -45,12 +45,13 @@ class FriendFeed extends React.Component{
   onCollectionUpdate = (querySnapshot) => {
     const memes = [];
     querySnapshot.forEach((doc) => {
-    const { url, time } = doc.data();
+    const { url, time, likedFrom } = doc.data();
     memes.push({
         key: doc.id,
         doc, // DocumentSnapshot
         src: url,
         time,
+        likedFrom,
       });
     });
     this.setState({

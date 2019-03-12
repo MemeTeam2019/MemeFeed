@@ -98,6 +98,7 @@ class CommentSample extends React.Component{
       <Comment 
         username={item.username}
         content={item.content}
+        uid={item.key}
       />
     );
   }
