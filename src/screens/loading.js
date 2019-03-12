@@ -1,11 +1,6 @@
-import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ActivityIndicator
-} from "react-native";
-import firebase from "react-native-firebase";
+import React from 'react';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import firebase from 'react-native-firebase';
 
 class LoadingScreen extends React.Component {
   constructor(props) {
@@ -15,10 +10,10 @@ class LoadingScreen extends React.Component {
   componentDidMount() {
     console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
     const user = firebase.auth().currentUser;
-    if (!user) {
-      this.props.navigation.navigate("Auth");
+    if (user) {
+      this.props.navigation.navigate('Main');
     } else {
-      this.props.navigation.navigate("Main")
+      this.props.navigation.navigate('Auth');
     }
   }
 
@@ -26,7 +21,7 @@ class LoadingScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Text style={styles.loadingText}>Loading...</Text>
-        <ActivityIndicator size="large"/>
+        <ActivityIndicator size="large" />
       </View>
     );
   }
@@ -35,14 +30,14 @@ class LoadingScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "white"
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white',
   },
   loading: {
     fontSize: 24,
-    padding: 20
-  }
-})
+    padding: 20,
+  },
+});
 
 export default LoadingScreen;

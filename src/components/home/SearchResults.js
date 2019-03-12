@@ -5,35 +5,43 @@ import {
   TouchableOpacity,
   View,
   Image,
-  FlatList
+  FlatList,
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import firebase from 'react-native-firebase';
 
-
+/**
+ * Component to display a search result when using the search feature.
+ * onPress will navigate to the profile of the user in question, passing down
+ * the appropriate props
+ *
+ * Props - username: String, name: String, uid: String
+ */
 class SearchResult extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       username: this.props.data.username,
       name: this.props.data.name,
-      uid: this.props.uid
-    }
+      uid: this.props.uid,
+    };
   }
 
   render() {
     return (
       <React.Fragment>
         <TouchableOpacity
-          onPress={() => this.props.navigation.navigate("User", {
-            uid: this.state.uid
-          })}
+          onPress={() =>
+            this.props.navigation.push('User', {
+              uid: this.state.uid,
+            })
+          }
           style={styles.resultContainer}
         >
           <View>
             <Image
               style={styles.profilePic}
-              source={require("../../images/primePic.png")}
+              source={require('../../images/primePic.png')}
             />
           </View>
           <View>
@@ -47,38 +55,74 @@ class SearchResult extends React.Component {
 }
 
 /**
- * Lists following and followers for uid passed down through props
+ * Generates a FlatList of SearchResults to display in search results or
+ * when the user is viewing someone's following or follower list.
+ *
+ * Props - navigation.arrayOfUids: Array[String], navigation.title: String
  */
 class FollowList extends React.Component {
+  static navigationOptions = ({ navigation }) => {
+    return { title: navigation.getParam('title', '') };
+  };
+
   constructor(props) {
     super(props);
+    this.arrayOfUids = this.props.navigation.getParam('arrayOfUids', []);
+    this.title = this.props.navigation.getParam('title', '');
+
     this.state = {
-      uid: this.props.navigation.getParam("uid"),
-      listToRender: this.props.navigation.getParam("listToRender")
-    }
+      usersToRender: [],
+      searchTerm: '',
+    };
   }
 
   componentDidMount() {
-    const uid = this.props.uid;
-    const myRef = firebase.firestore().collection("Users").doc(uid);
-    myRef.get().then(snapshot => {
-      
-    })
+    let usersToRender = [];
+    let arrayOfUids = this.props.navigation.getParam('arrayOfUids', []);
+    usersToRender = arrayOfUids.map(async uid => {
+      return await firebase
+        .firestore()
+        .collection('Users')
+        .doc(uid)
+        .get()
+        .then(snapshot => {
+          return snapshot;
+        });
+    });
+    Promise.all(usersToRender).then(fulfilled => {
+      this.setState({ usersToRender: fulfilled });
+    });
   }
 
-  renderSearchResult = (userRef) => {
-    const data = userRef.item.data();
-    const uid  = userRef.item.ref.id;
-    return <SearchResult data={data} uid={uid}/>;
-  }
+  renderResult = (snapshot = null) => {
+    if (snapshot) {
+      const data = snapshot.item.data();
+      const uid = snapshot.item.ref.id;
+      return <SearchResultNav data={data} uid={uid} />;
+    }
+  };
+
+  updateFilteredResults = (searchTerm = '') => {
+    let filtered = this.allResults;
+    if (searchTerm) {
+      filtered = this.allResults.filter(doc => {
+        const { username, name } = doc.data();
+        return (
+          username.toLowerCase().startsWith(searchTerm.toLowerCase()) ||
+          name.toLowerCase().startsWith(searchTerm.toLowerCase())
+        );
+      });
+    }
+    return filtered;
+  };
 
   render() {
     return (
-      <View>
+      <View style={{flex: 1}}>
         <FlatList
-          data={this.state.results}
-          renderItem={(userRef) => this.renderSearchResult(userRef)}
-          keyExtractor={(item) => item.ref.id}
+          data={this.state.usersToRender}
+          renderItem={user => this.renderResult(user)}
+          keyExtractor={user => user.ref.id || -1}
         />
       </View>
     );
@@ -88,31 +132,29 @@ class FollowList extends React.Component {
 const styles = StyleSheet.create({
   resultContainer: {
     flex: 1,
-    flexDirection: "row",
+    flexDirection: 'row',
     borderBottomColor: '#bbb',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    marginHorizontal: "5%",
-    paddingVertical: "2.5%"
+    marginHorizontal: '5%',
+    paddingVertical: '2.5%',
   },
   primaryText: {
-    color: "#000",
-    fontSize: 24
+    color: '#000',
+    fontSize: 24,
   },
   secondaryText: {
-    color: "#6C757D",
-    fontSize: 18
+    color: '#6C757D',
+    fontSize: 18,
   },
   profilePic: {
     height: 50,
     width: 50,
-    marginRight: "5%"
-  }
-})
+    marginRight: '5%',
+  },
+});
 
+// Both components depend on navigation props to route to ProfileScreen
+const FollowListNav = withNavigation(FollowList);
 const SearchResultNav = withNavigation(SearchResult);
-const FollowListNav   = withNavigation(FollowList);
 
-export {
-  SearchResultNav as SearchResult,
-  FollowListNav as FollowList
-}
+export { SearchResultNav as SearchResult, FollowListNav as FollowList };

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Button, StyleSheet, View, Image, Text, TouchableOpacity, Modal } from 'react-native';
+import { Button, StyleSheet, View, Image, Text, TouchableOpacity, Modal, TouchableWithoutFeedback } from 'react-native';
 import Username from './username';
 import firebase from 'react-native-firebase';
 import { withNavigation } from "react-navigation";
@@ -35,9 +35,13 @@ class Comment extends React.Component{
     return(
       <View style={styles.container}>
         <TouchableOpacity onPress={() => this.handleUsernameClick()}>
-          <Text style={styles.userText}>{this.props.username}</Text>
+          <Text style={styles.userText}>{this.props.username}
+          <TouchableWithoutFeedback>
+            <Text style={styles.commentStyle}> {this.props.content} </Text>
+          </TouchableWithoutFeedback>
+          </Text> 
         </TouchableOpacity>
-        <Text> {this.props.content}</Text>
+       
       </View>
     );
 
@@ -53,9 +57,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     flexDirection: 'row',
     marginLeft: '2.5%',
-    paddingTop: 10
+    marginRight:'2.5%',
+    paddingTop: 10,
   },
   userText: {
     fontWeight: 'bold'
+  },
+  commentStyle: {
+    fontWeight: 'normal'
   },
 });
