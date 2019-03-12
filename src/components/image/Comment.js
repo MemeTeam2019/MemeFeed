@@ -37,7 +37,7 @@ class Comment extends React.Component{
         <TouchableOpacity onPress={() => this.handleUsernameClick()}>
           <Text style={styles.userText}>{this.props.username}</Text>
         </TouchableOpacity>
-        <Text> {this.props.content}</Text>
+        <Text> {this.props.content} </Text>
       </View>
     );
 
@@ -53,7 +53,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     flexDirection: 'row',
     marginLeft: '2.5%',
-    paddingTop: 10
+    marginRight: 80,
+    paddingTop: 10,
   },
   userText: {
     fontWeight: 'bold'

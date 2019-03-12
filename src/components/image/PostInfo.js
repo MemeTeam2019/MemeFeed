@@ -57,19 +57,9 @@ render() {
        if (this.state.commentCount > 2) {
         return(
          <View style={styles.postInfo}>
-           {/* <TouchableOpacity
-              onPress={() => {
-                this.handleCommentClick();
-              }}>
-              <Image
-                style={styles.commentButtonStyle}
-                source={require('../../images/Tile/chatLogo2.png')}
-              />
-            </TouchableOpacity> */}
             <Text style={{fontFamily: 'AvenirNext-Regular', paddingTop: 3, marginLeft: '2.5%'}}>{this.props.reactCount} Reactions</Text>
             <CommentSample memeId={this.props.memeId}/>
 
-            <View style={{flex: 1, flexDirection: 'row'}}>
               <TouchableOpacity
                  onPress={() => {
                   this.handleCommentClick();
@@ -77,8 +67,6 @@ render() {
               >
               <Text style={styles.commentStringStyle}>{this.state.commentString}</Text>
               </TouchableOpacity>
-
-            </View>
 
           </View>
         );
@@ -135,7 +123,7 @@ const styles = StyleSheet.create({
   commentStringStyle: {
     fontFamily: 'AvenirNext-Bold',
     paddingTop: 10,
-    marginLeft: 10,
+    marginLeft: '2.5%'
     //color: '#383838'
   }
 
