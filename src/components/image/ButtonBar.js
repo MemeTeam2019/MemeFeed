@@ -8,7 +8,6 @@ import { withNavigation } from "react-navigation";
 
 
 class ButtonBar extends React.Component {
-
   constructor(props) {
     super(props);
     this.unsubscribe = null;
@@ -30,42 +29,53 @@ class ButtonBar extends React.Component {
     };
   }
 
-
   componentDidMount() {
     const user = firebase.auth().currentUser;
     const memeId = this.props.memeId;
-    const ref = firebase.firestore().collection("Reacts").doc(user.uid)
-                  .collection("Likes").doc(memeId);
-    const source = this.props.source;
-    ref.get().then(docSnapshot => {
-      if (docSnapshot.exists) {
-        let data = docSnapshot.data();
-        if (data) {
-          let rank = data.rank;
-          this.setState({ selectedButton: rank == -1 ? null : rank });
+    const ref = firebase
+      .firestore()
+      .collection('Reacts')
+      .doc(user.uid)
+      .collection('Likes')
+      .doc(memeId);
+      
+    ref
+      .get()
+      .then(docSnapshot => {
+        if (docSnapshot.exists) {
+          let data = docSnapshot.data();
+          if (data) {
+            let rank = data.rank;
+            this.setState({ selectedButton: rank == -1 ? null : rank });
+          }
         }
-      }
-    })
-    .catch(error => {
-      console.log(error);
-    })
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
-
-  _onPressButton = async (newReact) => {
+  _onPressButton = async newReact => {
     const oldReact = this.state.selectedButton;
     this.setState({
-      selectedButton: newReact === oldReact ? null : newReact
-    })
+      selectedButton: newReact === oldReact ? null : newReact,
+    });
 
     const user = firebase.auth().currentUser;
     const memeId = this.props.memeId;
 
     // Update the Reacts collection for current uid
-    const reactRef = firebase.firestore().collection("Reacts").doc(user.uid)
-                      .collection("Likes").doc(memeId);
-    const memeRef = firebase.firestore().collection("Memes").doc(memeId);
-    const date = Math.round(+new Date()/1000);
+    const reactRef = firebase
+      .firestore()
+      .collection('Reacts')
+      .doc(user.uid)
+      .collection('Likes')
+      .doc(memeId);
+    const memeRef = firebase
+      .firestore()
+      .collection('Memes')
+      .doc(memeId);
+    const date = Math.round(+new Date() / 1000);
 
     reactRef.get().then(likesSnapshot => {
       const data = likesSnapshot.data();
@@ -78,23 +88,25 @@ class ButtonBar extends React.Component {
         url: this.props.imageUrl,
         likedFrom: this.props.postedBy,
       });
-      memeRef.get().then(async memeSnapshot => {
-        const data = memeSnapshot.data();
-        let newReactCount = 0;
-        console.log(hasReacted);
-        if (!hasReacted) {
-          newReactCount = data.reactCount + 1 || 1;
-        } else if (hasReacted && oldReact === newReact) {
-          newReactCount = data.reactCount - 1;
-        } else {
-          newReactCount = data.reactCount;
-        }
-        memeRef.update({ reactCount: newReactCount });
-        this.props.updateReacts(newReactCount);
-      })
-      .catch(err => {
-        console.log(err);
-      })
+      memeRef
+        .get()
+        .then(async memeSnapshot => {
+          const data = memeSnapshot.data();
+          let newReactCount = 0;
+          console.log(hasReacted);
+          if (!hasReacted) {
+            newReactCount = data.reactCount + 1 || 1;
+          } else if (hasReacted && oldReact === newReact) {
+            newReactCount = data.reactCount - 1;
+          } else {
+            newReactCount = data.reactCount;
+          }
+          memeRef.update({ reactCount: newReactCount });
+          this.props.updateReacts(newReactCount);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     });
   }
 
@@ -106,20 +118,21 @@ class ButtonBar extends React.Component {
   }
 
 
-  _renderItem = (data) => {
-      <TouchableOpacity
-        style={{
-          width: 25,
-          height: 25,
-        }}
-        onPress={this._onPressButton}>
-        <Image
-          resizeMode="cover"
-          style={{ flex: 1 }}
-          source={{ uri: this.emojiRank[data]}}
-        />
-      </TouchableOpacity>
-  }
+  _renderItem = data => {
+    <TouchableOpacity
+      style={{
+        width: 25,
+        height: 25,
+      }}
+      onPress={this._onPressButton}
+    >
+      <Image
+        resizeMode="cover"
+        style={{ flex: 1 }}
+        source={{ uri: this.emojiRank[data] }}
+      />
+    </TouchableOpacity>;
+  };
 
   _renderPlaceholder = i => <View style={styles.item} key={i} />;
 
@@ -218,6 +231,7 @@ class ButtonBar extends React.Component {
 }
 
 
+
 export default withNavigation(ButtonBar);
 
 const styles = StyleSheet.create({
@@ -231,7 +245,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   button1: {
     width: 30,

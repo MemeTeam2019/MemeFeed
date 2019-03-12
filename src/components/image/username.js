@@ -1,42 +1,48 @@
 import React, { Component } from 'react';
-import {Text, StyleSheet, View, Image,TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import firebase from 'react-native-firebase';
-// import { withNavigation } from 'react-navigation';
- 
+
 class Username extends React.Component {
-  constructor(props){
+  static navigationOptions = {
+    header: null,
+  };
+
+  _isMounted = false;
+
+  constructor(props) {
     super(props);
     this.state = {
-      username: ""
-    }
+      username: '',
+    };
   }
 
-  static navigationOptions = {
-    header: null
+  componentDidMount() {
+    this._isMounted = true;
+
+    const ref = firebase
+      .firestore()
+      .collection('Users')
+      .doc(this.props.uid);
+
+    ref
+      .get()
+      .then(docSnapshot => {
+        if (docSnapshot.exists) {
+          let data = docSnapshot.data();
+          if (data && this._isMounted) {
+            this.setState({ username: data.username });
+          }
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   goToUser() {
-    console.log("touchy touch");
-    this.props.navigation.navigate("User", {
-      uid: this.props.uid
-    });
-  }
-
-componentDidMount() {
-    const ref = firebase.firestore()
-                .collection("Users").doc(this.props.uid);
-
-    ref.get().then(docSnapshot => {
-      if (docSnapshot.exists) {
-        let data = docSnapshot.data();
-        if (data) {
-          let username = data.username;
-          this.setState({ username: username });
-        }
-      }
-    })
-    .catch(error => {
-      console.log(error);
+    console.log('touchy touch');
+    this.props.navigation.navigate('User', {
+      uid: this.props.uid,
     });
   }
 
@@ -44,14 +50,12 @@ componentDidMount() {
   render() {
     return (
       <TouchableOpacity onPress={() => this.goToUser()}>
-        <Text style={styles.text}> {this.state.username} </Text>
+        <Text style={styles.text}>{this.state.username}</Text>
       </TouchableOpacity>
     );
   }
 }
 
-export default Username; 
- 
 const styles = StyleSheet.create({
   text: {  
     fontSize: 16,
@@ -59,3 +63,5 @@ const styles = StyleSheet.create({
     marginLeft: '2.5%'
   },
 });
+
+export default Username;
