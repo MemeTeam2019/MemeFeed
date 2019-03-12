@@ -218,7 +218,7 @@ class ButtonBar extends React.Component {
             onPress={this._onPressButton.bind(this,4)}>
             <Image
               resizeMode="cover"
-              style={{ height: 34, width: 33 }}
+              style={{ height: 34, width: 34 }}
               source={ this.state.selectedButton === 4 || this.state.selectedButton === null
                     ? require('../../images/Tile/button4.png')
                     : require('../../images/Tile/button4Fade.png')}
