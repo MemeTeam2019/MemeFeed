@@ -253,6 +253,7 @@ class FriendProfileScreen extends React.Component {
             </TouchableOpacity>
 
             <TouchableOpacity
+              style={styles.rightContainer2}
               onPress={() => {
                 this.props.navigation.push('FollowList', {
                   arrayOfUids: this.state.followersLst,
@@ -260,7 +261,7 @@ class FriendProfileScreen extends React.Component {
                 });
               }}
             >
-              <View style={styles.rightContainer2}>
+              <View>
                 <Text style={styles.textSty}>
                   {this.state.followersCnt} {'\n'}{' '}
                   <Text style={styles.textSty3}>Followers</Text>{' '}

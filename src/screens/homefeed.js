@@ -56,20 +56,25 @@ class HomeFeed extends React.Component {
   updateSearch = (searchTerm = '') => {
     this.setState({ searchTerm: searchTerm });
     const usersRef = firebase.firestore().collection('Users');
+    const lowerSearchTerm = searchTerm.toLowerCase();
     usersRef
-      .where('username', '>=', searchTerm)
-      .where('username', '<', searchTerm + '\uf8ff')  
+      .where('searchableUsername', '>=', lowerSearchTerm)
+      .where('searchableUsername', '<', lowerSearchTerm + '\uf8ff')  
       .get()
       .then(snapshot => {
         const myUid = firebase.auth().currentUser.uid;
-        let results = [];
 
         // Filter own profile out of search
-        results = snapshot.docs.filter(doc => {
+        let usernameMatches = snapshot.docs.filter(doc => {
           const uid = doc.ref.id;
           return uid !== myUid;
         });
-        if (!results || !searchTerm) results = [];
+
+        usersRef
+          .where('name', '>=', lowerSearchTerm)
+          .where('name', '<', lowerSearchTerm + '\uf8ff')
+          .get()
+          .then()
 
         // Trigger rerender to display updated search results
         this.setState({

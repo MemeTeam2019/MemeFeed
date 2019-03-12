@@ -256,6 +256,7 @@ export default class ProfileScreen extends React.Component {
               </TouchableOpacity>
               
               <TouchableOpacity
+                style={styles.rightContainer2}
                 onPress={() => {
                   this.props.navigation.navigate('FollowList', {
                     arrayOfUids: this.state.followersLst,
@@ -263,7 +264,7 @@ export default class ProfileScreen extends React.Component {
                   })
                 }}
               >
-                <View style={styles.rightContainer2}>
+                <View>
                   <Text style={styles.textSty}>
                     {this.state.followersLst.length} {'\n'}{' '}
                     <Text style={styles.textSty3}>Followers</Text>{' '}
