@@ -5,12 +5,13 @@ import { Icon } from 'react-native-elements';
 import React from 'react';
 
 import HomeFeed from '../screens/homefeed';
-import TilePage from '../screens/tilePage';
-import ProfileScreen from '../screens/profile';
-import FriendFeed from '../screens/friendfeed';
-import UserScreen from '../screens/friendProfile';
+import TilePage from '../screens/tilePage'
+import ProfileScreen from "../screens/profile";
+import FriendFeed from "../screens/friendfeed"
+import UserScreen from "../screens/friendProfile";
+import CommentPage from "../screens/CommentPage";
 
-import { FollowList } from '../components/home/SearchResults';
+import { FollowList } from '../components/home/SearchResults'
 
 export const HomeStack = createStackNavigator(
   {
@@ -40,6 +41,9 @@ export const FriendStack = createStackNavigator(
     Tile: {
       screen: TilePage,
     },
+    Comment: {
+      screen: CommentPage
+    }
   },
   {
     initialRouteName: 'Friend',

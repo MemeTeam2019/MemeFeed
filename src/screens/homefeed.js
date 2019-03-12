@@ -86,13 +86,15 @@ class HomeFeed extends React.Component {
   // function for extracting Firebase responses to the state
   onCollectionUpdate = querySnapshot => {
     const memes = [];
-    querySnapshot.forEach(doc => {
-      const { url, time } = doc.data();
+    querySnapshot.forEach((doc) => {
+      const { url, time, sub } = doc.data();
       memes.push({
         key: doc.id,
         doc, // DocumentSnapshot
         src: url,
         time,
+        sub,
+        postedBy: sub,
       });
     });
     this.setState({

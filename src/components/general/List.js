@@ -13,8 +13,6 @@ import {
   FlatList,
 } from 'react-native';
 
-const uid = firebase.auth().currentUser.uid;
-
 class List extends React.Component {
   constructor() {
     super();

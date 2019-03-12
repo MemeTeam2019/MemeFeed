@@ -20,10 +20,10 @@ const styles = StyleSheet.create({
   navBar: {
     height:80,
     backgroundColor: 'white',
-    elevation: 3,
+    //elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 50,//50
+    //paddingTop: 50,//50
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

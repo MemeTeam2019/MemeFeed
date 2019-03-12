@@ -13,8 +13,6 @@ import {
   FlatList,
 } from 'react-native';
 
-const uid = firebase.auth().currentUser.uid;
-
 class MemeList extends React.Component {
   constructor() {
     super();
@@ -31,6 +29,10 @@ class MemeList extends React.Component {
     return <Tile
       memeId={item.key}
       imageUrl={item.src}
+      sub={item.sub}
+      likedFrom={item.likedFrom}
+      postedBy={item.postedBy}
+      poster={item.poster}
     />
   }
 

@@ -54,6 +54,7 @@ class ProfileGrid extends React.Component {
   }
 
 
+
   ShowModalFunction(visible, imageURL) {
     //handler to handle the click on image of Grid
     //and close button on modal

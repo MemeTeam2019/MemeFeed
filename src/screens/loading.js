@@ -8,6 +8,7 @@ class LoadingScreen extends React.Component {
   }
 
   componentDidMount() {
+    console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
     const user = firebase.auth().currentUser;
     if (user) {
       this.props.navigation.navigate('Main');

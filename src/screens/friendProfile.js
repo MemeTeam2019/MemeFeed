@@ -15,10 +15,11 @@ import Tile from '../components/image/Tile';
 class FriendProfileScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.memeRef = firebase
-      .firestore()
-      .collection('Memes')
-      .orderBy('time', 'desc');
+
+    this.ref = firebase.firestore().collection("Reacts")
+      .doc(this.props.navigation.getParam("uid"))
+      .collection("Likes").orderBy('time', "desc");
+
     this.unsubscribe = null;
     this.state = {
       email: '',
@@ -156,24 +157,32 @@ class FriendProfileScreen extends React.Component {
     });
   };
 
-  onCollectionUpdate = querySnapshot => {
-    const memes = [];
-    querySnapshot.forEach(doc => {
-      const { url, time } = doc.data();
-      memes.push({
-        key: doc.id,
-        doc, // DocumentSnapshot
-        src: url,
-        time,
-      });
-    });
-    this.setState({
-      memes,
-      isLoading: false,
-    });
-  };
+  // function for extracting Firebase responses to the state
+  onCollectionUpdate = (querySnapshot) => {
+   const memes = [];
+    querySnapshot.forEach((doc) => {
+      console.log(doc.data(), )
+      const { time, url, rank, likedFrom } = doc.data();
+        if (rank > 1)
+        memes.push({
+         key: doc.id,
+         doc, // DocumentSnapshot
+         src: url,
+         time,
+         likedFrom,
+         postedBy: this.props.navigation.getParam("uid"),
+         poster: this.props.navigation.getParam("uid"),
+        });
 
-  ShowModalFunction = (visible, imageUrl) => {
+        this.setState({
+          memes,
+          isLoading: false,
+        });
+    });
+  }
+
+
+  ShowModalFunction(visible, imageUrl) {
     //handler to handle the click on image of Grid
     //and close button on modal
     this.setState({
@@ -211,44 +220,11 @@ class FriendProfileScreen extends React.Component {
   };
 
   render() {
-    var optionArray = ['Logout', 'Cancel'];
-    if (this.state.ModalVisibleStatus) {
-      //Modal to show full image with close button
-      return (
-        <Modal
-          transparent={false}
-          animationType={'fade'}
-          visible={this.state.ModalVisibleStatus}
-          onRequestClose={() => {
-            this.ShowModalFunction(!this.state.ModalVisibleStatus, '');
-          }}
-        >
-          <View style={styles.modelStyle}>
-            {/* Single Image - Tile */}
-            <Image
-              style={styles.fullImageStyle}
-              source={{ uri: this.state.imageuri }}
-            />
-            {/* Close Button */}
-            <TouchableOpacity
-              activeOpacity={0.5}
-              style={styles.closeButtonStyle}
-              onPress={() => {
-                this.ShowModalFunction(!this.state.ModalVisibleStatus, '');
-              }}
-            >
-              <Image
-                source={{
-                  uri:
-                    'https://aboutreact.com/wp-content/uploads/2018/09/close.png',
-                }}
-                style={{ width: 25, height: 25, marginTop: 16 }}
-              />
-            </TouchableOpacity>
-          </View>
-        </Modal>
-      );
-    } else if (this.state.selectListButtonP) {
+    var optionArray = [
+      'Logout',
+      'Cancel',
+    ];
+      if (this.state.selectListButtonP) {
       //Photo List/Full View of images
       return (
         <View style={styles.containerStyle}>
@@ -375,13 +351,6 @@ class FriendProfileScreen extends React.Component {
                 </TouchableOpacity>
               </View>
             </View>
-            {/*
-            <View  style={styles.followBut2}>
-            <TouchableOpacity onPress={() => this.followButton()}>
-             <Text style={styles.followBut}> {this.state.buttonText} <Image source={require('../images/follower2.png')}style={{width: 17, height: 17}} /></Text>
-            </TouchableOpacity>
-            </View>
-            */}
 
             {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
             <View style={styles.navBut}>

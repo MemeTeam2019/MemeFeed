@@ -57,20 +57,10 @@ class Username extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    width: '100%',
-    height: 50,
-    paddingHorizontal: 10,
-    alignItems: 'center',
-    marginTop: 30,
-  },
-  text: {
-    fontWeight: 'bold',
+  text: {  
     fontSize: 16,
-    fontFamily: 'AvenirNext-Regular',
-    marginLeft: 10,
+    fontFamily: 'AvenirNext-Bold',
+    marginLeft: '2.5%'
   },
 });
 
