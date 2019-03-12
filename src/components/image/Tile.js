@@ -9,6 +9,8 @@ import PostInfo from './PostInfo';
 import firebase from "react-native-firebase";
 
 class Tile extends React.Component {
+  _isMounted = false;
+
   constructor(props) {
     super(props);
     this.updateReactCount = this.updateReactCount.bind(this);
@@ -18,12 +20,15 @@ class Tile extends React.Component {
   }
 
   componentDidMount() {
+    this._isMounted = true;
     const memeid = this.props.memeId;
     const ref = firebase.firestore().collection("Memes").doc(memeid);
     ref.get().then(docSnapshot => {
       const data = docSnapshot.data();
       const reactCount = data.reactCount || 0;
-      this.setState({ reactCount: reactCount })
+      if (this._isMounted) {
+        this.setState({ reactCount: reactCount })
+      }
     });
   }
 
