@@ -8,7 +8,7 @@ import {
   FlatList,
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
-import { SearchBar } from 'react-native-elements';
+import firebase from 'react-native-firebase';
 
 /**
  * Component to display a search result when using the search feature.
@@ -58,8 +58,7 @@ class SearchResult extends React.Component {
  * Generates a FlatList of SearchResults to display in search results or
  * when the user is viewing someone's following or follower list.
  *
- * Props - listToRender: Array[String]
- *
+ * Props - navigation.arrayOfUids: Array[String], navigation.title: String
  */
 class FollowList extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -68,21 +67,38 @@ class FollowList extends React.Component {
 
   constructor(props) {
     super(props);
-    this.allResults = this.props.navigation.getParam('allResults', []);
+    this.arrayOfUids = this.props.navigation.getParam('arrayOfUids', []);
     this.title = this.props.navigation.getParam('title', '');
 
-    console.log(this.allResults);
     this.state = {
-      filteredResults: [],
+      usersToRender: [],
       searchTerm: '',
     };
   }
 
-  renderResult = (userRef = null) => {
-    if (userRef) {
-      const data = userRef.item.data();
-      const uid = userRef.item.ref.id;
-      return <SearchResult data={data} uid={uid} />;
+  componentDidMount() {
+    let usersToRender = [];
+    let arrayOfUids = this.props.navigation.getParam('arrayOfUids', []);
+    usersToRender = arrayOfUids.map(async uid => {
+      return await firebase
+        .firestore()
+        .collection('Users')
+        .doc(uid)
+        .get()
+        .then(snapshot => {
+          return snapshot;
+        });
+    });
+    Promise.all(usersToRender).then(fulfilled => {
+      this.setState({ usersToRender: fulfilled });
+    });
+  }
+
+  renderResult = (snapshot = null) => {
+    if (snapshot) {
+      const data = snapshot.item.data();
+      const uid = snapshot.item.ref.id;
+      return <SearchResultNav data={data} uid={uid} />;
     }
   };
 
@@ -102,11 +118,11 @@ class FollowList extends React.Component {
 
   render() {
     return (
-      <View>
+      <View style={{flex: 1}}>
         <FlatList
-          data={this.allResults}
-          renderItem={userRef => this.renderResult(userRef)}
-          keyExtractor={item => item.ref.id}
+          data={this.state.usersToRender}
+          renderItem={user => this.renderResult(user)}
+          keyExtractor={user => user.ref.id || -1}
         />
       </View>
     );

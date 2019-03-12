@@ -36,7 +36,7 @@ export default class ProfileScreen extends React.Component {
       followingCnt: 0,
       followersCnt: 0,
       followingLst: [],
-      followerLst: [],
+      followersLst: [],
       open: false,
       selectGridButtonP: true,
       selectListButtonP: false,
@@ -70,8 +70,8 @@ export default class ProfileScreen extends React.Component {
       .collection('Users')
       .doc(uid)
       .get()
-      .then(s => {
-        const data = s.data();
+      .then(snapshot => {
+        const data = snapshot.data();
         this.setState(Object.assign(data, { uid: uid }));
       });
   };
@@ -238,102 +238,6 @@ export default class ProfileScreen extends React.Component {
           </View>
         </Modal>
       );
-    } else if (this.state.selectListButtonP) {
-      //Photo List/Full View of images
-      return (
-        <View style={styles.containerStyle}>
-          <View style={styles.navBar1}>
-            <View style={styles.leftContainer1}>
-              <Text style={[styles.text, { textAlign: 'left' }]}>{}</Text>
-            </View>
-            <Text style={styles.textSty4}>{this.state.username}</Text>
-            <View style={styles.rightContainer1}>
-              <View style={styles.rightIcon1} />
-              <TouchableOpacity onPress={this.showActionSheet}>
-                <Image
-                  source={require('../images/setting.png')}
-                  style={{ width: 60, height: 30 }}
-                />
-              </TouchableOpacity>
-              <ActionSheet
-                ref={o => (this.ActionSheet = o)}
-                title={'User Settings'}
-                options={optionArray}
-                cancelButtonIndex={1}
-                destructiveIndex={0}
-                onPress={index => {
-                  if (optionArray[index] == 'Logout') {
-                    this.logout();
-                  }
-                }}
-              />
-            </View>
-          </View>
-          {/*Profile Pic, Follwers, Follwing Block*/}
-          <View style={styles.navBar2}>
-            <View style={styles.leftContainer2}>
-              <Image
-                source={require('../images/profilePic.png')}
-                style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
-              />
-            </View>
-            <Text style={styles.textSty}>
-              {' '}
-              {this.state.followingCnt} {'\n'}{' '}
-              <Text style={styles.textSty3}>Following</Text>
-            </Text>
-            <View style={styles.rightContainer2}>
-              <TouchableHighlight
-                onPress={() => {
-                  console.log('yuh');
-                  this.props.navigation.navigate('FollowList', {
-                    allResults: this.state.followingLst,
-                    title: 'Following',
-                  });
-                }}
-              >
-                <Text style={styles.textSty}>
-                  {this.state.followersCnt} {'\n'}
-                  <Text style={styles.textSty3}>Followers</Text>
-                </Text>
-              </TouchableHighlight>
-            </View>
-          </View>
-          {/*DISPLAY NAME*/}
-          <View style={styles.profilePic}>
-            <Text style={styles.textSty2}>{this.state.name}</Text>
-            <Text> </Text>
-            <Text> </Text>
-          </View>
-          {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
-          <View style={styles.navBut}>
-            <TouchableOpacity onPress={() => this.onListViewPressedP()}>
-              <Image
-                source={require('../images/fullFeedF.png')}
-                style={{
-                  opacity: this.state.selectListButtonP ? 1 : 0.3,
-                  width: 100,
-                  height: 50,
-                }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.onGridViewPressedP()}>
-              <Image
-                source={require('../images/gridFeedF.png')}
-                style={{
-                  opacity: this.state.selectGridButtonP ? 1 : 0.3,
-                  width: 100,
-                  height: 50,
-                }}
-              />
-            </TouchableOpacity>
-          </View>
-          <MemeList
-            loadMemes={this.componentDidMount}
-            memes={this.state.memes}
-          />
-        </View>
-      );
     } else {
       //Photo Grid of images
       return (
@@ -376,26 +280,37 @@ export default class ProfileScreen extends React.Component {
                   style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
                 />
               </View>
+
               <TouchableOpacity
                 onPress={() => {
-                  console.log('yuh');
                   this.props.navigation.navigate('FollowList', {
-                    allResults: this.state.followingLst,
+                    arrayOfUids: this.state.followingLst,
                     title: 'Following',
                   });
                 }}
               >
                 <Text style={styles.textSty}>
-                  {this.state.followersCnt} {'\n'}
-                  <Text style={styles.textSty3}>Followers</Text>
+                  {this.state.followingLst.length} {'\n'}
+                  <Text style={styles.textSty3}>Following</Text>
                 </Text>
               </TouchableOpacity>
-              <View style={styles.rightContainer2}>
-                <Text style={styles.textSty}>
-                  {this.state.followersCnt} {'\n'}{' '}
-                  <Text style={styles.textSty3}>Followers</Text>{' '}
-                </Text>
-              </View>
+              
+              <TouchableOpacity
+                onPress={() => {
+                  this.props.navigation.navigate('FollowList', {
+                    arrayOfUids: this.state.followersLst,
+                    title: 'Followers'
+                  })
+                }}
+              >
+                <View style={styles.rightContainer2}>
+                  <Text style={styles.textSty}>
+                    {this.state.followersLst.length} {'\n'}{' '}
+                    <Text style={styles.textSty3}>Followers</Text>{' '}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+
             </View>
 
             {/*DISPLAY NAME*/}
@@ -426,11 +341,17 @@ export default class ProfileScreen extends React.Component {
               </TouchableOpacity>
             </View>
           </View>
-
-          <MemeGrid
-            loadMemes={this.componentDidMount}
-            memes={this.state.memes}
-          />
+          {this.state.selectListButtonP ? (
+            <MemeList
+              loadMemes={this.componentDidMount}
+              memes={this.state.memes}
+            />
+          ) : (
+            <MemeGrid
+              loadMemes={this.componentDidMount}
+              memes={this.state.memes}
+            />
+          )}
         </React.Fragment>
       );
     }

@@ -24,7 +24,7 @@ class FriendProfileScreen extends React.Component {
       email: '',
       username: '',
       name: '',
-      uid: this.props.navigation.getParam('uid'),
+      uid: '',
       followingCnt: 0,
       followersCnt: 0,
       open: false,
@@ -121,20 +121,17 @@ class FriendProfileScreen extends React.Component {
     // Update my followingLst and followingCnt
     myUserRef.get().then(mySnap => {
       const myData = mySnap.data();
-      let followingCnt = myData.followingCnt;
       let followingLst = myData.followingLst || [];
 
       const index = followingLst.indexOf(theirUid);
       if (isFollowing && index == -1) {
         followingLst.push(theirUid);
-        followingCnt++;
       } else if (!isFollowing && index > -1) {
         followingLst.splice(index);
-        followingCnt--;
       }
 
       myUserRef.update({
-        followingCnt: followingCnt,
+        followingCnt: followingLst.length,
         followingLst: followingLst,
       });
     });
@@ -142,23 +139,20 @@ class FriendProfileScreen extends React.Component {
     // Update their followersLst and followersCnt
     theirUserRef.get().then(theirSnap => {
       const theirData = theirSnap.data();
-      let followersCnt = theirData.followersCnt;
       let followersLst = theirData.followersLst || [];
 
       const index = followersLst.indexOf(myUid);
       if (isFollowing && index === -1) {
         followersLst.push(myUid);
-        followersCnt++;
       } else if (!isFollowing && index > -1) {
         followersLst.splice(index);
-        followersCnt--;
       }
 
       theirUserRef.update({
-        followersCnt: followersCnt,
+        followersCnt: followersLst.length,
         followersLst: followersLst,
       });
-      this.setState({ followersCnt: followersCnt });
+      this.setState({ followersCnt: followersLst.length });
     });
   };
 
