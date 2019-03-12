@@ -22,6 +22,7 @@ class HomeFeed extends React.Component {
   constructor(props) {
     super(props);
     this.unsubscribe = null;
+    this._isMounted = false;
     this.state = {
       memesLoaded: 30,
       imageuri: '',
@@ -40,14 +41,11 @@ class HomeFeed extends React.Component {
   }
 
   componentDidMount(memesLoaded) {
-    this.ref = firebase
-      .firestore()
-      .collection('Memes')
-      .orderBy('time', 'desc');
-    this.unsubscribe = this.ref
-      .limit(memesLoaded)
-      .onSnapshot(this.onCollectionUpdate);
-    return this.state.memes;
+    this._isMounted = true;
+    if (this._isMounted){
+      this.ref = firebase.firestore().collection('Memes').orderBy('time', 'desc');
+      this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
+    }
   }
 
   /**
@@ -149,7 +147,10 @@ class HomeFeed extends React.Component {
       );
     } else {
       return (
-        <MemeGrid loadMemes={this.componentDidMount} memes={this.state.memes} />
+        <MemeGrid
+          loadMemes={this.componentDidMount}
+          memes={this.state.memes}
+        />
       );
     }
   };
