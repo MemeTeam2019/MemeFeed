@@ -10,6 +10,7 @@ import {
   Image
 } from 'react-native';
 import firebase from 'react-native-firebase';
+import { Header } from 'react-navigation';
 
 const user = firebase.auth().currentUser;
 class AddComment extends React.Component {
@@ -84,7 +85,13 @@ class AddComment extends React.Component {
 
   render() {
     return (
-      <KeyboardAvoidingView style={{position: 'absolute', left: 0, right: 0, bottom: 0}} behavior="position">
+      <KeyboardAvoidingView
+        keyboardVerticalOffset = {Header.HEIGHT + Math.max(35, this.state.height)-12} // adjust the value here if you need more padding
+        style={{position: 'absolute', left: 0, right: 0, bottom: 0}} 
+        behavior="position"
+      >
+
+
         <View style={[styles.container, {height: Math.max(35, this.state.height)+10} ]}>
 
             <TextInput
