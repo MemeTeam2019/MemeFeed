@@ -63,10 +63,6 @@ class CommentList extends React.Component{
 
             sortedComments = comments.sort(compareTime);
             this.setState({
-              comments: [],
-            });
-
-            this.setState({
               comments: sortedComments,
             });
           }
@@ -130,6 +126,7 @@ class CommentList extends React.Component{
               newLoadCount = this.state.commentsLoaded + 10;
               this.setState({
                 commentsLoaded: newLoadCount,
+                comments: [],
               });
               this.componentDidMount();
             }}
