@@ -58,7 +58,7 @@ class HomeFeed extends React.Component {
     const usersRef = firebase.firestore().collection('Users');
     usersRef
       .where('username', '>=', searchTerm)
-      .where('username', '<', searchTerm + '\uf8ff')
+      .where('username', '<', searchTerm + '\uf8ff')  
       .get()
       .then(snapshot => {
         const myUid = firebase.auth().currentUser.uid;
