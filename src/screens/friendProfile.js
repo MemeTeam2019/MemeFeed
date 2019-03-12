@@ -11,13 +11,13 @@ import firebase from 'react-native-firebase';
 
 import ProfileGrid from '../components/userProfile/ProfileGrid';
 import Tile from '../components/image/Tile';
+import MemeGrid from '../components/general/MemeGrid';
+import MemeList from '../components/general/MemeList';
 
 class FriendProfileScreen extends React.Component {
   constructor(props) {
-    
-    this._isMounted = false;
     super(props);
-
+    this._isMounted = false;
     this.memeRef = firebase.firestore().collection("Reacts")
       .doc(this.props.navigation.getParam("uid"))
       .collection("Likes").orderBy('time', "desc");
@@ -301,10 +301,7 @@ class FriendProfileScreen extends React.Component {
               />
             </TouchableOpacity>
           </View>
-          <FlatList
-            data={this.state.memes}
-            renderItem={this.renderTile.bind(this)}
-          />
+          <MemeList loadMemes={this.componentDidMount} memes={this.state.memes} />
         </View>
       );
     } else {
@@ -381,7 +378,7 @@ class FriendProfileScreen extends React.Component {
               </TouchableOpacity>
             </View>
           </View>
-          <ProfileGrid />
+          <MemeGrid loadMemes={this.componentDidMount} memes={this.state.memes} />
         </React.Fragment>
       );
     }
