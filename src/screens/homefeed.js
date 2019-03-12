@@ -19,7 +19,7 @@ class HomeFeed extends React.Component {
     header: null
   }
   constructor(props) {
-    super(props); 
+    super(props);
     this.unsubscribe = null;
     this.state = {
       memesLoaded: 30,
@@ -142,7 +142,7 @@ class HomeFeed extends React.Component {
                           color: 'black'
                       }}
           onClear={() => {
-  
+
           }}
           onCancel={() => {
             this.setState({ searchTerm: "" })
@@ -151,22 +151,7 @@ class HomeFeed extends React.Component {
           cancelButtonTitle="Cancel"
         />
         </View>
-        <View style={styles.navBut}>
-          <TouchableOpacity onPress={() => this.showFullView()}>
-            <Image
-            source={require('../images/fullFeedF.png')} style={{ opacity:  this.state.inFullView
-                                                                  ? 1 : 0.3,
-                                                                width: 100, height: 50}}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.showGridView()}>
-            <Image
-            source={require('../images/gridFeedF.png')} style={{ opacity:  this.state.inGridView
-                                                                  ? 1 : 0.3,
-                                                                width: 100, height: 50}}
-            />
-          </TouchableOpacity>
-        </View>
+
         {/* List View */}
         <FlatList
           data={this.state.searchResults}

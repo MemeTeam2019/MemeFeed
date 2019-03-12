@@ -62,7 +62,7 @@ class FollowList extends React.Component {
     const uid = this.props.uid;
     const myRef = firebase.firestore().collection("Users").doc(uid);
     myRef.get().then(snapshot => {
-      
+
     })
   }
 

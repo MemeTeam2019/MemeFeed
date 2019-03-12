@@ -554,12 +554,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   navBar1: {
- height:95,
- paddingTop: 50,//50
- flexDirection: 'row',
- justifyContent: 'space-between',
- alignItems: 'center',
- backgroundColor: 'white',
+     height:95,
+     paddingTop: 50,//50
+     flexDirection: 'row',
+     justifyContent: 'space-around',
+     alignItems: 'center',
+     backgroundColor: 'white',
 },
 leftContainer1: {
  flex: 1,
@@ -569,7 +569,7 @@ leftContainer1: {
 },
 rightContainer1: {
  flex: 1,
- width: 20,
+ width: 200,
  flexDirection: 'row',
  justifyContent: 'flex-end',
  alignItems: 'center',
@@ -601,21 +601,21 @@ followBut2: {
 navBar2: {
   height: 100,
   flexDirection: 'row',
-  justifyContent: 'space-between',
+  justifyContent: 'space-around',
   alignItems: 'center',
 },
 leftContainer2: {
   flex: 1,
-  flexDirection: 'row',
-  paddingRight: 3,
+  //flexDirection: 'row',
+  paddingRight: 2,
   paddingHorizontal: 25,
 },
 rightContainer2: {
   flex: 1,
   flexDirection: 'row',
-  justifyContent: 'flex-end',
+  //justifyContent: 'flex-end',
   alignItems: 'center',
-  paddingLeft: 3,
+  paddingLeft: 1,
   paddingHorizontal: 25,
 },
 rightIcon2: {

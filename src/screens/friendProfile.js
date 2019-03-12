@@ -306,9 +306,6 @@ export default class FriendProfileScreen extends React.Component {
        </View>
      </View>
 
-
-
-
      {/*DISPLAY NAME*/}
      <View style={styles.navBar1}>
              <View style={styles.leftContainer1}>
@@ -324,7 +321,6 @@ export default class FriendProfileScreen extends React.Component {
 
              </View>
      </View>
-
 
      {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
      <View style={styles.navBut}>
@@ -349,8 +345,6 @@ export default class FriendProfileScreen extends React.Component {
         loadMemes={this.componentDidMount}
         memes={this.state.memes}
       />
-
-
      </React.Fragment>
       );
     }
@@ -360,8 +354,6 @@ export default class FriendProfileScreen extends React.Component {
 const styles = StyleSheet.create({
   containerStyle: {
     flex: 0,
-    // alignItems: "center",
-    // justifyContent: "center",
     backgroundColor: "#ffffff"
   },
   headerSty: {
@@ -524,52 +516,47 @@ const styles = StyleSheet.create({
   flexDirection: 'row',
   justifyContent: 'space-between',
   alignItems: 'center',
-},
-leftContainer1: {
-  flex: 1,
-  flexDirection: 'row',
-  paddingRight: 3,
-  paddingHorizontal: 20,
-},
-rightContainer1: {
-  flex: 1,
-  flexDirection: 'row',
-  justifyContent: 'flex-end',
-  alignItems: 'center',
-  paddingLeft: 3,
-  paddingHorizontal: 25,
-},
-rightIcon1: {
-  height: 10,
-  width: 10,
-  resizeMode: 'contain',
-  backgroundColor: 'white',
-},
-navBar2: {
-  height: 100,
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-},
-leftContainer2: {
-  flex: 1,
-  flexDirection: 'row',
-  paddingRight: 3,
-  paddingHorizontal: 25,
-},
-rightContainer2: {
-  flex: 1,
-  flexDirection: 'row',
-  justifyContent: 'flex-end',
-  alignItems: 'center',
-  paddingLeft: 3,
-  paddingHorizontal: 25,
-},
-rightIcon2: {
-  height: 10,
-  width: 10,
-  resizeMode: 'contain',
-  backgroundColor: 'white',
-}
+  },
+  leftContainer1: {
+    flex: 1,
+    flexDirection: 'row',
+    paddingRight: 3,
+    paddingHorizontal: 20,
+  },
+  rightContainer1: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 1,
+  },
+  rightIcon1: {
+    height: 10,
+    width: 10,
+    resizeMode: 'contain',
+    backgroundColor: 'white',
+  },
+  navBar2: {
+    height: 100,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  leftContainer2: {
+    flex: 1,
+    paddingRight: 2,
+    paddingHorizontal: 25,
+  },
+  rightContainer2: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft: 1,
+  },
+  rightIcon2: {
+    height: 10,
+    width: 10,
+    resizeMode: 'contain',
+    backgroundColor: 'white',
+  }
 
 })
