@@ -22,6 +22,7 @@ export default class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
     this.unsubscribe = null;
+    this._isMounted = false;
     this.ref = firebase.firestore().collection("Reacts")
       .doc(firebase.auth().currentUser.uid)
       .collection("Likes").orderBy('time', "desc");
@@ -47,8 +48,11 @@ export default class ProfileScreen extends React.Component {
   }
 
   componentDidMount(memesLoaded) {
-    this.getUserInfo();
-    this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
+    this._isMounted = true;
+    if (this._isMounted){
+      this.getUserInfo();
+      this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
+    }
   }
 
 
