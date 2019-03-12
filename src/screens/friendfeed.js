@@ -156,6 +156,12 @@ class FriendFeed extends React.Component{
           </View>
         </Modal>
       );
+    }else if(this.state.memes.length == 0){
+      return(
+      <View style={styles.containerStyle}>
+        <Image source={require('../components/misc/emptyFriendTile.png')} style={{ width: 250, height: 50}} />
+      </View>
+    )
     } else if(this.state.inGridView){
           return(
             <View style={styles.containerStyle}>

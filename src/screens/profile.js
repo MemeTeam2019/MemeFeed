@@ -12,6 +12,7 @@ import ActionSheet from 'react-native-actionsheet';
 import Tile from '../components/image/Tile';
 import MemeGrid from '../components/general/MemeGrid';
 import MemeList from '../components/general/MemeList';
+import EmptyProfileFeed from '../components/misc/EmptyProfileFeed';
 
 export default class ProfileScreen extends React.Component {
   static navigationOptions = {
@@ -64,7 +65,7 @@ export default class ProfileScreen extends React.Component {
          likedFrom,
          // this is to ensure that if a user changes their reaction to a meme
          // on their own page that the liked from source is still the same
-         postedBy: likedFrom, 
+         postedBy: likedFrom,
          poster: firebase.auth().currentUser.uid,
         });
 
@@ -189,6 +190,64 @@ export default class ProfileScreen extends React.Component {
             </TouchableOpacity>
           </View>
         </Modal>
+      );
+    } else if(this.state.memes.length == 0){
+      return(
+        <View style={styles.containerStyle}>
+        <View style={styles.navBar1}>
+        <View style={styles.leftContainer1}>
+          <Text style={[styles.text, {textAlign: 'left'}]}>
+            {}
+          </Text>
+        </View>
+        <Text style={styles.textSty4}>
+          {this.state.username}
+        </Text>
+        <View style={styles.rightContainer1}>
+          <View style={styles.rightIcon1}/>
+            <TouchableOpacity onPress={this.showActionSheet}>
+              <Image source={require('../images/setting.png')} style={{width: 60, height: 30}} />
+            </TouchableOpacity>
+              <ActionSheet
+                ref={o => (this.ActionSheet = o)}
+                title={'User Settings'}
+                options={optionArray}
+                cancelButtonIndex={1}
+                destructiveIndex={0}
+                onPress={index => {
+                  if (optionArray[index] == 'Logout'){
+                    this.logout();
+                  }
+                }}
+              />
+            </View>
+          </View>
+          {/*Profile Pic, Follwers, Follwing Block*/}
+          <View style={styles.navBar2}>
+            <View style={styles.leftContainer2}>
+                <Image
+                source={require('../images/profilePic.png')} style={{width: 85, height: 85, borderRadius: 85/2}}/>
+
+            </View>
+                    <Text style={styles.textSty}> {this.state.followingCnt} {"\n"} <Text style={styles.textSty3}>Following</Text></Text>
+            <View style={styles.rightContainer2}>
+            <Text style={styles.textSty}>{this.state.followersCnt} {"\n"} <Text style={styles.textSty3}>Followers</Text> </Text>
+          </View>
+          </View>
+               {/*DISPLAY NAME*/}
+               <View style={styles.profilePic}>
+                 <Text style={styles.textSty2}>{this.state.name}</Text>
+                 <Text>      </Text>
+                 <Text>      </Text>
+               </View>
+               <View style={styles.containerStyle2}>
+               <Image
+                 source={require('../components/misc/noPosts.png')}
+                 style={styles.tile}
+               />
+               </View>
+          </View>
+
       );
     } else if (this.state.selectListButtonP) {
       //Photo List/Full View of images
@@ -564,5 +623,20 @@ rightIcon2: {
   width: 10,
   resizeMode: 'contain',
   backgroundColor: 'white',
+},
+tile: {
+  width: 300,
+  height: 300,
+  justifyContent: 'center',
+  paddingHorizontal: 20,
+  paddingTop: 10,
+  alignItems: 'center'
+},
+containerStyle2: {
+  flex: 2,
+  backgroundColor: "#ffffff",
+  alignItems: 'center',
+  paddingLeft: 5,
+  paddingRight: 5,
 }
 })

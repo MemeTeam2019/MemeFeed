@@ -13,6 +13,7 @@ import Tile from '../components/image/Tile'
 
 import MemeGrid from '../components/general/MemeGrid';
 import MemeList from '../components/general/MemeList';
+import EmptyFriendFeed from '../components/misc/EmptyFriendFeed';
 
 import firebase from 'react-native-firebase';
 
@@ -53,7 +54,7 @@ export default class FriendProfileScreen extends React.Component {
 
   componentDidMount() {
     this.unsubscribe = this.ref.limit(60).onSnapshot(this.onCollectionUpdate);
-  
+
 
     const theirUid = this.props.navigation.getParam("uid");
     const docRef = firebase.firestore().collection("Users").doc(theirUid);
@@ -343,7 +344,7 @@ export default class FriendProfileScreen extends React.Component {
      </TouchableOpacity>
      </View>
      </View>
-     
+
       <MemeGrid
         loadMemes={this.componentDidMount}
         memes={this.state.memes}

@@ -7,11 +7,11 @@ class EmptyProfileFeed extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-      <Image
-      source={require('../noPosts.png')}
-      style={{width: '100%', height: '100%'}}
-      />
-    </View>
+        <Image
+          source={require('./noPosts.png')}
+          style={{width: '20%', height: '20%'}}
+        />
+      </View>
     );
   }
 }
