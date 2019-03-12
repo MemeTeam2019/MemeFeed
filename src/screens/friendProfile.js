@@ -16,7 +16,7 @@ class FriendProfileScreen extends React.Component {
   constructor(props) {
     super(props);
 
-    this.ref = firebase.firestore().collection("Reacts")
+    this.memeRef = firebase.firestore().collection("Reacts")
       .doc(this.props.navigation.getParam("uid"))
       .collection("Likes").orderBy('time', "desc");
 
