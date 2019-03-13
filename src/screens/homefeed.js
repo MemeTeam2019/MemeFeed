@@ -42,9 +42,14 @@ class HomeFeed extends React.Component {
 
   componentDidMount(memesLoaded) {
     this._isMounted = true;
-    if (this._isMounted){
-      this.ref = firebase.firestore().collection('Memes').orderBy('time', 'desc');
-      this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
+    if (this._isMounted) {
+      this.ref = firebase
+        .firestore()
+        .collection('Memes')
+        .orderBy('time', 'desc');
+      this.unsubscribe = this.ref
+        .limit(memesLoaded)
+        .onSnapshot(this.onCollectionUpdate);
     }
   }
 
@@ -59,27 +64,33 @@ class HomeFeed extends React.Component {
     const lowerSearchTerm = searchTerm.toLowerCase();
     usersRef
       .where('searchableUsername', '>=', lowerSearchTerm)
-      .where('searchableUsername', '<', lowerSearchTerm + '\uf8ff')  
+      .where('searchableUsername', '<', lowerSearchTerm + '\uf8ff')
       .get()
       .then(snapshot => {
-        const myUid = firebase.auth().currentUser.uid;
-
         // Filter own profile out of search
         let usernameMatches = snapshot.docs.filter(doc => {
-          const uid = doc.ref.id;
-          return uid !== myUid;
+          return doc.ref.id !== firebase.auth().currentUser.uid;
         });
+        console.log(usernameMatches);
+        this.setState({ searchResults: usernameMatches });
 
-        usersRef
-          .where('name', '>=', lowerSearchTerm)
-          .where('name', '<', lowerSearchTerm + '\uf8ff')
-          .get()
-          .then()
+        // usersRef
+        //   .where('name', '>=', lowerSearchTerm)
+        //   .where('name', '<', lowerSearchTerm + '\uf8ff')
+        //   .get()
+        //   .then(snapshot => {
+        //     let nameMatches;
 
-        // Trigger rerender to display updated search results
-        this.setState({
-          searchResults: results,
-        });
+        //     nameMatches = snapshot.docs.filter(doc => {
+        //       return doc.ref.id !== firebase.auth().currentUser.uid;
+        //     });
+
+        //     console.log(nameMatches);
+
+        //     // Combine results
+        //     let combined = [...usernameMatches, ...nameMatches];
+        //     this.setState({ searchResults: combined });
+        //   });
       })
       .catch(err => {
         console.log(err);
@@ -89,7 +100,7 @@ class HomeFeed extends React.Component {
   // function for extracting Firebase responses to the state
   onCollectionUpdate = querySnapshot => {
     const memes = [];
-    querySnapshot.forEach((doc) => {
+    querySnapshot.forEach(doc => {
       const { url, time, sub } = doc.data();
       memes.push({
         key: doc.id,
@@ -152,10 +163,7 @@ class HomeFeed extends React.Component {
       );
     } else {
       return (
-        <MemeGrid
-          loadMemes={this.componentDidMount}
-          memes={this.state.memes}
-        />
+        <MemeGrid loadMemes={this.componentDidMount} memes={this.state.memes} />
       );
     }
   };
