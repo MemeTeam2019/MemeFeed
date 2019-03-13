@@ -84,44 +84,6 @@ class FriendProfileScreen extends React.Component {
     this.ActionSheet.show();
   };
 
-
-  componentDidMount() {
-    this.unsubscribe = this.ref.limit(60).onSnapshot(this.onCollectionUpdate);
-
-
-    const theirUid = this.props.navigation.getParam("uid");
-    const docRef = firebase.firestore().collection("Users").doc(theirUid);
-
-    console.log(theirUid);
-
-    docRef.get().then(User => {
-      this.setState(User.data());
-    })
-    .catch(err => {
-      console.log(err);
-    });
-
-
-    // Check if their uid is already in my followingLst
-    const myUid = firebase.auth().currentUser.uid;
-    const myUserRef = firebase.firestore().collection("Users").doc(myUid);
-
-    myUserRef.get().then(snapshot => {
-      const data = snapshot.data();
-      const followingLst = data.followingLst || [];
-      const isFollowing = followingLst.indexOf(theirUid) > -1;
-
-      console.log(followingLst);
-      this.setState({
-        isFollowing: isFollowing,
-        buttonText: isFollowing ? "Unfollow" : "Follow"
-      })
-    })
-    .catch(err => {
-      console.log(err);
-    })
-  }
-
   onGridViewPressedP = () => {
     this.setState({ selectGridButtonP: true });
     this.setState({ selectListButtonP: false });
@@ -371,9 +333,7 @@ class FriendProfileScreen extends React.Component {
 const styles = StyleSheet.create({
   containerStyle: {
     flex: 0,
-    // alignItems: "center",
-    // justifyContent: "center",
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff"
   },
   headerSty: {
     height: 0,
@@ -531,10 +491,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   navBar1: {
-    height: 60,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  height: 60,
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
   },
   leftContainer1: {
     flex: 1,
@@ -545,10 +505,8 @@ const styles = StyleSheet.create({
   rightContainer1: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingLeft: 3,
-    paddingHorizontal: 25,
+    paddingLeft: 1,
   },
   rightIcon1: {
     height: 10,
@@ -564,24 +522,20 @@ const styles = StyleSheet.create({
   },
   leftContainer2: {
     flex: 1,
-    flexDirection: 'row',
-    paddingRight: 3,
+    paddingRight: 2,
     paddingHorizontal: 25,
   },
   rightContainer2: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingLeft: 3,
-    paddingHorizontal: 25,
+    paddingLeft: 1,
   },
   rightIcon2: {
     height: 10,
     width: 10,
     resizeMode: 'contain',
     backgroundColor: 'white',
-  },
+  }
 });
-
 export default FriendProfileScreen;
