@@ -42,42 +42,64 @@ class HomeFeed extends React.Component {
   componentDidMount (memesLoaded) {
     this._isMounted = true;
     if (this._isMounted) {
-      this.ref = firebase.firestore().collection('Memes').orderBy('time', 'desc');
-      this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
-      this.getAllUsers();
-      this.setState({ myUid: firebase.auth().currentUser.uid })
-      return this.state.memes;
+      this.ref = firebase
+        .firestore()
+        .collection('Memes')
+        .orderBy('time', 'desc');
+      this.unsubscribe = this.ref
+        .limit(memesLoaded)
+        .onSnapshot(this.onCollectionUpdate);
     }
   }
 
-  updateSearch = (searchTerm) => {
-    let results = this.state.allUsers.filter(doc => {
-      const lowerSearchTerm = searchTerm.toLowerCase();
-      const username = doc.data().username.toLowerCase();
-      const name = doc.data().name.toLowerCase();
-      return (username.startsWith(lowerSearchTerm)
-              || name.startsWith(lowerSearchTerm))
-              && doc.ref.id !== this.state.myUid;
-    });
-    console.log(results);
-    if (!searchTerm)
-      results = [];
-    this.setState({
-      searchResults: results,
-      searchTerm: searchTerm
-    });
-  }
+  /**
+   * Pulls all users whose username starts with the searchTerm
+   *
+   * TODO: also filter by name
+   */
+  updateSearch = (searchTerm = '') => {
+    this.setState({ searchTerm: searchTerm });
+    const usersRef = firebase.firestore().collection('Users');
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    usersRef
+      .where('searchableUsername', '>=', lowerSearchTerm)
+      .where('searchableUsername', '<', lowerSearchTerm + '\uf8ff')
+      .get()
+      .then(snapshot => {
+        // Filter own profile out of search
+        let usernameMatches = snapshot.docs.filter(doc => {
+          return doc.ref.id !== firebase.auth().currentUser.uid;
+        });
+        console.log(usernameMatches);
+        this.setState({ searchResults: usernameMatches });
 
-  getAllUsers = () => {
-    firebase.firestore().collection("Users").get().then(snapshot => {
-      this.setState({ allUsers: snapshot.docs });
-    });
-  }
+        // usersRef
+        //   .where('name', '>=', lowerSearchTerm)
+        //   .where('name', '<', lowerSearchTerm + '\uf8ff')
+        //   .get()
+        //   .then(snapshot => {
+        //     let nameMatches;
+
+        //     nameMatches = snapshot.docs.filter(doc => {
+        //       return doc.ref.id !== firebase.auth().currentUser.uid;
+        //     });
+
+        //     console.log(nameMatches);
+
+        //     // Combine results
+        //     let combined = [...usernameMatches, ...nameMatches];
+        //     this.setState({ searchResults: combined });
+        //   });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   // function for extracting Firebase responses to the state
   onCollectionUpdate = (querySnapshot) => {
     const memes = [];
-    querySnapshot.forEach((doc) => {
+    querySnapshot.forEach(doc => {
       const { url, time, sub } = doc.data();
       memes.push({
         key: doc.id,
