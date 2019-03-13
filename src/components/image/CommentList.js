@@ -130,6 +130,7 @@ class CommentList extends React.Component{
                                 this.componentDidMount();
                             }}
                             style={{justifyContent: 'center', alignItems: 'center'}}>
+                <Text style={styles.buttonSty}>Load more comments</Text>
                 <Image source={require('../../images/morecomments.png')} style={styles.loadMore} />
           </TouchableOpacity>
           <FlatList
@@ -163,9 +164,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,1)',
   },
   buttonSty: {
-    color: 'blue',
+    paddingTop: 10,
     fontSize: 15,
-    fontFamily: 'AvenirNext-Regular',
+    fontFamily: 'AvenirNext-Bold',
     textAlign: 'center',
   },
   loadMore:{
