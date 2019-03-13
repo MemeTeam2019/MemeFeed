@@ -12,7 +12,6 @@ import ActionSheet from 'react-native-actionsheet';
 import Tile from '../components/image/Tile';
 import MemeGrid from '../components/general/MemeGrid';
 import MemeList from '../components/general/MemeList';
-import EmptyProfileFeed from '../components/misc/EmptyProfileFeed';
 
 export default class ProfileScreen extends React.Component {
   static navigationOptions = {
@@ -242,7 +241,7 @@ export default class ProfileScreen extends React.Component {
                </View>
                <View style={styles.containerStyle2}>
                <Image
-                 source={require('../components/misc/noPosts.png')}
+                 source={require('../components/misc/noLikes.png')}
                  style={styles.tile}
                />
                </View>
