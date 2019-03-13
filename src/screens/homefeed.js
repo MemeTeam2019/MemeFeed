@@ -53,37 +53,45 @@ class HomeFeed extends React.Component {
    *
    * TODO: also filter by name
    */
-  updateSearch = (searchTerm = '') => {
+  updateSearch = async (searchTerm = '') => {
+    // Set search term state immediately to update SearchBar contents
     this.setState({ searchTerm: searchTerm });
+
     const usersRef = firebase.firestore().collection('Users');
     const lowerSearchTerm = searchTerm.toLowerCase();
-    usersRef
+    let usernameMatches = [],
+      nameMatches = [];
+
+    if (!searchTerm) {
+      this.setState({ searchResults: [] });
+      return;
+    }
+
+    usernameMatches = await usersRef
       .where('searchableUsername', '>=', lowerSearchTerm)
       .where('searchableUsername', '<', lowerSearchTerm + '\uf8ff')  
       .get()
-      .then(snapshot => {
-        const myUid = firebase.auth().currentUser.uid;
+      .then(snapshot => snapshot.docs)
+      .catch(err => console.log(err));
 
-        // Filter own profile out of search
-        let usernameMatches = snapshot.docs.filter(doc => {
-          const uid = doc.ref.id;
-          return uid !== myUid;
-        });
+    nameMatches = await usersRef
+      .where('searchableName', '>=', lowerSearchTerm)
+      .where('searchableName', '<', lowerSearchTerm + '\uf8ff')
+      .get()
+      .then(snapshot => snapshot.docs)
+      .catch(err => console.log(err));
 
-        usersRef
-          .where('name', '>=', lowerSearchTerm)
-          .where('name', '<', lowerSearchTerm + '\uf8ff')
-          .get()
-          .then()
-
-        // Trigger rerender to display updated search results
-        this.setState({
-          searchResults: results,
-        });
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    const combined = [...usernameMatches, ...nameMatches];
+    const searchResults = [];
+    const map = new Map();
+    const myUid = firebase.auth().currentUser.uid;
+    combined.forEach(snapshot => {
+      if (!map.has(snapshot.ref.id) && myUid !== snapshot.ref.id) {
+        map.set(snapshot.ref.id);
+        searchResults.push(snapshot);
+      }
+    });
+    this.setState({ searchResults: searchResults });
   };
 
   // function for extracting Firebase responses to the state

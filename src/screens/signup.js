@@ -37,9 +37,13 @@ export default class SignupScreen extends React.Component {
         transaction.set(ref, {
           email: email.toLowerCase(),
           name: name,
+          searchableName: name.toLowerCase(),
           username: username,
+          searchableusername: username.toLowerCase(),
           followersCnt: 0,
-          followingCnt: 0
+          followingCnt: 0,
+          followersLst: [],
+          followingLst: [],
         })
         return uid;
       }
