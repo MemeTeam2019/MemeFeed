@@ -44,10 +44,10 @@ class FriendFeed extends React.Component{
     };
   }
   // function for extracting Firebase responses to the state
-  onCollectionUpdate = (doc) => {
+  onCollectionUpdate = (querySnapshot) => {
        memes = []
       memeIds = []
-      
+      const {followingLst}=querySnapshot.data();
       var i; 
       // go through the people we are following and get their memes
       for(i=0; i<followingLst.length; i++){
@@ -68,7 +68,7 @@ class FriendFeed extends React.Component{
               memes.push({
                 key: docMeme.id,
                 doc, // DocumentSnapshot
-                src: "https://i.redd.it/ngl7rttybxl21.jpg",
+                src: url,
                 time,
                 likedFrom,
                 postedBy: from,
