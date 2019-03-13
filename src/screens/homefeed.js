@@ -81,6 +81,7 @@ class HomeFeed extends React.Component {
       .then(snapshot => snapshot.docs)
       .catch(err => console.log(err));
 
+    // Ensure there are no duplicates and your own profile doesn't show up
     const combined = [...usernameMatches, ...nameMatches];
     const searchResults = [];
     const map = new Map();

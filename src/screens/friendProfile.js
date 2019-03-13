@@ -116,12 +116,12 @@ class FriendProfileScreen extends React.Component {
     // Update my followingLst and followingCnt
     myUserRef
       .get()
-      .then(mySnap => {
-        const myData = mySnap.data();
+      .then(mySnapshot => {
+        const myData = mySnapshot.data();
         let followingLst = myData.followingLst || [];
 
         const index = followingLst.indexOf(theirUid);
-        if (isNowFollowing) {
+        if (index === -1) {
           followingLst.push(theirUid);
         } else {
           followingLst.splice(index);
@@ -137,12 +137,12 @@ class FriendProfileScreen extends React.Component {
     // Update their followersLst and followersCnt
     theirUserRef
       .get()
-      .then(theirSnap => {
-        const theirData = theirSnap.data();
+      .then(theirSnapshot => {
+        const theirData = theirSnapshot.data();
         let followersLst = theirData.followersLst || [];
 
         const index = followersLst.indexOf(myUid);
-        if (isNowFollowing) {
+        if (index === -1) {
           followersLst.push(myUid);
         } else {
           followersLst.splice(index);
