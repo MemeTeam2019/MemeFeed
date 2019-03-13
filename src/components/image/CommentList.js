@@ -131,7 +131,6 @@ class CommentList extends React.Component{
                             }}
                             style={{justifyContent: 'center', alignItems: 'center'}}>
                 <Text style={styles.buttonSty}>Load more comments</Text>
-                <Image source={require('../../images/morecomments.png')} style={styles.loadMore} />
           </TouchableOpacity>
           <FlatList
             data={this.state.comments}
