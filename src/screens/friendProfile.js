@@ -108,14 +108,9 @@ class FriendProfileScreen extends React.Component {
       .collection('Users')
       .doc(theirUid);
 
-    let isNowFollowing = !this.state.isFollowing;
+    let nowFollowing = !this.state.isFollowing;
 
-    this.setState({
-      isFollowing: isNowFollowing,
-      buttonText: isNowFollowing ? 'Unfollow' : 'Follow',
-    });
-
-    // Get my followingLst
+    // Get my myFollowingLst
     let followingLst = await myUserRef.get().then(mySnapshot => {
       return mySnapshot.data().followingLst || [];
     });
@@ -125,16 +120,21 @@ class FriendProfileScreen extends React.Component {
       return theirSnapshot.data().followersLst || [];
     });
 
+    console.log("Before: " + followingLst);
+
     // Add myUid to theirFollowersLst and theirUid to myFollowingLst
     const inFollowingLst = followingLst.indexOf(theirUid) > -1;
     const inFollowersLst = followersLst.indexOf(myUid) > -1;
-    if (isNowFollowing) {
+    if (nowFollowing) {
+      console.log('what');
       if (!inFollowingLst) followingLst.push(theirUid);
       if (!inFollowersLst) followersLst.push(myUid);
     } else {
-      if (inFollowingLst) followingLst.splice(followingLst.indexOf(theirUid));
-      if (inFollowersLst) followersLst.splice(followersLst.indexOf(myUid));
+      if (inFollowingLst) followingLst.splice(followingLst.indexOf(theirUid), 1);
+      if (inFollowersLst) followersLst.splice(followersLst.indexOf(myUid), 1);
     }
+
+    console.log("After: " + followingLst);
 
     theirUserRef.update({
       followersLst: followersLst,
@@ -145,6 +145,8 @@ class FriendProfileScreen extends React.Component {
       followingCnt: followingLst.length,
     });
     this.setState({
+      isFollowing: nowFollowing,
+      buttonText: nowFollowing ? 'Unfollow' : 'Follow',
       followersLst: followersLst,
       followersCnt: followersLst.length,
     })

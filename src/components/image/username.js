@@ -40,10 +40,16 @@ class Username extends React.Component {
   }
 
   goToUser() {
-    console.log('touchy touch');
-    this.props.navigation.navigate('FriendProfile', {
-      uid: this.props.uid,
-    });
+    // if going to our own page
+    if (this.props.uid == firebase.auth().currentUser.uid) {
+      this.props.navigation.navigate('Profile', {
+        uid: this.props.uid,
+      });
+    } else {
+      this.props.navigation.navigate('FriendProfile', {
+        uid: this.props.uid,
+      });
+    }
   }
 
 
