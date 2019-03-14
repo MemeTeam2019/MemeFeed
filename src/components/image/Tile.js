@@ -37,8 +37,8 @@ class Tile extends React.Component {
   }
 
   render() {
-      console.log('OPENING DAS TILE MIA ALTIERI')
-      console.log(this.props.postedBy)
+      console.log('OPENING DAS TILE MIA ALTIERI');
+      console.log(this.props.likedFrom);
     return (
       <View style={styles.container}>
         <TileHeader 

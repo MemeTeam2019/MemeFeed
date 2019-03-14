@@ -22,7 +22,7 @@ class TileHeader extends React.Component {
       if (doc.exists) {
         const { username } = doc.data();
         this.setState({
-          username,
+          username: username,
         });
       }
     })
@@ -57,37 +57,3 @@ class TileHeader extends React.Component {
 
 export default withNavigation(TileHeader);
  
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    width: '100%',
-    height: 40,
-    paddingHorizontal: 10,
-    alignItems: 'center',
-    marginTop: 5
-  },
-  containerA: {
-    flexDirection: 'column',
-    backgroundColor: '#fff',
-    width: '100%',
-    height: 100,
-    alignItems: 'center',
-    marginTop: 30
-  },
-  text: {  
-    fontSize: 16,
-    fontFamily: 'AvenirNext-Bold',
-    marginLeft: 10
-  },
-  userImg: {
-    width: 40,
-    height: 40,
-    borderRadius: 20
-  },
-  likedFromImg: {
-    width: 30,
-    height: 30,
-    borderRadius: 15
-  }
-});
