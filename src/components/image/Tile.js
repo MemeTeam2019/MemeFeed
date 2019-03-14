@@ -1,12 +1,19 @@
 import React from 'react';
-import { Dimensions, StyleSheet, View, TouchableOpacity, Image, Text } from 'react-native';
+import {
+  Dimensions,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Image,
+  Text,
+} from 'react-native';
 
 import ButtonBar from './ButtonBar';
 import Photo from './Photo';
 import TileHeader from './TileHeader';
 import PostInfo from './PostInfo';
 
-import firebase from "react-native-firebase";
+import firebase from 'react-native-firebase';
 
 class Tile extends React.Component {
   _isMounted = false;
@@ -16,18 +23,21 @@ class Tile extends React.Component {
     this.updateReactCount = this.updateReactCount.bind(this);
     this.state = {
       reactCount: 0,
-    }
+    };
   }
 
   componentDidMount() {
     this._isMounted = true;
     const memeid = this.props.memeId;
-    const ref = firebase.firestore().collection("Memes").doc(memeid);
+    const ref = firebase
+      .firestore()
+      .collection('Memes')
+      .doc(memeid);
     ref.get().then(docSnapshot => {
       const data = docSnapshot.data();
       const reactCount = data.reactCount || 0;
       if (this._isMounted) {
-        this.setState({ reactCount: reactCount })
+        this.setState({ reactCount: reactCount });
       }
     });
   }
@@ -37,17 +47,18 @@ class Tile extends React.Component {
   }
 
   render() {
-      console.log('OPENING DAS TILE MIA ALTIERI');
-      console.log(this.props.likedFrom);
+    console.log('OPENING DAS TILE MIA ALTIERI');
+    console.log(this.props.likedFrom);
+    console.log(this.props.imageUrl);
     return (
       <View style={styles.container}>
-        <TileHeader 
+        <TileHeader
           uid="F5bA3qC0dkca7h1INfoNNq4GIRh2"
-          sub={this.props.sub} 
-          likedFrom={this.props.likedFrom} 
+          sub={this.props.sub}
+          likedFrom={this.props.likedFrom}
           poster={this.props.poster}
         />
-        <Photo imageUrl={this.props.imageUrl}/>
+        <Photo imageUrl={this.props.imageUrl} />
         <ButtonBar
           imageUrl={this.props.imageUrl}
           memeId={this.props.memeId}
@@ -60,7 +71,7 @@ class Tile extends React.Component {
           reactCount={this.state.reactCount}
           imageUrl={this.props.imageUrl}
         />
-    </View>
+      </View>
     );
   }
 }

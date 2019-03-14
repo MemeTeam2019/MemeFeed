@@ -8,6 +8,7 @@ class Photo extends React.Component {
   //     screenWidth: Dimensions.get("window").width
 
   render() {
+    console.log(this.props.imageUrl);
     return (
         <View style={styles.modelStyle}>
             <AutoHeightImage
@@ -25,7 +26,7 @@ export default Photo;
 const styles = StyleSheet.create({
   fullImageStyle: {
     marginTop: '20%',
-    width:Dimensions.get("window").width 
+    width: Dimensions.get("window").width 
   },
   modelStyle: {
     // flex: 1,

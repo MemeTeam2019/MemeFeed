@@ -22,10 +22,18 @@ export default class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
     this.unsubscribe = null;
+    this.infoListener = null;
     this._isMounted = false;
-    this.ref = firebase.firestore().collection("Reacts")
+    this.userRef = firebase
+      .firestore()
+      .collection('Users')
+      .doc(firebase.auth().currentUser.uid);
+    this.ref = firebase
+      .firestore()
+      .collection('Reacts')
       .doc(firebase.auth().currentUser.uid)
-      .collection("Likes").orderBy('time', "desc");
+      .collection('Likes')
+      .orderBy('time', 'desc');
 
     this.state = {
       email: '',
@@ -49,44 +57,47 @@ export default class ProfileScreen extends React.Component {
 
   componentDidMount(memesLoaded) {
     this._isMounted = true;
-    if (this._isMounted){
-      this.getUserInfo();
-      this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
+    if (this._isMounted) {
+      this.unsubscribe = this.ref
+        .limit(memesLoaded)
+        .onSnapshot(this.onCollectionUpdate);
+      this.infoListener = this.userRef.onSnapshot(snapshot =>
+        this.setState(snapshot.data())
+      );
     }
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+    this.unsubscribe = null;
+    this.infoListener = null;
+  }
 
   // function for extracting Firebase responses to the state
-  onCollectionUpdate = (querySnapshot) => {
-   const memes = [];
-    querySnapshot.forEach((doc) => {
-      console.log(doc.data(), )
+  onCollectionUpdate = querySnapshot => {
+    const memes = [];
+    querySnapshot.forEach(doc => {
+      console.log(doc.data());
       const { time, url, rank, likedFrom } = doc.data();
-        if (rank > 1)
+      if (rank > 1)
         memes.push({
-         key: doc.id,
-         doc, // DocumentSnapshot
-         src: url,
-         time,
-         likedFrom,
-         // this is to ensure that if a user changes their reaction to a meme
-         // on their own page that the liked from source is still the same
-         postedBy: likedFrom,
-         poster: firebase.auth().currentUser.uid,
+          key: doc.id,
+          doc, // DocumentSnapshot
+          src: url,
+          time,
+          likedFrom,
+          // this is to ensure that if a user changes their reaction to a meme
+          // on their own page that the liked from source is still the same
+          postedBy: likedFrom,
+          poster: firebase.auth().currentUser.uid,
         });
 
-        this.setState({
-          memes,
-          isLoading: false,
-        });
+      this.setState({
+        memes,
+        isLoading: false,
+      });
     });
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.isFocused !== this.props.isFocused) {
-      this.getUserInfo();
-    }
-  }
+  };
 
   getUserInfo = () => {
     let firestore = firebase.firestore();
@@ -116,13 +127,16 @@ export default class ProfileScreen extends React.Component {
   };
 
   logout = () => {
-    firebase.auth().signOut().then(() => {
-      this.props.navigation.navigate("Auth");
-    })
-    .catch(err => {
-      console.log(err);
-    })
-  }
+    firebase
+      .auth()
+      .signOut()
+      .then(() => {
+        this.props.navigation.navigate('Auth');
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
   ShowModalFunction(visible, imageUrl) {
     //handler to handle the click on image of Grid
@@ -163,23 +177,22 @@ export default class ProfileScreen extends React.Component {
   render() {
     var optionArray = ['Logout', 'Cancel'];
 
-    if(this.state.memes.length == 0){
-      return(
+    if (this.state.memes.length == 0) {
+      return (
         <View style={styles.containerStyle}>
-        <View style={styles.navBar1}>
-        <View style={styles.leftContainer1}>
-          <Text style={[styles.text, {textAlign: 'left'}]}>
-            {}
-          </Text>
-        </View>
-        <Text style={styles.textSty4}>
-          {this.state.username}
-        </Text>
-        <View style={styles.rightContainer1}>
-          <View style={styles.rightIcon1}/>
-            <TouchableOpacity onPress={this.showActionSheet}>
-              <Image source={require('../images/setting.png')} style={{width: 60, height: 30}} />
-            </TouchableOpacity>
+          <View style={styles.navBar1}>
+            <View style={styles.leftContainer1}>
+              <Text style={[styles.text, { textAlign: 'left' }]}>{}</Text>
+            </View>
+            <Text style={styles.textSty4}>{this.state.username}</Text>
+            <View style={styles.rightContainer1}>
+              <View style={styles.rightIcon1} />
+              <TouchableOpacity onPress={this.showActionSheet}>
+                <Image
+                  source={require('../images/setting.png')}
+                  style={{ width: 60, height: 30 }}
+                />
+              </TouchableOpacity>
               <ActionSheet
                 ref={o => (this.ActionSheet = o)}
                 title={'User Settings'}
@@ -187,7 +200,7 @@ export default class ProfileScreen extends React.Component {
                 cancelButtonIndex={1}
                 destructiveIndex={0}
                 onPress={index => {
-                  if (optionArray[index] == 'Logout'){
+                  if (optionArray[index] == 'Logout') {
                     this.logout();
                   }
                 }}
@@ -197,34 +210,40 @@ export default class ProfileScreen extends React.Component {
           {/*Profile Pic, Follwers, Follwing Block*/}
           <View style={styles.navBar2}>
             <View style={styles.leftContainer2}>
-                <Image
-                source={require('../images/profilePic.png')} style={{width: 85, height: 85, borderRadius: 85/2}}/>
-
+              <Image
+                source={require('../images/profilePic.png')}
+                style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
+              />
             </View>
-                    <Text style={styles.textSty}> {this.state.followingCnt} {"\n"} <Text style={styles.textSty3}>Following</Text></Text>
+            <Text style={styles.textSty}>
+              {' '}
+              {this.state.followingCnt} {'\n'}{' '}
+              <Text style={styles.textSty3}>Following</Text>
+            </Text>
             <View style={styles.rightContainer2}>
-            <Text style={styles.textSty}>{this.state.followersCnt} {"\n"} <Text style={styles.textSty3}>Followers</Text> </Text>
+              <Text style={styles.textSty}>
+                {this.state.followersCnt} {'\n'}{' '}
+                <Text style={styles.textSty3}>Followers</Text>{' '}
+              </Text>
+            </View>
           </View>
+          {/*DISPLAY NAME*/}
+          <View style={styles.profilePic}>
+            <Text style={styles.textSty2}>{this.state.name}</Text>
+            <Text> </Text>
+            <Text> </Text>
           </View>
-               {/*DISPLAY NAME*/}
-               <View style={styles.profilePic}>
-                 <Text style={styles.textSty2}>{this.state.name}</Text>
-                 <Text>      </Text>
-                 <Text>      </Text>
-               </View>
-               <View style={styles.containerStyle2}>
-               <Image
-                 source={require('../components/misc/noLikes.png')}
-                 style={styles.tile}
-               />
-               </View>
+          <View style={styles.containerStyle2}>
+            <Image
+              source={require('../components/misc/noLikes.png')}
+              style={styles.tile}
+            />
           </View>
-
+        </View>
       );
     } else {
       //Photo List/Full View of images
-        return(
-
+      return (
         <React.Fragment>
           <View style={styles.containerStyle}>
             <View style={styles.navBar1}>
@@ -284,8 +303,8 @@ export default class ProfileScreen extends React.Component {
                 onPress={() => {
                   this.props.navigation.navigate('FollowList', {
                     arrayOfUids: this.state.followersLst,
-                    title: 'Followers'
-                  })
+                    title: 'Followers',
+                  });
                 }}
               >
                 <View>
@@ -295,7 +314,6 @@ export default class ProfileScreen extends React.Component {
                   </Text>
                 </View>
               </TouchableOpacity>
-
             </View>
 
             {/*DISPLAY NAME*/}
@@ -492,89 +510,89 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   navBar1: {
-     height:95,
-     paddingTop: 50,//50
-     flexDirection: 'row',
-     justifyContent: 'space-around',
-     alignItems: 'center',
-     backgroundColor: 'white',
-},
-leftContainer1: {
- flex: 1,
- flexDirection: 'row',
- justifyContent: 'flex-start',
- backgroundColor: 'white'
-},
-rightContainer1: {
- flex: 1,
- width: 200,
- flexDirection: 'row',
- justifyContent: 'flex-end',
- alignItems: 'center',
- backgroundColor: 'white',
-},
-rightIcon1: {
- height: 10,
- width: 20,
- resizeMode: 'contain',
- backgroundColor: 'white',
-},
-followBut: {
-  fontSize: 17,
-  fontFamily: 'AvenirNext-Regular',
-  borderColor: '#A4A4A4',
-  color: '#5B5B5B',
-  justifyContent: 'center'
-},
-followBut2: {
-  borderWidth: 0.6,
-  width: '25%',
-  borderRadius: 3.5,
-  marginLeft: 25,
-  flexDirection: 'row',
-  justifyContent: 'center',
-  marginTop: 10,
-},
+    height: 95,
+    paddingTop: 50, //50
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
+  leftContainer1: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    backgroundColor: 'white',
+  },
+  rightContainer1: {
+    flex: 1,
+    width: 200,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
+  rightIcon1: {
+    height: 10,
+    width: 20,
+    resizeMode: 'contain',
+    backgroundColor: 'white',
+  },
+  followBut: {
+    fontSize: 17,
+    fontFamily: 'AvenirNext-Regular',
+    borderColor: '#A4A4A4',
+    color: '#5B5B5B',
+    justifyContent: 'center',
+  },
+  followBut2: {
+    borderWidth: 0.6,
+    width: '25%',
+    borderRadius: 3.5,
+    marginLeft: 25,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
 
-navBar2: {
-  height: 100,
-  flexDirection: 'row',
-  justifyContent: 'space-around',
-  alignItems: 'center',
-},
-leftContainer2: {
-  flex: 1,
-  //flexDirection: 'row',
-  paddingRight: 2,
-  paddingHorizontal: 25,
-},
-rightContainer2: {
-  flex: 1,
-  flexDirection: 'row',
-  //justifyContent: 'flex-end',
-  alignItems: 'center',
-  paddingLeft: 1,
-  paddingHorizontal: 25,
-},
-rightIcon2: {
-  height: 10,
-  width: 10,
-  resizeMode: 'contain',
-  backgroundColor: 'white',
-},
-tile: {
-  width: 300,
-  height: 300,
-  justifyContent: 'center',
-  paddingHorizontal: 20,
-  paddingTop: 10,
-  alignItems: 'center'
-},
-containerStyle2: {
-  flex: 2,
-  backgroundColor: "#ffffff",
-  alignItems: 'center',
-  paddingLeft: 5,
-  paddingRight: 5,
-}
-})
+  navBar2: {
+    height: 100,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  leftContainer2: {
+    flex: 1,
+    //flexDirection: 'row',
+    paddingRight: 2,
+    paddingHorizontal: 25,
+  },
+  rightContainer2: {
+    flex: 1,
+    flexDirection: 'row',
+    //justifyContent: 'flex-end',
+    alignItems: 'center',
+    paddingLeft: 1,
+    paddingHorizontal: 25,
+  },
+  rightIcon2: {
+    height: 10,
+    width: 10,
+    resizeMode: 'contain',
+    backgroundColor: 'white',
+  },
+  tile: {
+    width: 300,
+    height: 300,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    alignItems: 'center',
+  },
+  containerStyle2: {
+    flex: 2,
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    paddingLeft: 5,
+    paddingRight: 5,
+  },
+});

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import firebase from 'react-native-firebase';
-import Tile from '../image/Tile'
+import Tile from '../image/Tile';
 
 //import React in our project
 import {
@@ -24,45 +24,52 @@ class MemeList extends React.Component {
     };
   }
 
-  renderTile({item}){
+  renderTile({ item }) {
     //for list view
-    console.log(item);
-    return <Tile
-      memeId={item.key}
-      imageUrl={item.src}
-      sub={item.sub}
-      likedFrom={item.likedFrom}
-      postedBy={item.postedBy}
-      poster={item.poster}
-    />
+    if (item) {
+      return (
+        <Tile
+          memeId={item.key}
+          imageUrl={item.src}
+          sub={item.sub}
+          likedFrom={item.likedFrom}
+          postedBy={item.postedBy}
+          poster={item.poster}
+        />
+      );
+    }
   }
 
   render() {
-      // List View
-      return (
-            <FlatList 
-              style={styles.containerStyle}
-              data={this.props.memes}
-              renderItem={this.renderTile.bind(this)}
-              onEndReached={() => {
-              {/* ensuring there are actually memes to load */}
-              if(this.props.memes.length ==  this.state.memesLoaded){
-                newLoadCount = this.state.memesLoaded + 60;
-                this.setState({
-                  memesLoaded: newLoadCount,
-                });
+    // List View
+    return (
+      <FlatList
+        style={styles.containerStyle}
+        data={this.props.memes}
+        renderItem={this.renderTile.bind(this)}
+        onEndReached={() => {
+          {
+            /* ensuring there are actually memes to load */
+          }
+          if (this.props.memes.length == this.state.memesLoaded) {
+            newLoadCount = this.state.memesLoaded + 60;
+            this.setState({
+              memesLoaded: newLoadCount,
+            });
 
-                {/* call parent function */}
-                this.props.loadMemes(newLoadCount);
-              }
-            }}
-            />
-      );
-    }
+            {
+              /* call parent function */
+            }
+            this.props.loadMemes(newLoadCount);
+          }
+        }}
+      />
+    );
+  }
 }
 
-export default MemeList; 
- 
+export default MemeList;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

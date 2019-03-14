@@ -24,6 +24,9 @@ export const HomeStack = createStackNavigator(
     Tile: {
       screen: TilePage,
     },
+    FollowList: {
+      screen: FollowList
+    }
   },
   {
     initialRouteName: 'Explore',

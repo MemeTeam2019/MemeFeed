@@ -1,7 +1,6 @@
 import React from 'react';
-import firebase from 'react-native-firebase';
-//import React in our project
 import { Image, TouchableOpacity, View, Modal, StyleSheet } from 'react-native';
+import firebase from 'react-native-firebase';
 
 import Tile from '../components/image/Tile';
 import MemeGrid from '../components/general/MemeGrid';
@@ -45,8 +44,7 @@ class FriendFeed extends React.Component {
         .firestore()
         .collection('Users')
         .doc(firebase.auth().currentUser.uid)
-        .get()
-        .then(doc => {
+        .onSnapshot(doc => {
           // The memes which my followers have reacted positively to
           let memes = [];
 
@@ -104,11 +102,12 @@ class FriendFeed extends React.Component {
                 });
               });
           }
-        })
-        .catch(err => {
-          console.log('Error getting document', err);
         });
     }
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe = null;
   }
 
   ShowModalFunction(visible, imageURL, memeId) {
@@ -157,7 +156,7 @@ class FriendFeed extends React.Component {
       </TouchableOpacity>
     );
   }
-  
+
   render() {
     if (this.state.ModalVisibleStatus) {
       //Modal to show full image with close button
@@ -197,45 +196,7 @@ class FriendFeed extends React.Component {
           </View>
         </Modal>
       );
-    } else if (this.state.inGridView) {
-      return (
-        <View style={styles.containerStyle}>
-          <View style={styles.navBar}>
-            <Image
-              source={require('../images/banner3.png')}
-              style={{ width: 250, height: 50 }}
-            />
-          </View>
-          <View style={styles.navBut}>
-            <TouchableOpacity onPress={() => this.showFullView()}>
-              <Image
-                source={require('../images/fullFeedF.png')}
-                style={{
-                  opacity: this.state.inFullView ? 1 : 0.3,
-                  width: 100,
-                  height: 50,
-                }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.showGridView()}>
-              <Image
-                source={require('../images/gridFeedF.png')}
-                style={{
-                  opacity: this.state.inGridView ? 1 : 0.3,
-                  width: 100,
-                  height: 50,
-                }}
-              />
-            </TouchableOpacity>
-          </View>
-          <MemeGrid
-            loadMemes={this.componentDidMount}
-            memes={this.state.memes}
-          />
-        </View>
-      );
     } else {
-      // in full view
       return (
         <View style={styles.containerStyle}>
           <View style={styles.navBar}>
@@ -266,11 +227,17 @@ class FriendFeed extends React.Component {
               />
             </TouchableOpacity>
           </View>
-          {/* List View */}
-          <MemeList
-            loadMemes={this.componentDidMount}
-            memes={this.state.memes}
-          />
+          {this.state.inGridView ? (
+            <MemeGrid
+              loadMemes={this.componentDidMount}
+              memes={this.state.memes}
+            />
+          ) : (
+            <MemeList
+              loadMemes={this.componentDidMount}
+              memes={this.state.memes}
+            />
+          )}
         </View>
       );
     }
