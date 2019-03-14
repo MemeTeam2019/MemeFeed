@@ -96,7 +96,7 @@ class HomeFeed extends React.Component {
         searchResults.push(snapshot);
       }
     });
-    this.setState({ searchResults: searchResults });
+    this.setState({ searchResults: searchResults.sort() });
   };
 
   // function for extracting Firebase responses to the state
@@ -145,6 +145,7 @@ class HomeFeed extends React.Component {
   };
 
   renderSearchResult = userRef => {
+    console.log(userRef.item);
     const data = userRef.item.data();
     const uid = userRef.item.ref.id;
     return <SearchResult data={data} uid={uid} />;

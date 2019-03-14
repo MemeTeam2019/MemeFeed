@@ -20,6 +20,7 @@ import firebase from 'react-native-firebase';
 class SearchResult extends React.Component {
   constructor(props) {
     super(props);
+    console.log(this.props.uid);
     this.state = {
       username: this.props.data.username,
       name: this.props.data.name,
@@ -32,8 +33,8 @@ class SearchResult extends React.Component {
       <React.Fragment>
         <TouchableOpacity
           onPress={() =>
-            this.props.navigation.push('User', {
-              uid: this.state.uid,
+            this.props.navigation.push('FriendProfile', {
+              uid: this.props.uid,
             })
           }
           style={styles.resultContainer}
@@ -45,8 +46,8 @@ class SearchResult extends React.Component {
             />
           </View>
           <View>
-            <Text style={styles.primaryText}>{this.state.username}</Text>
-            <Text style={styles.secondaryText}>{this.state.name}</Text>
+            <Text style={styles.primaryText}>{this.props.data.username}</Text>
+            <Text style={styles.secondaryText}>{this.props.data.name}</Text>
           </View>
         </TouchableOpacity>
       </React.Fragment>

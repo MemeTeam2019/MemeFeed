@@ -26,7 +26,7 @@ class Comment extends React.Component{
   }
 
   handleUsernameClick() {
-    this.props.navigation.navigate("User", {
+    this.props.navigation.push("FriendProfile", {
       uid: this.props.uid
     });
   }

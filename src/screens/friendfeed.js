@@ -58,7 +58,6 @@ class FriendFeed extends React.Component {
           for (i = 0; i < followingLst.length; i++) {
             // grab friend uid
             let friendUid = followingLst[i];
-            console.log(friendUid);
             // go thru friends reacts
             firebase
               .firestore()
@@ -77,7 +76,6 @@ class FriendFeed extends React.Component {
                     if (friendUid == firebase.auth().currentUser.uid) {
                       from = likedFrom;
                     }
-                    console.log(friendUid);
                     memes.push({
                       key: docMeme.id,
                       doc, // DocumentSnapshot
@@ -107,6 +105,7 @@ class FriendFeed extends React.Component {
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     this.unsubscribe = null;
   }
 

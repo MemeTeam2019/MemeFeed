@@ -8,7 +8,7 @@ import HomeFeed from '../screens/homefeed';
 import TilePage from '../screens/tilePage'
 import ProfileScreen from "../screens/profile";
 import FriendFeed from "../screens/friendfeed"
-import UserScreen from "../screens/friendProfile";
+import FriendProfileScreen from "../screens/friendProfile";
 import CommentPage from "../screens/CommentPage";
 
 import { FollowList } from '../components/home/SearchResults'
@@ -18,8 +18,8 @@ export const HomeStack = createStackNavigator(
     Explore: {
       screen: HomeFeed,
     },
-    User: {
-      screen: UserScreen,
+    FriendProfile: {
+      screen: FriendProfileScreen,
     },
     Tile: {
       screen: TilePage,
@@ -38,8 +38,8 @@ export const FriendStack = createStackNavigator(
     Friend: {
       screen: FriendFeed,
     },
-    User: {
-      screen: UserScreen,
+    FriendProfile: {
+      screen: FriendProfileScreen,
     },
     Tile: {
       screen: TilePage,
@@ -61,8 +61,8 @@ export const ProfileStack = createStackNavigator(
     Profile: {
       screen: ProfileScreen,
     },
-    User: {
-      screen: UserScreen,
+    FriendProfile: {
+      screen: FriendProfileScreen,
     },
     Tile: {
       screen: TilePage,
