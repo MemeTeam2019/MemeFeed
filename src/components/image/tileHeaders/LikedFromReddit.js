@@ -14,7 +14,7 @@ class LikedFromReddit extends React.Component {
   }
 
   componentDidMount() {
-    const uid = this.props.uid;
+    const uid = this.props.poster;
     const userRef = firebase.firestore().collection("Users").doc(uid);
     userRef.get().then(snapshot => {
       const data = snapshot.data();
@@ -25,7 +25,7 @@ class LikedFromReddit extends React.Component {
 
   navigateToFriendProfile() {
     this.props.navigation.navigate("FriendProfile", {
-      uid: this.props.uid
+      uid: this.props.poster
     });
   }
 
@@ -39,7 +39,7 @@ class LikedFromReddit extends React.Component {
             style={styles.userImg}
             source={{uri:'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg'}}
           />
-          <Username uid={this.props.uid} navigation={this.props.navigation} />
+          <Username uid={this.props.poster} navigation={this.props.navigation} />
         </View>
         <View style={styles.container}>
           <View style={styles.container}>

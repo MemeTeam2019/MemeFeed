@@ -76,6 +76,7 @@ class FriendFeed extends React.Component {
                     if (friendUid == firebase.auth().currentUser.uid) {
                       from = likedFrom;
                     }
+                    console.log(docMeme.data(), friendUid);
                     memes.push({
                       key: docMeme.id,
                       doc, // DocumentSnapshot
@@ -91,7 +92,7 @@ class FriendFeed extends React.Component {
                       if (a.time > b.time) return -1;
                       return 0;
                     }
-                    sortedMemes = memes.sort(this.compareTime);
+                    sortedMemes = memes.sort(compareTime);
                     this.setState({
                       memes: sortedMemes,
                       isLoading: false,

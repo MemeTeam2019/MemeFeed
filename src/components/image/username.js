@@ -41,7 +41,7 @@ class Username extends React.Component {
 
   goToUser() {
     console.log('touchy touch');
-    this.props.navigation.navigate('User', {
+    this.props.navigation.navigate('FriendProfile', {
       uid: this.props.uid,
     });
   }
