@@ -71,7 +71,7 @@ export default class ProfileScreen extends React.Component {
          likedFrom,
          // this is to ensure that if a user changes their reaction to a meme
          // on their own page that the liked from source is still the same
-         postedBy: likedFrom, 
+         postedBy: likedFrom,
          poster: firebase.auth().currentUser.uid,
         });
 
@@ -162,45 +162,69 @@ export default class ProfileScreen extends React.Component {
 
   render() {
     var optionArray = ['Logout', 'Cancel'];
-    if (this.state.ModalVisibleStatus) {
-      //Modal to show full image with close button
-      return (
-        <Modal
-          transparent={false}
-          animationType={'fade'}
-          visible={this.state.ModalVisibleStatus}
-          onRequestClose={() => {
-            this.ShowModalFunction(!this.state.ModalVisibleStatus, '');
-          }}
-        >
-          <View style={styles.modelStyle}>
-            {/* Single Image - Tile */}
-            <Image
-              style={styles.fullImageStyle}
-              source={{ uri: this.state.imageuri }}
-            />
-            {/* Close Button */}
-            <TouchableOpacity
-              activeOpacity={0.5}
-              style={styles.closeButtonStyle}
-              onPress={() => {
-                this.ShowModalFunction(!this.state.ModalVisibleStatus, '');
-              }}
-            >
-              <Image
-                source={{
-                  uri:
-                    'https://aboutreact.com/wp-content/uploads/2018/09/close.png',
-                }}
-                style={{ width: 25, height: 25, marginTop: 16 }}
-              />
+
+    if(this.state.memes.length == 0){
+      return(
+        <View style={styles.containerStyle}>
+        <View style={styles.navBar1}>
+        <View style={styles.leftContainer1}>
+          <Text style={[styles.text, {textAlign: 'left'}]}>
+            {}
+          </Text>
+        </View>
+        <Text style={styles.textSty4}>
+          {this.state.username}
+        </Text>
+        <View style={styles.rightContainer1}>
+          <View style={styles.rightIcon1}/>
+            <TouchableOpacity onPress={this.showActionSheet}>
+              <Image source={require('../images/setting.png')} style={{width: 60, height: 30}} />
             </TouchableOpacity>
+              <ActionSheet
+                ref={o => (this.ActionSheet = o)}
+                title={'User Settings'}
+                options={optionArray}
+                cancelButtonIndex={1}
+                destructiveIndex={0}
+                onPress={index => {
+                  if (optionArray[index] == 'Logout'){
+                    this.logout();
+                  }
+                }}
+              />
+            </View>
           </View>
-        </Modal>
+          {/*Profile Pic, Follwers, Follwing Block*/}
+          <View style={styles.navBar2}>
+            <View style={styles.leftContainer2}>
+                <Image
+                source={require('../images/profilePic.png')} style={{width: 85, height: 85, borderRadius: 85/2}}/>
+
+            </View>
+                    <Text style={styles.textSty}> {this.state.followingCnt} {"\n"} <Text style={styles.textSty3}>Following</Text></Text>
+            <View style={styles.rightContainer2}>
+            <Text style={styles.textSty}>{this.state.followersCnt} {"\n"} <Text style={styles.textSty3}>Followers</Text> </Text>
+          </View>
+          </View>
+               {/*DISPLAY NAME*/}
+               <View style={styles.profilePic}>
+                 <Text style={styles.textSty2}>{this.state.name}</Text>
+                 <Text>      </Text>
+                 <Text>      </Text>
+               </View>
+               <View style={styles.containerStyle2}>
+               <Image
+                 source={require('../components/misc/noLikes.png')}
+                 style={styles.tile}
+               />
+               </View>
+          </View>
+
       );
     } else {
-      //Photo Grid of images
-      return (
+      //Photo List/Full View of images
+        return(
+
         <React.Fragment>
           <View style={styles.containerStyle}>
             <View style={styles.navBar1}>
@@ -254,7 +278,7 @@ export default class ProfileScreen extends React.Component {
                   <Text style={styles.textSty3}>Following</Text>
                 </Text>
               </TouchableOpacity>
-              
+
               <TouchableOpacity
                 style={styles.rightContainer2}
                 onPress={() => {
@@ -468,74 +492,89 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   navBar1: {
-    height: 95,
-    paddingTop: 50, //50
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: 'white',
-  },
-  leftContainer1: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    backgroundColor: 'white',
-  },
-  rightContainer1: {
-    flex: 1,
-    width: 20,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    backgroundColor: 'white',
-  },
-  rightIcon1: {
-    height: 10,
-    width: 20,
-    resizeMode: 'contain',
-    backgroundColor: 'white',
-  },
-  followBut: {
-    fontSize: 17,
-    fontFamily: 'AvenirNext-Regular',
-    borderColor: '#A4A4A4',
-    color: '#5B5B5B',
-    justifyContent: 'center',
-  },
-  followBut2: {
-    borderWidth: 0.6,
-    width: '25%',
-    borderRadius: 3.5,
-    marginLeft: 25,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 10,
-  },
+     height:95,
+     paddingTop: 50,//50
+     flexDirection: 'row',
+     justifyContent: 'space-around',
+     alignItems: 'center',
+     backgroundColor: 'white',
+},
+leftContainer1: {
+ flex: 1,
+ flexDirection: 'row',
+ justifyContent: 'flex-start',
+ backgroundColor: 'white'
+},
+rightContainer1: {
+ flex: 1,
+ width: 200,
+ flexDirection: 'row',
+ justifyContent: 'flex-end',
+ alignItems: 'center',
+ backgroundColor: 'white',
+},
+rightIcon1: {
+ height: 10,
+ width: 20,
+ resizeMode: 'contain',
+ backgroundColor: 'white',
+},
+followBut: {
+  fontSize: 17,
+  fontFamily: 'AvenirNext-Regular',
+  borderColor: '#A4A4A4',
+  color: '#5B5B5B',
+  justifyContent: 'center'
+},
+followBut2: {
+  borderWidth: 0.6,
+  width: '25%',
+  borderRadius: 3.5,
+  marginLeft: 25,
+  flexDirection: 'row',
+  justifyContent: 'center',
+  marginTop: 10,
+},
 
-  navBar2: {
-    height: 100,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  leftContainer2: {
-    flex: 1,
-    flexDirection: 'row',
-    paddingRight: 3,
-    paddingHorizontal: 25,
-  },
-  rightContainer2: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    paddingLeft: 3,
-    paddingHorizontal: 25,
-  },
-  rightIcon2: {
-    height: 10,
-    width: 10,
-    resizeMode: 'contain',
-    backgroundColor: 'white',
-  },
-});
+navBar2: {
+  height: 100,
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  alignItems: 'center',
+},
+leftContainer2: {
+  flex: 1,
+  //flexDirection: 'row',
+  paddingRight: 2,
+  paddingHorizontal: 25,
+},
+rightContainer2: {
+  flex: 1,
+  flexDirection: 'row',
+  //justifyContent: 'flex-end',
+  alignItems: 'center',
+  paddingLeft: 1,
+  paddingHorizontal: 25,
+},
+rightIcon2: {
+  height: 10,
+  width: 10,
+  resizeMode: 'contain',
+  backgroundColor: 'white',
+},
+tile: {
+  width: 300,
+  height: 300,
+  justifyContent: 'center',
+  paddingHorizontal: 20,
+  paddingTop: 10,
+  alignItems: 'center'
+},
+containerStyle2: {
+  flex: 2,
+  backgroundColor: "#ffffff",
+  alignItems: 'center',
+  paddingLeft: 5,
+  paddingRight: 5,
+}
+})

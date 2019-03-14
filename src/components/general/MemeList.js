@@ -26,6 +26,7 @@ class MemeList extends React.Component {
 
   renderTile({item}){
     //for list view
+    console.log(item);
     return <Tile
       memeId={item.key}
       imageUrl={item.src}

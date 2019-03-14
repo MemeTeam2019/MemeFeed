@@ -333,9 +333,7 @@ class FriendProfileScreen extends React.Component {
 const styles = StyleSheet.create({
   containerStyle: {
     flex: 0,
-    // alignItems: "center",
-    // justifyContent: "center",
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff"
   },
   headerSty: {
     height: 0,
@@ -493,10 +491,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   navBar1: {
-    height: 60,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  height: 60,
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'center',
   },
   leftContainer1: {
     flex: 1,
@@ -507,10 +505,8 @@ const styles = StyleSheet.create({
   rightContainer1: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingLeft: 3,
-    paddingHorizontal: 25,
+    paddingLeft: 1,
   },
   rightIcon1: {
     height: 10,
@@ -526,24 +522,20 @@ const styles = StyleSheet.create({
   },
   leftContainer2: {
     flex: 1,
-    flexDirection: 'row',
-    paddingRight: 3,
+    paddingRight: 2,
     paddingHorizontal: 25,
   },
   rightContainer2: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingLeft: 3,
-    paddingHorizontal: 25,
+    paddingLeft: 1,
   },
   rightIcon2: {
     height: 10,
     width: 10,
     resizeMode: 'contain',
     backgroundColor: 'white',
-  },
+  }
 });
-
 export default FriendProfileScreen;

@@ -2,13 +2,13 @@ import React from 'react';
 import { Dimensions, StyleSheet, View, TouchableOpacity, Image, Text } from 'react-native';
 
 
-class EmptyFriendFeed extends React.Component {
+class EmptyProfileFeed extends React.Component {
 
   render() {
     return (
       <View style={styles.container}>
         <Image
-          source={require('./emptyFriendTile.png')}
+          source={require('./noPosts.png')}
           style={{width: '20%', height: '20%'}}
         />
       </View>
@@ -23,4 +23,4 @@ const styles = StyleSheet.create({
     height: '100%',
   },
 });
-export default EmptyFriendFeed;
+export default EmptyProfileFeed;

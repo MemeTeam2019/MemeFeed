@@ -1,32 +1,24 @@
-import * as React from 'react';
+import React from 'react';
 import firebase from 'react-native-firebase';
-
 //import React in our project
-import {
-  Image,
-  TouchableOpacity,
-  Text,
-  View,
-  Modal,
-  StyleSheet,
-  FlatList
-} from 'react-native';
+import { Image, TouchableOpacity, View, Modal, StyleSheet } from 'react-native';
 
-//import all the needed components
-//tile component
-import Tile from '../components/image/Tile'
+import Tile from '../components/image/Tile';
 import MemeGrid from '../components/general/MemeGrid';
 import MemeList from '../components/general/MemeList';
-import PhotoGrid from 'react-native-image-grid';
 
-class FriendFeed extends React.Component{
+class FriendFeed extends React.Component {
   static navigationOptions = {
-    header: null
-  }
-  constructor(){
+    header: null,
+  };
+  constructor() {
     super();
-    this.ref = firebase.firestore().collection('Memes').orderBy('time', "desc");
+    this._isMounted = false;
     this.unsubscribe = null;
+    this.ref = firebase
+      .firestore()
+      .collection('Users')
+      .doc(firebase.auth().currentUser.uid);
     this.state = {
       memesLoaded: 30,
       imageuri: '',
@@ -38,32 +30,85 @@ class FriendFeed extends React.Component{
       items: [],
       selectGridButton: false,
       selectListButton: true,
+      following: [],
+      memerefs: [],
     };
   }
 
-  // function for extracting Firebase responses to the state
-  onCollectionUpdate = (querySnapshot) => {
-    const memes = [];
-    querySnapshot.forEach((doc) => {
-    const { url, time, likedFrom } = doc.data();
-    memes.push({
-        key: doc.id,
-        doc, // DocumentSnapshot
-        src: url,
-        time,
-        likedFrom,
-      });
-    });
-    this.setState({
-      memes,
-      isLoading: false,
-    });
-  }
+  /**
+   * Load memes which people I follow have reacted positively to
+   */
+  componentDidMount() {
+    this._isMounted = true;
+    if (this._isMounted) {
+      this.unsubscribe = firebase
+        .firestore()
+        .collection('Users')
+        .doc(firebase.auth().currentUser.uid)
+        .get()
+        .then(doc => {
+          // The memes which my followers have reacted positively to
+          let memes = [];
 
-  componentDidMount(memesLoaded) {
-    console.log(memesLoaded)    
-    this.unsubscribe = this.ref.limit(memesLoaded).onSnapshot(this.onCollectionUpdate);
-    return this.state.memes
+          // Save memeIds to ensure no duplicates
+          let memeIds = new Set();
+
+          const { followingLst } = doc.data();
+
+          var i;
+          // go through the people we are following and get their memes
+          for (i = 0; i < followingLst.length; i++) {
+            // grab friend uid
+            let friendUid = followingLst[i];
+            console.log(friendUid);
+            // go thru friends reacts
+            firebase
+              .firestore()
+              .collection('Reacts/' + friendUid + '/Likes')
+              .orderBy('time', 'desc')
+              .limit(this.state.memesLoaded) //.limit(this.state.memesLoaded)
+              .get()
+              .then(snapshot => {
+                // look at each react
+                snapshot.forEach(docMeme => {
+                  const { likedFrom, rank, time, url } = docMeme.data();
+                  // haven't added yet and highly ranked
+                  if (!memeIds.has(docMeme.id) && rank > 1) {
+                    memeIds.add(docMeme.id);
+                    let from = friendUid;
+                    if (friendUid == firebase.auth().currentUser.uid) {
+                      from = likedFrom;
+                    }
+                    console.log(friendUid);
+                    memes.push({
+                      key: docMeme.id,
+                      doc, // DocumentSnapshot
+                      src: url,
+                      time,
+                      likedFrom,
+                      postedBy: from,
+                      poster: friendUid,
+                    });
+
+                    function compareTime(a, b) {
+                      if (a.time < b.time) return 1;
+                      if (a.time > b.time) return -1;
+                      return 0;
+                    }
+                    sortedMemes = memes.sort(this.compareTime);
+                    this.setState({
+                      memes: sortedMemes,
+                      isLoading: false,
+                    });
+                  }
+                });
+              });
+          }
+        })
+        .catch(err => {
+          console.log('Error getting document', err);
+        });
+    }
   }
 
   ShowModalFunction(visible, imageURL, memeId) {
@@ -72,26 +117,24 @@ class FriendFeed extends React.Component{
     this.setState({
       ModalVisibleStatus: visible,
       imageuri: imageURL,
-      memeId: memeId
+      memeId: memeId,
     });
   }
-
   showGridView = () => {
     //when grid button is pressed, show grid view
     this.setState({
       inGridView: true,
-      inFullView: false
-    })
-  }
-    
+      inFullView: false,
+    });
+  };
+
   showFullView = () => {
     //when full button is bressed, show full view
     this.setState({
       inFullView: true,
-      inGridView: false
-    })
-  }
-
+      inGridView: false,
+    });
+  };
   renderItem(item, itemSize, itemPaddingHorizontal) {
     //Single item of Grid
     return (
@@ -104,7 +147,8 @@ class FriendFeed extends React.Component{
         }}
         onPress={() => {
           this.ShowModalFunction(true, item.src, item.key);
-        }}>
+        }}
+      >
         <Image
           resizeMode="cover"
           style={{ flex: 1 }}
@@ -113,15 +157,8 @@ class FriendFeed extends React.Component{
       </TouchableOpacity>
     );
   }
-
-  renderTile({item}){
-    //for list view
-    return <Tile
-      memeId={item.key}
-      imageUrl={item.src}/>
-  }
-
-  render(){
+  
+  render() {
     if (this.state.ModalVisibleStatus) {
       //Modal to show full image with close button
       return (
@@ -130,98 +167,116 @@ class FriendFeed extends React.Component{
           animationType={'fade'}
           visible={this.state.ModalVisibleStatus}
           onRequestClose={() => {
-            this.ShowModalFunction(!this.state.ModalVisibleStatus,'');
-          }}>
+            this.ShowModalFunction(!this.state.ModalVisibleStatus, '');
+          }}
+        >
           <View style={styles.modelStyle}>
             {/* Single Image - Tile */}
             <Tile
               memeId={this.state.memeId}
               imageUrl={this.state.imageuri}
+              likedFrom={item.friendUid}
+              poster={item.postedBy}
             />
             {/* Close Button */}
             <TouchableOpacity
               activeOpacity={0.5}
               style={styles.closeButtonStyle}
               onPress={() => {
-                this.ShowModalFunction(!this.state.ModalVisibleStatus,'');
-              }}>
+                this.ShowModalFunction(!this.state.ModalVisibleStatus, '');
+              }}
+            >
               <Image
                 source={{
                   uri:
                     'https://aboutreact.com/wp-content/uploads/2018/09/close.png',
-                  }}
-                  style={{ width: 25, height: 25, marginTop:16 }}
+                }}
+                style={{ width: 25, height: 25, marginTop: 16 }}
               />
             </TouchableOpacity>
           </View>
         </Modal>
       );
-      } else if(this.state.inGridView){
-          return(
-            <View style={styles.containerStyle}>
-              <View style={styles.navBar}>
-                <Image source={require('../images/banner3.png')} style={{ width: 250, height: 50}} />
-              </View>
-              <View style={styles.navBut}>
-                <TouchableOpacity onPress={() => this.showFullView()}>
-                  <Image
-                    source={require('../images/fullFeedF.png')} style={{ opacity:  this.state.inFullView
-                                                                    ? 1 : 0.3,
-                                                                  width: 100, height: 50}}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.showGridView()}>
-                  <Image
-                    source={require('../images/gridFeedF.png')} style={{ opacity:  this.state.inGridView
-                                                                    ? 1 : 0.3,
-                                                                  width: 100, height: 50}}
-                  />
-                </TouchableOpacity>
-              </View>
-
-              <MemeGrid
-                loadMemes={this.componentDidMount}
-                memes={this.state.memes}
+    } else if (this.state.inGridView) {
+      return (
+        <View style={styles.containerStyle}>
+          <View style={styles.navBar}>
+            <Image
+              source={require('../images/banner3.png')}
+              style={{ width: 250, height: 50 }}
+            />
+          </View>
+          <View style={styles.navBut}>
+            <TouchableOpacity onPress={() => this.showFullView()}>
+              <Image
+                source={require('../images/fullFeedF.png')}
+                style={{
+                  opacity: this.state.inFullView ? 1 : 0.3,
+                  width: 100,
+                  height: 50,
+                }}
               />
-
-            </View>
-          );
-      } else{
-          // in full view
-          return(
-            <View style={styles.containerStyle}>
-              <View style={styles.navBar}>
-                <Image source={require('../images/banner3.png')} style={{ width: 250, height: 50}} />
-              </View>
-              <View style={styles.navBut}>
-                <TouchableOpacity onPress={() => this.showFullView()}>
-                  <Image
-                    source={require('../images/fullFeedF.png')} style={{ opacity:  this.state.inFullView
-                                                                    ? 1 : 0.3,
-                                                                  width: 100, height: 50}}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.showGridView()}>
-                  <Image
-                    source={require('../images/gridFeedF.png')} style={{ opacity:  this.state.inGridView
-                                                                    ? 1 : 0.3,
-                                                                  width: 100, height: 50}}
-                  />
-                </TouchableOpacity>
-              </View>
-              {/* List View */}
-              <MemeList
-                loadMemes={this.componentDidMount}
-                memes={this.state.memes}
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.showGridView()}>
+              <Image
+                source={require('../images/gridFeedF.png')}
+                style={{
+                  opacity: this.state.inGridView ? 1 : 0.3,
+                  width: 100,
+                  height: 50,
+                }}
               />
-            </View>
-          );
-      }
+            </TouchableOpacity>
+          </View>
+          <MemeGrid
+            loadMemes={this.componentDidMount}
+            memes={this.state.memes}
+          />
+        </View>
+      );
+    } else {
+      // in full view
+      return (
+        <View style={styles.containerStyle}>
+          <View style={styles.navBar}>
+            <Image
+              source={require('../images/banner3.png')}
+              style={{ width: 250, height: 50 }}
+            />
+          </View>
+          <View style={styles.navBut}>
+            <TouchableOpacity onPress={() => this.showFullView()}>
+              <Image
+                source={require('../images/fullFeedF.png')}
+                style={{
+                  opacity: this.state.inFullView ? 1 : 0.3,
+                  width: 100,
+                  height: 50,
+                }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.showGridView()}>
+              <Image
+                source={require('../images/gridFeedF.png')}
+                style={{
+                  opacity: this.state.inGridView ? 1 : 0.3,
+                  width: 100,
+                  height: 50,
+                }}
+              />
+            </TouchableOpacity>
+          </View>
+          {/* List View */}
+          <MemeList
+            loadMemes={this.componentDidMount}
+            memes={this.state.memes}
+          />
+        </View>
+      );
+    }
   }
 }
-
 export default FriendFeed;
-
 const styles = StyleSheet.create({
   containerStyle: {
     justifyContent: 'center',
@@ -242,18 +297,18 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   navBar: {
-    height:80,
+    height: 80,
     backgroundColor: 'white',
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 50,//50
+    paddingTop: 50, //50
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   navBut: {
-    height:50,
+    height: 50,
     backgroundColor: 'white',
     elevation: 3,
     paddingHorizontal: 20,
@@ -261,6 +316,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-  }
-
-})
+  },
+});

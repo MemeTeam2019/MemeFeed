@@ -98,14 +98,14 @@ class CommentList extends React.Component{
       });
 
 
-     
+
     }
   }
 
   //Single comment
   renderComment({item}) {
     return (
-      <Comment 
+      <Comment
         username={item.username}
         content={item.content}
         uid={item.key}
@@ -121,36 +121,33 @@ class CommentList extends React.Component{
       return(
         <View style={[styles.containerStyle]}>
           <ButtonBar memeId={this.props.memeId}/>
-          <Button
-            onPress={() => {          
-              newLoadCount = this.state.commentsLoaded + 10;
-              this.setState({
-                commentsLoaded: newLoadCount,
-                comments: [],
-              });
-              this.componentDidMount();
-            }}
-            style={{fontSize: 1}}
-            title="Load older comments"
-            color='#3d97ff'
-          />
-
-          <FlatList 
+          <TouchableOpacity  onPress={() => {
+                                newLoadCount = this.state.commentsLoaded + 10;
+                                this.setState({
+                                  commentsLoaded: newLoadCount,
+                                  comments: [],
+                                });
+                                this.componentDidMount();
+                            }}
+                            style={{justifyContent: 'center', alignItems: 'center'}}>
+                <Text style={styles.buttonSty}>Load more comments</Text>
+          </TouchableOpacity>
+          <FlatList
             data={this.state.comments}
             renderItem={this.renderComment.bind(this)}
           />
         </View>
-      );  
+      );
     } else { // no more comments to load
       return(
         <View style={[styles.containerStyle]}>
           <ButtonBar memeId={this.props.memeId}/>
-          <FlatList 
+          <FlatList
             data={this.state.comments}
             renderItem={this.renderComment.bind(this)}
           />
         </View>
-      );  
+      );
     }
   }
 }
@@ -165,5 +162,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(255,255,255,1)',
   },
+  buttonSty: {
+    paddingTop: 10,
+    fontSize: 15,
+    fontFamily: 'AvenirNext-Bold',
+    textAlign: 'center',
+  },
+  loadMore:{
+    height: 40,
+    width: 205,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 
 })

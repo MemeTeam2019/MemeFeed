@@ -77,30 +77,25 @@ const MainRouter = createBottomTabNavigator({
   Home: {
     screen: FriendStack,
     navigationOptions: {
-      tabBarLabel: 'Home',
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="home" size={35} color={tintColor} />
-      ),
-    },
+      showLabel: false,
+      tabBarIcon: ({ tintColor }) => <Icon name="home" size={35} color={tintColor} />
+    }
   },
   Explore: {
     screen: HomeStack,
     navigationOptions: {
-      tabBarLabel: 'Explore',
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="list" size={35} color={tintColor} />
-      ),
+      showLabel: false,
+      tabBarIcon: ({ tintColor }) => <Icon name="search" size={35} color={tintColor} />
     },
   },
   Profile: {
     screen: ProfileStack,
     navigationOptions: {
-      tabBarLabel: 'Profile',
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name="face" size={35} color={tintColor} />
-      ),
+      showLabel: false,
+      tabBarIcon: ({ tintColor }) => <Icon name="face" size={35} color={tintColor} />
     },
   },
+
 });
 
 export default MainRouter;

@@ -22,24 +22,23 @@ class CommentPage extends React.Component {
   static navigationOptions = {
     tabBarVisible: false,
   }
-  
+
   // static navigationOptions = {
   //   header: null
   // }
 
   render() {
-    return ( 
+    return (
       <View style={styles.container}>
-        <CommentHeader/>
         <ScrollView
           ref={ref => this.scrollView = ref}
-          onContentSizeChange={(contentWidth, contentHeight)=>{        
+          onContentSizeChange={(contentWidth, contentHeight)=>{
             this.scrollView.scrollToEnd({animated: true});
           }}
         >
 
             <TileHeader/>
-            <Photo imageUrl={this.state.imageuri}/>  
+            <Photo imageUrl={this.state.imageuri}/>
             <CommentList memeId={this.state.memeId}/>
 
         </ScrollView>
@@ -50,7 +49,7 @@ class CommentPage extends React.Component {
   }
 }
 
-export default CommentPage; 
+export default CommentPage;
 
 const styles = StyleSheet.create({
   container: {
@@ -61,4 +60,3 @@ const styles = StyleSheet.create({
     bottom:0
   },
 });
- 

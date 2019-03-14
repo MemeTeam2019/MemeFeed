@@ -71,7 +71,7 @@ export default class SignupScreen extends React.Component {
         let uid = user.user.uid;
         this.addUserDoc(uid, email, name, username);
         console.log("yuh");
-        this.props.navigation.push("Confirm");
+        this.props.navigation.push("About");
       } else {
         Alert.alert("Error", "Couldn't create acount. Please try again", [{text: "OK"}]);
       }
@@ -126,6 +126,11 @@ export default class SignupScreen extends React.Component {
               style={styles.submit}
               color= '#fff'
               onPress={() => this.handleSubmit()}
+            />
+            <Button
+              title="About"
+              color='#fff'
+              onPress={() => this.props.navigation.push("About")}
             />
           </KeyboardAvoidingView>
         </View>
