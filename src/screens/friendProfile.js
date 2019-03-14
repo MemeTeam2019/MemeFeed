@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import firebase from 'react-native-firebase';
 
 import Tile from '../components/image/Tile';
@@ -81,9 +74,7 @@ class FriendProfileScreen extends React.Component {
         .catch(err => {
           console.log(err);
         });
-      theirUserRef
-        .get()
-        .then(snapshot => this.setState(snapshot.data()));
+      theirUserRef.get().then(snapshot => this.setState(snapshot.data()));
     }
   }
 
@@ -105,7 +96,7 @@ class FriendProfileScreen extends React.Component {
     this.setState({ selectListButtonP: true });
   };
 
-  updateFollowing = () => {
+  updateFollowing = async () => {
     const myUid = firebase.auth().currentUser.uid;
     const theirUid = this.props.navigation.getParam('uid');
     const myUserRef = firebase
@@ -117,8 +108,6 @@ class FriendProfileScreen extends React.Component {
       .collection('Users')
       .doc(theirUid);
 
-    console.log(`My uid: ${myUid}, Their uid: ${theirUid}`);
-
     let isNowFollowing = !this.state.isFollowing;
 
     this.setState({
@@ -126,60 +115,39 @@ class FriendProfileScreen extends React.Component {
       buttonText: isNowFollowing ? 'Unfollow' : 'Follow',
     });
 
-    // Update my followingLst and followingCnt
-    myUserRef
-      .get()
-      .then(mySnapshot => {
-        const myData = mySnapshot.data();
-        let followingLst = myData.followingLst || [];
+    // Get my followingLst
+    let followingLst = await myUserRef.get().then(mySnapshot => {
+      return mySnapshot.data().followingLst || [];
+    });
 
-        console.log(`My followingLst before: ${followingLst}`);
+    // Get theirFollowersLst
+    let followersLst = await theirUserRef.get().then(theirSnapshot => {
+      return theirSnapshot.data().followersLst || [];
+    });
 
-        const index = followingLst.indexOf(theirUid);
-        if (isNowFollowing && index === -1) {
-          followingLst.push(theirUid);
-        } else if (!isNowFollowing && index > -1) {
-          followingLst.splice(index);
-        }
+    // Add myUid to theirFollowersLst and theirUid to myFollowingLst
+    const inFollowingLst = followingLst.indexOf(theirUid) > -1;
+    const inFollowersLst = followersLst.indexOf(myUid) > -1;
+    if (isNowFollowing) {
+      if (!inFollowingLst) followingLst.push(theirUid);
+      if (!inFollowersLst) followersLst.push(myUid);
+    } else {
+      if (inFollowingLst) followingLst.splice(followingLst.indexOf(theirUid));
+      if (inFollowersLst) followersLst.splice(followersLst.indexOf(myUid));
+    }
 
-        console.log(`My followingLst after: ${followingLst}`);
-
-        myUserRef.update({
-          followingLst: followingLst,
-          followingCnt: followingLst.length,
-        });
-      })
-      .catch(err => console.log(err));
-
-    // Update their followersLst and followersCnt
-    theirUserRef
-      .get()
-      .then(theirSnapshot => {
-        const theirData = theirSnapshot.data();
-        let followersLst = theirData.followersLst || [];
-
-        console.log(`Their followersLst before: ${followersLst}`);
-
-        const index = followersLst.indexOf(myUid);
-        if (isNowFollowing && index === -1) {
-          followersLst.push(myUid);
-        } else if (!isNowFollowing && index > -1) {
-          followersLst.splice(index);
-        }
-
-        console.log(`Their followersLst after: ${followersLst}`);
-
-        theirUserRef.update({
-          followersLst: followersLst,
-          followersCnt: followersLst.length,
-        });
-
-        this.setState({
-          followersLst: followersLst,
-          followersCnt: followersLst.length,
-        });
-      })
-      .catch(err => console.log(err));
+    theirUserRef.update({
+      followersLst: followersLst,
+      followersCnt: followersLst.length,
+    });
+    myUserRef.update({
+      followingLst: followingLst,
+      followingCnt: followingLst.length,
+    });
+    this.setState({
+      followersLst: followersLst,
+      followersCnt: followersLst.length,
+    })
   };
 
   // function for extracting Firebase responses to the state
