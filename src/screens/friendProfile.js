@@ -38,11 +38,14 @@ class FriendProfileScreen extends React.Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount(memesLoaded) {
     this._isMounted = true;
     if (this._isMounted) {
+      if (!memesLoaded) {
+        memesLoaded = 10;
+      }
       this.unsubscribe = this.memeRef
-        .limit(60)
+        .limit(memesLoaded)
         .onSnapshot(this.onCollectionUpdate);
 
       const myUid = firebase.auth().currentUser.uid;
@@ -120,21 +123,21 @@ class FriendProfileScreen extends React.Component {
       return theirSnapshot.data().followersLst || [];
     });
 
-    console.log("Before: " + followingLst);
+    console.log('Before: ' + followingLst);
 
     // Add myUid to theirFollowersLst and theirUid to myFollowingLst
     const inFollowingLst = followingLst.indexOf(theirUid) > -1;
     const inFollowersLst = followersLst.indexOf(myUid) > -1;
     if (nowFollowing) {
-      console.log('what');
       if (!inFollowingLst) followingLst.push(theirUid);
       if (!inFollowersLst) followersLst.push(myUid);
     } else {
-      if (inFollowingLst) followingLst.splice(followingLst.indexOf(theirUid), 1);
+      if (inFollowingLst)
+        followingLst.splice(followingLst.indexOf(theirUid), 1);
       if (inFollowersLst) followersLst.splice(followersLst.indexOf(myUid), 1);
     }
 
-    console.log("After: " + followingLst);
+    console.log('After: ' + followingLst);
 
     theirUserRef.update({
       followersLst: followersLst,
@@ -149,7 +152,7 @@ class FriendProfileScreen extends React.Component {
       buttonText: nowFollowing ? 'Unfollow' : 'Follow',
       followersLst: followersLst,
       followersCnt: followersLst.length,
-    })
+    });
   };
 
   // function for extracting Firebase responses to the state

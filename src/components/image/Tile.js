@@ -1,19 +1,14 @@
 import React from 'react';
 import {
-  Dimensions,
   StyleSheet,
   View,
-  TouchableOpacity,
-  Image,
-  Text,
 } from 'react-native';
+import firebase from 'react-native-firebase';
 
 import ButtonBar from './ButtonBar';
 import Photo from './Photo';
 import TileHeader from './TileHeader';
 import PostInfo from './PostInfo';
-
-import firebase from 'react-native-firebase';
 
 class Tile extends React.Component {
   _isMounted = false;
@@ -83,4 +78,5 @@ const styles = StyleSheet.create({
     height: '100%',
   },
 });
+
 export default Tile;
