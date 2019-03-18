@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
 import firebase from 'react-native-firebase';
 
 import Tile from '../components/image/Tile';
@@ -223,6 +223,7 @@ class FriendProfileScreen extends React.Component {
         <View style={styles.navBar}>
           <Text style={styles.textSty4}>{this.state.username}</Text>
         </View>
+        <ScrollView>
         {/*Profile Pic, Follwers, Follwing Block*/}
         <View style={styles.navBar2}>
           <View style={styles.leftContainer2}>
@@ -320,6 +321,7 @@ class FriendProfileScreen extends React.Component {
             memes={this.state.memes}
           />
         )}
+         </ScrollView>
       </View>
     );
   }
