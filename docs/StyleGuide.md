@@ -23,7 +23,7 @@
     -   Don't use wildcard imports
 -   Curly braces preceded with a space when denoting a scope
     -   `const myFunc = function foo() { doStuff(); }`
--   Install and use `prettier` with the `.prettierrc`
+-   Install and use `prettier`
 
 
 ### Comments
@@ -69,17 +69,21 @@ const longBoi = 'Lorem ipsum some other latin words haha i don\'t remember \
 
 ## Examples
 
-**Always, always ALWAYS comment what props a certain component is expecting in a block comment for the class**. When commenting a class, use a block-style comment (see below). For inline comments, use `//` on a newline above the subject of the comment and a newline above the comment:
+**Always, always ALWAYS comment what props a certain component is expecting in a block comment for the class, as well as a short description of each prop. Also, comment the files which will use this class**. When commenting a class, use a block-style comment (see below). For inline comments, use `//` on a newline above the subject of the comment and a newline above the comment:
 
 ```javascript
 /**
- * A very nice component to render some text. This is an example block comment
+ * A short description of the well-written class SomeComponent, which is
+ * self-contained and doesn't have dependencies.
+ * 
+ * Used by:
+ *    externalFile.js
+ *    importer.js
  *
- * Props
- * -----
- * uid: String
- * username: String
- * items: Array[Objects]
+ * Props:
+ *    uid (String): The id of the user in question
+ *    username (String): The username of the user in question
+ *    items (Array[Objects]): The data of the user in question
  */
 class SomeComponent extends React.Component {
   constructor(props) {

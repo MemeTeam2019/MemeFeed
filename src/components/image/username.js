@@ -1,7 +1,20 @@
-import React, { Component } from 'react';
-import { Text, StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { Text, StyleSheet, TouchableOpacity } from 'react-native';
 import firebase from 'react-native-firebase';
 
+
+/**
+ * Touchable username which routes to the friendProfile of the user.
+ * 
+ * Used by:
+ *     comment.js
+ *     likedFromReddit.js
+ *     likedFromUser.js
+ *     sourceReddit.js
+ * 
+ * Props:
+ *     uid (String): Firebase id of the user in question.
+ */
 class Username extends React.Component {
   static navigationOptions = {
     header: null,
@@ -26,7 +39,7 @@ class Username extends React.Component {
 
     ref
       .get()
-      .then(docSnapshot => {
+      .then((docSnapshot) => {
         if (docSnapshot.exists) {
           let data = docSnapshot.data();
           if (data && this._isMounted) {
@@ -34,15 +47,15 @@ class Username extends React.Component {
           }
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   }
 
   goToUser() {
-    // if going to our own page
+    // If going to our own profile
     if (this.props.uid == firebase.auth().currentUser.uid) {
-      this.props.navigation.navigate('Profile', {
+      this.props.navigation.push('Profile', {
         uid: this.props.uid,
       });
     } else {
@@ -51,7 +64,6 @@ class Username extends React.Component {
       });
     }
   }
-
 
   render() {
     return (
@@ -63,10 +75,10 @@ class Username extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  text: {  
+  text: {
     fontSize: 16,
     fontFamily: 'AvenirNext-Bold',
-    marginLeft: '2.5%'
+    marginLeft: '2.5%',
   },
 });
 

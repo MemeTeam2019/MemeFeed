@@ -14,10 +14,23 @@ import MemeGrid from '../components/general/memeGrid';
 import MemeList from '../components/general/memeList';
 import Profile from './profilePage';
 
+
+/**
+ * View the profile of another user.
+ * 
+ * Used by:
+ *     mainNavigator.js
+ * 
+ * Props:
+ *     navigation.uid (String): Firebase id of the user profile we want to
+ *         render.
+ */
+
 class FriendProfile extends React.Component {
   constructor(props) {
     super(props);
     this._isMounted = false;
+    this.unsubscribe = null;
     this.memeRef = firebase
       .firestore()
       .collection('Reacts')
@@ -25,24 +38,23 @@ class FriendProfile extends React.Component {
       .collection('Likes')
       .orderBy('time', 'desc');
 
-    this.unsubscribe = null;
     this.state = {
       email: '',
       username: '',
       name: '',
       uid: '',
+      imageuri: '',
+      text: '',
+      buttonText: '',
       followingLst: [],
       followersLst: [],
-      open: false,
-      selectGridButtonP: true,
-      selectListButtonP: false,
       memes: [],
       items: [],
-      text: '',
+      selectGridButtonP: true,
+      open: false,
+      selectListButtonP: false,
       ModalVisibleStatus: false,
-      imageuri: '',
       isFollowing: false,
-      buttonText: '',
       userExists: false,
     };
   }
@@ -78,15 +90,13 @@ class FriendProfile extends React.Component {
           if (snapshot.exists) {
             const data = snapshot.data();
             const followingLst = data.followingLst || [];
-            console.log(snapshot);
+            // console.log(snapshot);
             const isFollowing = followingLst.indexOf(theirUid) > -1;
-            this.setState(
-              Object.assign({
-                isFollowing: isFollowing,
-                buttonText: isFollowing ? 'Unfollow' : 'Follow',
-                userExists: true,
-              })
-            );
+            this.setState({
+              isFollowing: isFollowing,
+              buttonText: isFollowing ? 'Unfollow' : 'Follow',
+              userExists: true,
+            });
           } else {
             this.setState({ userExists: false });
           }
@@ -188,7 +198,7 @@ class FriendProfile extends React.Component {
         });
 
       this.setState({
-        memes,
+        memes: memes,
         isLoading: false,
       });
     });
@@ -242,9 +252,9 @@ class FriendProfile extends React.Component {
         </View>
       );
     } else if (uid === firebase.auth().currentUser.uid) {
-      return <Profile/>;
+      return <Profile />;
     }
-      
+
     return (
       <View style={styles.containerStyle}>
         <View style={styles.navBar}>

@@ -10,22 +10,23 @@ import {
 import { withNavigation } from 'react-navigation';
 import firebase from 'react-native-firebase';
 
+
 /**
  * Component to display a search result when using the search feature.
- * onPress will navigate to the profile of the user in question, passing down
- * the appropriate props
+ * onPress will navigate to the profile of the user in question.
  *
- * Props - username: String, name: String, uid: String
+ * Used by:
+ *    searchResult.js
+ *
+ * Props:
+ *    data (Object): The data obtained from the DocumentSnapshot of some user,
+ *                   e.g. userSnapshot.data(). Refer to the Firebase Users
+ *                   collection for the expected object properties.
+ *
  */
 class SearchResult extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props.uid);
-    this.state = {
-      username: this.props.data.username,
-      name: this.props.data.name,
-      uid: this.props.uid,
-    };
   }
 
   render() {
@@ -46,8 +47,8 @@ class SearchResult extends React.Component {
             />
           </View>
           <View>
-            <Text style={styles.primaryText}>{this.props.data.username}</Text>
-            <Text style={styles.secondaryText}>{this.props.data.name}</Text>
+            <Text style={styles.primaryText}>{this.props.username || ''}</Text>
+            <Text style={styles.secondaryText}>{this.props.name || ''}</Text>
           </View>
         </TouchableOpacity>
       </React.Fragment>
@@ -55,11 +56,20 @@ class SearchResult extends React.Component {
   }
 }
 
+
 /**
  * Generates a FlatList of SearchResults to display in search results or
  * when the user is viewing someone's following or follower list.
- *
- * Props - navigation.arrayOfUids: Array[String], navigation.title: String
+ * 
+ * 
+ * Used by:
+ *     mainNavigator.js
+ * 
+ * Props:
+ *     navigation.title (String): Title to be rendered in header. Will be 
+ *         'Following' or 'Followers'
+ *     navigation.arrayOfUids (Array[String]): Array of uids to be rendered in
+ *         the FlatList. Need to query Firebase for each
  */
 class FollowList extends React.Component {
   static navigationOptions = ({ navigation }) => {
@@ -68,9 +78,6 @@ class FollowList extends React.Component {
 
   constructor(props) {
     super(props);
-    this.arrayOfUids = this.props.navigation.getParam('arrayOfUids', []);
-    this.title = this.props.navigation.getParam('title', '');
-
     this.state = {
       usersToRender: [],
       searchTerm: '',
@@ -99,7 +106,7 @@ class FollowList extends React.Component {
     if (snapshot) {
       const data = snapshot.item.data();
       const uid = snapshot.item.ref.id;
-      return <SearchResultNav data={data} uid={uid} />;
+      return <SearchResult data={data} uid={uid} />;
     }
   };
 
@@ -154,8 +161,6 @@ const styles = StyleSheet.create({
   },
 });
 
-// Both components depend on navigation props to route to ProfileScreen
-const FollowListNav = withNavigation(FollowList);
-const SearchResultNav = withNavigation(SearchResult);
+const SearchResultWithNav = withNavigation(SearchResult);
 
-export { SearchResultNav as SearchResult, FollowListNav as FollowList };
+export { SearchResultWithNav as SearchResult, FollowList };

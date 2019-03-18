@@ -4,6 +4,21 @@ import firebase from 'react-native-firebase';
 
 import { withNavigation } from 'react-navigation';
 
+/**
+ * Handles user reacts for a specific meme, sets the state of tile.js and
+ * updates the appropriate firebase documents.
+ * 
+ * Used by:
+ *    tile.js
+ *    commentList.js
+ * 
+ * Props:
+ *    memeId (String): The id of the Firebase document in the Memes collection
+ *    imageUrl (String): The image URL of the meme
+ *    postedBy (String): uid of the user who posted the meme associated with
+ *        the memeId
+ *    updateReacts (Function): Function to setState of tile's reactCount state
+ */
 class ButtonBar extends React.Component {
   constructor(props) {
     super(props);
@@ -242,8 +257,6 @@ class ButtonBar extends React.Component {
   }
 }
 
-export default withNavigation(ButtonBar);
-
 const styles = StyleSheet.create({
   buttonBar: {
     flexDirection: 'row',
@@ -266,3 +279,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+export default withNavigation(ButtonBar);

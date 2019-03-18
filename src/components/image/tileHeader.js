@@ -6,7 +6,20 @@ import LikedFromUser from './tileHeaders/likedFromUser';
 import SourceReddit from './tileHeaders/sourceReddit';
 
 import firebase from 'react-native-firebase';
- 
+
+
+/**
+ * Renders the meme poster or the subreddit from which a meme was pulled from.
+ * 
+ * Used by:
+ *    tile.js
+ *    commentPage.js
+ * 
+ * Props:
+ *    sub (String): The subreddit the meme was pulled from.
+ *    poster (String): The poster of the meme.
+ *    likedFrom (String): The user the liker found the post from.
+ */
 class TileHeader extends React.Component {
   constructor(props) {
     super(props);
