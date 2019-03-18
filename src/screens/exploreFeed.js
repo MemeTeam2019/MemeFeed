@@ -18,9 +18,11 @@ import { SearchResult } from '../components/home/searchResult';
  * Feed of novel memes in Firebase, which are pulled from various subreddits.
  * Can also search for users on this screen
  *
- * Props
- * -----
- * None
+ * Used by:
+ *     mainNavigator.js
+ *
+ * Props:
+ *     None
  */
 class ExploreFeed extends React.Component {
   static navigationOptions = {
