@@ -80,17 +80,17 @@ class FollowList extends React.Component {
   componentDidMount() {
     let usersToRender = [];
     let arrayOfUids = this.props.navigation.getParam('arrayOfUids', []);
-    usersToRender = arrayOfUids.map(async uid => {
+    usersToRender = arrayOfUids.map(async (uid) => {
       return await firebase
         .firestore()
         .collection('Users')
         .doc(uid)
         .get()
-        .then(snapshot => {
+        .then((snapshot) => {
           return snapshot;
         });
     });
-    Promise.all(usersToRender).then(fulfilled => {
+    Promise.all(usersToRender).then((fulfilled) => {
       this.setState({ usersToRender: fulfilled });
     });
   }
@@ -106,7 +106,7 @@ class FollowList extends React.Component {
   updateFilteredResults = (searchTerm = '') => {
     let filtered = this.allResults;
     if (searchTerm) {
-      filtered = this.allResults.filter(doc => {
+      filtered = this.allResults.filter((doc) => {
         const { username, name } = doc.data();
         return (
           username.toLowerCase().startsWith(searchTerm.toLowerCase()) ||
@@ -119,11 +119,11 @@ class FollowList extends React.Component {
 
   render() {
     return (
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <FlatList
           data={this.state.usersToRender}
-          renderItem={user => this.renderResult(user)}
-          keyExtractor={user => user.ref.id || -1}
+          renderItem={(user) => this.renderResult(user)}
+          keyExtractor={(user) => user.ref.id || -1}
         />
       </View>
     );

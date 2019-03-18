@@ -1,23 +1,24 @@
-import {createSwitchNavigator, createAppContainer} from 'react-navigation';
+import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 
-import LoadingScreen from "./src/screens/loading";
+import LoadingScreen from './src/screens/loadingPage';
 import AuthRouter from './src/routers/authNavigator';
 import MainRouter from './src/routers/mainNavigator';
-import Tile from './src/components/image/Tile';
 
-export default createAppContainer(createSwitchNavigator(
-  {
-    Loading: {
-      screen: LoadingScreen
+export default createAppContainer(
+  createSwitchNavigator(
+    {
+      Loading: {
+        screen: LoadingScreen,
+      },
+      Auth: {
+        screen: AuthRouter,
+      },
+      Main: {
+        screen: MainRouter,
+      },
     },
-    Auth: {
-      screen: AuthRouter
-    },
-    Main: {
-      screen: MainRouter
+    {
+      initialRouteName: 'Loading',
     }
-  },
-  {
-    initialRouteName: "Loading"
-  }
-));
+  )
+);

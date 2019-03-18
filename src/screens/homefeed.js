@@ -1,133 +1,128 @@
-import * as React from 'react';
+import React from 'react';
+import { Image, TouchableOpacity, View, Modal, StyleSheet } from 'react-native';
 import firebase from 'react-native-firebase';
-import { SearchBar } from 'react-native-elements';
-import MemeGrid from '../components/general/MemeGrid';
-import MemeList from '../components/general/MemeList';
-import {
-  Image,
-  TouchableOpacity,
-  View,
-  Modal,
-  StyleSheet,
-  FlatList,
-} from 'react-native';
 
-import { SearchResult } from '../components/home/SearchResults';
+import Tile from '../components/image/tile';
+import MemeGrid from '../components/general/memeGrid';
+import MemeList from '../components/general/memeList';
 
 class HomeFeed extends React.Component {
   static navigationOptions = {
     header: null,
   };
-  constructor(props) {
-    super(props);
-    this.unsubscribe = null;
+  constructor() {
+    super();
     this._isMounted = false;
+    this.unsubscribe = null;
+    this.ref = firebase
+      .firestore()
+      .collection('Users')
+      .doc(firebase.auth().currentUser.uid);
     this.state = {
       memesLoaded: 30,
       imageuri: '',
       ModalVisibleStatus: false,
       isLoading: true,
-      inGridView: true,
-      inFullView: false,
+      inGridView: false,
+      inFullView: true,
       memes: [],
       items: [],
-      allUsers: [],
-      searchResults: [],
-      selectGridButton: true,
-      selectListButton: false,
-      searchTerm: '',
+      selectGridButton: false,
+      selectListButton: true,
+      following: [],
+      memerefs: [],
     };
   }
 
-  componentDidMount(memesLoaded) {
+  /**
+   * Load memes which people I follow have reacted positively to.
+   * 
+   * Props
+   * -----
+   * None
+   */
+  componentDidMount() {
     this._isMounted = true;
     if (this._isMounted) {
-      this.ref = firebase
+      this.unsubscribe = firebase
         .firestore()
-        .collection('Memes')
-        .orderBy('time', 'desc');
-      this.unsubscribe = this.ref
-        .limit(memesLoaded)
-        .onSnapshot(this.onCollectionUpdate);
+        .collection('Users')
+        .doc(firebase.auth().currentUser.uid)
+        .onSnapshot((doc) => {
+          // The memes which my followers have reacted positively to
+          let memes = [];
+
+          // Save memeIds to ensure no duplicates
+          let memeIds = new Set();
+
+          const { followingLst } = doc.data();
+
+          var i;
+          // go through the people we are following and get their memes
+          for (i = 0; i < followingLst.length; i++) {
+            // grab friend uid
+            let friendUid = followingLst[i];
+            // go thru friends reacts
+            firebase
+              .firestore()
+              .collection('Reacts/' + friendUid + '/Likes')
+              .orderBy('time', 'desc')
+              .limit(this.state.memesLoaded) //.limit(this.state.memesLoaded)
+              .get()
+              .then((snapshot) => {
+                // look at each react
+                snapshot.forEach((docMeme) => {
+                  const { likedFrom, rank, time, url } = docMeme.data();
+                  // haven't added yet and highly ranked
+                  if (!memeIds.has(docMeme.id) && rank > 1) {
+                    memeIds.add(docMeme.id);
+                    let from = friendUid;
+                    if (friendUid == firebase.auth().currentUser.uid) {
+                      from = likedFrom;
+                    }
+                    console.log(docMeme.data(), friendUid);
+                    memes.push({
+                      key: docMeme.id,
+                      doc, // DocumentSnapshot
+                      src: url,
+                      time,
+                      likedFrom,
+                      postedBy: from,
+                      poster: friendUid,
+                    });
+
+                    function compareTime(a, b) {
+                      if (a.time < b.time) return 1;
+                      if (a.time > b.time) return -1;
+                      return 0;
+                    }
+                    sortedMemes = memes.sort(compareTime);
+                    this.setState({
+                      memes: sortedMemes,
+                      isLoading: false,
+                    });
+                  }
+                });
+              });
+          }
+        });
     }
   }
 
-  /**
-   * Pulls all users whose username starts with the searchTerm
-   *
-   * TODO: also filter by name
-   */
-  updateSearch = async (searchTerm = '') => {
-    // Set search term state immediately to update SearchBar contents
-    this.setState({ searchTerm: searchTerm });
+  componentWillUnmount() {
+    this._isMounted = false;
+    this.unsubscribe = null;
+  }
 
-    const usersRef = firebase.firestore().collection('Users');
-    const lowerSearchTerm = searchTerm.toLowerCase();
-    let usernameMatches = [],
-      nameMatches = [];
-
-    if (!searchTerm) {
-      this.setState({ searchResults: [] });
-      return;
-    }
-
-    usernameMatches = await usersRef
-      .where('searchableUsername', '>=', lowerSearchTerm)
-      .where('searchableUsername', '<', lowerSearchTerm + '\uf8ff')
-      .get()
-      .then(snapshot => snapshot.docs)
-      .catch(err => console.log(err));
-
-    nameMatches = await usersRef
-      .where('searchableName', '>=', lowerSearchTerm)
-      .where('searchableName', '<', lowerSearchTerm + '\uf8ff')
-      .get()
-      .then(snapshot => snapshot.docs)
-      .catch(err => console.log(err));
-
-    // Ensure there are no duplicates and your own profile doesn't show up
-    const combined = [...usernameMatches, ...nameMatches];
-    const searchResults = [];
-    const map = new Map();
-    const myUid = firebase.auth().currentUser.uid;
-    combined.forEach(snapshot => {
-      if (!map.has(snapshot.ref.id) && myUid !== snapshot.ref.id) {
-        map.set(snapshot.ref.id);
-        searchResults.push(snapshot);
-      }
-    });
-    this.setState({ searchResults: searchResults.sort() });
-  };
-
-  // function for extracting Firebase responses to the state
-  onCollectionUpdate = querySnapshot => {
-    const memes = [];
-    querySnapshot.forEach(doc => {
-      const { url, time, sub } = doc.data();
-      memes.push({
-        key: doc.id,
-        doc, // DocumentSnapshot
-        src: url,
-        time,
-        sub,
-        postedBy: sub,
-      });
-    });
-    this.setState({
-      memes,
-      isLoading: false,
-    });
-  };
-
-  ShowModalFunction(visible, imageURL) {
+  ShowModalFunction(visible, imageURL, memeId) {
     //handler to handle the click on image of Grid
     //and close button on modal
     this.setState({
       ModalVisibleStatus: visible,
       imageuri: imageURL,
+      memeId: memeId,
     });
   }
-
   showGridView = () => {
     //when grid button is pressed, show grid view
     this.setState({
@@ -143,51 +138,31 @@ class HomeFeed extends React.Component {
       inGridView: false,
     });
   };
-
-  renderSearchResult = userRef => {
-    console.log(userRef.item);
-    const data = userRef.item.data();
-    const uid = userRef.item.ref.id;
-    return <SearchResult data={data} uid={uid} />;
-  };
+  renderItem(item, itemSize, itemPaddingHorizontal) {
+    //Single item of Grid
+    return (
+      <TouchableOpacity
+        key={item.id}
+        style={{
+          width: itemSize,
+          height: itemSize,
+          paddingHorizontal: itemPaddingHorizontal,
+        }}
+        onPress={() => {
+          this.ShowModalFunction(true, item.src, item.key);
+        }}
+      >
+        <Image
+          resizeMode="cover"
+          style={{ flex: 1 }}
+          source={{ uri: item.src }}
+        />
+      </TouchableOpacity>
+    );
+  }
 
   render() {
-    const searchTerm = this.state.searchTerm;
-    if (this.state.searchTerm) {
-      return (
-        <View style={styles.containerStyle}>
-          <View style={styles.navBar}>
-            <SearchBar
-              placeholder="Find User"
-              onChangeText={this.updateSearch}
-              value={searchTerm}
-              containerStyle={{
-                backgroundColor: 'transparent',
-                borderTopWidth: 0,
-                borderBottomWidth: 0,
-              }}
-              inputStyle={{
-                backgroundColor: 'lightgrey',
-                color: 'black',
-              }}
-              onClear={() => {}}
-              onCancel={() => {
-                this.setState({ searchTerm: '' });
-              }}
-              platform="ios"
-              cancelButtonTitle="Cancel"
-            />
-          </View>
-
-          {/* List View */}
-          <FlatList
-            data={this.state.searchResults}
-            renderItem={userRef => this.renderSearchResult(userRef)}
-            keyExtractor={item => item.ref.id}
-          />
-        </View>
-      );
-    } else if (this.state.ModalVisibleStatus) {
+    if (this.state.ModalVisibleStatus) {
       //Modal to show full image with close button
       return (
         <Modal
@@ -200,9 +175,11 @@ class HomeFeed extends React.Component {
         >
           <View style={styles.modelStyle}>
             {/* Single Image - Tile */}
-            <Image
-              style={styles.fullImageStyle}
-              source={{ uri: this.state.imageuri }}
+            <Tile
+              memeId={this.state.memeId}
+              imageUrl={this.state.imageuri}
+              likedFrom={item.friendUid}
+              poster={item.postedBy}
             />
             {/* Close Button */}
             <TouchableOpacity
@@ -223,83 +200,30 @@ class HomeFeed extends React.Component {
           </View>
         </Modal>
       );
-    } else if (this.state.inFullView) {
-      //Photo List/Full View of images
+    } else if (this.state.memes.length == 0) {
       return (
         <View style={styles.containerStyle}>
           <View style={styles.navBar}>
-            <SearchBar
-              placeholder="Find User"
-              onChangeText={this.updateSearch}
-              value={searchTerm}
-              containerStyle={{
-                backgroundColor: 'transparent',
-                borderTopWidth: 0,
-                borderBottomWidth: 0,
-              }}
-              inputStyle={{
-                backgroundColor: 'lightgrey',
-                color: 'black',
-              }}
-              onClear={() => {}}
-              onCancel={() => {
-                this.setState({ searchTerm: '' });
-              }}
-              platform="ios"
-              cancelButtonTitle="Cancel"
+            <Image
+              source={require('../images/banner3.png')}
+              style={{ width: 250, height: 50 }}
             />
           </View>
-          <View style={styles.navBut}>
-            <TouchableOpacity onPress={() => this.showFullView()}>
-              <Image
-                source={require('../images/fullFeedF.png')}
-                style={{
-                  opacity: this.state.inFullView ? 1 : 0.3,
-                  width: 100,
-                  height: 50,
-                }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.showGridView()}>
-              <Image
-                source={require('../images/gridFeedF.png')}
-                style={{
-                  opacity: this.state.inGridView ? 1 : 0.3,
-                  width: 100,
-                  height: 50,
-                }}
-              />
-            </TouchableOpacity>
+          <View style={styles.containerStyle2}>
+            <Image
+              source={require('../components/misc/emptyFriendTile.png')}
+              style={styles.tile}
+            />
           </View>
-          {/* List View */}
-          <MemeList
-            loadMemes={this.componentDidMount}
-            memes={this.state.memes}
-          />
         </View>
       );
     } else {
-      //Photo Grid of images
       return (
         <View style={styles.containerStyle}>
           <View style={styles.navBar}>
-            <SearchBar
-              placeholder="Search User"
-              onChangeText={this.updateSearch}
-              value={searchTerm}
-              containerStyle={{
-                backgroundColor: 'transparent',
-                borderTopWidth: 0,
-                borderBottomWidth: 0,
-              }}
-              inputStyle={{
-                backgroundColor: 'lightgrey',
-                color: 'black',
-              }}
-              onClear={() => {}}
-              onCancel={() => {}}
-              platform="ios"
-              cancelButtonTitle="Cancel"
+            <Image
+              source={require('../images/banner3.png')}
+              style={{ width: 250, height: 50 }}
             />
           </View>
           <View style={styles.navBut}>
@@ -324,31 +248,28 @@ class HomeFeed extends React.Component {
               />
             </TouchableOpacity>
           </View>
-
-          <MemeGrid
-            loadMemes={this.componentDidMount}
-            memes={this.state.memes}
-          />
+          {this.state.inGridView ? (
+            <MemeGrid
+              loadMemes={this.componentDidMount}
+              memes={this.state.memes}
+            />
+          ) : (
+            <MemeList
+              loadMemes={this.componentDidMount}
+              memes={this.state.memes}
+            />
+          )}
         </View>
       );
     }
   }
 }
-
 export default HomeFeed;
-
 const styles = StyleSheet.create({
   containerStyle: {
     justifyContent: 'center',
     flex: 1,
     backgroundColor: 'rgba(255,255,255,1)',
-  },
-  fullImageStyle: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100%',
-    width: '98%',
-    resizeMode: 'contain',
   },
   modelStyle: {
     flex: 1,
@@ -359,19 +280,20 @@ const styles = StyleSheet.create({
   closeButtonStyle: {
     width: 25,
     height: 25,
-    top: 9,
+    top: 20,
     right: 9,
     position: 'absolute',
   },
   navBar: {
-    height: 95,
+    height: 80,
+    backgroundColor: 'white',
     elevation: 3,
     paddingHorizontal: 20,
+    paddingRight: 3,
     paddingTop: 50, //50
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'transparent',
   },
   navBut: {
     height: 50,
@@ -382,5 +304,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  tile: {
+    width: 300,
+    height: 300,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    alignItems: 'center',
+  },
+  containerStyle2: {
+    flex: 2,
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    paddingLeft: 5,
+    paddingRight: 5,
   },
 });

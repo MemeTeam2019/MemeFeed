@@ -30,17 +30,20 @@ class LoginScreen extends React.Component {
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
-      .then(user => {
+      .then((user) => {
         if (!user.user.emailVerified) {
           Alert.alert('Error', 'Your account is not verified.', [
+            {
+              text: 'Resend verification',
+              onPress: () => user.user.sendEmailVerification(),
+            },
             { text: 'OK' },
           ]);
-          this.props.navigation.push('Confirm');
         } else {
           this.props.navigation.navigate('Main');
         }
       })
-      .catch(error => {
+      .catch((error) => {
         let errorMessage = 'An error occured';
         switch (error.code) {
           case 'auth/invalid-email':
@@ -72,14 +75,14 @@ class LoginScreen extends React.Component {
             <TextInput
               style={styles.input}
               placeholder="Email"
-              onChangeText={email => this.setState({ email: email })}
+              onChangeText={(email) => this.setState({ email: email })}
               autoCapitalize="none"
             />
             <TextInput
               style={styles.input}
               placeholder="Password"
               secureTextEntry={true}
-              onChangeText={password => this.setState({ password: password })}
+              onChangeText={(password) => this.setState({ password: password })}
             />
             <Button
               title="Log In"

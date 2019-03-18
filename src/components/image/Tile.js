@@ -5,10 +5,10 @@ import {
 } from 'react-native';
 import firebase from 'react-native-firebase';
 
-import ButtonBar from './ButtonBar';
-import Photo from './Photo';
-import TileHeader from './TileHeader';
-import PostInfo from './PostInfo';
+import ButtonBar from './buttonBar';
+import Photo from './photo';
+import TileHeader from './tileHeader';
+import PostInfo from './postInfo';
 
 class Tile extends React.Component {
   _isMounted = false;
@@ -42,9 +42,6 @@ class Tile extends React.Component {
   }
 
   render() {
-    console.log('OPENING DAS TILE MIA ALTIERI');
-    console.log(this.props.likedFrom);
-    console.log(this.props.imageUrl);
     return (
       <View style={styles.container}>
         <TileHeader

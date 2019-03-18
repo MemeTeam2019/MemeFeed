@@ -1,27 +1,20 @@
-import * as React from 'react';
-import firebase from 'react-native-firebase';
-
-//import React in our project
+import React from 'react';
 import {
-  Image,
   TouchableOpacity,
   Text,
   View,
-  Modal,
   StyleSheet,
   FlatList,
-  Button
 } from 'react-native';
+import firebase from 'react-native-firebase';
 
-//import all the needed components
-import ButtonBar from './ButtonBar';
-import Comment from './Comment';
-import PhotoGrid from 'react-native-image-grid';
+import ButtonBar from './buttonBar';
+import Comment from './comment';
 
-class CommentList extends React.Component{
-  constructor(){
+class CommentList extends React.Component {
+  constructor() {
     super();
-    this._isMounted= false;
+    this._isMounted = false;
     this.unsubscribe = null;
     this.state = {
       commentsLoaded: 10,
@@ -30,20 +23,24 @@ class CommentList extends React.Component{
     };
   }
 
-  // function for extracting Firebase responses to the state
+  // Function for extracting Firebase responses to the state
   onCollectionUpdate = (querySnapshot) => {
     const comments = [];
 
     querySnapshot.forEach((doc) => {
       const { text, uid, time } = doc.data();
 
-      var userRef = firebase.firestore().collection('Users').doc(uid);
-      var getDoc = userRef.get()
-        .then(doc => {
+      var userRef = firebase
+        .firestore()
+        .collection('Users')
+        .doc(uid);
+      var getDoc = userRef
+        .get()
+        .then((doc) => {
           if (!doc.exists) {
-            console.log('No such user '+uid+' exist!');
+            console.log('No such user ' + uid + ' exist!');
           } else {
-            const {username} = doc.data();
+            const { username } = doc.data();
             comments.push({
               key: doc.id,
               doc, // DocumentSnapshot
@@ -53,11 +50,9 @@ class CommentList extends React.Component{
             });
 
             // resort comments since nested asynchronous function
-            function compareTime(a,b) {
-              if (a.time < b.time)
-                return -1;
-              if (a.time > b.time)
-                return 1;
+            function compareTime(a, b) {
+              if (a.time < b.time) return -1;
+              if (a.time > b.time) return 1;
               return 0;
             }
 
@@ -67,70 +62,70 @@ class CommentList extends React.Component{
             });
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('Error getting document', err);
         });
     });
-  }
+  };
 
   componentDidMount() {
     this._isMounted = true;
-    if (this._isMounted){
-
+    if (this._isMounted) {
       // Grab total # of comments
-      var countRef = firebase.firestore().collection("Comments/"+this.props.memeId+"/Info").doc('CommentInfo');
-      countRef.get().then(doc => {
-        if (doc.exists) {
-          const {count} = doc.data();
-          this.setState({
-            commentCount: count
-          });
+      var countRef = firebase
+        .firestore()
+        .collection('Comments/' + this.props.memeId + '/Info')
+        .doc('CommentInfo');
+      countRef
+        .get()
+        .then((doc) => {
+          if (doc.exists) {
+            const { count } = doc.data();
+            this.setState({
+              commentCount: count,
+            });
 
-          this.unsubscribe = firebase.firestore()
-            .collection("Comments/"+this.props.memeId+"/Text")
-            .orderBy('time', 'desc') // we choose decsending to get most recent
-            .limit(Math.min(this.state.commentCount, this.state.commentsLoaded)) // limiting the comments we load
-            .onSnapshot(this.onCollectionUpdate);
-        }
-      })
-      .catch(err => {
-        console.log('Error getting document', err);
-      });
-
-
-
+            this.unsubscribe = firebase
+              .firestore()
+              .collection('Comments/' + this.props.memeId + '/Text')
+              .orderBy('time', 'desc') // we choose decsending to get most recent
+              .limit(
+                Math.min(this.state.commentCount, this.state.commentsLoaded)
+              ) // limiting the comments we load
+              .onSnapshot(this.onCollectionUpdate);
+          }
+        })
+        .catch((err) => {
+          console.log('Error getting document', err);
+        });
     }
   }
 
-  //Single comment
-  renderComment({item}) {
+  // Single comment
+  renderComment({ item }) {
     return (
-      <Comment
-        username={item.username}
-        content={item.content}
-        uid={item.key}
-      />
+      <Comment username={item.username} content={item.content} uid={item.key} />
     );
   }
 
-
-
-  render(){
+  render() {
     // if there are more comments to load
-    if (this.state.commentsLoaded < this.state.commentCount){
-      return(
+    if (this.state.commentsLoaded < this.state.commentCount) {
+      return (
         <View style={[styles.containerStyle]}>
-          <ButtonBar memeId={this.props.memeId}/>
-          <TouchableOpacity  onPress={() => {
-                                newLoadCount = this.state.commentsLoaded + 10;
-                                this.setState({
-                                  commentsLoaded: newLoadCount,
-                                  comments: [],
-                                });
-                                this.componentDidMount();
-                            }}
-                            style={{justifyContent: 'center', alignItems: 'center'}}>
-                <Text style={styles.buttonSty}>Load more comments</Text>
+          <ButtonBar memeId={this.props.memeId} />
+          <TouchableOpacity
+            onPress={() => {
+              newLoadCount = this.state.commentsLoaded + 10;
+              this.setState({
+                commentsLoaded: newLoadCount,
+                comments: [],
+              });
+              this.componentDidMount();
+            }}
+            style={{ justifyContent: 'center', alignItems: 'center' }}
+          >
+            <Text style={styles.buttonSty}>Load more comments</Text>
           </TouchableOpacity>
           <FlatList
             data={this.state.comments}
@@ -138,10 +133,11 @@ class CommentList extends React.Component{
           />
         </View>
       );
-    } else { // no more comments to load
-      return(
+    } else {
+      // no more comments to load
+      return (
         <View style={[styles.containerStyle]}>
-          <ButtonBar memeId={this.props.memeId}/>
+          <ButtonBar memeId={this.props.memeId} />
           <FlatList
             data={this.state.comments}
             renderItem={this.renderComment.bind(this)}
@@ -168,11 +164,10 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Bold',
     textAlign: 'center',
   },
-  loadMore:{
+  loadMore: {
     height: 40,
     width: 205,
     justifyContent: 'center',
-    alignItems: 'center'
-  }
-
-})
+    alignItems: 'center',
+  },
+});

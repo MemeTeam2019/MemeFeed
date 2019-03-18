@@ -1,20 +1,12 @@
-import * as React from 'react';
-import firebase from 'react-native-firebase';
-
-//import React in our project
+import React from 'react';
 import {
-  Image,
-  TouchableOpacity,
-  Text,
   View,
-  Modal,
   StyleSheet,
   FlatList
 } from 'react-native';
+import firebase from 'react-native-firebase';
 
-//import all the needed components
-import Comment from './Comment';
-import PhotoGrid from 'react-native-image-grid';
+import Comment from './comment';
 
 class CommentSample extends React.Component{
   constructor(){

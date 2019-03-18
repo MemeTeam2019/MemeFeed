@@ -1,10 +1,9 @@
 import {createStackNavigator} from "react-navigation";
 
-import LoginScreen from '../screens/login';
-import SignupScreen from '../screens/signup';
-import ConfirmScreen from '../screens/confirm';
-import AboutScreen from '../screens/about';
-// import HomeFeed from '../screens/homefeed'
+import LoginScreen from '../screens/loginPage';
+import SignupScreen from '../screens/signupPage';
+import ConfirmScreen from '../screens/confirmPage';
+import AboutScreen from '../screens/aboutPage';
 
 export default createStackNavigator(
   {

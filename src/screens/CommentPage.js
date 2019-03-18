@@ -1,49 +1,48 @@
 import React from 'react';
-import { Dimensions, StyleSheet, View, TouchableOpacity, Image, Text, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, View, ScrollView } from 'react-native';
 
-import AddComment from '../components/image/AddComment';
-import ButtonBar from '../components/image/ButtonBar';
-import CommentHeader from '../components/image/CommentHeader';
-import CommentList from '../components/image/CommentList';
-import TileHeader from '../components/image/TileHeader';
-import Photo from '../components/image/Photo';
+import AddComment from '../components/image/addComment';
+import CommentList from '../components/image/commentList';
+import TileHeader from '../components/image/tileHeader';
+import Photo from '../components/image/photo';
 
-
+/**
+ * Display comments for a meme, along with the buttonBar and the meme itself.
+ * 
+ * Props
+ * -----
+ * navigtion.uri: String
+ * navigation.memeId: String
+ */
 class CommentPage extends React.Component {
-  constructor(props){
-    super(props);
-    this.unsubscribe = null;
-    this.state = {
-      imageuri: this.props.navigation.getParam("uri"),
-      memeId: this.props.navigation.getParam("memeId")
-    };
-  }
-
   static navigationOptions = {
     tabBarVisible: false,
-  }
+  };
 
-  // static navigationOptions = {
-  //   header: null
-  // }
+  constructor(props) {
+    super(props);
+    this.unsubscribe = null;
+    this.scrollView = null;
+    this.state = {
+      imageuri: this.props.navigation.getParam('uri', null),
+      memeId: this.props.navigation.getParam('memeId', null),
+    };
+  }
 
   render() {
     return (
       <View style={styles.container}>
         <ScrollView
-          ref={ref => this.scrollView = ref}
-          onContentSizeChange={(contentWidth, contentHeight)=>{
-            this.scrollView.scrollToEnd({animated: true});
+          ref={ref => (this.scrollView = ref)}
+          onContentSizeChange={(contentWidth, contentHeight) => {
+            this.scrollView.scrollToEnd({ animated: true });
           }}
         >
-
-            <TileHeader/>
-            <Photo imageUrl={this.state.imageuri}/>
-            <CommentList memeId={this.state.memeId}/>
-
+          <TileHeader />
+          <Photo imageUrl={this.state.imageuri} />
+          <CommentList memeId={this.state.memeId} />
         </ScrollView>
-        <AddComment memeId={this.state.memeId}/>
-
+        <AddComment memeId={this.state.memeId} />
       </View>
     );
   }
@@ -57,6 +56,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     position: 'absolute',
-    bottom:0
+    bottom: 0,
   },
 });

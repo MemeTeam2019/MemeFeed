@@ -1,11 +1,8 @@
 import React from 'react';
-import { Button, StyleSheet, View, Image, Text, TouchableOpacity, Modal} from 'react-native';
-import firebase from "react-native-firebase";
+import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import firebase from 'react-native-firebase';
 
-import PostInfo from "../image/PostInfo"
-
-import { withNavigation } from "react-navigation";
-
+import { withNavigation } from 'react-navigation';
 
 class ButtonBar extends React.Component {
   constructor(props) {
@@ -15,17 +12,19 @@ class ButtonBar extends React.Component {
       selectedButton: null,
       userHasReacted: false,
     };
-    this.emojiRank= {0: '../../images/Tile/button0.png',
-      1:'../../images/Tile/button1.png',
-      2:'../../images/Tile/button2.png',
-      3:'../../images/Tile/button3.png',
-      4:'../../images/Tile/button4.png'
+    this.emojiRank = {
+      0: '../../images/Tile/button0.png',
+      1: '../../images/Tile/button1.png',
+      2: '../../images/Tile/button2.png',
+      3: '../../images/Tile/button3.png',
+      4: '../../images/Tile/button4.png',
     };
-    this.UnclickedEmojiRank = {0: '../../images/Tile/button0Fade.png',
-      1:'../../images/Tile/button1Fade.png',
-      2:'../../images/Tile/button2Fade.png',
-      3:'../../images/Tile/button3Fade.png',
-      4:'../../images/Tile/button4Fade.png'
+    this.UnclickedEmojiRank = {
+      0: '../../images/Tile/button0Fade.png',
+      1: '../../images/Tile/button1Fade.png',
+      2: '../../images/Tile/button2Fade.png',
+      3: '../../images/Tile/button3Fade.png',
+      4: '../../images/Tile/button4Fade.png',
     };
   }
 
@@ -38,10 +37,10 @@ class ButtonBar extends React.Component {
       .doc(user.uid)
       .collection('Likes')
       .doc(memeId);
-      
+
     ref
       .get()
-      .then(docSnapshot => {
+      .then((docSnapshot) => {
         if (docSnapshot.exists) {
           let data = docSnapshot.data();
           if (data) {
@@ -50,12 +49,12 @@ class ButtonBar extends React.Component {
           }
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error);
       });
   }
 
-  _onPressButton = async newReact => {
+  _onPressButton = async (newReact) => {
     const oldReact = this.state.selectedButton;
     this.setState({
       selectedButton: newReact === oldReact ? null : newReact,
@@ -77,11 +76,11 @@ class ButtonBar extends React.Component {
       .doc(memeId);
     const date = Math.round(+new Date() / 1000);
 
-    reactRef.get().then(likesSnapshot => {
+    reactRef.get().then((likesSnapshot) => {
       const data = likesSnapshot.data();
       var hasReacted = likesSnapshot.exists && data.rank !== -1;
-      console.log('LIKIND DAS MEME MIA ALTIERI')
-      console.log(this.props.postedBy)
+      console.log('LIKIND DAS MEME MIA ALTIERI');
+      console.log(this.props.postedBy);
       reactRef.set({
         rank: oldReact === newReact ? -1 : newReact,
         time: date,
@@ -90,7 +89,7 @@ class ButtonBar extends React.Component {
       });
       memeRef
         .get()
-        .then(async memeSnapshot => {
+        .then(async (memeSnapshot) => {
           const data = memeSnapshot.data();
           let newReactCount = 0;
           console.log(hasReacted);
@@ -104,21 +103,20 @@ class ButtonBar extends React.Component {
           memeRef.update({ reactCount: newReactCount });
           this.props.updateReacts(newReactCount);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     });
-  }
+  };
 
   handleCommentClick() {
-    this.props.navigation.navigate("Comment", {
+    this.props.navigation.navigate('Comment', {
       memeId: this.props.memeId,
-      uri: this.props.imageUrl
+      uri: this.props.imageUrl,
     });
   }
 
-
-  _renderItem = data => {
+  _renderItem = (data) => {
     <TouchableOpacity
       style={{
         width: 25,
@@ -134,33 +132,35 @@ class ButtonBar extends React.Component {
     </TouchableOpacity>;
   };
 
-  _renderPlaceholder = i => <View style={styles.item} key={i} />;
+  _renderPlaceholder = (i) => <View style={styles.item} key={i} />;
 
   render() {
     return (
       <View style={styles.buttonBar}>
         <TouchableOpacity
-            style={{
-              flex: 1,
-              justifyContent: 'flex-start',
-            }}
-            onPress={() => {
-              this.handleCommentClick();
-            }}>
-            <Image
-              style={styles.button1}
-              source={require('../../images/Tile/chatLogo2.png')}
-            />
+          style={{
+            flex: 1,
+            justifyContent: 'flex-start',
+          }}
+          onPress={() => {
+            this.handleCommentClick();
+          }}
+        >
+          <Image
+            style={styles.button1}
+            source={require('../../images/Tile/chatLogo2.png')}
+          />
         </TouchableOpacity>
         <View style={styles.button}>
-          <TouchableOpacity
-            onPress={this._onPressButton.bind(this,0)}>
+          <TouchableOpacity onPress={this._onPressButton.bind(this, 0)}>
             <Image
               resizeMode="cover"
               style={{ height: 35, width: 35 }}
-              source={ this.state.selectedButton === 0 || this.state.selectedButton === null
-                ? require('../../images/Tile/button0.png')
-                : require('../../images/Tile/button0Fade.png')
+              source={
+                this.state.selectedButton === 0 ||
+                this.state.selectedButton === null
+                  ? require('../../images/Tile/button0.png')
+                  : require('../../images/Tile/button0Fade.png')
               }
             />
           </TouchableOpacity>
@@ -172,56 +172,68 @@ class ButtonBar extends React.Component {
             //   width: 35,
             //   height: 35,
             // }}
-            onPress={this._onPressButton.bind(this,1)}>
+            onPress={this._onPressButton.bind(this, 1)}
+          >
             <Image
               resizeMode="cover"
               style={{ height: 35, width: 35 }}
-              source={ this.state.selectedButton === 1 || this.state.selectedButton === null
+              source={
+                this.state.selectedButton === 1 ||
+                this.state.selectedButton === null
                   ? require('../../images/Tile/button1.png')
-                  : require('../../images/Tile/button1Fade.png')}
+                  : require('../../images/Tile/button1Fade.png')
+              }
             />
           </TouchableOpacity>
         </View>
 
         <View style={styles.button}>
-          <TouchableOpacity
-            onPress={this._onPressButton.bind(this,2)}>
+          <TouchableOpacity onPress={this._onPressButton.bind(this, 2)}>
             <Image
               resizeMode="cover"
               style={{ height: 35, width: 35 }}
-              source={ this.state.selectedButton === 2 || this.state.selectedButton === null
+              source={
+                this.state.selectedButton === 2 ||
+                this.state.selectedButton === null
                   ? require('../../images/Tile/button2.png')
-                  : require('../../images/Tile/button2Fade.png')}
+                  : require('../../images/Tile/button2Fade.png')
+              }
             />
           </TouchableOpacity>
         </View>
 
         <View style={styles.button}>
-          <TouchableOpacity
-            onPress={this._onPressButton.bind(this,3)}>
+          <TouchableOpacity onPress={this._onPressButton.bind(this, 3)}>
             <Image
               resizeMode="cover"
               style={{ height: 35, width: 35 }}
-              source={ this.state.selectedButton === 3 || this.state.selectedButton === null
+              source={
+                this.state.selectedButton === 3 ||
+                this.state.selectedButton === null
                   ? require('../../images/Tile/button3.png')
-                  : require('../../images/Tile/button3Fade.png')}
+                  : require('../../images/Tile/button3Fade.png')
+              }
             />
           </TouchableOpacity>
         </View>
-        <View style={styles.button} >
-        <TouchableOpacity
+        <View style={styles.button}>
+          <TouchableOpacity
             style={{
               width: 35,
               height: 35,
             }}
             // this.resPress.bind(this,yourData)
-            onPress={this._onPressButton.bind(this,4)}>
+            onPress={this._onPressButton.bind(this, 4)}
+          >
             <Image
               resizeMode="cover"
               style={{ height: 34, width: 34 }}
-              source={ this.state.selectedButton === 4 || this.state.selectedButton === null
-                    ? require('../../images/Tile/button4.png')
-                    : require('../../images/Tile/button4Fade.png')}
+              source={
+                this.state.selectedButton === 4 ||
+                this.state.selectedButton === null
+                  ? require('../../images/Tile/button4.png')
+                  : require('../../images/Tile/button4Fade.png')
+              }
             />
           </TouchableOpacity>
         </View>
@@ -230,8 +242,6 @@ class ButtonBar extends React.Component {
   }
 }
 
-
-
 export default withNavigation(ButtonBar);
 
 const styles = StyleSheet.create({
@@ -239,7 +249,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '85%',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   button: {
     width: 50,
@@ -253,6 +263,6 @@ const styles = StyleSheet.create({
     marginLeft: '20%',
     marginTop: '3%',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
 });

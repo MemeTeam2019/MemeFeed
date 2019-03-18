@@ -23,7 +23,7 @@
     -   Don't use wildcard imports
 -   Curly braces preceded with a space when denoting a scope
     -   `const myFunc = function foo() { doStuff(); }`
-
+-   Install and use `prettier` with the `.prettierrc`
 
 
 ### Comments
@@ -75,7 +75,11 @@ const longBoi = 'Lorem ipsum some other latin words haha i don\'t remember \
 /**
  * A very nice component to render some text. This is an example block comment
  *
- * Props - uid: String, username: String, itemsToRender: Array[String]
+ * Props
+ * -----
+ * uid: String
+ * username: String
+ * items: Array[Objects]
  */
 class SomeComponent extends React.Component {
   constructor(props) {
@@ -93,7 +97,7 @@ class SomeComponent extends React.Component {
     };
   }
   
-  // ** Always precede a curly brace with a space!! **
+  // Always precede a curly brace with a space!!
   render() {
     return (
       <Text>Some text</Text>

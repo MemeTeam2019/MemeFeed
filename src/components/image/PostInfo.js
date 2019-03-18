@@ -1,20 +1,17 @@
-import React, { Component } from 'react';
-import {Button, StyleSheet, View, Image, Text, TouchableOpacity, Modal } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import firebase from 'react-native-firebase';
 
+import CommentSample from './commentSample';
+import { withNavigation } from 'react-navigation';
 
-import CommentPage from '../../screens/CommentPage';
-import CommentSample from './CommentSample';
-import { withNavigation } from "react-navigation";
-
-class PostInfo extends React.Component{
-
-  constructor(){
+class PostInfo extends React.Component {
+  constructor() {
     super();
     this.unsubscribe = null;
     this.state = {
       commentCount: 0,
-      commentString: "view all comments plz chng",
+      commentString: 'view all comments plz chng',
       imageuri: '',
       memeId: '',
       ModalVisibleStatus: false,
@@ -24,56 +21,71 @@ class PostInfo extends React.Component{
 
   // function for extracting Firebase responses to the state
   onCollectionUpdate = () => {
-    var countRef = firebase.firestore().collection("Comments/"+this.props.memeId+"/Info").doc('CommentInfo');
-    countRef.get().then(doc => {
+    var countRef = firebase
+      .firestore()
+      .collection('Comments/' + this.props.memeId + '/Info')
+      .doc('CommentInfo');
+    countRef
+      .get()
+      .then(doc => {
         if (doc.exists) {
-          const {count} = doc.data();
+          const { count } = doc.data();
           this.setState({
-            commentString: "View all "+count+" comments",
-            commentCount: count
+            commentString: 'View all ' + count + ' comments',
+            commentCount: count,
           });
-
         }
-
-    })
-    .catch(err => {
-      console.log('Error getting document', err);
-    });
-  }
+      })
+      .catch(err => {
+        console.log('Error getting document', err);
+      });
+  };
 
   componentDidMount() {
-    this.unsubscribe = firebase.firestore().collection("Comments/"+this.props.memeId+"/Info").doc('CommentInfo').onSnapshot(this.onCollectionUpdate); // we choose decsending to get most recent
+    this.unsubscribe = firebase
+      .firestore()
+      .collection('Comments/' + this.props.memeId + '/Info')
+      .doc('CommentInfo')
+      .onSnapshot(this.onCollectionUpdate); // we choose decsending to get most recent
   }
 
-
   handleCommentClick() {
-    this.props.navigation.navigate("Comment", {
+    this.props.navigation.navigate('Comment', {
       memeId: this.props.memeId,
-      uri: this.props.imageUrl
+      uri: this.props.imageUrl,
     });
   }
 
-render() {
-       if (this.state.commentCount > 2) {
-        return(
-         <View style={styles.postInfo}>
-            <Text style={{fontFamily: 'AvenirNext-Regular', paddingTop: 3, marginLeft: '2.5%'}}>{this.props.reactCount} Reactions</Text>
-            <CommentSample memeId={this.props.memeId}/>
+  render() {
+    if (this.state.commentCount > 2) {
+      return (
+        <View style={styles.postInfo}>
+          <Text
+            style={{
+              fontFamily: 'AvenirNext-Regular',
+              paddingTop: 3,
+              marginLeft: '2.5%',
+            }}
+          >
+            {this.props.reactCount} Reactions
+          </Text>
+          <CommentSample memeId={this.props.memeId} />
 
-              <TouchableOpacity
-                 onPress={() => {
-                  this.handleCommentClick();
-                }}
-              >
-              <Text style={styles.commentStringStyle}>{this.state.commentString}</Text>
-              </TouchableOpacity>
-
-          </View>
-        );
-      } else {
-        return(
-          <View style={styles.postInfo}>
-              {/* <TouchableOpacity
+          <TouchableOpacity
+            onPress={() => {
+              this.handleCommentClick();
+            }}
+          >
+            <Text style={styles.commentStringStyle}>
+              {this.state.commentString}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.postInfo}>
+          {/* <TouchableOpacity
               onPress={() => {
                 this.handleCommentClick();
               }}>
@@ -82,23 +94,26 @@ render() {
                 source={require('../../images/Tile/chatLogo2.png')}
               />
             </TouchableOpacity> */}
-            <Text style={{fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%'}}>{this.props.reactCount} Reactions</Text>
-            <CommentSample memeId={this.props.memeId}/>
-           </View>
-        );
-      }
+          <Text
+            style={{ fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%' }}
+          >
+            {this.props.reactCount} Reactions
+          </Text>
+          <CommentSample memeId={this.props.memeId} />
+        </View>
+      );
     }
+  }
 }
-
 
 export default withNavigation(PostInfo);
 
 const styles = StyleSheet.create({
   container: {
-      fontSize: 16,
-      fontFamily: 'AvenirNext-Regular',
-      width: '100%',
-      height: 100,
+    fontSize: 16,
+    fontFamily: 'AvenirNext-Regular',
+    width: '100%',
+    height: 100,
   },
   modelStyle: {
     flex: 1,
@@ -118,13 +133,12 @@ const styles = StyleSheet.create({
     width: 30,
     marginLeft: 15,
     position: 'absolute',
-    bottom: 8
+    bottom: 8,
   },
   commentStringStyle: {
     fontFamily: 'AvenirNext-Bold',
     paddingTop: 10,
-    marginLeft: '2.5%'
+    marginLeft: '2.5%',
     //color: '#383838'
-  }
-
-  });
+  },
+});

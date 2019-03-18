@@ -1,21 +1,19 @@
-import * as React from 'react';
-import firebase from 'react-native-firebase';
-import Tile from '../image/Tile';
+import React from 'react';
+import { StyleSheet, FlatList } from 'react-native';
 
-//import React in our project
-import {
-  Image,
-  TouchableOpacity,
-  Text,
-  View,
-  Modal,
-  StyleSheet,
-  FlatList,
-} from 'react-native';
+import Tile from '../image/tile';
 
+/**
+ * Render a list of memes using the Tile component
+ *
+ * Props
+ * -----
+ * memes: Array[Object]
+ * loadMemes: function
+ */
 class MemeList extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       memesLoaded: 30,
       imageuri: '',
@@ -24,42 +22,35 @@ class MemeList extends React.Component {
     };
   }
 
-  renderTile({ item }) {
-    //for list view
-    if (item) {
-      return (
-        <Tile
-          memeId={item.key}
-          imageUrl={item.src}
-          sub={item.sub}
-          likedFrom={item.likedFrom}
-          postedBy={item.postedBy}
-          poster={item.poster}
-        />
-      );
-    }
-  }
+  renderTile = ({ item }) => {
+    if (!item || !item.src) return;
+    return (
+      <Tile
+        memeId={item.key}
+        imageUrl={item.src}
+        sub={item.sub}
+        likedFrom={item.likedFrom}
+        postedBy={item.postedBy}
+        poster={item.poster}
+      />
+    );
+  };
 
   render() {
-    // List View
     return (
       <FlatList
         style={styles.containerStyle}
         data={this.props.memes}
         renderItem={this.renderTile.bind(this)}
         onEndReached={() => {
-          {
-            /* ensuring there are actually memes to load */
-          }
+          // Ensuring there are actually memes to load
           if (this.props.memes.length == this.state.memesLoaded) {
             newLoadCount = this.state.memesLoaded + 60;
             this.setState({
               memesLoaded: newLoadCount,
             });
 
-            {
-              /* call parent function */
-            }
+            // Call parent function
             this.props.loadMemes(newLoadCount);
           }
         }}

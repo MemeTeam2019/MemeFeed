@@ -1,15 +1,13 @@
 import React from 'react';
-import { Dimensions, StyleSheet, View, TouchableOpacity, Image, Text } from 'react-native';
-
+import { StyleSheet, View, Image } from 'react-native';
 
 class EmptyFriendFeed extends React.Component {
-
   render() {
     return (
       <View style={styles.container}>
         <Image
           source={require('./emptyFriendTile.png')}
-          style={{width: '20%', height: '20%'}}
+          style={{ width: '20%', height: '20%' }}
         />
       </View>
     );
