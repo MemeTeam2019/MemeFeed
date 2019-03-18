@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   TouchableHighlight,
+  ScrollView
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import ActionSheet from 'react-native-actionsheet';
@@ -355,6 +356,7 @@ export default class ProfileScreen extends React.Component {
               memes={this.state.memes}
             />
           )}
+
         </React.Fragment>
       );
     }
