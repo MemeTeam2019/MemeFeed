@@ -4,5 +4,5 @@
 
 Product Owner: Mia
 
-Developers: Jon, Siddhi, Emma, Zac
+Developers: Jon, Siddhi, Emma, Zac, Mia
 
