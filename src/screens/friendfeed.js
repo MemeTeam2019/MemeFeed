@@ -196,6 +196,17 @@ class FriendFeed extends React.Component {
           </View>
         </Modal>
       );
+    }else if(this.state.memes.length == 0){
+        return(
+          <View style={styles.containerStyle}>
+            <View style={styles.navBar}>
+              <Image source={require('../images/banner3.png')} style={{ width: 250, height: 50}} />
+            </View>
+            <View style={styles.containerStyle2}>
+              <Image source={require('../components/misc/emptyFriendTile.png')} style={styles.tile} />
+            </View>
+          </View>
+        )
     } else {
       return (
         <View style={styles.containerStyle}>
@@ -284,4 +295,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  tile: {
+  width: 300,
+  height: 300,
+  justifyContent: 'center',
+  paddingHorizontal: 20,
+  paddingTop: 10,
+  alignItems: 'center'
+},
+containerStyle2: {
+  flex: 2,
+  backgroundColor: "#ffffff",
+  alignItems: 'center',
+  paddingLeft: 5,
+  paddingRight: 5,
+}
+
 });
