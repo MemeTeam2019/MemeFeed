@@ -1,68 +1,41 @@
 import React from 'react';
+import { Image, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { withNavigation } from 'react-navigation';
-
-//import React in our project
-import {
-  Image,
-  TouchableOpacity,
-  View,
-  StyleSheet,
-} from 'react-native';
-
 import Grid from 'react-native-grid-component';
 
 /**
  * Displays memes in a Grid format. When a meme is pressed, it will navigate
  * to a Tile where the user can interact with it.
- * 
+ *
  * Recieves an array of Meme Objects, obtained from firebase. Refer to Memes
  * collection in Firebase for fields.
- * 
+ *
  * Props - memes: Array[Object]
  */
 class MemeGrid extends React.Component {
+  static navigationOptions = {
+    header: null,
+  };
+
   constructor() {
     super();
     this._isMounted = false;
     this.state = {
       memesLoaded: 30,
-      imageuri: '',
-      ModalVisibleStatus: false,
-      isLoading: true,
-      items: [],
     };
   }
 
-  ShowModalFunction(visible, imageURL) {
-    //handler to handle the click on image of Grid
-    //and close button on modal
-    this.setState({
-      ModalVisibleStatus: visible,
-      imageuri: imageURL,
-    });
-  }
-
-  static navigationOptions = {
-    header: null,
-  };
-
-  componentDidMount(memesLoaded) {
+  componentDidMount() {
+    const { loadMemes } = this.props;
     this._isMounted = true;
     if (this._isMounted) {
-      this.props.loadMemes(9);
+      loadMemes(9);
     }
-  }
-
-  navigateToTilePage(data) {
-    console.log('yoooooooo');
-    this.props.navigation.push('Tile', {
-      memes: [data],
-    });
   }
 
   _renderItem = (data, i) => {
     if (!data || !data.src) {
-      return this._renderPlaceholder(i)
+      return this._renderPlaceholder(i);
     }
     return (
       <View style={[styles.item]} key={i}>
@@ -71,7 +44,9 @@ class MemeGrid extends React.Component {
             flex: 1,
           }}
           onPress={() => {
-            this.navigateToTilePage(data);
+            this.props.navigation.push('Tile', {
+              memes: [data],
+            });
           }}
         >
           <Image
@@ -85,20 +60,29 @@ class MemeGrid extends React.Component {
     );
   };
 
-  _renderPlaceholder = i => <View style={styles.item} key={i} />;
+  _renderPlaceholder = (i) => <View style={styles.item} key={i} />;
+
+  navigateToTilePage(data) {
+    const { navigation } = this.props;
+    navigation.push('Tile', {
+      memes: [data],
+    });
+  }
 
   render() {
+    const { memes } = this.props;
+    const { memesLoaded } = this.state;
     return (
       <Grid
         style={styles.list}
         renderItem={this._renderItem}
         renderPlaceholder={this._renderPlaceholder}
-        data={this.props.memes}
+        data={memes}
         itemsPerRow={3}
         onEndReached={() => {
           // Ensuring there are actually memes to load
-          if (this.props.memes.length == this.state.memesLoaded) {
-            newLoadCount = this.state.memesLoaded + 60;
+          if (memes.length === memesLoaded) {
+            const newLoadCount = memesLoaded + 60;
             this.setState({
               memesLoaded: newLoadCount,
             });

@@ -11,7 +11,7 @@ import Profile from '../screens/profilePage';
 import HomeFeed from '../screens/homeFeed';
 import FriendProfile from '../screens/friendProfileScreen';
 import CommentPage from '../screens/commentPage';
-import { FollowList } from '../components/home/searchResult';
+import FollowList from '../components/home/searchResultList';
 
 export const ExploreStack = createStackNavigator(
   {
@@ -88,7 +88,7 @@ const MainRouter = createBottomTabNavigator({
     navigationOptions: {
       showLabel: false,
       tabBarIcon: ({ tintColor }) => (
-        <Icon name="home" size={35} color={tintColor} />
+        <Icon name='home' size={35} color={tintColor} />
       ),
     },
   },
@@ -97,7 +97,7 @@ const MainRouter = createBottomTabNavigator({
     navigationOptions: {
       showLabel: false,
       tabBarIcon: ({ tintColor }) => (
-        <Icon name="search" size={35} color={tintColor} />
+        <Icon name='search' size={35} color={tintColor} />
       ),
     },
   },
@@ -106,7 +106,7 @@ const MainRouter = createBottomTabNavigator({
     navigationOptions: {
       showLabel: false,
       tabBarIcon: ({ tintColor }) => (
-        <Icon name="face" size={35} color={tintColor} />
+        <Icon name='face' size={35} color={tintColor} />
       ),
     },
   },
