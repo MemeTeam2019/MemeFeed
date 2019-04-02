@@ -13,7 +13,7 @@ import FriendProfile from '../screens/friendProfileScreen';
 import CommentPage from '../screens/commentPage';
 import FollowList from '../components/home/searchResultList';
 
-export const ExploreStack = createStackNavigator(
+const ExploreStack = createStackNavigator(
   {
     Explore: {
       screen: ExploreFeed,
@@ -36,7 +36,7 @@ export const ExploreStack = createStackNavigator(
   }
 );
 
-export const HomeStack = createStackNavigator(
+const HomeStack = createStackNavigator(
   {
     Friend: {
       screen: HomeFeed,
@@ -59,7 +59,7 @@ export const HomeStack = createStackNavigator(
   }
 );
 
-export const ProfileStack = createStackNavigator(
+const ProfileStack = createStackNavigator(
   {
     Profile: {
       screen: Profile,

@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  StatusBar,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import ActionSheet from 'react-native-actionsheet';
@@ -16,12 +17,8 @@ import MemeList from '../components/general/memeList';
 /**
  * View your own profile: followingLst, followersLst, Memes you have reacted 2+
  * to.
- *
- * Props
- * -----
- * None
  */
-export default class Profile extends React.Component {
+class Profile extends React.Component {
   static navigationOptions = {
     header: null,
   };
@@ -146,7 +143,7 @@ export default class Profile extends React.Component {
             <Text style={styles.textSty4}>{this.state.username}</Text>
             <View style={styles.rightContainer1}>
               <View style={styles.rightIcon1} />
-              <TouchableOpacity onPress={this.showActionSheet}>
+              <TouchableOpacity onPress={() => this.actionSheet.show()}>
                 <Image
                   source={require('../images/setting.png')}
                   style={{ width: 60, height: 30 }}
@@ -205,7 +202,12 @@ export default class Profile extends React.Component {
     }
     // Photo List/Full View of images
     return (
-      <View>
+      <ScrollView>
+        <StatusBar
+          backgroundColor='white'
+          barStyle='dark-content'
+          transulcent={false}
+        />
         <View style={styles.containerStyle}>
           <View style={styles.navBar1}>
             <View style={styles.leftContainer1}>
@@ -214,7 +216,7 @@ export default class Profile extends React.Component {
             <Text style={styles.textSty4}>{this.state.username}</Text>
             <View style={styles.rightContainer1}>
               <View style={styles.rightIcon1} />
-              <TouchableOpacity onPress={this.showActionSheet}>
+              <TouchableOpacity onPress={() => this.actionSheet.show()}>
                 <Image
                   source={require('../images/setting.png')}
                   style={{ width: 60, height: 30 }}
@@ -322,10 +324,12 @@ export default class Profile extends React.Component {
             />
           )}
         </ScrollView>
-      </View>
+      </ScrollView>
     );
   }
 }
+
+export default Profile;
 
 const styles = StyleSheet.create({
   containerStyle: {
