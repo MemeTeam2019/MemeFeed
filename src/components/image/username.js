@@ -11,7 +11,6 @@ import { withNavigation } from 'react-navigation';
  *     likedFromReddit.js
  *     likedFromUser.js
  *     sourceReddit.js
- *
  * Props:
  *     uid (String): Firebase id of the user in question.
  */
