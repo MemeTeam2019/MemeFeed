@@ -4,7 +4,7 @@ import { withNavigation } from 'react-navigation';
 import Username from '../username';
 
 import firebase from 'react-native-firebase';
- 
+
 class LikedFromReddit extends React.Component {
   constructor(props) {
     super(props);
@@ -35,17 +35,12 @@ class LikedFromReddit extends React.Component {
     return (
       <View style={styles.containerA}>
         <View style={styles.container}>
-          <Image 
-            style={styles.userImg}
-            source={{uri:'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg'}}
-          />
           <Username uid={this.props.poster} navigation={this.props.navigation} />
-        </View>
-        <View style={styles.container}>
-          <View style={styles.container}>
-            <Text style={{fontSize: 15}}>liked from from</Text>
-            <Text style={{fontSize: 15, fontWeight: 'bold', fontStyle: 'italic'}}> 'r/{this.props.sub}'</Text>
-          </View>
+          <Image
+            style={styles.likedFromImg}
+            source={require('../fromReddit.png')}
+          />
+          <Text style={{fontSize: 13, fontWeight: 'bold', fontStyle: 'italic', color: '#919191'}}> 'r/{this.props.sub}'</Text>
         </View>
       </View>
     );
@@ -53,7 +48,7 @@ class LikedFromReddit extends React.Component {
 }
 
 export default withNavigation(LikedFromReddit);
- 
+
 const styles = StyleSheet.create({
    container: {
     flexDirection: 'row',
@@ -68,11 +63,11 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#fff',
     width: '100%',
-    height: 100,
+    height: 50,
     alignItems: 'center',
     marginTop: 30
   },
-  text: {  
+  text: {
     fontSize: 16,
     fontFamily: 'AvenirNext-Bold',
     marginLeft: 10

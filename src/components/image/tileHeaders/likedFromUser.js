@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import {Text, StyleSheet, View, Image, TouchableOpacity} from 'react-native';
 import { withNavigation } from 'react-navigation';
 import Username from '../username';
+import Username2 from '../username2';
 
 import firebase from 'react-native-firebase';
- 
+
 class LikedFromUser extends React.Component {
   constructor(props) {
     super(props);
@@ -34,19 +35,12 @@ class LikedFromUser extends React.Component {
     return (
       <View style={styles.containerA}>
         <View style={styles.container}>
-          <Image 
-            style={styles.userImg}
-            source={{uri:'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg'}}
-          />
           <Username uid={this.props.poster} navigation={this.props.navigation} />
-        </View>
-        <View style={styles.container}>
-          <Text style={{fontSize: 15}}>liked from   </Text>
-          <Image 
+          <Image
             style={styles.likedFromImg}
-            source={{uri:'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg'}}
+            source={require('../likedFromSymbol.png')}
           />
-          <Username uid={this.props.likedFrom} navigation={this.props.navigation} />
+          <Username2 uid={this.props.likedFrom} navigation={this.props.navigation}/>
         </View>
       </View>
     );
@@ -54,13 +48,13 @@ class LikedFromUser extends React.Component {
 }
 
 export default withNavigation(LikedFromUser);
- 
+
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     backgroundColor: '#fff',
     width: '100%',
-    height: 40,
+    height: 20,
     paddingHorizontal: 10,
     alignItems: 'center',
     marginTop: 5
@@ -69,11 +63,11 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#fff',
     width: '100%',
-    height: 100,
+    height: 50,
     alignItems: 'center',
     marginTop: 30
   },
-  text: {  
+  text: {
     fontSize: 16,
     fontFamily: 'AvenirNext-Bold',
     marginLeft: 10
@@ -86,6 +80,7 @@ const styles = StyleSheet.create({
   likedFromImg: {
     width: 30,
     height: 30,
-    borderRadius: 15
+    borderRadius: 15,
+    opacity: 10
   }
 });

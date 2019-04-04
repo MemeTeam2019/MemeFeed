@@ -13,17 +13,18 @@ export default class LoginScreen extends React.Component {
         style={styles.background}
       >
         <View style={styles.container}>
-          <Text style={styles.title}> Welcome to MemeFeed! </Text>
+          <Text style={styles.title}>New Update Coming Soon!</Text>
         </View>
         <View style={styles.aboutText}>
           <Text style={styles.aboutText}>
-            Information Here...
-          </Text>
+          Meme feed is currently in Beta, so be sure to update the application
+          to get features such as Meme upload, curated feeds, and DMing.
 
+          </Text>
           <Button
-            title="Next"
+            title="Let's Get Started"
             color="#fff"
-            onPress={() => this.props.navigation.push('About2')}
+            onPress={() => this.props.navigation.push('Confirm')}
           />
         </View>
       </ImageBackground>
