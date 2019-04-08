@@ -7,11 +7,11 @@ import { withNavigation } from 'react-navigation';
 /**
  * Handles user reacts for a specific meme, sets the state of tile.js and
  * updates the appropriate firebase documents.
- * 
+ *
  * Used by:
  *    tile.js
  *    commentList.js
- * 
+ *
  * Props:
  *    memeId (String): The id of the Firebase document in the Memes collection
  *    imageUrl (String): The image URL of the meme
@@ -263,6 +263,8 @@ const styles = StyleSheet.create({
     width: '85%',
     justifyContent: 'center',
     alignItems: 'center',
+    borderColor: '#D6D6D6',
+    borderTopWidth: .5,
   },
   button: {
     width: 50,

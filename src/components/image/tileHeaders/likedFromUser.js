@@ -38,7 +38,7 @@ class LikedFromUser extends React.Component {
           <Username uid={this.props.poster} navigation={this.props.navigation} />
           <Image
             style={styles.likedFromImg}
-            source={require('../likedFromSymbol.png')}
+            source={require('../repostIcon.png')}
           />
           <Username2 uid={this.props.likedFrom} navigation={this.props.navigation}/>
         </View>
@@ -54,10 +54,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#fff',
     width: '100%',
-    height: 20,
+    height: 30,
     paddingHorizontal: 10,
     alignItems: 'center',
-    marginTop: 5
+    marginTop: 5,
   },
   containerA: {
     flexDirection: 'column',
@@ -65,7 +65,11 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 50,
     alignItems: 'center',
-    marginTop: 30
+    marginTop: 30,
+    borderBottomWidth: .5,
+    borderColor: '#D6D6D6',
+    //borderTopWidth: .5,
+    paddingTop: 7
   },
   text: {
     fontSize: 16,
@@ -73,14 +77,11 @@ const styles = StyleSheet.create({
     marginLeft: 10
   },
   userImg: {
-    width: 40,
-    height: 40,
-    borderRadius: 20
+    width: 30,
+    height: 25,
   },
   likedFromImg: {
     width: 30,
-    height: 30,
-    borderRadius: 15,
-    opacity: 10
+    height: 25,
   }
 });
