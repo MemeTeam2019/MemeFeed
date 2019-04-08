@@ -152,22 +152,25 @@ class ButtonBar extends React.Component {
   render() {
     return (
       <View style={styles.buttonBar}>
-        <TouchableOpacity
-          style={{
-            flex: 1,
-            justifyContent: 'flex-start',
-          }}
-          onPress={() => {
-            this.handleCommentClick();
-          }}
-        >
-          <Image
-            style={styles.button1}
-            source={require('../../images/Tile/chatLogo2.png')}
-          />
-        </TouchableOpacity>
         <View style={styles.button}>
-          <TouchableOpacity onPress={this._onPressButton.bind(this, 0)}>
+          <TouchableOpacity
+            // style={{
+            //   flex: 1,
+            //   justifyContent: 'flex-start',
+            // }}
+            onPress={() => {
+              this.handleCommentClick();
+            }}
+          >
+            <Image
+              style={{width: 30, height: 32, marginLeft: '40%', marginTop: '8%', marginRight: 10}}
+              source={require('../../images/Tile/chatLogo2.png')}
+            />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.button}>
+          <TouchableOpacity 
+            onPress={this._onPressButton.bind(this, 0)}>
             <Image
               resizeMode="cover"
               style={{ height: 35, width: 35 }}
@@ -183,12 +186,7 @@ class ButtonBar extends React.Component {
 
         <View style={styles.button}>
           <TouchableOpacity
-            // style={{
-            //   width: 35,
-            //   height: 35,
-            // }}
-            onPress={this._onPressButton.bind(this, 1)}
-          >
+            onPress={this._onPressButton.bind(this, 1)}>
             <Image
               resizeMode="cover"
               style={{ height: 35, width: 35 }}
@@ -203,7 +201,8 @@ class ButtonBar extends React.Component {
         </View>
 
         <View style={styles.button}>
-          <TouchableOpacity onPress={this._onPressButton.bind(this, 2)}>
+          <TouchableOpacity 
+            onPress={this._onPressButton.bind(this, 2)}>
             <Image
               resizeMode="cover"
               style={{ height: 35, width: 35 }}
@@ -218,7 +217,8 @@ class ButtonBar extends React.Component {
         </View>
 
         <View style={styles.button}>
-          <TouchableOpacity onPress={this._onPressButton.bind(this, 3)}>
+          <TouchableOpacity 
+            onPress={this._onPressButton.bind(this, 3)}>
             <Image
               resizeMode="cover"
               style={{ height: 35, width: 35 }}
@@ -233,16 +233,10 @@ class ButtonBar extends React.Component {
         </View>
         <View style={styles.button}>
           <TouchableOpacity
-            style={{
-              width: 35,
-              height: 35,
-            }}
-            // this.resPress.bind(this,yourData)
-            onPress={this._onPressButton.bind(this, 4)}
-          >
+            onPress={this._onPressButton.bind(this, 4)}>
             <Image
               resizeMode="cover"
-              style={{ height: 34, width: 34 }}
+              style={{ height: 34, width: 34}}
               source={
                 this.state.selectedButton === 4 ||
                 this.state.selectedButton === null
@@ -260,21 +254,14 @@ class ButtonBar extends React.Component {
 const styles = StyleSheet.create({
   buttonBar: {
     flexDirection: 'row',
-    width: '85%',
+    width: '90%',
     justifyContent: 'center',
     alignItems: 'center',
+
   },
   button: {
     width: 50,
     height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  button1: {
-    width: 30,
-    height: 32,
-    marginLeft: '20%',
-    marginTop: '3%',
     alignItems: 'center',
     justifyContent: 'center',
   },
