@@ -6,7 +6,6 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  StatusBar,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import ActionSheet from 'react-native-actionsheet';
@@ -17,8 +16,12 @@ import MemeList from '../components/general/memeList';
 /**
  * View your own profile: followingLst, followersLst, Memes you have reacted 2+
  * to.
+ *
+ * Props
+ * -----
+ * None
  */
-class Profile extends React.Component {
+export default class Profile extends React.Component {
   static navigationOptions = {
     header: null,
   };
@@ -44,7 +47,7 @@ class Profile extends React.Component {
 
   componentDidMount(memesLoaded) {
     this._isMounted = true;
-    this.ref = firebase
+    const ref = firebase
       .firestore()
       .collection('Reacts')
       .doc(firebase.auth().currentUser.uid)
@@ -57,7 +60,7 @@ class Profile extends React.Component {
         .collection('Users')
         .doc(uid)
         .onSnapshot((snapshot) => this.setState(snapshot.data()));
-      this.unsubscribe = this.ref
+      this.unsubscribe = ref
         .limit(memesLoaded)
         .onSnapshot(this.onCollectionUpdate);
     }
@@ -87,20 +90,22 @@ class Profile extends React.Component {
           poster: firebase.auth().currentUser.uid,
         });
 
-      this.setState({ memes });
+      this.setState({
+        memes,
+      });
     });
   };
 
   getUserInfo = () => {
     const firestore = firebase.firestore();
-    const { currentUser } = firebase.auth();
+    const uid = firebase.auth().currentUser.uid;
     firestore
       .collection('Users')
-      .doc(currentUser.uid)
+      .doc(uid)
       .get()
       .then((snapshot) => {
         const data = snapshot.data();
-        this.setState(Object.assign(data, { uid: currentUser.uid }));
+        this.setState(Object.assign(data, { uid }));
       });
   };
 
@@ -143,7 +148,7 @@ class Profile extends React.Component {
             <Text style={styles.textSty4}>{this.state.username}</Text>
             <View style={styles.rightContainer1}>
               <View style={styles.rightIcon1} />
-              <TouchableOpacity onPress={() => this.actionSheet.show()}>
+              <TouchableOpacity onPress={this.showActionSheet}>
                 <Image
                   source={require('../images/setting.png')}
                   style={{ width: 60, height: 30 }}
@@ -200,14 +205,10 @@ class Profile extends React.Component {
         </View>
       );
     }
+
     // Photo List/Full View of images
     return (
-      <ScrollView>
-        <StatusBar
-          backgroundColor='white'
-          barStyle='dark-content'
-          transulcent={false}
-        />
+      <React.Fragment>
         <View style={styles.containerStyle}>
           <View style={styles.navBar1}>
             <View style={styles.leftContainer1}>
@@ -216,7 +217,7 @@ class Profile extends React.Component {
             <Text style={styles.textSty4}>{this.state.username}</Text>
             <View style={styles.rightContainer1}>
               <View style={styles.rightIcon1} />
-              <TouchableOpacity onPress={() => this.actionSheet.show()}>
+              <TouchableOpacity onPress={this.showActionSheet}>
                 <Image
                   source={require('../images/setting.png')}
                   style={{ width: 60, height: 30 }}
@@ -224,7 +225,7 @@ class Profile extends React.Component {
               </TouchableOpacity>
               <ActionSheet
                 ref={(o) => {
-                  this.actionSheet = o;
+                  this.ActionSheet = o;
                 }}
                 title='User Settings'
                 options={optionArray}
@@ -314,22 +315,20 @@ class Profile extends React.Component {
 
           {this.state.selectListButtonP ? (
             <MemeList
-              loadMemes={() => this.componentDidMount()}
+              loadMemes={this.componentDidMount}
               memes={this.state.memes}
             />
           ) : (
             <MemeGrid
-              loadMemes={() => this.componentDidMount()}
+              loadMemes={this.componentDidMount}
               memes={this.state.memes}
             />
           )}
         </ScrollView>
-      </ScrollView>
+      </React.Fragment>
     );
   }
 }
-
-export default Profile;
 
 const styles = StyleSheet.create({
   containerStyle: {

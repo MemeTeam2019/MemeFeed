@@ -26,10 +26,9 @@ class MemeGrid extends React.Component {
   }
 
   componentDidMount() {
-    const { loadMemes } = this.props;
     this._isMounted = true;
     if (this._isMounted) {
-      loadMemes(9);
+      this.props.loadMemes();
     }
   }
 
