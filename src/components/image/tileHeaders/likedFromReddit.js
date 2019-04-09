@@ -35,6 +35,10 @@ class LikedFromReddit extends React.Component {
     return (
       <View style={styles.containerA}>
         <View style={styles.container}>
+          <Image
+            style={styles.userImg}
+            source={{uri:'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg'}}
+          />
           <Username uid={this.props.poster} navigation={this.props.navigation} />
           <Image
             style={styles.likedFromImg}
@@ -78,7 +82,9 @@ const styles = StyleSheet.create({
   },
   userImg: {
     width: 30,
-    height: 25,
+    height: 30,
+    borderRadius: 15,
+    marginRight: 2
   },
   likedFromImg: {
     width: 30,

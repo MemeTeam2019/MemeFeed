@@ -9,7 +9,7 @@ export default class LoginScreen extends React.Component {
   render() {
     return (
       <ImageBackground
-        source={require('../images/bkgrnd.jpeg')}
+        source={require('../images/white.png')}
         style={styles.background}
       >
         <View style={styles.container}>
@@ -30,7 +30,7 @@ export default class LoginScreen extends React.Component {
 
           <Button
             title="Next"
-            color="#fff"
+            color='blue'
             onPress={() => this.props.navigation.push('About2')}
           />
         </View>
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 50,
     fontFamily: 'AvenirNext-Regular',
-    color: 'white',
+    color: 'blue',
     paddingHorizontal: '5%',
     marginBottom: '5%',
     textAlign: 'center',
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   aboutText: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
-    color: 'white',
+    color: 'blue',
     paddingHorizontal: '3%',
     marginBottom: '3%',
     paddingRight: 5,

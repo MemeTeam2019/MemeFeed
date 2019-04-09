@@ -8,7 +8,7 @@ import Photo from '../components/image/photo';
 
 /**
  * Display comments for a meme, along with the buttonBar and the meme itself.
- * 
+ *
  * Props
  * -----
  * navigtion.uri: String

@@ -9,25 +9,67 @@ export default class LoginScreen extends React.Component {
   render() {
     return (
       <ImageBackground
-        source={require('../images/bkgrnd.jpeg')}
+        source={require('../images/white.png')}
         style={styles.background}
       >
         <View style={styles.container}>
           <Text style={styles.title}>Choose your Icon</Text>
         </View>
-        <View style={styles.imageSpace}>
-          <Image
-            source={require('../images/userIcons/icon1.png')}
-            style={{ width: '35%', height: '35%', marginRight: 20}}
-          />
+
+        <View style={styles.navBar}>
+          <View style={styles.leftContainer}>
+            <Image
+            source={require('../images/userIcons/icon777.png')} style={{width: 100, height: 100, borderRadius: 100/2}}/>
+            </View>
+          <View style={styles.middleContainer}>
+            <Image
+            source={require('../images/userIcons/icon666.png')} style={{width: 100, height: 100, borderRadius: 100/2}}/>
+          </View>
+          <View style={styles.rightContainer}>
+            <Image
+            source={require('../images/userIcons/icon999.png')} style={{width: 100, height: 100, borderRadius: 100/2}}/>
+          </View>
         </View>
+
+        <View style={styles.navBar}>
+          <View style={styles.leftContainer}>
+            <Image
+            source={require('../images/userIcons/icon111.png')} style={{width: 100, height: 100, borderRadius: 100/2}}/>
+            </View>
+          <View style={styles.middleContainer}>
+            <Image
+            source={require('../images/userIcons/icon222.png')} style={{width: 100, height: 100, borderRadius: 100/2}}/>
+          </View>
+          <View style={styles.rightContainer}>
+            <Image
+            source={require('../images/userIcons/icon888.png')} style={{width: 100, height: 100, borderRadius: 100/2}}/>
+          </View>
+        </View>
+
+        <View style={styles.navBar}>
+          <View style={styles.leftContainer}>
+            <Image
+            source={require('../images/userIcons/icon333.png')} style={{width: 100, height: 100, borderRadius: 100/2}}/>
+            </View>
+          <View style={styles.middleContainer}>
+            <Image
+            source={require('../images/userIcons/icon444.png')} style={{width: 100, height: 100, borderRadius: 100/2}}/>
+          </View>
+          <View style={styles.rightContainer}>
+            <Image
+            source={require('../images/userIcons/icon555.png')} style={{width: 100, height: 100, borderRadius: 100/2}}/>
+          </View>
+        </View>
+
         <View style={styles.nextBut}>
           <Button
             title="Next"
-            color="#fff"
+            color='blue'
             onPress={() => this.props.navigation.push('About')}
           />
         </View>
+
+
       </ImageBackground>
     );
   }
@@ -35,8 +77,8 @@ export default class LoginScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    height: 170,
-    elevation: 5,
+    height: 100,
+    elevation: 10,
     paddingHorizontal: 20,
     paddingRight: 3,
     paddingLeft: 3,
@@ -48,7 +90,8 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
     backgroundColor: 'blue',
-    marginTop: 1
+    marginTop: 50,
+    marginBottom: 60
   },
   title: {
     fontSize: 40,
@@ -74,39 +117,52 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 0.4,
   },
-  input: {
-    height: '12%',
-    width: '100%',
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    paddingHorizontal: '5%',
-    marginBottom: '5%',
-    fontSize: 18,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 1,
-  },
   background: {
     flex: 1,
     height: '100%',
     width: '100%',
   },
-  imageSpace: {
-    backgroundColor: 'green',
-    marginTop: 7,
-    marginLeft: 7,
-    marginRight: 7,
-    flex: 0,
-    paddingRight: 2,
-    paddingHorizontal: 25,
+  navBar: {
+    height: 60,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    //backgroundColor: 'blue',
+    marginTop: 30,
+    marginBottom: 30
+  },
+  leftContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    //backgroundColor: 'green',
+    marginLeft: 15,
+    marginRight: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  middleContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    //backgroundColor: 'yellow',
+    marginLeft: 15,
+    marginRight: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  rightContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    //backgroundColor: 'red',
+    marginLeft: 15,
+    marginRight: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   nextBut: {
-    backgroundColor: 'orange',
-    fontSize: 18,
-    fontFamily: 'AvenirNext-Regular',
-    marginTop: 7,
-    marginLeft: 7,
-    marginRight: 7,
-    marginBottom: 20
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
