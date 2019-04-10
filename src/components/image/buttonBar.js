@@ -7,11 +7,11 @@ import { withNavigation } from 'react-navigation';
 /**
  * Handles user reacts for a specific meme, sets the state of tile.js and
  * updates the appropriate firebase documents.
- * 
+ *
  * Used by:
  *    tile.js
  *    commentList.js
- * 
+ *
  * Props:
  *    memeId (String): The id of the Firebase document in the Memes collection
  *    imageUrl (String): The image URL of the meme
@@ -70,6 +70,7 @@ class ButtonBar extends React.Component {
   }
 
   _onPressButton = async (newReact) => {
+
     const oldReact = this.state.selectedButton;
     this.setState({
       selectedButton: newReact === oldReact ? null : newReact,
@@ -94,7 +95,6 @@ class ButtonBar extends React.Component {
     reactRef.get().then((likesSnapshot) => {
       const data = likesSnapshot.data();
       var hasReacted = likesSnapshot.exists && data.rank !== -1;
-      console.log('LIKIND DAS MEME MIA ALTIERI');
       console.log(this.props.postedBy);
       reactRef.set({
         rank: oldReact === newReact ? -1 : newReact,
@@ -122,6 +122,89 @@ class ButtonBar extends React.Component {
           console.log(err);
         });
     });
+
+
+    // grab this users follower list
+    // go through each follower,and get that f_uid
+    // add to the collection Feeds/f_uid and add that react
+    this.unsubscribe = firebase
+      .firestore()
+      .collection('Users')
+      .doc(firebase.auth().currentUser.uid)
+      .get()
+      .then(async (doc) => {
+        const { followersLst } = doc.data();
+        // go through the people are following us
+        var i;
+        for (i = 0; i < followersLst.length; i++) {
+          // grab friend uid
+          let friendUid = followersLst[i];
+          firebase
+            .firestore()
+            .collection('Feeds')
+            .doc(friendUid)
+            .collection('Likes')
+            .doc(memeId)
+            .get()
+            .then(async (doc) => {
+
+              if (doc.exists) {
+                const { posReacts } = doc.data();
+                // originally did not like the meme but now does
+                // or first time liking the meme and ranking it highly
+                // then add to the total number of positive votes
+                if ((oldReact < 2 && newReact > 1 && oldReact != newReact) ||
+                    (oldReact === null && newReact > 1)) {
+                    const newPosReacts = posReacts+1
+                    firebase
+                      .firestore()
+                      .collection('Feeds')
+                      .doc(friendUid)
+                      .collection('Likes')
+                      .doc(memeId)
+                      .set({
+                        posReacts: newPosReacts,
+                        time: date,
+                        url: this.props.imageUrl,
+                        likedFrom: this.props.postedBy,
+                      });
+                }
+
+                // originally liked the meme, but now does not
+                // OR unreacting to meme
+                // decrement number of posReacts
+                if ((oldReact > 1 && newReact < 2) || (oldReact === newReact) ) {
+                  firebase
+                    .firestore()
+                    .collection('Feeds')
+                    .doc(friendUid)
+                    .collection('Likes')
+                    .doc(memeId)
+                    .update({
+                      posReacts: posReacts-1,
+                    });
+                  }
+              } else {
+                // doc doesn't exist
+                // only make it exist if its a positive react
+                if (newReact > 1) {
+                  firebase
+                    .firestore()
+                    .collection('Feeds')
+                    .doc(friendUid)
+                    .collection('Likes')
+                    .doc(memeId)
+                    .set({
+                      posReacts: 1,
+                      time: date,
+                      url: this.props.imageUrl,
+                      likedFrom: this.props.postedBy,
+                    });
+                }
+              }
+            });
+          }
+        });
   };
 
   handleCommentClick() {
