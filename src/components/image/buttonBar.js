@@ -173,7 +173,10 @@ class ButtonBar extends React.Component {
                         likedFrom: this.props.postedBy,
                         // add this user as someone that liked this meme
                         likers:
-                          firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid)
+                          firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid),
+                        likedFrom:
+                          firebase.firestore.FieldValue.arrayUnion(this.props.postedBy),
+
                       });
                 }
 
@@ -191,7 +194,10 @@ class ButtonBar extends React.Component {
                       posReacts: posReacts-1,
                       // remove this user as someone that liked this meme
                       likers:
-                        firebase.firestore.FieldValue.arrayRemove(firebase.auth().currentUser.uid)
+                        firebase.firestore.FieldValue.arrayRemove(firebase.auth().currentUser.uid),
+                      likedFrom:
+                        firebase.firestore.FieldValue.arrayRemove(this.props.postedBy),
+
                     });
                   }
               } else {
@@ -208,9 +214,9 @@ class ButtonBar extends React.Component {
                       posReacts: 1,
                       time: date,
                       url: this.props.imageUrl,
-                      likedFrom: this.props.postedBy,
                       // add this user as someone that liked this meme
-                      likers: [firebase.auth().currentUser.uid]
+                      likers: [firebase.auth().currentUser.uid],
+                      likedFrom: [this.props.postedBy]
                     });
                 }
               }
