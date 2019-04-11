@@ -14,11 +14,9 @@ import Comment from './comment';
 class CommentList extends React.Component {
   constructor() {
     super();
-    this.unsubscribe = null;
     this.renderComment.bind(this);
-
     this.state = {
-      commentsLoaded: 10,
+      commentsLoaded: 0,
       commentCount: 0,
       comments: [],
     };
@@ -39,12 +37,13 @@ class CommentList extends React.Component {
             commentCount: count,
           });
 
-          this.unsubscribe = firebase
+          firebase
             .firestore()
             .collection(`Comments/${this.props.memeId}/Text`)
             .orderBy('time', 'desc') // we choose decsending to get most recent
-            .limit(Math.min(this.state.commentCount, this.state.commentsLoaded))
-            .onSnapshot(this.onCollectionUpdate);
+            .limit(Math.min(this.state.commentCount, 5))
+            .get()
+            .then(this.updateComments);
         }
       })
       .catch((err) => {
@@ -52,17 +51,24 @@ class CommentList extends React.Component {
       });
   }
 
-  componentWillUnmount() {
-    this.unsubscribe();
-  }
+  fetchComments = () => {
+    const oldestDoc = this.state.oldestDoc;
+    if (oldestDoc) {
+      firebase
+        .firestore()
+        .collection(`Comments/${this.props.memeId}/Text`)
+        .orderBy('time', 'desc')
+        .limit(5)
+        .startAfter(oldestDoc)
+        .get()
+        .then(this.updateComments);
+    }
+  };
 
-  // Function for extracting Firebase responses to the state
-  onCollectionUpdate = (querySnapshot) => {
-    const comments = [];
-
+  updateComments = (querySnapshot) => {
     querySnapshot.forEach((doc) => {
       const { text, uid, time } = doc.data();
-
+      console.log(`${text} posted at ${time}`);
       const userRef = firebase
         .firestore()
         .collection('Users')
@@ -70,30 +76,28 @@ class CommentList extends React.Component {
 
       userRef
         .get()
-        .then((docSnapshot) => {
-          if (!docSnapshot.exists) {
-            console.log(`No such user ${uid} exist!`);
-          } else {
-            const { username } = docSnapshot.data();
-            comments.push({
-              key: doc.id,
-              doc, // DocumentSnapshot
-              content: text,
-              time,
-              username,
-            });
-
-            this.setState({
-              comments: comments.sort((a, b) => {
-                if (a.time < b.time) return -1;
-                if (a.time > b.time) return 1;
-                return 0;
-              }),
-            });
-          }
+        .then((user) => {
+          const newComments = [];
+          const { username } = user.data();
+          newComments.push({
+            key: doc.id,
+            uid: user.id,
+            doc: user,
+            content: text,
+            time,
+            username,
+          });
+          this.setState((prevState) => {
+            const mergedComments = newComments.concat(prevState.comments);
+            return {
+              comments: mergedComments,
+              commentsLoaded: mergedComments.length,
+              oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+            };
+          });
         })
-        .catch((err) => {
-          console.log('Error getting document', err);
+        .catch((error) => {
+          console.log(error);
         });
     });
   };
@@ -101,7 +105,12 @@ class CommentList extends React.Component {
   // Single comment
   renderComment = ({ item }) => {
     return (
-      <Comment username={item.username} content={item.content} uid={item.key} />
+      <Comment
+        key={item.key}
+        username={item.username}
+        content={item.content}
+        uid={item.uid}
+      />
     );
   };
 
@@ -112,15 +121,7 @@ class CommentList extends React.Component {
         <View style={[styles.containerStyle]}>
           <ButtonBar memeId={this.props.memeId} />
           <TouchableOpacity
-            onPress={() => {
-              this.setState((prevState) => {
-                return {
-                  commentsLoaded: prevState.commentsLoaded + 10,
-                  comments: [],
-                };
-              });
-              this.componentDidMount();
-            }}
+            onPress={this.fetchComments}
             style={{ justifyContent: 'center', alignItems: 'center' }}
           >
             <Text style={styles.buttonSty}>Load more comments</Text>
