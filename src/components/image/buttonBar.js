@@ -163,7 +163,7 @@ class ButtonBar extends React.Component {
             }}
           >
             <Image
-              style={{width: 30, height: 32, marginLeft: '40%', marginTop: '8%', marginRight: 10}}
+              style={{width: 30, height: 32, marginLeft: '40%', marginTop: '8%', marginRight: '45%'}}
               source={require('../../images/Tile/chatLogo2.png')}
             />
           </TouchableOpacity>
