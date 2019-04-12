@@ -13,17 +13,18 @@ export default class LoginScreen extends React.Component {
         style={styles.background}
       >
         <View style={styles.container}>
-          <Text style={styles.title}>New Update Coming Soon!</Text>
+          <Text style={styles.title}>Coming Soon</Text>
         </View>
         <View style={styles.aboutText}>
           <Text style={styles.aboutText}>
           Meme feed is currently in Beta, so be sure to update the application
           to get features such as Meme upload, curated feeds, and DMing.
-
           </Text>
+        </View>
+        <View style={styles.nextBut}>
           <Button
             title="Let's Get Started"
-            color='blue'
+            color='#9F02FF'
             onPress={() => this.props.navigation.push('Confirm')}
           />
         </View>
@@ -34,56 +35,56 @@ export default class LoginScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    height: 170,
-    elevation: 3,
+    height: 100,
+    elevation: 10,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 40, //50
+    paddingLeft: 3,
+    paddingTop: 10, //50
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 36,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
+    //backgroundColor: 'blue',
+    marginTop: '20%',
+    marginBottom: '3%'
   },
   title: {
-    fontSize: 50,
+    fontSize: 35,
     fontFamily: 'AvenirNext-Regular',
-    color: 'blue',
+    color: '#9F02FF',
     paddingHorizontal: '5%',
-    marginBottom: '5%',
+    marginBottom: '1%',
     textAlign: 'center',
+    height: 70,
+    //backgroundColor: 'red'
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 0.5 },
+    shadowOpacity: 0.5,
+    shadowRadius: 0.4,
   },
   aboutText: {
     fontSize: 16,
     fontFamily: 'AvenirNext-Regular',
-    color: 'blue',
+    color: '#9F02FF',
     paddingHorizontal: '3%',
     marginBottom: '3%',
     textAlign: 'center',
     paddingRight: 5,
     paddingTop: 5, //50
     paddingLeft: 5,
-    shadowColor: 'black',
-    shadowOffset: { width: 0, height: 0.5 },
-    shadowOpacity: 0.5,
-    shadowRadius: 0.4,
-  },
-  input: {
-    height: '12%',
-    width: '100%',
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    paddingHorizontal: '5%',
-    marginBottom: '5%',
-    fontSize: 18,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 1,
   },
   background: {
     flex: 1,
     height: '100%',
     width: '100%',
   },
+  nextBut: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    marginBottom: '5%',
+  }
 });

@@ -44,7 +44,7 @@ class LikedFromReddit extends React.Component {
             style={styles.likedFromImg}
             source={require('../repostIcon.png')}
           />
-          <Text style={{fontSize: 13, fontWeight: 'bold', fontStyle: 'italic', color: '#919191'}}> 'r/{this.props.sub}'</Text>
+          <Text style={{fontSize: 12, fontWeight: 'bold', fontStyle: 'italic', color: '#919191'}}> 'r/{this.props.sub}'</Text>
         </View>
       </View>
     );

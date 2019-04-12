@@ -17,10 +17,10 @@ import Profile from './profilePage';
 
 /**
  * View the profile of another user.
- * 
+ *
  * Used by:
  *     mainNavigator.js
- * 
+ *
  * Props:
  *     navigation.uid (String): Firebase id of the user profile we want to
  *         render.
@@ -424,9 +424,12 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
     backgroundColor: 'white',
-    paddingRight: 2,
-    paddingLeft: 2,
+    paddingRight: 1,
+    paddingLeft: 1,
     paddingHorizontal: 10,
+    backgroundColor: 'white',
+    marginRight: '9%',
+    marginLeft: '9%'
   },
   textSty2: {
     fontSize: 20,
@@ -517,6 +520,7 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     borderColor: '#A4A4A4',
     justifyContent: 'center',
+    marginLeft: '9%',
   },
   followBut2: {
     width: '30%',
@@ -541,6 +545,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 1,
+    marginLeft: '13%',
+    paddingRight: 5
   },
   rightIcon1: {
     height: 10,
@@ -556,14 +562,20 @@ const styles = StyleSheet.create({
   },
   leftContainer2: {
     flex: 1,
+    //flexDirection: 'row',
     paddingRight: 2,
-    paddingHorizontal: 25,
+    paddingLeft: '3%',
+    paddingHorizontal: '5%',
+    backgroundColor: 'white'
   },
   rightContainer2: {
     flex: 1,
     flexDirection: 'row',
+    //justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingLeft: 1,
+    //paddingLeft: 1,
+    //paddingHorizontal: 25,
+    backgroundColor: 'white'
   },
   rightIcon2: {
     height: 10,

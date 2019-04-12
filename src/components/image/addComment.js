@@ -5,6 +5,7 @@ import {
   KeyboardAvoidingView,
   Button,
   TextInput,
+  TouchableOpacity,
   Alert,
   ImageBackground,
   Image
@@ -18,7 +19,7 @@ class AddComment extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      text: '', 
+      text: '',
       height: 0
     };
   }
@@ -47,7 +48,7 @@ class AddComment extends React.Component {
           }, {merge: true});
 
         }
-    
+
     })
     .catch(err => {
       console.log('Error getting document', err);
@@ -76,7 +77,7 @@ class AddComment extends React.Component {
           console.log('Added document with ID: ', ref.id);
         });
         console.log('Document data:', doc.data());
-        
+
       })
       .catch(err => {
         console.log('Error getting document', err);
@@ -87,7 +88,7 @@ class AddComment extends React.Component {
     return (
       <KeyboardAvoidingView
         keyboardVerticalOffset = {Header.HEIGHT + Math.max(35, this.state.height)-12} // adjust the value here if you need more padding
-        style={{position: 'absolute', left: 0, right: 0, bottom: 0}} 
+        style={{position: 'absolute', left: 0, right: 0, bottom: 0}}
         behavior="position"
       >
 
@@ -111,14 +112,15 @@ class AddComment extends React.Component {
               value={this.state.text}
             >
             </TextInput>
-    
 
-           <Button
-              onPress={this._onPressButton.bind(this,this.state.text, this.props.memeId)}
-              style={[styles.postButton, {height: Math.max(35, this.state.height)}]}
-              title="Post"
-              color='#000'
-            />
+            <TouchableOpacity onPress={() => this.choose9()}>
+              <Image
+                source={require('../../images/postButton.png')}
+                style={{width: 30,
+                        height: 30, alignItems: 'flex-end'}}
+              />
+            </TouchableOpacity>
+
 
         </View>
       </KeyboardAvoidingView>
@@ -127,14 +129,14 @@ class AddComment extends React.Component {
   }
 }
 
- 
-        
 
-export default AddComment; 
+
+
+export default AddComment;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row', 
+    flexDirection: 'row',
     width: '100%',
     flex: 1,
     position: 'absolute',
@@ -145,7 +147,7 @@ const styles = StyleSheet.create({
 
   },
   input: {
-    width: 300,
+    width: '80%',
     backgroundColor: '#fff',
     borderRadius: 25,
     paddingHorizontal: 15,
