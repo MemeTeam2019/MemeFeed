@@ -5,10 +5,11 @@ import {
   KeyboardAvoidingView,
   Button,
   TextInput,
-  TouchableOpacity,
   Alert,
   ImageBackground,
-  Image
+  Image,
+  TouchableOpacity,
+  Text
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import { Header } from 'react-navigation';
@@ -113,14 +114,15 @@ class AddComment extends React.Component {
             >
             </TextInput>
 
-            <TouchableOpacity onPress={() => this.choose9()}>
-              <Image
-                source={require('../../images/postButton.png')}
-                style={{width: 30,
-                        height: 30, alignItems: 'flex-end'}}
-              />
-            </TouchableOpacity>
 
+            <TouchableOpacity
+              onPress={this._onPressButton.bind(this,this.state.text, this.props.memeId)}
+              style={styles.postButton}
+            >
+              <Text style={styles.postText}>
+                Post
+              </Text>
+            </TouchableOpacity>
 
         </View>
       </KeyboardAvoidingView>
@@ -144,6 +146,17 @@ const styles = StyleSheet.create({
     bottom:0
   },
   postButton: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    marginRight: '4%'
+  },
+  postText: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: 18,
+    marginTop: 5,
+    fontFamily: 'AvenirNext-Bold',
 
   },
   input: {
