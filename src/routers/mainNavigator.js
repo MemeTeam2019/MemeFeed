@@ -91,7 +91,12 @@ const MainRouter = createBottomTabNavigator({
       ),
       tabBarOptions:{
         showLabel: false,
-        showIcon: true
+        showIcon: true,
+        activeTintColor: '#000000',
+        inactiveTintColor: '#D3D3D3',
+        style: {
+          height: '10%'
+        }
       }
     },
     
@@ -105,7 +110,12 @@ const MainRouter = createBottomTabNavigator({
       ),
       tabBarOptions:{
         showLabel: false,
-        showIcon: true
+        showIcon: true,
+        activeTintColor: '#000000',
+        inactiveTintColor: '#D3D3D3',
+        style: {
+          height: '10%'
+        }
       }
     },
   },
@@ -118,7 +128,12 @@ const MainRouter = createBottomTabNavigator({
       ),
       tabBarOptions:{
         showLabel: false,
-        showIcon: true
+        showIcon: true,
+        activeTintColor: '#000000',
+        inactiveTintColor: '#D3D3D3',
+        style: {
+          height: '10%'
+        }
       }
     },
   },

@@ -153,22 +153,6 @@ class ButtonBar extends React.Component {
     return (
       <View style={styles.buttonBar}>
         <View style={styles.button}>
-          <TouchableOpacity
-            // style={{
-            //   flex: 1,
-            //   justifyContent: 'flex-start',
-            // }}
-            onPress={() => {
-              this.handleCommentClick();
-            }}
-          >
-            <Image
-              style={{width: 30, height: 32, marginLeft: '40%', marginTop: '8%', marginRight: '45%'}}
-              source={require('../../images/Tile/chatLogo2.png')}
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.button}>
           <TouchableOpacity 
             onPress={this._onPressButton.bind(this, 0)}>
             <Image
@@ -254,10 +238,10 @@ class ButtonBar extends React.Component {
 const styles = StyleSheet.create({
   buttonBar: {
     flexDirection: 'row',
-    width: '90%',
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-
+    paddingRight: '35%'
   },
   button: {
     width: 50,
