@@ -8,7 +8,7 @@ import Photo from '../components/image/photo';
 
 /**
  * Display comments for a meme, along with the buttonBar and the meme itself.
- * 
+ *
  * Props
  * -----
  * navigtion.uri: String
@@ -33,8 +33,10 @@ class CommentPage extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView
-          ref={ref => (this.scrollView = ref)}
-          onContentSizeChange={(contentWidth, contentHeight) => {
+          ref={(ref) => {
+            this.scrollView = ref;
+          }}
+          onContentSizeChange={() => {
             this.scrollView.scrollToEnd({ animated: true });
           }}
         >

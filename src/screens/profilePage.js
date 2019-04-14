@@ -83,7 +83,6 @@ export default class Profile extends React.Component {
   onCollectionUpdate = (querySnapshot) => {
     const memes = [];
     querySnapshot.forEach((doc) => {
-      console.log(doc.data());
       const { time, url, rank, likedFrom } = doc.data();
       if (rank > 1)
         memes.push({
