@@ -68,7 +68,6 @@ class CommentList extends React.Component {
   updateComments = (querySnapshot) => {
     querySnapshot.forEach((doc) => {
       const { text, uid, time } = doc.data();
-      console.log(`${text} posted at ${time}`);
       const userRef = firebase
         .firestore()
         .collection('Users')

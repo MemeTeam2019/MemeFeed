@@ -21,7 +21,6 @@ class AddComment extends React.Component {
 
   _onPressButton = () => {
     const user = firebase.auth().currentUser;
-    console.log(`user ${user.uid} commented ==============`);
     const date = Math.round(+new Date() / 1000);
     const memeId = this.props.memeId;
 
