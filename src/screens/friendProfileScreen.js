@@ -182,9 +182,7 @@ class FriendProfile extends React.Component {
       .collection('Reacts')
       .doc(theirUid)
       .collection('Likes')
-      .where("rank", ">", 1) // only grab the memes they liked
-      .orderBy('rank', 'desc') // highest rated
-      // .orderBy('time', 'desc') // most recent
+      .orderBy('time', 'desc') // most recent
       .limit(150)
 
     // If just followed an individual take their most recent 150 reactions and
@@ -192,108 +190,115 @@ class FriendProfile extends React.Component {
     if (nowFollowing) {
         theirLikes.get().then((snapshot) => {
           snapshot.forEach(function(doc) {
-            console.log(doc.data());
+            const { time, likedFrom, url, rank} = doc.data();
+            // only add memes they have liked
+            if (rank > 1) {
+              var memeId = doc.id
+              const userLikedTime = time
+              const feedRef = firebase
+                .firestore()
+                .collection('Feeds')
+                .doc(myUid)
+                .collection('Likes')
+                .doc(memeId);
 
-            const { time, likedFrom, url} = doc.data();
-            var memeId = doc.id
-            const userLikedTime = time
-            const feedRef = firebase
-              .firestore()
-              .collection('Feeds')
-              .doc(myUid)
-              .collection('Likes')
-              .doc(memeId);
+              feedRef
+                .get()
+                .then(async (doc) => {
 
-            feedRef
-              .get()
-              .then(async (doc) => {
+                  // if this meme is already in this persons feed
+                  if (doc.exists) {
+                    const { posReacts, time } = doc.data();
+                    const newPosReacts = posReacts+1
+                    const recentLikedTime = time
 
-                // if this meme is already in this persons feed
-                if (doc.exists) {
-                  console.log("doc exists")
-                  const { posReacts, time } = doc.data();
-                  const newPosReacts = posReacts+1
-                  const recentLikedTime = time
-
-                  // if the person we just followed has liked this meme more recently
-                  if (recentLikedTime < userLikedTime) {
-                    feedRef
-                      .update({
-                        posReacts: newPosReacts,
-                        time: userLikedTime,
-                        // add this user as someone that liked this meme
-                        likers:
-                          firebase.firestore.FieldValue.arrayUnion(theirUid),
-                        likedFrom:
-                          firebase.firestore.FieldValue.arrayUnion(likedFrom),
-                      });
-                    } else {
+                    // if the person we just followed has liked this meme more recently
+                    if (recentLikedTime < userLikedTime) {
                       feedRef
                         .update({
                           posReacts: newPosReacts,
+                          time: userLikedTime,
+                          // add this user as someone that liked this meme
+                          likers:
+                            firebase.firestore.FieldValue.arrayUnion(theirUid),
+                          likedFrom:
+                            firebase.firestore.FieldValue.arrayUnion(likedFrom),
                         });
-                    }
-                } else {
-                  console.log('doc does not exist')
-                  // doc doesn't exist
-                  // only make it exist if its a positive react
-                  firebase
-                    .firestore()
-                    .collection('Feeds')
-                    .doc(myUid)
-                    .collection('Likes')
-                    .doc(memeId)
-                    .set({
-                      posReacts: 1,
-                      time: userLikedTime,
-                      url: url,
-                      // add this user as someone that liked this meme
-                      likers: [theirUid],
-                      likedFrom: [likedFrom]
-                    });
-                }
-              });
+                      } else {
+                        feedRef
+                          .update({
+                            posReacts: newPosReacts,
+                          });
+                      }
+                  } else {
+                    // doc doesn't exist
+                    // only make it exist if its a positive react
+                    firebase
+                      .firestore()
+                      .collection('Feeds')
+                      .doc(myUid)
+                      .collection('Likes')
+                      .doc(memeId)
+                      .set({
+                        posReacts: 1,
+                        time: userLikedTime,
+                        url: url,
+                        // add this user as someone that liked this meme
+                        likers: [theirUid],
+                        likedFrom: [likedFrom]
+                      });
+                  }
+                });
+              }
           });
         });
       } else {
         theirLikes.get().then((snapshot) => {
           snapshot.forEach(function(doc) {
             const { time, likedFrom, url, rank} = doc.data();
-            var memeId = doc.id
-            const feedRef = firebase
-              .firestore()
-              .collection('Feeds')
-              .doc(myUid)
-              .collection('Likes')
-              .doc(memeId);
+            // only remove memes they have liked
+            if (rank > 1) {
+              var memeId = doc.id
+              const feedRef = firebase
+                .firestore()
+                .collection('Feeds')
+                .doc(myUid)
+                .collection('Likes')
+                .doc(memeId);
 
-            feedRef
-              .get()
-              .then(async (doc) => {
-                // if this meme is already in this persons feed
-                if (doc.exists) {
-                  const { posReacts} = doc.data();
-                  const newPosReacts = posReacts-1
+              feedRef
+                .get()
+                .then(async (doc) => {
+                  // if this meme is already in this persons feed
+                  if (doc.exists) {
+                    const { posReacts, time} = doc.data();
+                    const newPosReacts = posReacts-1;
+                    var newTime = time
+                    if (newPosReacts < 1){
+                      newTime = 0
+                    }
 
-                  // if the person we just followed has liked this meme more recently
-                  if (rank > 1) {
-                    feedRef
-                      .update({
-                        posReacts: newPosReacts,
-                        // remove this user as someone that liked this meme
-                        likers:
-                          firebase.firestore.FieldValue.arrayRemove(theirUid),
-                        likedFrom:
-                          firebase.firestore.FieldValue.arrayRemove(likedFrom),
-                      });
-                    } else {
+                    // if the person we just followed has liked this meme more recently
+                    if (rank > 1) {
                       feedRef
                         .update({
                           posReacts: newPosReacts,
+                          time: newTime,
+                          // remove this user as someone that liked this meme
+                          likers:
+                            firebase.firestore.FieldValue.arrayRemove(theirUid),
+                          likedFrom:
+                            firebase.firestore.FieldValue.arrayRemove(likedFrom),
                         });
-                    }
-                }
-              });
+                      } else {
+                        feedRef
+                          .update({
+                            posReacts: newPosReacts,
+                          });
+                      }
+                  }
+                });
+            }
           });
         });
       }

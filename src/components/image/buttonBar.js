@@ -153,7 +153,7 @@ class ButtonBar extends React.Component {
             .then(async (doc) => {
 
               if (doc.exists) {
-                const { posReacts } = doc.data();
+                const { posReacts, time } = doc.data();
                 // originally did not like the meme but now does
                 // or first time liking the meme and ranking it highly
                 // then add to the total number of positive votes
@@ -182,6 +182,10 @@ class ButtonBar extends React.Component {
                 // OR unreacting to meme
                 // decrement number of posReacts
                 if ((oldReact > 1 && newReact < 2) || (oldReact === newReact) ) {
+                  var newTime = time
+                  if (newPosReacts < 1){
+                    newTime = 0
+                  }
                   firebase
                     .firestore()
                     .collection('Feeds')
@@ -190,6 +194,7 @@ class ButtonBar extends React.Component {
                     .doc(memeId)
                     .update({
                       posReacts: posReacts-1,
+                      time: newTime,
                       // remove this user as someone that liked this meme
                       likers:
                         firebase.firestore.FieldValue.arrayRemove(firebase.auth().currentUser.uid),
