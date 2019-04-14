@@ -17,10 +17,10 @@ import Profile from './profilePage';
 
 /**
  * View the profile of another user.
- * 
+ *
  * Used by:
  *     mainNavigator.js
- * 
+ *
  * Props:
  *     navigation.uid (String): Firebase id of the user profile we want to
  *         render.
@@ -90,7 +90,6 @@ class FriendProfile extends React.Component {
           if (snapshot.exists) {
             const data = snapshot.data();
             const followingLst = data.followingLst || [];
-            // console.log(snapshot);
             const isFollowing = followingLst.indexOf(theirUid) > -1;
             this.setState({
               isFollowing: isFollowing,
@@ -163,8 +162,6 @@ class FriendProfile extends React.Component {
       if (inFollowersLst) followersLst.splice(followersLst.indexOf(myUid), 1);
     }
 
-    console.log('After: ' + followingLst);
-
     theirUserRef.update({
       followersLst: followersLst,
       followersCnt: followersLst.length,
@@ -179,6 +176,128 @@ class FriendProfile extends React.Component {
       followersLst: followersLst,
       followersCnt: followersLst.length,
     });
+
+    const theirLikes = firebase
+      .firestore()
+      .collection('Reacts')
+      .doc(theirUid)
+      .collection('Likes')
+      .where("rank", ">", 1) // only grab the memes they liked
+      .orderBy('rank', 'desc') // highest rated
+      // .orderBy('time', 'desc') // most recent
+      .limit(150)
+
+    // If just followed an individual take their most recent 150 reactions and
+    // add them to our Feed
+    if (nowFollowing) {
+        theirLikes.get().then((snapshot) => {
+          snapshot.forEach(function(doc) {
+            console.log(doc.data());
+
+            const { time, likedFrom, url} = doc.data();
+            var memeId = doc.id
+            const userLikedTime = time
+            const feedRef = firebase
+              .firestore()
+              .collection('Feeds')
+              .doc(myUid)
+              .collection('Likes')
+              .doc(memeId);
+
+            feedRef
+              .get()
+              .then(async (doc) => {
+
+                // if this meme is already in this persons feed
+                if (doc.exists) {
+                  console.log("doc exists")
+                  const { posReacts, time } = doc.data();
+                  const newPosReacts = posReacts+1
+                  const recentLikedTime = time
+
+                  // if the person we just followed has liked this meme more recently
+                  if (recentLikedTime < userLikedTime) {
+                    feedRef
+                      .update({
+                        posReacts: newPosReacts,
+                        time: userLikedTime,
+                        // add this user as someone that liked this meme
+                        likers:
+                          firebase.firestore.FieldValue.arrayUnion(theirUid),
+                        likedFrom:
+                          firebase.firestore.FieldValue.arrayUnion(likedFrom),
+                      });
+                    } else {
+                      feedRef
+                        .update({
+                          posReacts: newPosReacts,
+                        });
+                    }
+                } else {
+                  console.log('doc does not exist')
+                  // doc doesn't exist
+                  // only make it exist if its a positive react
+                  firebase
+                    .firestore()
+                    .collection('Feeds')
+                    .doc(myUid)
+                    .collection('Likes')
+                    .doc(memeId)
+                    .set({
+                      posReacts: 1,
+                      time: userLikedTime,
+                      url: url,
+                      // add this user as someone that liked this meme
+                      likers: [theirUid],
+                      likedFrom: [likedFrom]
+                    });
+                }
+              });
+          });
+        });
+      } else {
+        theirLikes.get().then((snapshot) => {
+          snapshot.forEach(function(doc) {
+            const { time, likedFrom, url, rank} = doc.data();
+            var memeId = doc.id
+            const feedRef = firebase
+              .firestore()
+              .collection('Feeds')
+              .doc(myUid)
+              .collection('Likes')
+              .doc(memeId);
+
+            feedRef
+              .get()
+              .then(async (doc) => {
+                // if this meme is already in this persons feed
+                if (doc.exists) {
+                  const { posReacts} = doc.data();
+                  const newPosReacts = posReacts-1
+
+                  // if the person we just followed has liked this meme more recently
+                  if (rank > 1) {
+                    feedRef
+                      .update({
+                        posReacts: newPosReacts,
+                        // remove this user as someone that liked this meme
+                        likers:
+                          firebase.firestore.FieldValue.arrayRemove(theirUid),
+                        likedFrom:
+                          firebase.firestore.FieldValue.arrayRemove(likedFrom),
+                      });
+                    } else {
+                      feedRef
+                        .update({
+                          posReacts: newPosReacts,
+                        });
+                    }
+                }
+              });
+          });
+        });
+      }
+      // If unfollowing
   };
 
   // Function for extracting Firebase responses to the state

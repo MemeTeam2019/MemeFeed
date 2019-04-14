@@ -169,8 +169,6 @@ class ButtonBar extends React.Component {
                       .update({
                         posReacts: newPosReacts,
                         time: date,
-                        url: this.props.imageUrl,
-                        likedFrom: this.props.postedBy,
                         // add this user as someone that liked this meme
                         likers:
                           firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid),

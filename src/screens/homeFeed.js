@@ -42,7 +42,8 @@ class HomeFeed extends React.Component {
     if (this._isMounted) {
 
       this.unsubscribe = this.ref
-        .limit(3) // limit to 3
+        .limit(9) // limit to 3
+        //.where('posReacts', '>', 0)
         .onSnapshot(this.onCollectionUpdate);
     }
   }
@@ -52,7 +53,9 @@ class HomeFeed extends React.Component {
     const memes = [];
     querySnapshot.forEach((doc) => {
       const { time, url, posReacts, likedFrom, likers } = doc.data();
-      if (posReacts > 0)
+      console.log('YOOOOO')
+      if (posReacts > 0) {
+        console.log(posReacts)
         var recentLikedFrom = likedFrom[likedFrom.length - 1];
         var recentLiker = likers[likers.length - 1];
         memes.push({
@@ -65,6 +68,7 @@ class HomeFeed extends React.Component {
           postedBy: recentLiker,
           poster: recentLiker,
         });
+      }
 
       this.setState({
         memes,
