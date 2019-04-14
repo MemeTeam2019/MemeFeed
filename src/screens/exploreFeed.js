@@ -1,8 +1,4 @@
 import * as React from 'react';
-import firebase from 'react-native-firebase';
-import { SearchBar } from 'react-native-elements';
-import MemeGrid from '../components/general/memeGrid';
-import MemeList from '../components/general/memeList';
 import {
   Image,
   TouchableOpacity,
@@ -11,8 +7,12 @@ import {
   StyleSheet,
   FlatList,
 } from 'react-native';
+import firebase from 'react-native-firebase';
+import { SearchBar } from 'react-native-elements';
 
-import { SearchResult } from '../components/home/searchResult';
+import MemeGrid from '../components/general/memeGrid';
+import MemeList from '../components/general/memeList';
+import SearchResult from '../components/home/searchResult';
 
 /**
  * Feed of novel memes in Firebase, which are pulled from various subreddits.
@@ -31,36 +31,39 @@ class ExploreFeed extends React.Component {
 
   constructor(props) {
     super(props);
-    this.unsubscribe = null;
-    this._isMounted = false;
     this.state = {
-      memesLoaded: 30,
       imageuri: '',
       ModalVisibleStatus: false,
-      isLoading: true,
       inGridView: true,
       inFullView: false,
       memes: [],
-      items: [],
-      allUsers: [],
       searchResults: [],
-      selectGridButton: true,
-      selectListButton: false,
       searchTerm: '',
     };
   }
 
   componentDidMount(memesLoaded) {
-    this._isMounted = true;
-    if (this._isMounted) {
-      this.ref = firebase
-        .firestore()
-        .collection('Memes')
-        .orderBy('time', 'desc');
-      this.unsubscribe = this.ref
-        .limit(memesLoaded)
-        .onSnapshot(this.onCollectionUpdate);
-    }
+    firebase
+      .firestore()
+      .collection('Memes')
+      .orderBy('time', 'desc')
+      .limit(memesLoaded)
+      .get()
+      .then((querySnapshot) => {
+        const memes = [];
+        querySnapshot.forEach((doc) => {
+          const { url, time, sub } = doc.data();
+          memes.push({
+            key: doc.id,
+            doc,
+            src: url,
+            time,
+            sub,
+            postedBy: sub,
+          });
+        });
+        this.setState({ memes });
+      });
   }
 
   /**
@@ -68,12 +71,12 @@ class ExploreFeed extends React.Component {
    */
   updateSearch = async (searchTerm = '') => {
     // Set search term state immediately to update SearchBar contents
-    this.setState({ searchTerm: searchTerm });
+    this.setState({ searchTerm });
 
     const usersRef = firebase.firestore().collection('Users');
     const lowerSearchTerm = searchTerm.toLowerCase();
-    let usernameMatches = [],
-      nameMatches = [];
+    let usernameMatches = [];
+    let nameMatches = [];
 
     if (!searchTerm) {
       this.setState({ searchResults: [] });
@@ -82,21 +85,21 @@ class ExploreFeed extends React.Component {
 
     usernameMatches = await usersRef
       .where('searchableUsername', '>=', lowerSearchTerm)
-      .where('searchableUsername', '<', lowerSearchTerm + '\uf8ff')
+      .where('searchableUsername', '<', `${lowerSearchTerm}\uf8ff`)
       .get()
       .then((snapshot) => snapshot.docs)
       .catch((err) => console.log(err));
 
     nameMatches = await usersRef
       .where('searchableName', '>=', lowerSearchTerm)
-      .where('searchableName', '<', lowerSearchTerm + '\uf8ff')
+      .where('searchableName', '<', `${lowerSearchTerm}\uf8ff`)
       .get()
       .then((snapshot) => snapshot.docs)
       .catch((err) => console.log(err));
 
     // Ensure there are no duplicates and your own profile doesn't show up
     const combined = [...usernameMatches, ...nameMatches];
-    let searchResults = [];
+    const searchResults = [];
     const map = new Map();
     const myUid = firebase.auth().currentUser.uid;
     combined.forEach((snapshot) => {
@@ -108,37 +111,8 @@ class ExploreFeed extends React.Component {
     this.setState({ searchResults: searchResults.sort() });
   };
 
-  // function for extracting Firebase responses to the state
-  onCollectionUpdate = (querySnapshot) => {
-    const memes = [];
-    querySnapshot.forEach((doc) => {
-      const { url, time, sub } = doc.data();
-      memes.push({
-        key: doc.id,
-        doc, // DocumentSnapshot
-        src: url,
-        time,
-        sub,
-        postedBy: sub,
-      });
-    });
-    this.setState({
-      memes,
-      isLoading: false,
-    });
-  };
-
-  ShowModalFunction(visible, imageURL) {
-    //handler to handle the click on image of Grid
-    //and close button on modal
-    this.setState({
-      ModalVisibleStatus: visible,
-      imageuri: imageURL,
-    });
-  }
-
+  // When grid button is pressed, show grid view
   showGridView = () => {
-    //when grid button is pressed, show grid view
     this.setState({
       inGridView: true,
       inFullView: false,
@@ -146,10 +120,16 @@ class ExploreFeed extends React.Component {
   };
 
   showFullView = () => {
-    //when full button is bressed, show full view
     this.setState({
       inFullView: true,
       inGridView: false,
+    });
+  };
+
+  ShowModalFunction = (visible, imageURL) => {
+    this.setState({
+      ModalVisibleStatus: visible,
+      imageuri: imageURL,
     });
   };
 
@@ -167,7 +147,7 @@ class ExploreFeed extends React.Component {
         <View style={styles.containerStyle}>
           <View style={styles.navBar}>
             <SearchBar
-              placeholder="Find User"
+              placeholder='Find User'
               onChangeText={this.updateSearch}
               value={searchTerm}
               containerStyle={{
@@ -183,8 +163,8 @@ class ExploreFeed extends React.Component {
               onCancel={() => {
                 this.setState({ searchTerm: '' });
               }}
-              platform="ios"
-              cancelButtonTitle="Cancel"
+              platform='ios'
+              cancelButtonTitle='Cancel'
             />
           </View>
 
@@ -196,12 +176,12 @@ class ExploreFeed extends React.Component {
           />
         </View>
       );
-    } else if (this.state.ModalVisibleStatus) {
-      //Modal to show full image with close button
+    }
+    if (this.state.ModalVisibleStatus) {
       return (
         <Modal
           transparent={false}
-          animationType={'fade'}
+          animationType='fade'
           visible={this.state.ModalVisibleStatus}
           onRequestClose={() => {
             this.ShowModalFunction(!this.state.ModalVisibleStatus, '');
@@ -232,13 +212,13 @@ class ExploreFeed extends React.Component {
           </View>
         </Modal>
       );
-    } else if (this.state.inFullView) {
-      //Photo List/Full View of images
+    }
+    if (this.state.inFullView) {
       return (
         <View style={styles.containerStyle}>
           <View style={styles.navBar}>
             <SearchBar
-              placeholder="Find User"
+              placeholder='Find User'
               onChangeText={this.updateSearch}
               value={searchTerm}
               containerStyle={{
@@ -254,8 +234,8 @@ class ExploreFeed extends React.Component {
               onCancel={() => {
                 this.setState({ searchTerm: '' });
               }}
-              platform="ios"
-              cancelButtonTitle="Cancel"
+              platform='ios'
+              cancelButtonTitle='Cancel'
             />
           </View>
           <View style={styles.navBut}>
@@ -287,60 +267,55 @@ class ExploreFeed extends React.Component {
           />
         </View>
       );
-    } else {
-      //Photo Grid of images
-      return (
-        <View style={styles.containerStyle}>
-          <View style={styles.navBar}>
-            <SearchBar
-              placeholder="Search User"
-              onChangeText={this.updateSearch}
-              value={searchTerm}
-              containerStyle={{
-                backgroundColor: 'transparent',
-                borderTopWidth: 0,
-                borderBottomWidth: 0,
-              }}
-              inputStyle={{
-                backgroundColor: 'lightgrey',
-                color: 'black',
-              }}
-              onClear={() => {}}
-              onCancel={() => {}}
-              platform="ios"
-              cancelButtonTitle="Cancel"
-            />
-          </View>
-          <View style={styles.navBut}>
-            <TouchableOpacity onPress={() => this.showFullView()}>
-              <Image
-                source={require('../images/fullFeedF.png')}
-                style={{
-                  opacity: this.state.inFullView ? 1 : 0.3,
-                  width: 100,
-                  height: 50,
-                }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.showGridView()}>
-              <Image
-                source={require('../images/gridFeedF.png')}
-                style={{
-                  opacity: this.state.inGridView ? 1 : 0.3,
-                  width: 100,
-                  height: 50,
-                }}
-              />
-            </TouchableOpacity>
-          </View>
-
-          <MemeGrid
-            loadMemes={this.componentDidMount}
-            memes={this.state.memes}
+    }
+    return (
+      <View style={styles.containerStyle}>
+        <View style={styles.navBar}>
+          <SearchBar
+            placeholder='Search User'
+            onChangeText={this.updateSearch}
+            value={searchTerm}
+            containerStyle={{
+              backgroundColor: 'transparent',
+              borderTopWidth: 0,
+              borderBottomWidth: 0,
+            }}
+            inputStyle={{
+              backgroundColor: 'lightgrey',
+              color: 'black',
+            }}
+            onClear={() => {}}
+            onCancel={() => {}}
+            platform='ios'
+            cancelButtonTitle='Cancel'
           />
         </View>
-      );
-    }
+        <View style={styles.navBut}>
+          <TouchableOpacity onPress={() => this.showFullView()}>
+            <Image
+              source={require('../images/fullFeedF.png')}
+              style={{
+                opacity: this.state.inFullView ? 1 : 0.3,
+                width: 100,
+                height: 50,
+              }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.showGridView()}>
+            <Image
+              source={require('../images/gridFeedF.png')}
+              style={{
+                opacity: this.state.inGridView ? 1 : 0.3,
+                width: 100,
+                height: 50,
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+
+        <MemeGrid loadMemes={this.componentDidMount} memes={this.state.memes} />
+      </View>
+    );
   }
 }
 
@@ -376,7 +351,7 @@ const styles = StyleSheet.create({
     height: 95,
     elevation: 3,
     paddingHorizontal: 20,
-    paddingTop: 50, //50
+    paddingTop: 50,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

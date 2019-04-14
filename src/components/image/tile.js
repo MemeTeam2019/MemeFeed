@@ -11,10 +11,9 @@ import TileHeader from './tileHeader';
 import PostInfo from './postInfo';
 
 class Tile extends React.Component {
-  _isMounted = false;
-
   constructor(props) {
     super(props);
+    this._isMounted = false;
     this.updateReactCount = this.updateReactCount.bind(this);
     this.state = {
       reactCount: 0,

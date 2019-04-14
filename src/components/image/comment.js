@@ -4,9 +4,9 @@ import Username from './username';
 import firebase from 'react-native-firebase';
 import { withNavigation } from "react-navigation";
 
-class Comment extends React.Component{
+class Comment extends React.Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       memeId: this.props.memeId,
