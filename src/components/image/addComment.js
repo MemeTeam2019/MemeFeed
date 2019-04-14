@@ -79,11 +79,13 @@ class AddComment extends React.Component {
             text: this.state.text.trim(),
             time: date,
           })
-          .then(() => {
+          .then((commentRef) => {
             this.setState({
               text: '',
             });
-            console.log('Added document with ID: ', ref.id);
+            console.log(this.props);
+            this.props.handleNewComment(commentRef);
+            console.log('Added document with ID: ', commentRef.id);
           });
         console.log('Document data:', doc.data());
       })
