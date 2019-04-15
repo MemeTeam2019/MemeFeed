@@ -12,10 +12,9 @@ import PostInfo from './postInfo';
 import CommentButton from './commentButton'
 
 class Tile extends React.Component {
-  _isMounted = false;
-
   constructor(props) {
     super(props);
+    this._isMounted = false;
     this.updateReactCount = this.updateReactCount.bind(this);
     this.state = {
       reactCount: 0,
