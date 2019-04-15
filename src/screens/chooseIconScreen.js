@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
-    //backgroundColor: 'blue',
+    backgroundColor: 'blue',
     marginTop: '20%',
     marginBottom: '3%'
   },
