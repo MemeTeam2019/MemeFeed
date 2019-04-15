@@ -77,7 +77,6 @@ class FriendProfile extends React.Component {
           if (snapshot.exists) {
             const data = snapshot.data();
             const followingLst = data.followingLst || [];
-            // console.log(snapshot);
             const isFollowing = followingLst.indexOf(theirUid) > -1;
             this.setState({
               isFollowing,
@@ -148,8 +147,6 @@ class FriendProfile extends React.Component {
       if (inFollowersLst) followersLst.splice(followersLst.indexOf(myUid), 1);
     }
 
-    console.log(`After: ${followingLst}`);
-
     theirUserRef.update({
       followersLst,
       followersCnt: followersLst.length,
@@ -164,6 +161,133 @@ class FriendProfile extends React.Component {
       followersLst,
       followersCnt: followersLst.length,
     });
+
+    const theirLikes = firebase
+      .firestore()
+      .collection('Reacts')
+      .doc(theirUid)
+      .collection('Likes')
+      .orderBy('time', 'desc') // most recent
+      .limit(150)
+
+    // If just followed an individual take their most recent 150 reactions and
+    // add them to our Feed
+    if (nowFollowing) {
+        theirLikes.get().then((snapshot) => {
+          snapshot.forEach(function(doc) {
+            const { time, likedFrom, url, rank} = doc.data();
+            // only add memes they have liked
+            if (rank > 1) {
+              var memeId = doc.id
+              const userLikedTime = time
+              const feedRef = firebase
+                .firestore()
+                .collection('Feeds')
+                .doc(myUid)
+                .collection('Likes')
+                .doc(memeId);
+
+              feedRef
+                .get()
+                .then(async (doc) => {
+
+                  // if this meme is already in this persons feed
+                  if (doc.exists) {
+                    const { posReacts, time } = doc.data();
+                    const newPosReacts = posReacts+1
+                    const recentLikedTime = time
+
+                    // if the person we just followed has liked this meme more recently
+                    if (recentLikedTime < userLikedTime) {
+                      feedRef
+                        .update({
+                          posReacts: newPosReacts,
+                          time: userLikedTime,
+                          // add this user as someone that liked this meme
+                          likers:
+                            firebase.firestore.FieldValue.arrayUnion(theirUid),
+                          likedFrom:
+                            firebase.firestore.FieldValue.arrayUnion(likedFrom),
+                        });
+                      } else {
+                        feedRef
+                          .update({
+                            posReacts: newPosReacts,
+                          });
+                      }
+                  } else {
+                    // doc doesn't exist
+                    // only make it exist if its a positive react
+                    firebase
+                      .firestore()
+                      .collection('Feeds')
+                      .doc(myUid)
+                      .collection('Likes')
+                      .doc(memeId)
+                      .set({
+                        posReacts: 1,
+                        time: userLikedTime,
+                        url: url,
+                        // add this user as someone that liked this meme
+                        likers: [theirUid],
+                        likedFrom: [likedFrom]
+                      });
+                  }
+                });
+              }
+          });
+        });
+      } else {
+        theirLikes.get().then((snapshot) => {
+          snapshot.forEach(function(doc) {
+            const { time, likedFrom, url, rank} = doc.data();
+            // only remove memes they have liked
+            if (rank > 1) {
+              var memeId = doc.id
+              const feedRef = firebase
+                .firestore()
+                .collection('Feeds')
+                .doc(myUid)
+                .collection('Likes')
+                .doc(memeId);
+
+              feedRef
+                .get()
+                .then(async (doc) => {
+                  // if this meme is already in this persons feed
+                  if (doc.exists) {
+                    const { posReacts, time} = doc.data();
+                    const newPosReacts = posReacts-1;
+                    var newTime = time
+                    if (newPosReacts < 1){
+                      newTime = 0
+                    }
+
+                    // if the person we just followed has liked this meme more recently
+                    if (rank > 1) {
+                      feedRef
+                        .update({
+                          posReacts: newPosReacts,
+                          time: newTime,
+                          // remove this user as someone that liked this meme
+                          likers:
+                            firebase.firestore.FieldValue.arrayRemove(theirUid),
+                          likedFrom:
+                            firebase.firestore.FieldValue.arrayRemove(likedFrom),
+                        });
+                      } else {
+                        feedRef
+                          .update({
+                            posReacts: newPosReacts,
+                          });
+                      }
+                  }
+                });
+            }
+          });
+        });
+      }
+      // If unfollowing
   };
 
   // Function for extracting Firebase responses to the state

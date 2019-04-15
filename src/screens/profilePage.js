@@ -10,6 +10,7 @@ import {
 import firebase from 'react-native-firebase';
 import ActionSheet from 'react-native-actionsheet';
 
+import Tile from '../components/image/tile';
 import MemeGrid from '../components/general/memeGrid';
 import MemeList from '../components/general/memeList';
 
@@ -31,28 +32,35 @@ export default class Profile extends React.Component {
     this.unsubscribe = null;
     this.userListener = null;
     this._isMounted = false;
-
-    this.state = {
-      username: '',
-      name: '',
-      followingCnt: 0,
-      followersCnt: 0,
-      followingLst: [],
-      followersLst: [],
-      selectGridButtonP: true,
-      selectListButtonP: false,
-      memes: [],
-    };
-  }
-
-  componentDidMount(memesLoaded) {
-    this._isMounted = true;
-    const ref = firebase
+    this.ref = firebase
       .firestore()
       .collection('Reacts')
       .doc(firebase.auth().currentUser.uid)
       .collection('Likes')
       .orderBy('time', 'desc');
+
+    this.state = {
+      email: '',
+      username: '',
+      name: '',
+      uid: '',
+      followingCnt: 0,
+      followersCnt: 0,
+      followingLst: [],
+      followersLst: [],
+      open: false,
+      selectGridButtonP: true,
+      selectListButtonP: false,
+      memes: [],
+      items: [],
+      text: '',
+      ModalVisibleStatus: false,
+      imageuri: '',
+    };
+  }
+
+  componentDidMount(memesLoaded) {
+    this._isMounted = true;
     if (this._isMounted) {
       const uid = firebase.auth().currentUser.uid;
       this.userListener = firebase
@@ -60,7 +68,7 @@ export default class Profile extends React.Component {
         .collection('Users')
         .doc(uid)
         .onSnapshot((snapshot) => this.setState(snapshot.data()));
-      this.unsubscribe = ref
+      this.unsubscribe = this.ref
         .limit(memesLoaded)
         .onSnapshot(this.onCollectionUpdate);
     }
@@ -75,7 +83,6 @@ export default class Profile extends React.Component {
   onCollectionUpdate = (querySnapshot) => {
     const memes = [];
     querySnapshot.forEach((doc) => {
-      console.log(doc.data());
       const { time, url, rank, likedFrom } = doc.data();
       if (rank > 1)
         memes.push({
@@ -92,12 +99,13 @@ export default class Profile extends React.Component {
 
       this.setState({
         memes,
+        isLoading: false,
       });
     });
   };
 
   getUserInfo = () => {
-    const firestore = firebase.firestore();
+    let firestore = firebase.firestore();
     const uid = firebase.auth().currentUser.uid;
     firestore
       .collection('Users')
@@ -105,7 +113,7 @@ export default class Profile extends React.Component {
       .get()
       .then((snapshot) => {
         const data = snapshot.data();
-        this.setState(Object.assign(data, { uid }));
+        this.setState(Object.assign(data, { uid: uid }));
       });
   };
 
@@ -135,10 +143,46 @@ export default class Profile extends React.Component {
       });
   };
 
-  render() {
-    const optionArray = ['Logout', 'Cancel'];
+  ShowModalFunction(visible, imageUrl) {
+    //handler to handle the click on image of Grid
+    //and close button on modal
+    this.setState({
+      ModalVisibleStatus: visible,
+      imageuri: imageUrl,
+      memeId: memeId,
+    });
+  }
 
-    if (this.state.memes.length === 0) {
+  renderItem(item, itemSize, itemPaddingHorizontal) {
+    //Single item of Grid
+    return (
+      <TouchableOpacity
+        key={item.id}
+        style={{
+          width: itemSize,
+          height: itemSize,
+          paddingHorizontal: itemPaddingHorizontal,
+        }}
+        onPress={() => {
+          this.ShowModalFunction(true, item.src);
+        }}
+      >
+        <Image
+          resizeMode="cover"
+          style={{ flex: 1 }}
+          source={{ uri: item.src }}
+        />
+      </TouchableOpacity>
+    );
+  }
+  renderTile({ item }) {
+    return <Tile memeId={item.key} imageUrl={item.src} />;
+  }
+
+  render() {
+    var optionArray = ['Logout', 'Cancel'];
+
+    if (this.state.memes.length == 0) {
       return (
         <View style={styles.containerStyle}>
           <View style={styles.navBar1}>
@@ -155,22 +199,20 @@ export default class Profile extends React.Component {
                 />
               </TouchableOpacity>
               <ActionSheet
-                ref={(o) => {
-                  this.ActionSheet = o;
-                }}
-                title='User Settings'
+                ref={(o) => (this.ActionSheet = o)}
+                title={'User Settings'}
                 options={optionArray}
                 cancelButtonIndex={1}
                 destructiveIndex={0}
                 onPress={(index) => {
-                  if (optionArray[index] === 'Logout') {
+                  if (optionArray[index] == 'Logout') {
                     this.logout();
                   }
                 }}
               />
             </View>
           </View>
-          {/* Profile Pic, Follwers, Follwing Block */}
+          {/*Profile Pic, Follwers, Follwing Block*/}
           <View style={styles.navBar2}>
             <View style={styles.leftContainer2}>
               <Image
@@ -190,7 +232,7 @@ export default class Profile extends React.Component {
               </Text>
             </View>
           </View>
-          {/* DISPLAY NAME */}
+          {/*DISPLAY NAME*/}
           <View style={styles.profilePic}>
             <Text style={styles.textSty2}>{this.state.name}</Text>
             <Text> </Text>
@@ -204,129 +246,127 @@ export default class Profile extends React.Component {
           </View>
         </View>
       );
-    }
-
-    // Photo List/Full View of images
-    return (
-      <React.Fragment>
-        <View style={styles.containerStyle}>
-          <View style={styles.navBar1}>
-            <View style={styles.leftContainer1}>
-              <Text style={[styles.text, { textAlign: 'left' }]}>{}</Text>
-            </View>
-            <Text style={styles.textSty4}>{this.state.username}</Text>
-            <View style={styles.rightContainer1}>
-              <View style={styles.rightIcon1} />
-              <TouchableOpacity onPress={this.showActionSheet}>
-                <Image
-                  source={require('../images/setting.png')}
-                  style={{ width: 60, height: 30 }}
-                />
-              </TouchableOpacity>
-              <ActionSheet
-                ref={(o) => {
-                  this.ActionSheet = o;
-                }}
-                title='User Settings'
-                options={optionArray}
-                cancelButtonIndex={1}
-                destructiveIndex={0}
-                onPress={(index) => {
-                  if (optionArray[index] === 'Logout') {
-                    this.logout();
-                  }
-                }}
-              />
-            </View>
-          </View>
-        </View>
-        <ScrollView>
+    } else {
+      //Photo List/Full View of images
+      return (
+        <React.Fragment>
           <View style={styles.containerStyle}>
-            {/* Profile Pic, Follwers, Follwing Block */}
-
-            <View style={styles.navBar2}>
-              <View style={styles.leftContainer2}>
-                <Image
-                  source={require('../images/profilePic.png')}
-                  style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
+            <View style={styles.navBar1}>
+              <View style={styles.leftContainer1}>
+                <Text style={[styles.text, { textAlign: 'left' }]}>{}</Text>
+              </View>
+              <Text style={styles.textSty4}>{this.state.username}</Text>
+              <View style={styles.rightContainer1}>
+                <View style={styles.rightIcon1} />
+                <TouchableOpacity onPress={this.showActionSheet}>
+                  <Image
+                    source={require('../images/setting.png')}
+                    style={{ width: 60, height: 30 }}
+                  />
+                </TouchableOpacity>
+                <ActionSheet
+                  ref={(o) => (this.ActionSheet = o)}
+                  title={'User Settings'}
+                  options={optionArray}
+                  cancelButtonIndex={1}
+                  destructiveIndex={0}
+                  onPress={(index) => {
+                    if (optionArray[index] == 'Logout') {
+                      this.logout();
+                    }
+                  }}
                 />
               </View>
-
-              <TouchableOpacity
-                onPress={() => {
-                  this.props.navigation.navigate('FollowList', {
-                    arrayOfUids: this.state.followingLst,
-                    title: 'Following',
-                  });
-                }}
-              >
-                <Text style={styles.textSty}>
-                  {this.state.followingLst.length} {'\n'}
-                  <Text style={styles.textSty3}>Following</Text>
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.rightContainer2}
-                onPress={() => {
-                  this.props.navigation.navigate('FollowList', {
-                    arrayOfUids: this.state.followersLst,
-                    title: 'Followers',
-                  });
-                }}
-              >
-                <View>
-                  <Text style={styles.textSty}>
-                    {this.state.followersLst.length} {'\n'}{' '}
-                    <Text style={styles.textSty3}>Followers</Text>{' '}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-
-            {/* DISPLAY NAME */}
-            <View style={styles.profilePic}>
-              <Text style={styles.textSty2}>{this.state.name}</Text>
-            </View>
-            {/* DIFFERENT VIEW TYPE FEED BUTTONS */}
-            <View style={styles.navBut}>
-              <TouchableOpacity onPress={() => this.onListViewPressedP()}>
-                <Image
-                  source={require('../images/fullFeedF.png')}
-                  style={{
-                    opacity: this.state.selectListButtonP ? 1 : 0.3,
-                    width: 100,
-                    height: 50,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.onGridViewPressedP()}>
-                <Image
-                  source={require('../images/gridFeedF.png')}
-                  style={{
-                    opacity: this.state.selectGridButtonP ? 1 : 0.3,
-                    width: 100,
-                    height: 50,
-                  }}
-                />
-              </TouchableOpacity>
             </View>
           </View>
+          <ScrollView>
+            <View style={styles.containerStyle}>
+              {/*Profile Pic, Follwers, Follwing Block*/}
 
-          {this.state.selectListButtonP ? (
-            <MemeList
-              loadMemes={this.componentDidMount}
-              memes={this.state.memes}
-            />
-          ) : (
-            <MemeGrid
-              loadMemes={this.componentDidMount}
-              memes={this.state.memes}
-            />
-          )}
-        </ScrollView>
-      </React.Fragment>
-    );
+              <View style={styles.navBar2}>
+                <View style={styles.leftContainer2}>
+                  <Image
+                    source={require('../images/profilePic.png')}
+                    style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
+                  />
+                </View>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate('FollowList', {
+                      arrayOfUids: this.state.followingLst,
+                      title: 'Following',
+                    });
+                  }}
+                >
+                  <Text style={styles.textSty}>
+                    {this.state.followingLst.length} {'\n'}
+                    <Text style={styles.textSty3}>Following</Text>
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.rightContainer2}
+                  onPress={() => {
+                    this.props.navigation.navigate('FollowList', {
+                      arrayOfUids: this.state.followersLst,
+                      title: 'Followers',
+                    });
+                  }}
+                >
+                  <View>
+                    <Text style={styles.textSty}>
+                      {this.state.followersLst.length} {'\n'}{' '}
+                      <Text style={styles.textSty3}>Followers</Text>{' '}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+              {/*DISPLAY NAME*/}
+              <View style={styles.profilePic}>
+                <Text style={styles.textSty2}>{this.state.name}</Text>
+              </View>
+              {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
+              <View style={styles.navBut}>
+                <TouchableOpacity onPress={() => this.onListViewPressedP()}>
+                  <Image
+                    source={require('../images/fullFeedF.png')}
+                    style={{
+                      opacity: this.state.selectListButtonP ? 1 : 0.3,
+                      width: 100,
+                      height: 50,
+                    }}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.onGridViewPressedP()}>
+                  <Image
+                    source={require('../images/gridFeedF.png')}
+                    style={{
+                      opacity: this.state.selectGridButtonP ? 1 : 0.3,
+                      width: 100,
+                      height: 50,
+                    }}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {this.state.selectListButtonP ? (
+              <MemeList
+                loadMemes={this.componentDidMount}
+                memes={this.state.memes}
+              />
+            ) : (
+              <MemeGrid
+                loadMemes={this.componentDidMount}
+                memes={this.state.memes}
+              />
+            )}
+          </ScrollView>
+        </React.Fragment>
+      );
+    }
   }
 }
 
@@ -343,7 +383,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 50,
+    paddingTop: 50, //50
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -368,13 +408,14 @@ const styles = StyleSheet.create({
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 50,
+    paddingTop: 50, //50
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 360,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
+    backgroundColor: 'white',
   },
   navBut: {
     height: 50,
@@ -410,6 +451,8 @@ const styles = StyleSheet.create({
     paddingRight: 2,
     paddingLeft: 2,
     paddingHorizontal: 10,
+    //fontWeight: 'bold',
+    //color: '#778899',
   },
   textSty4: {
     fontSize: 20,
@@ -437,12 +480,13 @@ const styles = StyleSheet.create({
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 10,
+    paddingTop: 10, //50
     flexDirection: 'row',
     alignItems: 'center',
     fontSize: 360,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
+    backgroundColor: 'white',
   },
   textshadow: {
     fontSize: 40,
@@ -476,7 +520,7 @@ const styles = StyleSheet.create({
   },
   navBar1: {
     height: 95,
-    paddingTop: 50,
+    paddingTop: 50, //50
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -527,12 +571,14 @@ const styles = StyleSheet.create({
   },
   leftContainer2: {
     flex: 1,
+    //flexDirection: 'row',
     paddingRight: 2,
     paddingHorizontal: 25,
   },
   rightContainer2: {
     flex: 1,
     flexDirection: 'row',
+    //justifyContent: 'flex-end',
     alignItems: 'center',
     paddingLeft: 1,
     paddingHorizontal: 25,
