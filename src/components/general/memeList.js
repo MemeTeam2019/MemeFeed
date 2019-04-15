@@ -43,16 +43,7 @@ class MemeList extends React.Component {
         data={this.props.memes}
         renderItem={this.renderTile.bind(this)}
         onEndReached={() => {
-          // Ensuring there are actually memes to load
-          if (this.props.memes.length == this.state.memesLoaded) {
-            newLoadCount = this.state.memesLoaded + 60;
-            this.setState({
-              memesLoaded: newLoadCount,
-            });
-
-            // Call parent function
-            this.props.loadMemes(newLoadCount);
-          }
+          this.props.loadMemes();
         }}
       />
     );

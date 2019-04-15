@@ -80,15 +80,11 @@ class MemeGrid extends React.Component {
         itemsPerRow={3}
         onEndReached={() => {
           // Ensuring there are actually memes to load
-          if (memes.length === memesLoaded) {
-            const newLoadCount = memesLoaded + 60;
-            this.setState({
-              memesLoaded: newLoadCount,
-            });
 
-            // Call parent function
-            // this.props.loadMemes(newLoadCount);
-          }
+          console.log('on end reached')
+          // Call parent function
+          this.props.loadMemes();
+
         }}
       />
     );
