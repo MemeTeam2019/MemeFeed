@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontSize: 18,
     marginTop: 5,
-    fontFamily: 'AvenirNext-Bold',
+    fontFamily: 'AvenirNext-Regular',
 
   },
   input: {
