@@ -151,7 +151,7 @@ class ButtonBar extends React.Component {
 
   render() {
     return (
-      
+
       <View style={styles.buttonBar}>
         <TouchableOpacity
           style={{

@@ -7,166 +7,18 @@ export default class LoginScreen extends React.Component {
   };
   constructor(){
     super();
-    this.iconSelected = {
-      1: '../images/userIcons/icon777.png',
-      2: '../images/userIcons/icon666.png',
-      3: '../images/userIcons/icon999.png',
-      4: '../images/userIcons/icon111.png',
-      5: '../images/userIcons/icon222.png',
-      6: '../images/userIcons/icon888.png',
-      7: '../images/userIcons/icon444.png',
-      8: '../images/userIcons/icon333.png',
-      9: '../images/userIcons/icon555.png',
-    };
-    this.iconNotSelected = {
-      1: '../images/userIcons/iconG7.png',
-      2: '../images/userIcons/iconG6.png',
-      3: '../images/userIcons/iconG9.png',
-      4: '../images/userIcons/iconG1.png',
-      5: '../images/userIcons/iconG2.png',
-      6: '../images/userIcons/iconG8.png',
-      7: '../images/userIcons/iconG4.png',
-      8: '../images/userIcons/iconG3.png',
-      9: '../images/userIcons/iconG5.png',
-    };
     this.state = {
-      selected1: false,
-      selected2: false,
-      selected3: false,
-      selected4: false,
-      selected5: false,
-      selected6: false,
-      selected7: false,
-      selected8: false,
-      selected9: false,
-    };
+      selectedIcon: false,
+    }
   };
 
-  choose1 = () => {
+  _onPressButton = async (newIcon) => {
+    const oldIcon = this.state.selectedIcon;
     this.setState({
-      selected1: false,
-      selected2: true,
-      selected3: true,
-      selected4: true,
-      selected5: true,
-      selected6: true,
-      selected7: true,
-      selected8: true,
-      selected9: true,
+      selectedIcon: newIcon === oldIcon ? false : newIcon,
     });
   };
 
-  choose2 = () => {
-    this.setState({
-      selected1: true,
-      selected2: false,
-      selected3: true,
-      selected4: true,
-      selected5: true,
-      selected6: true,
-      selected7: true,
-      selected8: true,
-      selected9: true,
-    });
-  };
-
-  choose3 = () => {
-    this.setState({
-      selected1: true,
-      selected2: true,
-      selected3: false,
-      selected4: true,
-      selected5: true,
-      selected6: true,
-      selected7: true,
-      selected8: true,
-      selected9: true,
-    });
-  };
-
-  choose4 = () => {
-    this.setState({
-      selected1: true,
-      selected2: true,
-      selected3: true,
-      selected4: false,
-      selected5: true,
-      selected6: true,
-      selected7: true,
-      selected8: true,
-      selected9: true,
-    });
-  };
-
-  choose5 = () => {
-    this.setState({
-      selected1: true,
-      selected2: true,
-      selected3: true,
-      selected4: true,
-      selected5: false,
-      selected6: true,
-      selected7: true,
-      selected8: true,
-      selected9: true,
-    });
-  };
-
-  choose6 = () => {
-    this.setState({
-      selected1: true,
-      selected2: true,
-      selected3: true,
-      selected4: true,
-      selected5: true,
-      selected6: false,
-      selected7: true,
-      selected8: true,
-      selected9: true,
-    });
-  };
-
-  choose7 = () => {
-    this.setState({
-      selected1: true,
-      selected2: true,
-      selected3: true,
-      selected4: true,
-      selected5: true,
-      selected6: true,
-      selected7: false,
-      selected8: true,
-      selected9: true,
-    });
-  };
-
-  choose8 = () => {
-    this.setState({
-      selected1: true,
-      selected2: true,
-      selected3: true,
-      selected4: true,
-      selected5: true,
-      selected6: true,
-      selected7: true,
-      selected8: false,
-      selected9: true,
-    });
-  };
-
-  choose9 = () => {
-    this.setState({
-      selected1: true,
-      selected2: true,
-      selected3: true,
-      selected4: true,
-      selected5: true,
-      selected6: true,
-      selected7: true,
-      selected8: true,
-      selected9: false,
-    });
-  };
 
   render() {
     return (
@@ -181,37 +33,49 @@ export default class LoginScreen extends React.Component {
         <View style={styles.navBar}>
 
           <View style={styles.leftContainer}>
-            <TouchableOpacity onPress={() => this.choose1()}>
+            <TouchableOpacity onPress={this._onPressButton.bind(this, 1)}>
               <Image
-                source={require('../images/userIcons/icon777.png')}
+                source={this.state.selectedIcon === 1 ||
+                        this.state.selectedIcon === false
+                        ? require('../images/userIcons/icon777.png')
+                        : require('../images/userIcons/iconG7.png')
+                      }
                 style={{width: 80,
                         height: 80,
                         borderRadius: 80/2,
-                        opacity: this.state.selected1 ? 0.3 : 1}}
+                        }}
               />
             </TouchableOpacity>
             </View>
 
           <View style={styles.middleContainer}>
-            <TouchableOpacity onPress={() => this.choose2()}>
+            <TouchableOpacity onPress={this._onPressButton.bind(this, 2)}>
               <Image
-                source={require('../images/userIcons/icon666.png')}
+                source={this.state.selectedIcon === 2 ||
+                        this.state.selectedIcon === false
+                        ? require('../images/userIcons/icon666.png')
+                        : require('../images/userIcons/iconG6.png')
+                      }
                 style={{width: 80,
                         height: 80,
                         borderRadius: 80/2,
-                        opacity: this.state.selected2 ? 0.3 : 1}}
+                        }}
               />
             </TouchableOpacity>
           </View>
 
           <View style={styles.rightContainer}>
-            <TouchableOpacity onPress={() => this.choose3()}>
+            <TouchableOpacity onPress={this._onPressButton.bind(this, 3)}>
               <Image
-                source={require('../images/userIcons/icon999.png')}
+                source={this.state.selectedIcon === 3 ||
+                        this.state.selectedIcon === false
+                        ? require('../images/userIcons/icon999.png')
+                        : require('../images/userIcons/iconG9.png')
+                      }
                 style={{width: 80,
                         height: 80,
                         borderRadius: 80/2,
-                        opacity: this.state.selected3 ? 0.3 : 1}}
+                        }}
               />
             </TouchableOpacity>
           </View>
@@ -221,37 +85,49 @@ export default class LoginScreen extends React.Component {
         <View style={styles.navBar}>
 
           <View style={styles.leftContainer}>
-            <TouchableOpacity onPress={() => this.choose4()}>
+            <TouchableOpacity onPress={this._onPressButton.bind(this, 4)}>
               <Image
-                source={require('../images/userIcons/icon111.png')}
+                source={this.state.selectedIcon === 4 ||
+                        this.state.selectedIcon === false
+                        ? require('../images/userIcons/icon111.png')
+                        : require('../images/userIcons/iconG1.png')
+                      }
                 style={{width: 80,
                         height: 80,
                         borderRadius: 80/2,
-                        opacity: this.state.selected4 ? 0.3 : 1}}
+                        }}
               />
             </TouchableOpacity>
           </View>
 
           <View style={styles.middleContainer}>
-            <TouchableOpacity onPress={() => this.choose5()}>
+            <TouchableOpacity onPress={this._onPressButton.bind(this, 5)}>
               <Image
-                source={require('../images/userIcons/icon222.png')}
+                source={this.state.selectedIcon === 5 ||
+                        this.state.selectedIcon === false
+                        ? require('../images/userIcons/icon222.png')
+                        : require('../images/userIcons/iconG2.png')
+                      }
                 style={{width: 80,
                         height: 80,
                         borderRadius: 80/2,
-                        opacity: this.state.selected5 ? 0.3 : 1}}
+                        }}
               />
             </TouchableOpacity>
           </View>
 
           <View style={styles.rightContainer}>
-            <TouchableOpacity onPress={() => this.choose6()}>
+            <TouchableOpacity onPress={this._onPressButton.bind(this, 6)}>
               <Image
-                source={require('../images/userIcons/icon888.png')}
+                source={this.state.selectedIcon === 6 ||
+                        this.state.selectedIcon === false
+                        ? require('../images/userIcons/icon888.png')
+                        : require('../images/userIcons/iconG8.png')
+                      }
                 style={{width: 80,
                         height: 80,
                         borderRadius: 80/2,
-                        opacity: this.state.selected6 ? 0.3 : 1}}
+                        }}
               />
             </TouchableOpacity>
           </View>
@@ -261,37 +137,49 @@ export default class LoginScreen extends React.Component {
         <View style={styles.navBar}>
 
           <View style={styles.leftContainer}>
-            <TouchableOpacity onPress={() => this.choose7()}>
+            <TouchableOpacity onPress={this._onPressButton.bind(this, 7)}>
               <Image
-                source={require('../images/userIcons/icon333.png')}
+                source={this.state.selectedIcon === 7 ||
+                        this.state.selectedIcon === false
+                        ? require('../images/userIcons/icon333.png')
+                        : require('../images/userIcons/iconG3.png')
+                      }
                 style={{width: 80,
                         height: 80,
                         borderRadius: 80/2,
-                        opacity: this.state.selected7 ? 0.3 : 1}}
+                        }}
               />
             </TouchableOpacity>
           </View>
 
           <View style={styles.middleContainer}>
-            <TouchableOpacity onPress={() => this.choose8()}>
+            <TouchableOpacity onPress={this._onPressButton.bind(this, 8)}>
               <Image
-                source={require('../images/userIcons/icon444.png')}
+                source={this.state.selectedIcon === 8 ||
+                        this.state.selectedIcon === false
+                        ? require('../images/userIcons/icon444.png')
+                        : require('../images/userIcons/iconG4.png')
+                      }
                 style={{width: 80,
                         height: 80,
                         borderRadius: 80/2,
-                        opacity: this.state.selected8 ? 0.3 : 1}}
+                        }}
               />
             </TouchableOpacity>
           </View>
 
           <View style={styles.rightContainer}>
-            <TouchableOpacity onPress={() => this.choose9()}>
+            <TouchableOpacity onPress={this._onPressButton.bind(this, 9)}>
               <Image
-                source={require('../images/userIcons/icon555.png')}
+                source={this.state.selectedIcon === 9 ||
+                        this.state.selectedIcon === false
+                        ? require('../images/userIcons/icon555.png')
+                        : require('../images/userIcons/iconG5.png')
+                      }
                 style={{width: 80,
                         height: 80,
                         borderRadius: 80/2,
-                        opacity: this.state.selected9 ? 0.3 : 1}}
+                        }}
               />
             </TouchableOpacity>
           </View>
@@ -326,7 +214,6 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
-    backgroundColor: 'blue',
     marginTop: '20%',
     marginBottom: '3%'
   },
