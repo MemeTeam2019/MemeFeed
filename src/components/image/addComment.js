@@ -96,46 +96,38 @@ class AddComment extends React.Component {
 
   render() {
     return (
-      <KeyboardAvoidingView
-        keyboardVerticalOffset={
-          Header.HEIGHT + Math.max(35, this.state.height) - 12
-        } // adjust the value here if you need more padding
-        style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}
-        behavior='position'
+      <View
+        style={[
+          styles.container,
+          { height: Math.max(35, this.state.height) + 10 },
+        ]}
       >
-        <View
-          style={[
-            styles.container,
-            { height: Math.max(35, this.state.height) + 10 },
-          ]}
-        >
-          <TextInput
-            {...this.props}
-            multiline
-            placeholder='Add a comment...'
-            autoCapitalize='none'
-            onChangeText={(text) => this.setState({ text })}
-            onContentSizeChange={(event) => {
-              this.setState({
-                height: Math.min(120, event.nativeEvent.contentSize.height),
-              });
-            }}
-            style={[styles.input, { height: Math.max(35, this.state.height) }]}
-            value={this.state.text}
-          />
+        <TextInput
+          {...this.props}
+          multiline
+          placeholder='Add a comment...'
+          autoCapitalize='none'
+          onChangeText={(text) => this.setState({ text })}
+          onContentSizeChange={(event) => {
+            this.setState({
+              height: Math.min(120, event.nativeEvent.contentSize.height),
+            });
+          }}
+          style={[styles.input, { height: Math.max(35, this.state.height) }]}
+          value={this.state.text}
+        />
 
-          <Button
-            onPress={this._onPressButton}
-            style={[
-              styles.postButton,
-              { height: Math.max(35, this.state.height) },
-            ]}
-            disabled={!this.state.text.trim()}
-            title='Post'
-            color='#000'
-          />
-        </View>
-      </KeyboardAvoidingView>
+        <Button
+          onPress={this._onPressButton}
+          style={[
+            styles.postButton,
+            { height: Math.max(35, this.state.height) },
+          ]}
+          disabled={!this.state.text.trim()}
+          title='Post'
+          color='#000'
+        />
+      </View>
     );
   }
 }

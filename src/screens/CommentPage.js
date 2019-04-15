@@ -1,5 +1,10 @@
 import React from 'react';
-import { StyleSheet, View, ScrollView } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  KeyboardAvoidingView,
+} from 'react-native';
 import firebase from 'react-native-firebase';
 
 import AddComment from '../components/image/addComment';
@@ -167,28 +172,28 @@ class CommentPage extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <ScrollView
-          ref={(ref) => {
-            this.scrollView = ref;
-          }}
-          onContentSizeChange={() => {
-            this.scrollView.scrollToEnd({ animated: true });
-          }}
-        >
-          <TileHeader />
-          <Photo imageUrl={this.state.imageuri} />
-          <CommentList
+        <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={95}>
+          <ScrollView
+            ref={(ref) => {
+              this.scrollView = ref;
+            }}
+          >
+            <TileHeader />
+            <Photo imageUrl={this.state.imageuri} />
+            <CommentList
+              memeId={this.state.memeId}
+              comments={this.state.comments}
+              fetchComments={this.fetchComments}
+              commentsLoaded={this.state.commentsLoaded}
+              commentCount={this.state.commentCount}
+            />
+          </ScrollView>
+          <AddComment
             memeId={this.state.memeId}
-            comments={this.state.comments}
-            fetchComments={this.fetchComments}
-            commentsLoaded={this.state.commentsLoaded}
-            commentCount={this.state.commentCount}
+            handleNewComment={this.handleNewComment}
+            style={styles.addComment}
           />
-        </ScrollView>
-        <AddComment
-          memeId={this.state.memeId}
-          handleNewComment={this.handleNewComment}
-        />
+        </KeyboardAvoidingView>
       </View>
     );
   }
@@ -203,5 +208,8 @@ const styles = StyleSheet.create({
     height: '100%',
     position: 'absolute',
     bottom: 0,
+  },
+  addComment: {
+    position: 'absolute',
   },
 });
