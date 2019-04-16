@@ -5,89 +5,98 @@ import {
   KeyboardAvoidingView,
   Button,
   TextInput,
-  Alert,
-  ImageBackground,
-  Image
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import { Header } from 'react-navigation';
 
-const user = firebase.auth().currentUser;
 class AddComment extends React.Component {
-
   constructor(props) {
     super(props);
+    this._onPressButton = this._onPressButton.bind(this);
     this.state = {
-      text: '', 
-      height: 0
+      text: '',
+      height: 0,
     };
   }
 
-  _onPressButton = (content, memeId) => {
+  _onPressButton = () => {
     const user = firebase.auth().currentUser;
-    console.log("user "+user.uid+" commented ==============")
-    const date = Math.round(+new Date()/1000);
+    const date = Math.round(+new Date() / 1000);
+    const memeId = this.props.memeId;
 
-    var countRef = firebase.firestore().collection("Comments/"+memeId+"/Info").doc('CommentInfo');
-    var getDoc = countRef.get()
-      .then(doc => {
+    const countRef = firebase
+      .firestore()
+      .collection(`Comments/${memeId}/Info`)
+      .doc('CommentInfo');
+    countRef
+      .get()
+      .then((doc) => {
         if (!doc.exists) {
-
-          countRef.set({
-            count: 1
-          }, {merge: true});
-
+          countRef.set(
+            {
+              count: 1,
+            },
+            { merge: true }
+          );
         } else {
-
-          const {count} = doc.data();
-          newCount = count + 1
-
-          countRef.set({
-            count: newCount
-          }, {merge: true});
-
+          const { count } = doc.data();
+          countRef.set(
+            {
+              count: count + 1,
+            },
+            { merge: true }
+          );
         }
-    
-    })
-    .catch(err => {
-      console.log('Error getting document', err);
-    });
+      })
+      .catch((err) => {
+        console.log('Error getting document', err);
+      });
 
+    const ref = firebase.firestore().collection(`Comments/${memeId}/Text`);
 
-    var ref = firebase.firestore().collection("Comments/"+memeId+"/Text")
-
-    var getDoc = ref.get()
-      .then(doc => {
+    ref
+      .get()
+      .then((doc) => {
         if (!doc.exists) {
           // Add necessary infrastruction
-          firebase.firestore().collection("Comments").doc(memeId);
-          firebase.firestore().collection("Comments").doc(memeId).collection("Text");
+          firebase
+            .firestore()
+            .collection('Comments')
+            .doc(memeId);
+          firebase
+            .firestore()
+            .collection('Comments')
+            .doc(memeId)
+            .collection('Text');
         }
 
         // Add this comment to the proper folder
-        firebase.firestore().collection("Comments/"+memeId+"/Text").add({
-          uid: user.uid,
-          text: this.state.text,
-          time: date
-        }).then(ref => {
-          this.setState({
-            text: "",
+        firebase
+          .firestore()
+          .collection(`Comments/${memeId}/Text`)
+          .add({
+            uid: user.uid,
+            text: this.state.text.trim(),
+            time: date,
+          })
+          .then(() => {
+            this.setState({
+              text: '',
+            });
+            console.log('Added document with ID: ', ref.id);
           });
-          console.log('Added document with ID: ', ref.id);
-        });
         console.log('Document data:', doc.data());
-        
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('Error getting document', err);
       });
-  }
+  };
 
   render() {
     return (
       <KeyboardAvoidingView
         keyboardVerticalOffset = {Header.HEIGHT + Math.max(35, this.state.height)-12} // adjust the value here if you need more padding
-        style={{position: 'absolute', left: 0, right: 0, bottom: 0}} 
+        style={{position: 'absolute', left: 0, right: 0, bottom: 0}}
         behavior="position"
       >
 
@@ -111,30 +120,27 @@ class AddComment extends React.Component {
               value={this.state.text}
             >
             </TextInput>
-    
 
-           <Button
+
+            <TouchableOpacity
               onPress={this._onPressButton.bind(this,this.state.text, this.props.memeId)}
-              style={[styles.postButton, {height: Math.max(35, this.state.height)}]}
-              title="Post"
-              color='#000'
-            />
-
+              style={styles.postButton}
+            >
+              <Text style={styles.postText}>
+                Post
+              </Text>
+            </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
-
     );
   }
 }
 
- 
-        
-
-export default AddComment; 
+export default AddComment;
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row', 
+    flexDirection: 'row',
     width: '100%',
     flex: 1,
     position: 'absolute',
@@ -142,29 +148,27 @@ const styles = StyleSheet.create({
     bottom:0
   },
   postButton: {
-
+    flex: 1,
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    marginRight: '4%'
   },
+  postText: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: 18,
+    marginTop: 5,
+    fontFamily: 'AvenirNext-Regular',
+  },
+  postButton: {},
   input: {
-    width: 300,
+    width: '80%',
     backgroundColor: '#fff',
     borderRadius: 25,
     paddingHorizontal: 15,
     marginLeft: '3%',
     fontSize: 18,
     borderWidth: 0.5,
-    borderColor: '#d6d7da'
+    borderColor: '#d6d7da',
   },
 });
-
-
-    //   var addDoc = firebase.firestore().collection("Comments").doc(this.props.memeId)
-    //               .collection("Text").add({
-    //   uid: user.uid,
-    //   text: this.state.text,
-    //   time: date
-    // }).then(ref => {
-    //   this.setState({
-    //     text: "",
-    //   });
-    //   console.log('Added document with ID: ', ref.id);
-    // });

@@ -2,11 +2,11 @@ import React from 'react';
 import { Image, TouchableOpacity, View, Modal, StyleSheet } from 'react-native';
 import firebase from 'react-native-firebase';
 
-import Tile from '../components/image/tile';
-import MemeGrid from '../components/general/memeGrid';
-import MemeList from '../components/general/memeList';
+import Tile from '../components/image/Tile';
+import MemeGrid from '../components/general/MemeGrid';
+import MemeList from '../components/general/MemeList';
 
-class HomeFeed extends React.Component {
+class FriendFeed extends React.Component {
   static navigationOptions = {
     header: null,
   };
@@ -16,10 +16,8 @@ class HomeFeed extends React.Component {
     this.unsubscribe = null;
     this.ref = firebase
       .firestore()
-      .collection('Feeds')
-      .doc(firebase.auth().currentUser.uid)
-      .collection('Likes')
-      .orderBy('time', 'desc');
+      .collection('Users')
+      .doc(firebase.auth().currentUser.uid);
     this.state = {
       memesLoaded: 30,
       imageuri: '',
@@ -36,46 +34,76 @@ class HomeFeed extends React.Component {
     };
   }
 
-
-  componentDidMount(memesLoaded) {
+  /**
+   * Load memes which people I follow have reacted positively to
+   */
+  componentDidMount() {
     this._isMounted = true;
     if (this._isMounted) {
+      this.unsubscribe = firebase
+        .firestore()
+        .collection('Users')
+        .doc(firebase.auth().currentUser.uid)
+        .onSnapshot(doc => {
+          // The memes which my followers have reacted positively to
+          let memes = [];
 
-      this.unsubscribe = this.ref
-        .limit(9) // limit to 3
-        //.where('posReacts', '>', 0)
-        .onSnapshot(this.onCollectionUpdate);
+          // Save memeIds to ensure no duplicates
+          let memeIds = new Set();
+
+          const { followingLst } = doc.data();
+
+          var i;
+          // go through the people we are following and get their memes
+          for (i = 0; i < followingLst.length; i++) {
+            // grab friend uid
+            let friendUid = followingLst[i];
+            // go thru friends reacts
+            firebase
+              .firestore()
+              .collection('Reacts/' + friendUid + '/Likes')
+              .orderBy('time', 'desc')
+              .limit(this.state.memesLoaded) //.limit(this.state.memesLoaded)
+              .get()
+              .then(snapshot => {
+                // look at each react
+                snapshot.forEach(docMeme => {
+                  const { likedFrom, rank, time, url } = docMeme.data();
+                  // haven't added yet and highly ranked
+                  if (!memeIds.has(docMeme.id) && rank > 1) {
+                    memeIds.add(docMeme.id);
+                    let from = friendUid;
+                    if (friendUid == firebase.auth().currentUser.uid) {
+                      from = likedFrom;
+                    }
+                    console.log(docMeme.data(), friendUid);
+                    memes.push({
+                      key: docMeme.id,
+                      doc, // DocumentSnapshot
+                      src: url,
+                      time,
+                      likedFrom,
+                      postedBy: from,
+                      poster: friendUid,
+                    });
+
+                    function compareTime(a, b) {
+                      if (a.time < b.time) return 1;
+                      if (a.time > b.time) return -1;
+                      return 0;
+                    }
+                    sortedMemes = memes.sort(compareTime);
+                    this.setState({
+                      memes: sortedMemes,
+                      isLoading: false,
+                    });
+                  }
+                });
+              });
+          }
+        });
     }
   }
-
-  // function for extracting Firebase responses to the state
-  onCollectionUpdate = (querySnapshot) => {
-    const memes = [];
-    querySnapshot.forEach((doc) => {
-      const { time, url, posReacts, likedFrom, likers } = doc.data();
-      console.log('YOOOOO')
-      if (posReacts > 0) {
-        console.log(posReacts)
-        var recentLikedFrom = likedFrom[likedFrom.length - 1];
-        var recentLiker = likers[likers.length - 1];
-        memes.push({
-          key: doc.id,
-          doc, // DocumentSnapshot
-          src: url,
-          time,
-          likedFrom: recentLikedFrom,
-          // this will need to be the last item on the list
-          postedBy: recentLiker,
-          poster: recentLiker,
-        });
-      }
-
-      this.setState({
-        memes,
-        isLoading: false,
-      });
-    });
-  };
 
   componentWillUnmount() {
     this._isMounted = false;
@@ -168,23 +196,17 @@ class HomeFeed extends React.Component {
           </View>
         </Modal>
       );
-    } else if (this.state.memes.length == 0) {
-      return (
-        <View style={styles.containerStyle}>
-          <View style={styles.navBar}>
-            <Image
-              source={require('../images/banner3.png')}
-              style={{ width: 250, height: 50 }}
-            />
+    }else if(this.state.memes.length == 0){
+        return(
+          <View style={styles.containerStyle}>
+            <View style={styles.navBar}>
+              <Image source={require('../images/banner3.png')} style={{ width: 250, height: 50}} />
+            </View>
+            <View style={styles.containerStyle2}>
+              <Image source={require('../components/misc/emptyFriendTile.png')} style={styles.tile} />
+            </View>
           </View>
-          <View style={styles.containerStyle2}>
-            <Image
-              source={require('../components/misc/emptyFriendTile.png')}
-              style={styles.tile}
-            />
-          </View>
-        </View>
-      );
+        )
     } else {
       return (
         <View style={styles.containerStyle}>
@@ -232,7 +254,7 @@ class HomeFeed extends React.Component {
     }
   }
 }
-export default HomeFeed;
+export default FriendFeed;
 const styles = StyleSheet.create({
   containerStyle: {
     justifyContent: 'center',
@@ -274,18 +296,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   tile: {
-    width: 300,
-    height: 300,
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 10,
-    alignItems: 'center',
-  },
-  containerStyle2: {
-    flex: 2,
-    backgroundColor: '#ffffff',
-    alignItems: 'center',
-    paddingLeft: 5,
-    paddingRight: 5,
-  },
+  width: 300,
+  height: 300,
+  justifyContent: 'center',
+  paddingHorizontal: 20,
+  paddingTop: 10,
+  alignItems: 'center'
+},
+containerStyle2: {
+  flex: 2,
+  backgroundColor: "#ffffff",
+  alignItems: 'center',
+  paddingLeft: 5,
+  paddingRight: 5,
+}
+
 });

@@ -7,11 +7,11 @@ import { withNavigation } from 'react-navigation';
 /**
  * Handles user reacts for a specific meme, sets the state of tile.js and
  * updates the appropriate firebase documents.
- * 
+ *
  * Used by:
  *    tile.js
  *    commentList.js
- * 
+ *
  * Props:
  *    memeId (String): The id of the Firebase document in the Memes collection
  *    imageUrl (String): The image URL of the meme
@@ -43,6 +43,10 @@ class ButtonBar extends React.Component {
     };
   }
 
+  componentWillUnmount() {
+    this.unsubscribe = null
+  }
+
   componentDidMount() {
     const user = firebase.auth().currentUser;
     const memeId = this.props.memeId;
@@ -70,6 +74,7 @@ class ButtonBar extends React.Component {
   }
 
   _onPressButton = async (newReact) => {
+
     const oldReact = this.state.selectedButton;
     this.setState({
       selectedButton: newReact === oldReact ? null : newReact,
@@ -94,7 +99,6 @@ class ButtonBar extends React.Component {
     reactRef.get().then((likesSnapshot) => {
       const data = likesSnapshot.data();
       var hasReacted = likesSnapshot.exists && data.rank !== -1;
-      console.log('LIKIND DAS MEME MIA ALTIERI');
       console.log(this.props.postedBy);
       reactRef.set({
         rank: oldReact === newReact ? -1 : newReact,
@@ -122,6 +126,106 @@ class ButtonBar extends React.Component {
           console.log(err);
         });
     });
+
+
+    // grab this users follower list
+    // go through each follower,and get that f_uid
+    // add to the collection Feeds/f_uid and add that react
+    this.unsubscribe = firebase
+      .firestore()
+      .collection('Users')
+      .doc(firebase.auth().currentUser.uid)
+      .get()
+      .then(async (doc) => {
+        const { followersLst } = doc.data();
+        // go through the people are following us
+        var i;
+        for (i = 0; i < followersLst.length; i++) {
+          // grab friend uid
+          let friendUid = followersLst[i];
+          firebase
+            .firestore()
+            .collection('Feeds')
+            .doc(friendUid)
+            .collection('Likes')
+            .doc(memeId)
+            .get()
+            .then(async (doc) => {
+
+              if (doc.exists) {
+                const { posReacts, time } = doc.data();
+                // originally did not like the meme but now does
+                // or first time liking the meme and ranking it highly
+                // then add to the total number of positive votes
+                if ((oldReact < 2 && newReact > 1 && oldReact != newReact) ||
+                    (oldReact === null && newReact > 1)) {
+                    const newPosReacts = posReacts+1
+                    firebase
+                      .firestore()
+                      .collection('Feeds')
+                      .doc(friendUid)
+                      .collection('Likes')
+                      .doc(memeId)
+                      .update({
+                        posReacts: newPosReacts,
+                        time: date,
+                        // add this user as someone that liked this meme
+                        likers:
+                          firebase.firestore.FieldValue.arrayUnion(firebase.auth().currentUser.uid),
+                        likedFrom:
+                          firebase.firestore.FieldValue.arrayUnion(this.props.postedBy),
+
+                      });
+                }
+
+                // originally liked the meme, but now does not
+                // OR unreacting to meme
+                // decrement number of posReacts
+                if ((oldReact > 1 && newReact < 2) || (oldReact === newReact) ) {
+                  var newTime = time
+                  if (newPosReacts < 1){
+                    newTime = 0
+                  }
+                  firebase
+                    .firestore()
+                    .collection('Feeds')
+                    .doc(friendUid)
+                    .collection('Likes')
+                    .doc(memeId)
+                    .update({
+                      posReacts: posReacts-1,
+                      time: newTime,
+                      // remove this user as someone that liked this meme
+                      likers:
+                        firebase.firestore.FieldValue.arrayRemove(firebase.auth().currentUser.uid),
+                      likedFrom:
+                        firebase.firestore.FieldValue.arrayRemove(this.props.postedBy),
+
+                    });
+                  }
+              } else {
+                // doc doesn't exist
+                // only make it exist if its a positive react
+                if (newReact > 1) {
+                  firebase
+                    .firestore()
+                    .collection('Feeds')
+                    .doc(friendUid)
+                    .collection('Likes')
+                    .doc(memeId)
+                    .set({
+                      posReacts: 1,
+                      time: date,
+                      url: this.props.imageUrl,
+                      // add this user as someone that liked this meme
+                      likers: [firebase.auth().currentUser.uid],
+                      likedFrom: [this.props.postedBy]
+                    });
+                }
+              }
+            });
+          }
+        });
   };
 
   handleCommentClick() {
@@ -151,6 +255,7 @@ class ButtonBar extends React.Component {
 
   render() {
     return (
+
       <View style={styles.buttonBar}>
         <View style={styles.button}>
           <TouchableOpacity 
@@ -241,7 +346,9 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingRight: '35%'
+    paddingRight: '35%',
+    borderColor: '#D6D6D6',
+    borderTopWidth: .5,
   },
   button: {
     width: 50,

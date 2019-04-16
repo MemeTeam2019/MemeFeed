@@ -15,17 +15,17 @@ class CommentButton extends React.Component{
 	render(){
 		return(
 			<View style={styles.button}>
-          <TouchableOpacity
-            onPress={() => {
-              this.handleCommentClick();
-            }}
-          >
-            <Image
-              style={{width: 30, height: 32}}
-              source={require('../../images/Tile/chatLogo2.png')}
-            />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          onPress={() => {
+            this.handleCommentClick();
+          }}
+        >
+          <Image
+            style={{width: 30, height: 32}}
+            source={require('../../images/Tile/chatLogo2.png')}
+          />
+        </TouchableOpacity>
+      </View>
 		);
 	}
 
