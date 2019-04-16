@@ -51,7 +51,7 @@ class Tile extends React.Component {
           poster={this.props.poster}
         />
         <Photo imageUrl={this.props.imageUrl} />
-        <View style={{flex: 1, flexDirection: 'row'}}>
+        <View style={{flex: 1, flexDirection: 'row', borderColor: '#D6D6D6', borderTopWidth: .5,}}>
           <View>
             <CommentButton
               imageUrl={this.props.imageUrl}

@@ -347,8 +347,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingRight: '35%',
-    borderColor: '#D6D6D6',
-    borderTopWidth: .5,
+    
   },
   button: {
     width: 50,

@@ -10,7 +10,7 @@ import TilePage from '../screens/tilePage';
 import Profile from '../screens/profilePage';
 import HomeFeed from '../screens/homeFeed';
 import FriendProfile from '../screens/friendProfileScreen';
-import CommentPage from '../screens/commentPage';
+import CommentPage from '../screens/CommentPage';
 import FollowList from '../components/home/searchResultList';
 
 const ExploreStack = createStackNavigator(
