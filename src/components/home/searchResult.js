@@ -1,15 +1,8 @@
 import React from 'react';
-import {
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Image,
-  FlatList,
-} from 'react-native';
+import { Text, StyleSheet, TouchableOpacity, View, Image } from 'react-native';
 import { withNavigation } from 'react-navigation';
-import firebase from 'react-native-firebase';
 
+const primePic = require('../../images/primePic.png');
 
 /**
  * Component to display a search result when using the search feature.
@@ -22,117 +15,25 @@ import firebase from 'react-native-firebase';
  *    data (Object): The data obtained from the DocumentSnapshot of some user,
  *                   e.g. userSnapshot.data(). Refer to the Firebase Users
  *                   collection for the expected object properties.
- *
  */
-class SearchResult extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
+class SearchResult extends React.PureComponent {
   render() {
+    const { navigation, data, uid } = this.props;
     return (
       <React.Fragment>
         <TouchableOpacity
-          onPress={() =>
-            this.props.navigation.push('FriendProfile', {
-              uid: this.props.uid,
-            })
-          }
+          onPress={() => navigation.push('FriendProfile', { uid })}
           style={styles.resultContainer}
         >
           <View>
-            <Image
-              style={styles.profilePic}
-              source={require('../../images/primePic.png')}
-            />
+            <Image style={styles.profilePic} source={primePic} />
           </View>
           <View>
-            <Text style={styles.primaryText}>{this.props.username || ''}</Text>
-            <Text style={styles.secondaryText}>{this.props.name || ''}</Text>
+            <Text style={styles.primaryText}>{data.username}</Text>
+            <Text style={styles.secondaryText}>{data.name}</Text>
           </View>
         </TouchableOpacity>
       </React.Fragment>
-    );
-  }
-}
-
-
-/**
- * Generates a FlatList of SearchResults to display in search results or
- * when the user is viewing someone's following or follower list.
- * 
- * 
- * Used by:
- *     mainNavigator.js
- * 
- * Props:
- *     navigation.title (String): Title to be rendered in header. Will be 
- *         'Following' or 'Followers'
- *     navigation.arrayOfUids (Array[String]): Array of uids to be rendered in
- *         the FlatList. Need to query Firebase for each
- */
-class FollowList extends React.Component {
-  static navigationOptions = ({ navigation }) => {
-    return { title: navigation.getParam('title', '') };
-  };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      usersToRender: [],
-      searchTerm: '',
-    };
-  }
-
-  componentDidMount() {
-    let usersToRender = [];
-    let arrayOfUids = this.props.navigation.getParam('arrayOfUids', []);
-    usersToRender = arrayOfUids.map(async (uid) => {
-      return await firebase
-        .firestore()
-        .collection('Users')
-        .doc(uid)
-        .get()
-        .then((snapshot) => {
-          return snapshot;
-        });
-    });
-    Promise.all(usersToRender).then((fulfilled) => {
-      this.setState({ usersToRender: fulfilled });
-    });
-  }
-
-  renderResult = (snapshot = null) => {
-    if (snapshot) {
-      const data = snapshot.item.data();
-      const uid = snapshot.item.ref.id;
-      return <SearchResult data={data} uid={uid} />;
-    }
-  };
-
-  updateFilteredResults = (searchTerm = '') => {
-    let filtered = this.allResults;
-    if (searchTerm) {
-      filtered = this.allResults.filter((doc) => {
-        const { username, name } = doc.data();
-        return (
-          username.toLowerCase().startsWith(searchTerm.toLowerCase()) ||
-          name.toLowerCase().startsWith(searchTerm.toLowerCase())
-        );
-      });
-    }
-    return filtered;
-  };
-
-  render() {
-    return (
-      <View style={{ flex: 1 }}>
-        <FlatList
-          data={this.state.usersToRender}
-          renderItem={(user) => this.renderResult(user)}
-          keyExtractor={(user) => user.ref.id || -1}
-        />
-      </View>
     );
   }
 }
@@ -161,6 +62,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const SearchResultWithNav = withNavigation(SearchResult);
-
-export { SearchResultWithNav as SearchResult, FollowList };
+export default withNavigation(SearchResult);

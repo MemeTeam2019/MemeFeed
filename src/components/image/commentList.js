@@ -14,99 +14,104 @@ import Comment from './comment';
 class CommentList extends React.Component {
   constructor() {
     super();
-    this._isMounted = false;
-    this.unsubscribe = null;
+    this.renderComment.bind(this);
     this.state = {
-      commentsLoaded: 10,
+      commentsLoaded: 0,
       commentCount: 0,
       comments: [],
     };
   }
 
-  // Function for extracting Firebase responses to the state
-  onCollectionUpdate = (querySnapshot) => {
-    const comments = [];
+  componentDidMount() {
+    // Grab total # of comments
+    const countRef = firebase
+      .firestore()
+      .collection(`Comments/${this.props.memeId}/Info`)
+      .doc('CommentInfo');
+    countRef
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          const { count } = doc.data();
+          this.setState({
+            commentCount: count,
+          });
 
+          firebase
+            .firestore()
+            .collection(`Comments/${this.props.memeId}/Text`)
+            .orderBy('time', 'desc') // we choose decsending to get most recent
+            .limit(Math.min(this.state.commentCount, 5))
+            .get()
+            .then(this.updateComments);
+        }
+      })
+      .catch((err) => {
+        console.log('Error getting document', err);
+      });
+  }
+
+  fetchComments = () => {
+    const oldestDoc = this.state.oldestDoc;
+    if (oldestDoc) {
+      firebase
+        .firestore()
+        .collection(`Comments/${this.props.memeId}/Text`)
+        .orderBy('time', 'desc')
+        .limit(5)
+        .startAfter(oldestDoc)
+        .get()
+        .then(this.updateComments);
+    }
+  };
+
+  updateComments = (querySnapshot) => {
     querySnapshot.forEach((doc) => {
       const { text, uid, time } = doc.data();
-
-      var userRef = firebase
+      const userRef = firebase
         .firestore()
         .collection('Users')
         .doc(uid);
-      var getDoc = userRef
+
+      userRef
         .get()
-        .then((doc) => {
-          if (!doc.exists) {
-            console.log('No such user ' + uid + ' exist!');
-          } else {
-            const { username } = doc.data();
-            comments.push({
-              key: doc.id,
-              doc, // DocumentSnapshot
-              content: text,
-              time: time,
-              username: username,
-            });
-
-            // resort comments since nested asynchronous function
-            function compareTime(a, b) {
-              if (a.time < b.time) return -1;
-              if (a.time > b.time) return 1;
-              return 0;
-            }
-
-            sortedComments = comments.sort(compareTime);
-            this.setState({
-              comments: sortedComments,
-            });
-          }
+        .then((user) => {
+          const newComments = [];
+          const { username } = user.data();
+          newComments.push({
+            key: doc.id,
+            uid: user.id,
+            doc: user,
+            content: text,
+            time,
+            username,
+          });
+          this.setState((prevState) => {
+            const mergedComments = newComments.concat(prevState.comments);
+            return {
+              comments: mergedComments,
+              commentsLoaded: mergedComments.length,
+              oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+            };
+          });
         })
-        .catch((err) => {
-          console.log('Error getting document', err);
+        .catch((error) => {
+          console.log(error);
         });
     });
   };
 
-  componentDidMount() {
-    this._isMounted = true;
-    if (this._isMounted) {
-      // Grab total # of comments
-      var countRef = firebase
-        .firestore()
-        .collection('Comments/' + this.props.memeId + '/Info')
-        .doc('CommentInfo');
-      countRef
-        .get()
-        .then((doc) => {
-          if (doc.exists) {
-            const { count } = doc.data();
-            this.setState({
-              commentCount: count,
-            });
-
-            this.unsubscribe = firebase
-              .firestore()
-              .collection('Comments/' + this.props.memeId + '/Text')
-              .orderBy('time', 'desc') // we choose decsending to get most recent
-              .limit(
-                Math.min(this.state.commentCount, this.state.commentsLoaded)
-              ) // limiting the comments we load
-              .onSnapshot(this.onCollectionUpdate);
-          }
-        })
-        .catch((err) => {
-          console.log('Error getting document', err);
-        });
-    }
-  }
-
   // Single comment
-  renderComment({ item }) {
+  renderComment = ({ item }) => {
     return (
-      <Comment username={item.username} content={item.content} uid={item.key} />
+      <Comment
+        key={item.key}
+        username={item.username}
+        content={item.content}
+        uid={item.uid}
+      />
     );
-  }
+  };
 
   render() {
     // if there are more comments to load
@@ -115,36 +120,25 @@ class CommentList extends React.Component {
         <View style={[styles.containerStyle]}>
           <ButtonBar memeId={this.props.memeId} />
           <TouchableOpacity
-            onPress={() => {
-              newLoadCount = this.state.commentsLoaded + 10;
-              this.setState({
-                commentsLoaded: newLoadCount,
-                comments: [],
-              });
-              this.componentDidMount();
-            }}
+            onPress={this.fetchComments}
             style={{ justifyContent: 'center', alignItems: 'center' }}
           >
             <Text style={styles.buttonSty}>Load more comments</Text>
           </TouchableOpacity>
           <FlatList
             data={this.state.comments}
-            renderItem={this.renderComment.bind(this)}
-          />
-        </View>
-      );
-    } else {
-      // no more comments to load
-      return (
-        <View style={[styles.containerStyle]}>
-          <ButtonBar memeId={this.props.memeId} />
-          <FlatList
-            data={this.state.comments}
-            renderItem={this.renderComment.bind(this)}
+            renderItem={this.renderComment}
           />
         </View>
       );
     }
+    // no more comments to load
+    return (
+      <View style={[styles.containerStyle]}>
+        <ButtonBar memeId={this.props.memeId} />
+        <FlatList data={this.state.comments} renderItem={this.renderComment} />
+      </View>
+    );
   }
 }
 
