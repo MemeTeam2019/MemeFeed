@@ -12,6 +12,7 @@ import HomeFeed from '../screens/homeFeed';
 import FriendProfile from '../screens/friendProfileScreen';
 import CommentPage from '../screens/commentPage';
 import FollowList from '../components/home/searchResultList';
+import ImageUpload from '../screens/imageUpload';
 
 const ExploreStack = createStackNavigator(
   {
@@ -83,6 +84,15 @@ const ProfileStack = createStackNavigator(
 );
 
 const MainRouter = createBottomTabNavigator({
+  Upload:{
+    screen: ImageUpload,
+    navigationOptions: {
+      showLabel: false,
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name='image' size={35} color={tintColor} />
+      ),
+    },
+  },
   Home: {
     screen: HomeStack,
     navigationOptions: {
@@ -101,6 +111,7 @@ const MainRouter = createBottomTabNavigator({
       ),
     },
   },
+
   Profile: {
     screen: ProfileStack,
     navigationOptions: {
