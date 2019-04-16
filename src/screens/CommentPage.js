@@ -33,8 +33,10 @@ class CommentPage extends React.Component {
     return (
       <View style={styles.container}>
         <ScrollView
-          ref={ref => (this.scrollView = ref)}
-          onContentSizeChange={(contentWidth, contentHeight) => {
+          ref={(ref) => {
+            this.scrollView = ref;
+          }}
+          onContentSizeChange={() => {
             this.scrollView.scrollToEnd({ animated: true });
           }}
         >
