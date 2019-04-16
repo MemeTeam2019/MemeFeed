@@ -18,10 +18,9 @@ export default class LoginScreen extends React.Component {
 
         <View style={styles.aboutText}>
           <Text style={styles.aboutText}>
-            React to Memes using each of these 5 emojis.
-             When you rank a meme with any of the smiling
-              emoji's it will appear on your profile
-              and on your followers' home feed
+            You will notice below every meme, you have a range of emojis from LAME to LMFAO.
+            React to memes with the emoji that describes your emotion towards that meme.
+            Memes reacted with any of the smiling emojis will make it to your profile for you to enjoy and to show to your followers.
           </Text>
           </View>
 
@@ -29,7 +28,7 @@ export default class LoginScreen extends React.Component {
               paddingHorizontal: 25,}}>
             <Image
               source={require('../images/Tile/buttonBar.png')}
-              style={{ width: '100%', height: '10%', alignItems: 'center', justifyContent: 'center'}}
+              style={{ width: '30', height: '10', alignItems: 'center', justifyContent: 'center'}}
             />
           </View>
 
