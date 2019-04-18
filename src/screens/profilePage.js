@@ -51,7 +51,9 @@ export default class Profile extends React.Component {
       open: false,
       selectGridButtonP: true,
       selectListButtonP: false,
+      updated: true,
       memes: [],
+      oldestDoc: 0,
       items: [],
       text: '',
       ModalVisibleStatus: false,
@@ -68,41 +70,75 @@ export default class Profile extends React.Component {
         .collection('Users')
         .doc(uid)
         .onSnapshot((snapshot) => this.setState(snapshot.data()));
-      this.unsubscribe = this.ref
-        .limit(memesLoaded)
-        .onSnapshot(this.onCollectionUpdate);
+      this.unsubscribe = firebase
+        .firestore()
+        .collection('Reacts')
+        .doc(firebase.auth().currentUser.uid)
+        .collection('Likes')
+        .orderBy('time', 'desc')
+        .limit(15)
+        .get()
+        .then(this.updateFeed);
     }
   }
+
+  fetchMemes = () => {
+    // garentees not uploading duplicate memes by checking if memes have finished
+    // updating
+    if (this.state.updated) {
+      this.state.updated = false;
+      const oldestDoc = this.state.oldestDoc;
+      firebase
+        .firestore()
+        .collection('Reacts')
+        .doc(firebase.auth().currentUser.uid)
+        .collection('Likes')
+        .orderBy('time', 'desc')
+        .limit(15)
+        .startAfter(oldestDoc)
+        .get()
+        .then(this.updateFeed);
+    }
+  };
+
+  updateFeed = (querySnapshot) => {
+      const newMemes = [];
+
+      querySnapshot.docs.forEach((doc) => {
+        const { time, url, rank, likedFrom } = doc.data();
+        if (rank > 1) {
+          newMemes.push({
+            key: doc.id,
+            doc, // DocumentSnapshot
+            src: url,
+            time,
+            likedFrom,
+            // this is to ensure that if a user changes their reaction to a meme
+            // on their own page that the liked from source is still the same
+            postedBy: likedFrom,
+            poster: firebase.auth().currentUser.uid,
+          });
+        }
+      });
+
+      Promise.all(newMemes).then((resolvedMemes) => {
+        this.setState((prevState) => {
+          const mergedMemes = (prevState.memes).concat(resolvedMemes);
+          return {
+            memes: mergedMemes,
+            updated: true,
+            oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+          };
+        });
+      });
+  };
+
 
   componentWillUnmount() {
     this.unsubscribe = null;
     this.userListener = null;
   }
 
-  // function for extracting Firebase responses to the state
-  onCollectionUpdate = (querySnapshot) => {
-    const memes = [];
-    querySnapshot.forEach((doc) => {
-      const { time, url, rank, likedFrom } = doc.data();
-      if (rank > 1)
-        memes.push({
-          key: doc.id,
-          doc, // DocumentSnapshot
-          src: url,
-          time,
-          likedFrom,
-          // this is to ensure that if a user changes their reaction to a meme
-          // on their own page that the liked from source is still the same
-          postedBy: likedFrom,
-          poster: firebase.auth().currentUser.uid,
-        });
-
-      this.setState({
-        memes,
-        isLoading: false,
-      });
-    });
-  };
 
   getUserInfo = () => {
     let firestore = firebase.firestore();
@@ -354,12 +390,12 @@ export default class Profile extends React.Component {
 
             {this.state.selectListButtonP ? (
               <MemeList
-                loadMemes={this.componentDidMount}
+                loadMemes={this.fetchMemes}
                 memes={this.state.memes}
               />
             ) : (
               <MemeGrid
-                loadMemes={this.componentDidMount}
+                loadMemes={this.fetchMemes}
                 memes={this.state.memes}
               />
             )}

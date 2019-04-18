@@ -15,7 +15,6 @@ class MemeList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      memesLoaded: 30,
       imageuri: '',
       isLoading: true,
       memes: [],
@@ -43,6 +42,7 @@ class MemeList extends React.Component {
         data={this.props.memes}
         renderItem={this.renderTile.bind(this)}
         onEndReached={() => {
+          // only load memes if previous ones finished loading
           this.props.loadMemes();
         }}
       />

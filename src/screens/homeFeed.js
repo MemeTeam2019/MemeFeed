@@ -21,8 +21,10 @@ class HomeFeed extends React.Component {
       .collection('Likes')
       .orderBy('time', 'desc');
     this.state = {
-      memesLoaded: 0,
+      updated: true,
+      oldestDoc: 0,
       memes: [],
+      updated: false,
       imageuri: '',
       ModalVisibleStatus: false,
       isLoading: true,
@@ -53,49 +55,56 @@ class HomeFeed extends React.Component {
   }
 
   fetchMemes = () => {
-    const memesLoaded = this.state.memesLoaded;
-    firebase
-      .firestore()
-      .collection('Feeds')
-      .doc(firebase.auth().currentUser.uid)
-      .collection('Likes')
-      .orderBy('time', 'desc')
-      .limit(15)
-      .startAfter(memesLoaded)
-      .get()
-      .then(this.updateFeed);
+    // garentees not uploading duplicate memes by checking if memes have finished
+    // updating
+    if (this.state.updated) {
+      this.state.updated = false;
+      const oldestDoc = this.state.oldestDoc;
+      firebase
+        .firestore()
+        .collection('Feeds')
+        .doc(firebase.auth().currentUser.uid)
+        .collection('Likes')
+        .orderBy('time', 'desc')
+        .limit(15)
+        .startAfter(oldestDoc)
+        .get()
+        .then(this.updateFeed);
+    }
   };
 
   updateFeed = (querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-      const { time, url, posReacts, likedFrom, likers } = doc.data();
-      if (posReacts > 0) {
-        const newMemes = [];
-        var recentLikedFrom = likedFrom[likedFrom.length - 1];
-        var recentLiker = likers[likers.length - 1];
+      const newMemes = [];
 
-        newMemes.push({
-          key: doc.id,
-          doc, // DocumentSnapshot
-          src: url,
-          time,
-          likedFrom: recentLikedFrom,
-          postedBy: recentLiker,
-          poster: recentLiker,
-        });
+      querySnapshot.docs.forEach((doc) => {
+        const { time, url, posReacts, likedFrom, likers } = doc.data();
+        if (posReacts > 0) {
+          var recentLikedFrom = likedFrom[likedFrom.length - 1];
+          var recentLiker = likers[likers.length - 1];
 
+          newMemes.push({
+            key: doc.id,
+            doc,
+            src: url,
+            time,
+            likedFrom: recentLikedFrom,
+            postedBy: recentLiker,
+            poster: recentLiker,
+          });
+        }
+      });
+
+      Promise.all(newMemes).then((resolvedMemes) => {
         this.setState((prevState) => {
-          const mergedMemes = (prevState.memes).concat(newMemes);
-
+          const mergedMemes = (prevState.memes).concat(resolvedMemes);
           return {
             memes: mergedMemes,
-            memesLoaded: querySnapshot.docs[querySnapshot.docs.length - 1],
+            updated: true,
+            oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
           };
         });
-      }
-    })
+      });
   };
-
 
   componentWillUnmount() {
     this._isMounted = false;
