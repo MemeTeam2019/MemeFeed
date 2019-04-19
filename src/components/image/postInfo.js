@@ -69,7 +69,7 @@ class PostInfo extends React.Component {
           >
             {this.props.reactCount} Reactions
           </Text>
-          {/*}<CommentSample memeId={this.props.memeId} /> */}
+          <CommentSample memeId={this.props.memeId} />
 
           <TouchableOpacity
             onPress={() => {
@@ -99,7 +99,7 @@ class PostInfo extends React.Component {
           >
             {this.props.reactCount} Reactions
           </Text>
-            {/* <CommentSample memeId={this.props.memeId} /> */}
+          <CommentSample memeId={this.props.memeId} />
         </View>
       );
     }
