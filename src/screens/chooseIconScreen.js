@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     //backgroundColor: 'green',
-    marginLeft: 15,
+    marginLeft: 20,
     marginRight: 15,
     justifyContent: 'center',
     alignItems: 'center',

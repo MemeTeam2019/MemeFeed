@@ -17,8 +17,13 @@ export default class LoginScreen extends React.Component {
         </View>
         <View style={styles.aboutText}>
           <Text style={styles.aboutText}>
-          Meme feed is currently in Beta, so be sure to update the application
-          to get features such as Meme upload, curated feeds, and DMing.
+            MemeFeed is current a Beta verison!
+          </Text>
+          <Text style={styles.aboutText}>
+            Be sure to update the app later this year for new features
+            including Meme Uploading, User Tagging, and an all new Meme
+            Recommendation Algorithm for meme suggestions personalized
+            to your meme taste.
           </Text>
         </View>
         <View style={styles.nextBut}>
@@ -41,40 +46,55 @@ const styles = StyleSheet.create({
     paddingRight: 3,
     paddingLeft: 3,
     paddingTop: 10, //50
-    flexDirection: 'row',
+    //flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 36,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
     //backgroundColor: 'blue',
-    marginTop: '20%',
-    marginBottom: '3%'
+    marginTop: '25%',
+    //marginBottom: '2%'
   },
   title: {
     fontSize: 35,
     fontFamily: 'AvenirNext-Regular',
     color: '#9F02FF',
     paddingHorizontal: '5%',
-    marginBottom: '1%',
+    marginBottom: '0.5%',
     textAlign: 'center',
-    height: 70,
-    //backgroundColor: 'red'
+    height: 50,
+    //backgroundColor: 'red',
     shadowColor: 'black',
     shadowOffset: { width: 0, height: 0.5 },
     shadowOpacity: 0.5,
     shadowRadius: 0.4,
   },
   aboutText: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
     color: '#9F02FF',
-    paddingHorizontal: '3%',
-    marginBottom: '3%',
-    textAlign: 'center',
+    paddingHorizontal: '4%',
+    marginBottom: '1%',
     paddingRight: 5,
-    paddingTop: 5, //50
+    paddingTop: 1, //50
     paddingLeft: 5,
+    //backgroundColor: 'blue',
+    marginLeft: '3%',
+    marginRight: '3%',
+    //height: '50%'
+  },
+  input: {
+    height: '12%',
+    width: '100%',
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    paddingHorizontal: '5%',
+    marginBottom: '5%',
+    fontSize: 18,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 1,
   },
   background: {
     flex: 1,
