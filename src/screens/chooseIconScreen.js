@@ -1,6 +1,8 @@
 import React from 'react';
 import { StyleSheet, View, Button, ImageBackground, TouchableOpacity, Image, Text } from 'react-native';
 
+import firebase from 'react-native-firebase'
+
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
     header: null,
@@ -9,6 +11,18 @@ export default class LoginScreen extends React.Component {
     super();
     this.state = {
       selectedIcon: false,
+      icon: ''
+    };
+    this.iconImages = {
+      1: 'icon777.png',
+      2: 'icon666.png',
+      3: 'icon999.png',
+      4: 'icon111.png',
+      5: 'icon222.png',
+      6: 'icon888.png',
+      7: 'icon333.png',
+      8: 'icon444.png',
+      9: 'icon555.png'
     }
   };
 
@@ -16,7 +30,23 @@ export default class LoginScreen extends React.Component {
     const oldIcon = this.state.selectedIcon;
     this.setState({
       selectedIcon: newIcon === oldIcon ? false : newIcon,
+      icon: newIcon
     });
+    firebase
+      .firestore()
+      .collection('Users')
+      .doc(firebase.auth().currentUser.uid)
+      .update({
+        icon: this.iconImages[newIcon]
+      });
+  };
+
+  _onNextButton = async () => {
+    
+        // icon: this.state.selectedIcon,
+      
+    console.log(firebase.auth().currentUser.uid)
+    this.props.navigation.push('About')
   };
 
 
@@ -190,7 +220,7 @@ export default class LoginScreen extends React.Component {
           <Button
             title="Next"
             color='#9F02FF'
-            onPress={() => this.props.navigation.push('About')}
+            onPress={this._onNextButton.bind()}
           />
         </View>
 
@@ -259,7 +289,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     //backgroundColor: 'green',
-    marginLeft: 15,
+    marginLeft: 20,
     marginRight: 15,
     justifyContent: 'center',
     alignItems: 'center',
