@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Button, ImageBackground, Text } from 'react-native';
+import { StyleSheet, View, Button, ImageBackground, Image, Text,Dimensions } from 'react-native';
 
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -13,35 +13,43 @@ export default class LoginScreen extends React.Component {
         style={styles.background}
       >
         <View style={styles.container}>
-          <Text style={styles.title}>Welcome to</Text>
-          <Text style={styles.title}>MemeFeed</Text>
+          <Text style={styles.title}>Reactions</Text>
         </View>
+
         <View style={styles.aboutText}>
           <Text style={styles.aboutText}>
-            Meme Feed is a place where you can view an endless supply
-            of Memes without having to look at any family photos or
-            your ex-coworkers beach photos. (We don't care about your
-            Bahama beach boyfriend Sally!)
+          React to Memes using each of these 5 emojis ranging from LAME to LMFAO.
           </Text>
           <Text style={styles.aboutText}>
-            With memes ranging in all categories, Meme Feed strives to
-            provide the perfect app for meme browsing
-            and finding other
-            meme-holics like you!
+          When you rank a meme
+          with any of the smiling emoji's it will appear on your
+          profile and on your followers' home feed.
           </Text>
-        </View>
+          </View>
+
+          <View style={styles.buttonBar}>
+              <Image
+                source={require('../images/Tile/buttonBar.png')}
+                style={{        alignSelf: 'stretch',
+        width: win.width,
+        height: '40.5%', }}
+              />
+          </View>
 
         <View style={styles.nextBut}>
           <Button
             title="Next"
             color='#9F02FF'
-            onPress={() => this.props.navigation.push('About2')}
+            style={{paddingTop: 30}}
+            onPress={() => this.props.navigation.push('About3')}
           />
         </View>
       </ImageBackground>
     );
   }
 }
+
+const win = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -50,7 +58,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingRight: 3,
     paddingLeft: 3,
-    paddingTop: 5, //50
+    paddingTop: 10, //50
     //flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -82,7 +90,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,
-    //paddingTop: 1, //50
+    paddingTop: 1, //50
     paddingLeft: 5,
     //backgroundColor: 'blue',
     marginLeft: '3%',
@@ -111,5 +119,14 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     marginBottom: '5%',
+  },
+  buttonBar: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    //marginBottom: '5%',
+    //backgroundColor: 'purple',
+    marginRight: '1%',
+    marginLeft: '1%'
   }
 });

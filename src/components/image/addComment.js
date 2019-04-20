@@ -141,11 +141,24 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'absolute',
     backgroundColor: '#fff',
-    bottom: 0,
+    bottom:0
+  },
+  postButton: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    marginRight: '4%'
+  },
+  postText: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: 18,
+    marginTop: 5,
+    fontFamily: 'AvenirNext-Regular',
   },
   postButton: {},
   input: {
-    width: 300,
+    width: '80%',
     backgroundColor: '#fff',
     borderRadius: 25,
     paddingHorizontal: 15,

@@ -13,29 +13,24 @@ export default class LoginScreen extends React.Component {
         style={styles.background}
       >
         <View style={styles.container}>
-          <Text style={styles.title}>Welcome to</Text>
-          <Text style={styles.title}>MemeFeed</Text>
+          <Text style={styles.title}>Coming Soon</Text>
         </View>
         <View style={styles.aboutText}>
           <Text style={styles.aboutText}>
-            Meme Feed is a place where you can view an endless supply
-            of Memes without having to look at any family photos or
-            your ex-coworkers beach photos. (We don't care about your
-            Bahama beach boyfriend Sally!)
+            MemeFeed is current a Beta verison!
           </Text>
           <Text style={styles.aboutText}>
-            With memes ranging in all categories, Meme Feed strives to
-            provide the perfect app for meme browsing
-            and finding other
-            meme-holics like you!
+            Be sure to update the app later this year for new features
+            including Meme Uploading, User Tagging, and an all new Meme
+            Recommendation Algorithm for meme suggestions personalized
+            to your meme taste.
           </Text>
         </View>
-
         <View style={styles.nextBut}>
           <Button
-            title="Next"
+            title="Let's Get Started"
             color='#9F02FF'
-            onPress={() => this.props.navigation.push('About2')}
+            onPress={() => this.props.navigation.push('Confirm')}
           />
         </View>
       </ImageBackground>
@@ -50,7 +45,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingRight: 3,
     paddingLeft: 3,
-    paddingTop: 5, //50
+    paddingTop: 10, //50
     //flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -82,7 +77,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,
-    //paddingTop: 1, //50
+    paddingTop: 1, //50
     paddingLeft: 5,
     //backgroundColor: 'blue',
     marginLeft: '3%',

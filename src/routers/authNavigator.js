@@ -4,7 +4,9 @@ import LoginScreen from '../screens/loginPage';
 import SignupScreen from '../screens/signupPage';
 import ConfirmScreen from '../screens/confirmPage';
 import AboutScreen from '../screens/aboutPage';
-
+import AboutScreen2 from '../screens/aboutPage2';
+import AboutScreen3 from '../screens/aboutPage3';
+import ChooseIcon from '../screens/chooseIconScreen';
 export default createStackNavigator(
   {
     Login: {
@@ -13,8 +15,17 @@ export default createStackNavigator(
     Signup: {
       screen: SignupScreen
     },
+    Icon: {
+      screen: ChooseIcon
+    },
     About: {
       screen: AboutScreen
+    },
+    About2: {
+      screen: AboutScreen2
+    },
+    About3: {
+      screen: AboutScreen3
     },
     Confirm: {
       screen: ConfirmScreen

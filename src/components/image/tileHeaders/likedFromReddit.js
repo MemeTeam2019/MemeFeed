@@ -4,7 +4,7 @@ import { withNavigation } from 'react-navigation';
 import Username from '../username';
 
 import firebase from 'react-native-firebase';
- 
+
 class LikedFromReddit extends React.Component {
   constructor(props) {
     super(props);
@@ -35,17 +35,16 @@ class LikedFromReddit extends React.Component {
     return (
       <View style={styles.containerA}>
         <View style={styles.container}>
-          <Image 
+          <Image
             style={styles.userImg}
             source={{uri:'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg'}}
           />
           <Username uid={this.props.poster} navigation={this.props.navigation} />
-        </View>
-        <View style={styles.container}>
-          <View style={styles.container}>
-            <Text style={{fontSize: 15}}>liked from from</Text>
-            <Text style={{fontSize: 15, fontWeight: 'bold', fontStyle: 'italic'}}> 'r/{this.props.sub}'</Text>
-          </View>
+          <Image
+            style={styles.likedFromImg}
+            source={require('../repostIcon.png')}
+          />
+          <Text style={{fontSize: 12, fontWeight: 'bold', fontStyle: 'italic', color: '#919191'}}> 'r/{this.props.sub}'</Text>
         </View>
       </View>
     );
@@ -53,13 +52,13 @@ class LikedFromReddit extends React.Component {
 }
 
 export default withNavigation(LikedFromReddit);
- 
+
 const styles = StyleSheet.create({
    container: {
     flexDirection: 'row',
     backgroundColor: '#fff',
     width: '100%',
-    height: 40,
+    height: 30,
     paddingHorizontal: 10,
     alignItems: 'center',
     marginTop: 5
@@ -68,24 +67,28 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#fff',
     width: '100%',
-    height: 100,
+    height: 50,
     alignItems: 'center',
-    marginTop: 30
+    marginTop: 30,
+    borderBottomWidth: .5,
+    borderColor: '#D6D6D6',
+    //borderTopWidth: .5,
+    paddingTop: 7
   },
-  text: {  
+  text: {
     fontSize: 16,
     fontFamily: 'AvenirNext-Bold',
     marginLeft: 10
   },
   userImg: {
-    width: 40,
-    height: 40,
-    borderRadius: 20
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    marginRight: 2
   },
   likedFromImg: {
     width: 30,
-    height: 30,
-    borderRadius: 15
+    height: 25,
   }
 
 });

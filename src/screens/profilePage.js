@@ -221,7 +221,7 @@ export default class Profile extends React.Component {
               />
             </View>
             <Text style={styles.textSty}>
-              {' '}
+
               {this.state.followingCnt} {'\n'}{' '}
               <Text style={styles.textSty3}>Following</Text>
             </Text>
@@ -375,7 +375,7 @@ const styles = StyleSheet.create({
     flex: 0,
     // alignItems: "center",
     // justifyContent: "center",
-    backgroundColor: '#ffffff',
+    backgroundColor: 'white',
   },
   headerSty: {
     height: 0,
@@ -432,9 +432,12 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
     backgroundColor: 'white',
-    paddingRight: 2,
-    paddingLeft: 2,
+    paddingRight: 1,
+    paddingLeft: 1,
     paddingHorizontal: 10,
+    backgroundColor: 'white',
+    marginRight: '9%',
+    marginLeft: '9%'
   },
   textSty2: {
     fontSize: 20,
@@ -573,15 +576,18 @@ const styles = StyleSheet.create({
     flex: 1,
     //flexDirection: 'row',
     paddingRight: 2,
-    paddingHorizontal: 25,
+    paddingLeft: '3%',
+    paddingHorizontal: '5%',
+    backgroundColor: 'white'
   },
   rightContainer2: {
     flex: 1,
     flexDirection: 'row',
     //justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingLeft: 1,
-    paddingHorizontal: 25,
+    //paddingLeft: 1,
+    //paddingHorizontal: 25,
+    backgroundColor: 'white'
   },
   rightIcon2: {
     height: 10,
