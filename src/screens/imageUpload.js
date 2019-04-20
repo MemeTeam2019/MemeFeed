@@ -10,6 +10,7 @@ import {
   
 } from 'react-native';
 import firebase from 'react-native-firebase';
+import ImagePicker from 'react-native-image-picker';
 
 
 /**
@@ -26,17 +27,58 @@ class ImageUpload extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      filename: '',
       imageuri: '',
       isChosen: false,
       isUploaded: false,
     };
   }
-  handlePhoto(){
-    //to do
-  }
-  handleUpload(){
-    //to do
 
+  
+  handlePhoto = () => {
+    const options = {
+      noData: true
+    };
+    ImagePicker.launchImageLibrary(options, (response)=>{
+      if(response.uri){
+        this.setState({ imageuri: response.uri,
+                        filename: response.filename,
+                        isChosen: true
+        });
+
+      }
+    });
+  }
+  handleUpload = () => {
+    const storRef = firebase.storage().ref('MemeImages').child(firebase.auth().currentUser.uid+this.state.filename);
+    storRef.putFile(this.state.imageuri);
+    storRef.getDownloadURL() .then((newurl) => {
+
+    const reactRef = firebase.firestore().collection('Memes');
+    var data = {
+    filename: this.state.filename,
+    url: newurl,
+    author: firebase.auth().currentUser.uid,
+    sub: 'MemeFeed',
+    time: Math.round(+new Date() / 1000),
+    score: 0,
+    caption: '',
+    reacts: 0
+  };
+  reactRef.add(data);
+  this.setState({
+    isChosen: false,
+  });
+  const proRef = firebase.firestore().collection('Reacts').doc(firebase.auth().currentUser.uid).collection('Likes');
+    var data2 = {
+      rank: 4,
+      time: Math.round(+new Date() / 1000),
+      url: newurl,
+      likeFrom: 'MemeFeed',
+    };
+    proRef.add(data2);
+    });
+      
   }
   render(){
     if(this.state.isChosen==false&&this.state.isUploaded==false){
@@ -64,6 +106,7 @@ class ImageUpload extends React.Component {
   }
   if(this.state.isChosen==true&&this.state.isUploaded==false){
     //photo is chosen and not uploaded
+    var uri = this.state.imageuri;
       return (
         <View style={styles.containerStyle}>
           <View style={styles.navBar}>
@@ -73,12 +116,12 @@ class ImageUpload extends React.Component {
           </View>
           <View style={styles.containerStyle2}>
           <Image
-            source={require('../images/image.png.gif')}
+            source={{uri}}
             style={styles.tile}
             />
           <Button
-            title="Open Library"
-            onPress={this.handlePhoto}
+            title="Upload"
+            onPress={this.handleUpload}
           />
           </View>
         </View>

@@ -84,15 +84,7 @@ const ProfileStack = createStackNavigator(
 );
 
 const MainRouter = createBottomTabNavigator({
-  Upload:{
-    screen: ImageUpload,
-    navigationOptions: {
-      showLabel: false,
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name='image' size={35} color={tintColor} />
-      ),
-    },
-  },
+
   Home: {
     screen: HomeStack,
     navigationOptions: {
@@ -111,7 +103,15 @@ const MainRouter = createBottomTabNavigator({
       ),
     },
   },
-
+  Upload:{
+    screen: ImageUpload,
+    navigationOptions: {
+      showLabel: false,
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name='image' size={35} color={tintColor} />
+      ),
+    },
+  },
   Profile: {
     screen: ProfileStack,
     navigationOptions: {
