@@ -31,7 +31,10 @@ class ExploreFeed extends React.Component {
 
   constructor(props) {
     super(props);
+    this._isMounted = false;
+    this.unsubscribe = null;
     this.state = {
+      updated: true,
       imageuri: '',
       ModalVisibleStatus: false,
       inGridView: true,
@@ -42,18 +45,47 @@ class ExploreFeed extends React.Component {
     };
   }
 
-  componentDidMount(memesLoaded) {
-    firebase
-      .firestore()
-      .collection('Memes')
-      .orderBy('time', 'desc')
-      .limit(memesLoaded)
-      .get()
-      .then((querySnapshot) => {
-        const memes = [];
-        querySnapshot.forEach((doc) => {
+  componentWillUnmount() {
+    this._isMounted = false;
+    this.unsubscribe = null;
+  }
+
+  componentDidMount() {
+    this._isMounted = true;
+    if (this._isMounted) {
+      this.unsubscribe = firebase
+        .firestore()
+        .collection('Memes')
+        .orderBy('time', 'desc')
+        .limit(15)
+        .get()
+        .then(this.updateFeed);
+    }
+  }
+
+  fetchMemes = () => {
+    // garentees not uploading duplicate memes by checking if memes have finished
+    // updating
+    if (this.state.updated) {
+      this.state.updated = false;
+      const oldestDoc = this.state.oldestDoc;
+      firebase
+        .firestore()
+        .collection('Memes')
+        .orderBy('time', 'desc')
+        .limit(15)
+        .startAfter(oldestDoc)
+        .get()
+        .then(this.updateFeed);
+      }
+    };
+
+
+    updateFeed = (querySnapshot) => {
+        const newMemes = [];
+        querySnapshot.docs.forEach((doc) => {
           const { url, time, sub } = doc.data();
-          memes.push({
+          newMemes.push({
             key: doc.id,
             doc,
             src: url,
@@ -61,10 +93,30 @@ class ExploreFeed extends React.Component {
             sub,
             postedBy: sub,
           });
+
         });
-        this.setState({ memes });
-      });
-  }
+
+        Promise.all(newMemes).then((resolvedMemes) => {
+          this.setState((prevState) => {
+            const mergedMemes = (prevState.memes).concat(resolvedMemes);
+            return {
+              memes: mergedMemes,
+              updated: true,
+              oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+            };
+          });
+        });
+    };
+
+
+
+
+
+
+
+
+
+
 
   /**
    * Pulls all users whose username starts with the searchTerm
@@ -262,7 +314,7 @@ class ExploreFeed extends React.Component {
           </View>
           {/* List View */}
           <MemeList
-            loadMemes={this.componentDidMount}
+            loadMemes={this.fetchMemes}
             memes={this.state.memes}
           />
         </View>
@@ -313,7 +365,10 @@ class ExploreFeed extends React.Component {
           </TouchableOpacity>
         </View>
 
-        <MemeGrid loadMemes={this.componentDidMount} memes={this.state.memes} />
+        <MemeGrid
+          loadMemes={this.fetchMemes}
+          memes={this.state.memes}
+        />
       </View>
     );
   }

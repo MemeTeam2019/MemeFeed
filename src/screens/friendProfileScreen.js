@@ -36,7 +36,9 @@ class FriendProfile extends React.Component {
       buttonText: '',
       followingLst: [],
       followersLst: [],
+      updated: true,
       memes: [],
+      oldestDoc: 0,
       selectGridButtonP: true,
       selectListButtonP: false,
       isFollowing: false,
@@ -53,8 +55,9 @@ class FriendProfile extends React.Component {
         .doc(this.props.navigation.getParam('uid'))
         .collection('Likes')
         .orderBy('time', 'desc')
-        .limit(10)
-        .onSnapshot(this.onCollectionUpdate);
+        .limit(15)
+        .get()
+        .then(this.updateFeed);
 
       const myUid = firebase.auth().currentUser.uid;
       const theirUid = this.props.navigation.getParam('uid');
@@ -94,8 +97,71 @@ class FriendProfile extends React.Component {
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     this.unsubscribe = null;
   }
+
+  fetchMemes = () => {
+    // garentees not uploading duplicate memes by checking if memes have finished
+    // updating
+    if (this.state.updated) {
+      this.state.updated = false;
+      const oldestDoc = this.state.oldestDoc;
+      firebase
+        .firestore()
+        .collection('Reacts')
+        .doc(this.props.navigation.getParam('uid'))
+        .collection('Likes')
+        .orderBy('time', 'desc')
+        .limit(15)
+        .startAfter(oldestDoc)
+        .get()
+        .then(this.updateFeed);
+      }
+    };
+
+
+    updateFeed = (querySnapshot) => {
+        const newMemes = [];
+        querySnapshot.docs.forEach((doc) => {
+          const { time, url, rank, likedFrom } = doc.data();
+          if (rank > 1) {
+            newMemes.push({
+              key: doc.id,
+              doc,
+              src: url,
+              time,
+              likedFrom,
+              postedBy: this.props.navigation.getParam('uid'),
+              poster: this.props.navigation.getParam('uid'),
+            });
+          }
+        });
+
+        Promise.all(newMemes).then((resolvedMemes) => {
+          this.setState((prevState) => {
+            const mergedMemes = (prevState.memes).concat(resolvedMemes);
+            return {
+              memes: mergedMemes,
+              updated: true,
+              oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+            };
+          });
+        });
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   showActionSheet = () => {
     this.ActionSheet.show();
@@ -421,12 +487,12 @@ class FriendProfile extends React.Component {
           </View>
           {this.state.selectListButtonP ? (
             <MemeList
-              loadMemes={this.componentDidMount}
+              loadMemes={this.fetchMemes}
               memes={this.state.memes}
             />
           ) : (
             <MemeGrid
-              loadMemes={() => this.componentDidMount()}
+              loadMemes={this.fetchMemes}
               memes={this.state.memes}
             />
           )}

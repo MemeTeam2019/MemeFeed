@@ -21,13 +21,15 @@ class HomeFeed extends React.Component {
       .collection('Likes')
       .orderBy('time', 'desc');
     this.state = {
-      memesLoaded: 30,
+      updated: true,
+      oldestDoc: 0,
+      memes: [],
+      updated: false,
       imageuri: '',
       ModalVisibleStatus: false,
       isLoading: true,
       inGridView: false,
       inFullView: true,
-      memes: [],
       items: [],
       selectGridButton: false,
       selectListButton: true,
@@ -37,44 +39,71 @@ class HomeFeed extends React.Component {
   }
 
 
-  componentDidMount(memesLoaded) {
+  componentDidMount() {
     this._isMounted = true;
     if (this._isMounted) {
-
-      this.unsubscribe = this.ref
-        .limit(9) // limit to 3
-        //.where('posReacts', '>', 0)
-        .onSnapshot(this.onCollectionUpdate);
+      this.unsubscribe = firebase
+        .firestore()
+        .collection('Feeds')
+        .doc(firebase.auth().currentUser.uid)
+        .collection('Likes')
+        .orderBy('time', 'desc')
+        .limit(15)
+        .get()
+        .then(this.updateFeed);
     }
   }
 
-  // function for extracting Firebase responses to the state
-  onCollectionUpdate = (querySnapshot) => {
-    const memes = [];
-    querySnapshot.forEach((doc) => {
-      const { time, url, posReacts, likedFrom, likers } = doc.data();
-      console.log('YOOOOO')
-      if (posReacts > 0) {
-        console.log(posReacts)
-        var recentLikedFrom = likedFrom[likedFrom.length - 1];
-        var recentLiker = likers[likers.length - 1];
-        memes.push({
-          key: doc.id,
-          doc, // DocumentSnapshot
-          src: url,
-          time,
-          likedFrom: recentLikedFrom,
-          // this will need to be the last item on the list
-          postedBy: recentLiker,
-          poster: recentLiker,
-        });
-      }
+  fetchMemes = () => {
+    // garentees not uploading duplicate memes by checking if memes have finished
+    // updating
+    if (this.state.updated) {
+      this.state.updated = false;
+      const oldestDoc = this.state.oldestDoc;
+      firebase
+        .firestore()
+        .collection('Feeds')
+        .doc(firebase.auth().currentUser.uid)
+        .collection('Likes')
+        .orderBy('time', 'desc')
+        .limit(15)
+        .startAfter(oldestDoc)
+        .get()
+        .then(this.updateFeed);
+    }
+  };
 
-      this.setState({
-        memes,
-        isLoading: false,
+  updateFeed = (querySnapshot) => {
+      const newMemes = [];
+
+      querySnapshot.docs.forEach((doc) => {
+        const { time, url, posReacts, likedFrom, likers } = doc.data();
+        if (posReacts > 0) {
+          var recentLikedFrom = likedFrom[likedFrom.length - 1];
+          var recentLiker = likers[likers.length - 1];
+
+          newMemes.push({
+            key: doc.id,
+            doc,
+            src: url,
+            time,
+            likedFrom: recentLikedFrom,
+            postedBy: recentLiker,
+            poster: recentLiker,
+          });
+        }
       });
-    });
+
+      Promise.all(newMemes).then((resolvedMemes) => {
+        this.setState((prevState) => {
+          const mergedMemes = (prevState.memes).concat(resolvedMemes);
+          return {
+            memes: mergedMemes,
+            updated: true,
+            oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+          };
+        });
+      });
   };
 
   componentWillUnmount() {
@@ -218,12 +247,12 @@ class HomeFeed extends React.Component {
           </View>
           {this.state.inGridView ? (
             <MemeGrid
-              loadMemes={this.componentDidMount}
+              loadMemes={this.fetchMemes}
               memes={this.state.memes}
             />
           ) : (
             <MemeList
-              loadMemes={this.componentDidMount}
+              loadMemes={this.fetchMemes}
               memes={this.state.memes}
             />
           )}
