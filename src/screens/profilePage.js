@@ -58,6 +58,7 @@ export default class Profile extends React.Component {
       text: '',
       ModalVisibleStatus: false,
       imageuri: '',
+      iconURL: '',
     };
   }
 
@@ -65,6 +66,25 @@ export default class Profile extends React.Component {
     this._isMounted = true;
     if (this._isMounted) {
       const uid = firebase.auth().currentUser.uid;
+      //get the profile icon
+      firebase
+        .firestore()
+        .collection('Users')
+        .doc(uid)
+        .get()
+        .then((docSnapshot) => {
+          if(docSnapshot.exists) {
+            const { icon } = docSnapshot.data();
+              this.state.iconURL = icon
+            console.log(this.state.iconURL)
+          }
+          else{
+            console.log("doesn't exist")
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       this.userListener = firebase
         .firestore()
         .collection('Users')
@@ -252,7 +272,7 @@ export default class Profile extends React.Component {
           <View style={styles.navBar2}>
             <View style={styles.leftContainer2}>
               <Image
-                source={require('../images/profilePic.png')}
+                source={{uri: this.state.iconURL}}
                 style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
               />
             </View>
@@ -320,9 +340,10 @@ export default class Profile extends React.Component {
               {/*Profile Pic, Follwers, Follwing Block*/}
 
               <View style={styles.navBar2}>
+              {/* Profile Picture */}
                 <View style={styles.leftContainer2}>
                   <Image
-                    source={require('../images/profilePic.png')}
+                    source={{uri: this.state.iconURL}}
                     style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
                   />
                 </View>

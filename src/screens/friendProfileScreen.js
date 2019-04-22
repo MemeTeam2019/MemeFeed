@@ -43,6 +43,7 @@ class FriendProfile extends React.Component {
       selectListButtonP: false,
       isFollowing: false,
       userExists: false,
+      iconURL: ''
     };
   }
 
@@ -73,6 +74,26 @@ class FriendProfile extends React.Component {
       theirUserRef.get().then((snapshot) => {
         this.setState(snapshot.data());
       });
+
+      //get the profile icon
+      firebase
+        .firestore()
+        .collection('Users')
+        .doc(theirUid)
+        .get()
+        .then((docSnapshot) => {
+          if(docSnapshot.exists) {
+            const { icon } = docSnapshot.data();
+              this.state.iconURL = icon
+            console.log(this.state.iconURL)
+          }
+          else{
+            console.log("doesn't exist")
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
 
       myUserRef
         .get()
@@ -401,7 +422,7 @@ class FriendProfile extends React.Component {
           <View style={styles.navBar2}>
             <View style={styles.leftContainer2}>
               <Image
-                source={require('../images/primePic.png')}
+                source={{uri: this.state.iconURL}}
                 style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
               />
             </View>
