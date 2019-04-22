@@ -108,53 +108,48 @@ class SignupScreen extends React.Component {
         <View style={styles.container}>
           <KeyboardAvoidingView
             contentContainerStyle={styles.addBottomPadding}
-            behavior="position"
+            behavior='position'
           >
             <Text style={styles.title}>Sign Up</Text>
             <TextInput
               style={styles.input}
-              placeholder="Email"
+              placeholder='Email'
               onChangeText={(email) => this.setState({ email: email })}
-              autoComplete="email"
-              autoCapitalize="none"
+              autoComplete='email'
+              autoCapitalize='none'
             />
             <TextInput
               style={styles.input}
-              placeholder="Name"
+              placeholder='Name'
               onChangeText={(name) => this.setState({ name: name })}
-              autoComplete="name"
+              autoComplete='name'
             />
             <TextInput
               style={styles.input}
-              placeholder="Username"
+              placeholder='Username'
               onChangeText={(username) => this.setState({ username: username })}
-              autoComplete="username"
+              autoComplete='username'
             />
             <TextInput
               style={styles.input}
-              placeholder="Password"
+              placeholder='Password'
               secureTextEntry={true}
               onChangeText={(password) => this.setState({ password: password })}
-              autoComplete="password"
+              autoComplete='password'
             />
             <TextInput
               style={styles.input}
-              placeholder="Confirm Password"
+              placeholder='Confirm Password'
               secureTextEntry={true}
               onChangeText={(cpassword) =>
                 this.setState({ cpassword: cpassword })
               }
             />
             <Button
-              title="Submit"
+              title='Submit'
               style={styles.submit}
-              color="#fff"
+              color='#fff'
               onPress={() => this.handleSubmit()}
-            />
-            <Button
-              title="About"
-              color="#fff"
-              onPress={() => this.props.navigation.push('Icon')}
             />
           </KeyboardAvoidingView>
         </View>

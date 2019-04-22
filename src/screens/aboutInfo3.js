@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Button, ImageBackground, Text } from 'react-native';
+import { StyleSheet, View, ImageBackground, Text } from 'react-native';
 
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -20,18 +20,13 @@ export default class LoginScreen extends React.Component {
             MemeFeed is current a Beta verison!
           </Text>
           <Text style={styles.aboutText}>
-            Be sure to update the app later this year for new features
-            including Meme Uploading, User Tagging, and an all new Meme
-            Recommendation Algorithm for meme suggestions personalized
-            to your meme taste.
+            Be sure to update the app later this year for new features including
+            Meme Uploading, User Tagging, and an all new Meme Recommendation
+            Algorithm for meme suggestions personalized to your meme taste.
           </Text>
-        </View>
-        <View style={styles.nextBut}>
-          <Button
-            title="Done"
-            color='#9F02FF'
-            onPress={() => this.props.navigation.push('Profile')}
-          />
+          <Text style={styles.aboutText2}>
+            Contact us at memefeedaye@gmail.com
+          </Text>
         </View>
       </ImageBackground>
     );
@@ -76,12 +71,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,
-    paddingTop: 1, //50
+    paddingTop: 1,
     paddingLeft: 5,
-    //backgroundColor: 'blue',
     marginLeft: '3%',
     marginRight: '3%',
-    //height: '50%'
   },
   input: {
     height: '12%',
@@ -105,5 +98,19 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     marginBottom: '5%',
-  }
+  },
+  aboutText2: {
+    fontSize: 18,
+    fontFamily: 'AvenirNext-Regular',
+    color: '#9F02FF',
+    paddingHorizontal: '4%',
+    marginBottom: '1%',
+    paddingRight: 5,
+    paddingTop: 20,
+    paddingLeft: 5,
+    marginLeft: '3%',
+    marginRight: '3%',
+    justifyContent: 'center',
+    textAlign: 'center',
+  },
 });

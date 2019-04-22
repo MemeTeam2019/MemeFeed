@@ -73,13 +73,12 @@ export default class Profile extends React.Component {
         .doc(uid)
         .get()
         .then((docSnapshot) => {
-          if(docSnapshot.exists) {
+          if (docSnapshot.exists) {
             const { icon } = docSnapshot.data();
-              this.state.iconURL = icon
-            console.log(this.state.iconURL)
-          }
-          else{
-            console.log("doesn't exist")
+            this.state.iconURL = icon;
+            console.log(this.state.iconURL);
+          } else {
+            console.log("doesn't exist");
           }
         })
         .catch((error) => {
@@ -122,43 +121,41 @@ export default class Profile extends React.Component {
   };
 
   updateFeed = (querySnapshot) => {
-      const newMemes = [];
+    const newMemes = [];
 
-      querySnapshot.docs.forEach((doc) => {
-        const { time, url, rank, likedFrom } = doc.data();
-        if (rank > 1) {
-          newMemes.push({
-            key: doc.id,
-            doc, // DocumentSnapshot
-            src: url,
-            time,
-            likedFrom,
-            // this is to ensure that if a user changes their reaction to a meme
-            // on their own page that the liked from source is still the same
-            postedBy: likedFrom,
-            poster: firebase.auth().currentUser.uid,
-          });
-        }
-      });
-
-      Promise.all(newMemes).then((resolvedMemes) => {
-        this.setState((prevState) => {
-          const mergedMemes = (prevState.memes).concat(resolvedMemes);
-          return {
-            memes: mergedMemes,
-            updated: true,
-            oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
-          };
+    querySnapshot.docs.forEach((doc) => {
+      const { time, url, rank, likedFrom } = doc.data();
+      if (rank > 1) {
+        newMemes.push({
+          key: doc.id,
+          doc, // DocumentSnapshot
+          src: url,
+          time,
+          likedFrom,
+          // this is to ensure that if a user changes their reaction to a meme
+          // on their own page that the liked from source is still the same
+          postedBy: likedFrom,
+          poster: firebase.auth().currentUser.uid,
         });
-      });
-  };
+      }
+    });
 
+    Promise.all(newMemes).then((resolvedMemes) => {
+      this.setState((prevState) => {
+        const mergedMemes = prevState.memes.concat(resolvedMemes);
+        return {
+          memes: mergedMemes,
+          updated: true,
+          oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+        };
+      });
+    });
+  };
 
   componentWillUnmount() {
     this.unsubscribe = null;
     this.userListener = null;
   }
-
 
   getUserInfo = () => {
     let firestore = firebase.firestore();
@@ -224,7 +221,7 @@ export default class Profile extends React.Component {
         }}
       >
         <Image
-          resizeMode="cover"
+          resizeMode='cover'
           style={{ flex: 1 }}
           source={{ uri: item.src }}
         />
@@ -236,7 +233,7 @@ export default class Profile extends React.Component {
   }
 
   render() {
-    var optionArray = ['Logout', 'About', 'Cancel'];
+    const optionArray = ['Logout', 'About', 'Cancel'];
 
     if (this.state.memes.length == 0) {
       return (
@@ -255,16 +252,19 @@ export default class Profile extends React.Component {
                 />
               </TouchableOpacity>
               <ActionSheet
-                ref={(o) => (this.ActionSheet = o)}
-                title={'User Settings'}
+                ref={(o) => {
+                  this.ActionSheet = o;
+                }}
+                title='User Settings'
                 options={optionArray}
                 cancelButtonIndex={2}
                 destructiveIndex={0}
                 onPress={(index) => {
+                  console.log(index);
                   if (optionArray[index] == 'Logout') {
                     this.logout();
-                  }else if (optionArray[index] == 'About'){
-                    this.props.navigation.push('aboutInfo');
+                  } else if (optionArray[index] == 'About') {
+                    this.props.navigation.push('InfoStack');
                   }
                 }}
               />
@@ -274,12 +274,11 @@ export default class Profile extends React.Component {
           <View style={styles.navBar2}>
             <View style={styles.leftContainer2}>
               <Image
-                source={{uri: this.state.iconURL}}
+                source={{ uri: this.state.iconURL }}
                 style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
               />
             </View>
             <Text style={styles.textSty}>
-
               {this.state.followingCnt} {'\n'}{' '}
               <Text style={styles.textSty3}>Following</Text>
             </Text>
@@ -331,8 +330,8 @@ export default class Profile extends React.Component {
                   onPress={(index) => {
                     if (optionArray[index] == 'Logout') {
                       this.logout();
-                    }else if (optionArray[index] == 'About'){
-                      this.props.navigation.push('aboutInfo');
+                    } else if (optionArray[index] == 'About') {
+                      this.props.navigation.push('InfoStack');
                     }
                   }}
                 />
@@ -344,10 +343,10 @@ export default class Profile extends React.Component {
               {/*Profile Pic, Follwers, Follwing Block*/}
 
               <View style={styles.navBar2}>
-              {/* Profile Picture */}
+                {/* Profile Picture */}
                 <View style={styles.leftContainer2}>
                   <Image
-                    source={{uri: this.state.iconURL}}
+                    source={{ uri: this.state.iconURL }}
                     style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
                   />
                 </View>
@@ -414,15 +413,9 @@ export default class Profile extends React.Component {
             </View>
 
             {this.state.selectListButtonP ? (
-              <MemeList
-                loadMemes={this.fetchMemes}
-                memes={this.state.memes}
-              />
+              <MemeList loadMemes={this.fetchMemes} memes={this.state.memes} />
             ) : (
-              <MemeGrid
-                loadMemes={this.fetchMemes}
-                memes={this.state.memes}
-              />
+              <MemeGrid loadMemes={this.fetchMemes} memes={this.state.memes} />
             )}
           </ScrollView>
         </React.Fragment>
@@ -498,7 +491,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: 'white',
     marginRight: '9%',
-    marginLeft: '9%'
+    marginLeft: '9%',
   },
   textSty2: {
     fontSize: 20,
@@ -639,7 +632,7 @@ const styles = StyleSheet.create({
     paddingRight: 2,
     paddingLeft: '3%',
     paddingHorizontal: '5%',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   rightContainer2: {
     flex: 1,
@@ -648,7 +641,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     //paddingLeft: 1,
     //paddingHorizontal: 25,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   rightIcon2: {
     height: 10,

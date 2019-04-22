@@ -13,6 +13,16 @@ import FriendProfile from '../screens/friendProfileScreen';
 import CommentPage from '../screens/commentPage';
 import FollowList from '../components/home/searchResultList';
 
+import aboutInfo1 from '../screens/aboutInfo1';
+import aboutInfo2 from '../screens/aboutInfo2';
+import aboutInfo3 from '../screens/aboutInfo3';
+
+const InfoStack = createStackNavigator({
+  aboutInfo1,
+  aboutInfo2,
+  aboutInfo3,
+});
+
 const ExploreStack = createStackNavigator(
   {
     Explore: {
@@ -75,6 +85,9 @@ const ProfileStack = createStackNavigator(
     },
     Comment: {
       screen: CommentPage,
+    },
+    InfoStack: {
+      screen: InfoStack,
     },
   },
   {
