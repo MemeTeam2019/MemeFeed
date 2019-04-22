@@ -87,7 +87,7 @@ async function sendToFirebase(filename,url,author,sub,time,score,caption){
 
         var data = {
 		filename: filename,
-		url: downloadURL,
+		url: url,
 		author: author,
 		sub: sub,
 		time: time,
