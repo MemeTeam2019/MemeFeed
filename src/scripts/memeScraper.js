@@ -1,15 +1,33 @@
 const request = require('request')
 const fs = require('fs')
 const fetch = require("node-fetch");
+var http = require('http');
 const {Storage} = require('@google-cloud/storage');
 const admin = require("firebase-admin");
 const serviceAccount = require("memefeed-6b0e1-firebase-adminsdk-z2wdj-9eca8f2894.json");
 const projectID = "memefeed-6b0e1";
+const path = require('path');
+const os = require('os');
 const storage = new Storage({
-  projectId: projectId,
-});
+	projectId: projectID,
 
+});
+var needToDelete = false;
+
+
+async function getfile(url,filename){
+	await request(url)
+  	.pipe(fs.createWriteStream(filename));
+}
+function deletefile(filename){
+	fs.unlink(filename, function (err) {
+    if (err) throw err;
+    // if no error, file has been deleted successfully
+    console.log('File deleted!');
+	}); 
+}
 function getJSON(sub){
+
 	var ret;
 	
 	var yourUrl="https://www.reddit.com/r/"+sub+".json";
@@ -28,79 +46,151 @@ function getJSON(sub){
   					var author=curlist.author;
   					var time=curlist.created_utc;
   					var score = curlist.score;
-  					upload(url,author,sub,time,score);
+  					var caption =curlist.title;
+  					upload(url,author,sub,time,score,caption);
   			}
 
   			}
   		//}
 	}).catch(err => {
+		console.log(err.message);
 	});
 }
-function print(url,author,sub,time,score){
+function print(url,author,sub,time,score,filename,caption){
 	console.log(url);
 	console.log(author);
 	console.log(sub);
 	console.log(time);
 	console.log(score);
+	console.log(filename);
+	console.log(caption);
 }
-function sendToFirebase(filename,url,author,sub,time,score){
-	request(url)
-  	.pipe(fs.createWriteStream(filename))
-     
-    storage().bucket("MemeImages/").upload(filename);
-	var newurl =  storage().bucket('MemeImages/').file(filename).getSignedURL();
-	var dbRef = admin.firestore().collection('MemesTest').doc(filename.substring(0,filename.indexOf('.')));
+async function sendToFirebase(filename,url,author,sub,time,score,caption){
+	var dbRef = admin.firestore().collection('MemesTest2').doc(filename.substring(0,filename.indexOf('.')));
+	var s=storage.bucket('memefeed-6b0e1.appspot.com/meme_images');
+	s.upload(filename);
+	 
+	 print(url,author,sub,time,score,filename,caption);
 
-	var data = {
+  	//var s=storage.bucket('memefeed-6b0e1.appspot.com/meme_images');
+  //	
+  //	await s.upload(file).catch(err =>	{
+  //		console.log("I know its you");
+  //		console.log(err.message);
+  //	});
+
+  	
+  	
+  	var downloadURL = "https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/MemeImages/"+filename;
+
+
+
+        var data = {
 		filename: filename,
-		url: newurl,
+		url: downloadURL,
 		author: author,
 		sub: sub,
 		time: time,
 		score: score,
-		caption: '',
-		reacts: 0
+		reacts: 0,
+		caption: caption,
 	};
 	dbRef.set(data);
-	fs.unlink(filename);
-  
+	console.log("push ok");
 
+
+  	 
+
+
+	
   //});
+
 	
 
 }
 
-function upload(url,author,sub,time,score){
+function upload(url,author,sub,time,score,caption){
 	var filename = url.substring(url.lastIndexOf('/')+1);
-	//print(url,author,sub,time,score);
-	sendToFirebase(filename,url,author,sub,time,score);
+	
+	sendToFirebase(filename,url,author,sub,time,score,caption);
+	if(needToDelete){
+		deletefile(filename);
+	}
+	
 
 }
 
-//admin.initializeApp({
-//  credential: admin.credential.cert(serviceAccount),
-//  databaseURL: "https://memefeed-6b0e1.firebaseio.com"
-//});
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
 
 
 var subreddits = ['wholesomememes',
-	'BikiniBottomTwitter',
-	'OneProtectRestAttack',
-	'ProgrammerHumor',
-	'raimimemes',
-	'ScottishPeopleTwitter',
-	'starterpacks',
-	'trippinthroughtime',
-	'me_irl',
-	'AdviceAnimals',
-	'nukedmemes',
-	'DeepFriedMemes',
-	'dankmemes',
-	'dankchristianmemes',
-	'OverwatchMemes',
-	'2meirl4meirl',
-	'Tinder']
+'BikiniBottomTwitter',
+'OneProtectRestAttack',
+'ProgrammerHumor',
+'raimimemes',
+'ScottishPeopleTwitter',
+'starterpacks',
+'trippinthroughtime',
+'me_irl',
+'dank memes',
+'AdviceAnimals',
+'nukedmemes',
+'DeepFriedMemes',
+'dank_memes',
+'dankchrisitanmemes',
+'OverwatchMemes',
+'2meirl4meirl',
+'Tinder',
+'rickandmorty',
+'IncrediblesMemes',
+'wholesomememes',
+'AnimalMemes',
+'Insanepeoplefacebook',
+'kermitmemes',
+'csmemes',
+'TrashAndKpop',
+'HarryPotterMemes',
+'DisneyMemes',
+'MildlyVandalized',
+'WTF',
+'toosoon',
+'marvelmemes',
+'starwarsmemes',
+'tvmemes',
+'anime_irl',
+'SoftwareGore',
+'Crappydesign',
+'Bikememes',
+'Hmmm',
+'Vaxxhappened',
+'GymMemes',
+'veganmemes',
+'Sciencememes',
+'Shrek',
+'Brogres',
+'MedMeme',
+'MLMemes',
+'NUMTOT',
+'Terriblefacebookmemes',
+'Shittyfacebookmemes',
+'FacebookCringe',
+'Tumblr',
+'Bestoftwitter',
+'BlackPeopleTwitter',
+'WhitePeopleTwitter',
+'Drugmemes',
+'Indianpeoplefacebook',
+'Doggomemes',
+'nathanwpyle',
+'Threateningtoilets',
+'Physicsmemes',
+'Engineeringmemes',
+'gaywashedmemes',
+
+]
 
 for(i=0;i<subreddits.length;i++){
 	getJSON(subreddits[i]);
