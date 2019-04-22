@@ -236,7 +236,7 @@ export default class Profile extends React.Component {
   }
 
   render() {
-    var optionArray = ['Logout', 'Cancel'];
+    var optionArray = ['Logout', 'About', 'Cancel'];
 
     if (this.state.memes.length == 0) {
       return (
@@ -258,11 +258,13 @@ export default class Profile extends React.Component {
                 ref={(o) => (this.ActionSheet = o)}
                 title={'User Settings'}
                 options={optionArray}
-                cancelButtonIndex={1}
+                cancelButtonIndex={2}
                 destructiveIndex={0}
                 onPress={(index) => {
                   if (optionArray[index] == 'Logout') {
                     this.logout();
+                  }else if (optionArray[index] == 'About'){
+                    this.props.navigation.push('aboutInfo');
                   }
                 }}
               />
@@ -324,11 +326,13 @@ export default class Profile extends React.Component {
                   ref={(o) => (this.ActionSheet = o)}
                   title={'User Settings'}
                   options={optionArray}
-                  cancelButtonIndex={1}
+                  cancelButtonIndex={2}
                   destructiveIndex={0}
                   onPress={(index) => {
                     if (optionArray[index] == 'Logout') {
                       this.logout();
+                    }else if (optionArray[index] == 'About'){
+                      this.props.navigation.push('aboutInfo');
                     }
                   }}
                 />
