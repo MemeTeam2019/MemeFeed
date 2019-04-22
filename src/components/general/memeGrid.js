@@ -17,10 +17,6 @@ class MemeGrid extends React.Component {
     header: null,
   };
 
-  constructor() {
-    super();
-  }
-
   _renderItem = (data, i) => {
     if (!data || !data.src) {
       return this._renderPlaceholder(i);
@@ -32,8 +28,9 @@ class MemeGrid extends React.Component {
             flex: 1,
           }}
           onPress={() => {
-            this.props.navigation.push('Tile', {
-              memes: [data],
+            this.props.navigation.push('Comment', {
+              uri: data.src,
+              memeId: data.key,
             });
           }}
         >
@@ -58,7 +55,6 @@ class MemeGrid extends React.Component {
   }
 
   render() {
-    //const { memes } = this.props;
     return (
       <Grid
         style={styles.list}
@@ -67,13 +63,11 @@ class MemeGrid extends React.Component {
         data={this.props.memes}
         itemsPerRow={3}
         onEndReached={() => {
-          console.log('on end reached')
-          console.log('===========\n\n\n\nloading more memes\n===============')
+          console.log('on end reached');
+          console.log('===========\n\n\n\nloading more memes\n===============');
           // Call parent function
           this.props.loadMemes();
-          console.log(this.props.memes)
-
-
+          console.log(this.props.memes);
         }}
       />
     );

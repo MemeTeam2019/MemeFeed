@@ -1,13 +1,6 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  KeyboardAvoidingView,
-  Button,
-  TextInput,
-} from 'react-native';
+import { StyleSheet, View, Button, TextInput } from 'react-native';
 import firebase from 'react-native-firebase';
-import { Header } from 'react-navigation';
 
 class AddComment extends React.Component {
   constructor(props) {
@@ -141,24 +134,11 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'absolute',
     backgroundColor: '#fff',
-    bottom:0
+    bottom: 0,
   },
-  postButton: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    flexDirection: 'row',
-    marginRight: '4%'
-  },
-  postText: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    fontSize: 18,
-    marginTop: 5,
-    fontFamily: 'AvenirNext-Regular',
-  },
-  postButton: {},
   input: {
     width: '80%',
+    // bottom: 0,
     backgroundColor: '#fff',
     borderRadius: 25,
     paddingHorizontal: 15,

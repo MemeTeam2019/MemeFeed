@@ -87,36 +87,35 @@ const MainRouter = createBottomTabNavigator({
     screen: HomeStack,
     navigationOptions: {
       tabBarIcon: ({ tintColor }) => (
-        <Icon name="home" size={28} color={tintColor} />
+        <Icon name='home' size={28} color={tintColor} />
       ),
-      tabBarOptions:{
+      tabBarOptions: {
         showLabel: false,
         showIcon: true,
         activeTintColor: '#000000',
         inactiveTintColor: '#D3D3D3',
         style: {
-          height: '10%'
-        }
-      }
+          height: '10%',
+        },
+      },
     },
-
   },
   Explore: {
     screen: ExploreStack,
     navigationOptions: {
       showLabel: false,
       tabBarIcon: ({ tintColor }) => (
-        <Icon name="search" size={28} color={tintColor} />
+        <Icon name='search' size={28} color={tintColor} />
       ),
-      tabBarOptions:{
+      tabBarOptions: {
         showLabel: false,
         showIcon: true,
         activeTintColor: '#000000',
         inactiveTintColor: '#D3D3D3',
         style: {
-          height: '10%'
-        }
-      }
+          height: '10%',
+        },
+      },
     },
   },
   Profile: {
@@ -124,17 +123,17 @@ const MainRouter = createBottomTabNavigator({
     navigationOptions: {
       showLabel: false,
       tabBarIcon: ({ tintColor }) => (
-        <Icon name="face" size={28} color={tintColor} />
+        <Icon name='face' size={28} color={tintColor} />
       ),
-      tabBarOptions:{
+      tabBarOptions: {
         showLabel: false,
         showIcon: true,
         activeTintColor: '#000000',
         inactiveTintColor: '#D3D3D3',
         style: {
-          height: '10%'
-        }
-      }
+          height: '10%',
+        },
+      },
     },
   },
 });

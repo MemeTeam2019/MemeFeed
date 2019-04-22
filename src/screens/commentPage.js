@@ -1,16 +1,12 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  KeyboardAvoidingView,
-} from 'react-native';
+import { StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
 import firebase from 'react-native-firebase';
 
 import AddComment from '../components/image/addComment';
 import CommentList from '../components/image/commentList';
 import TileHeader from '../components/image/tileHeader';
 import Photo from '../components/image/photo';
+import ButtonBar from '../components/image/buttonBar';
 
 /**
  * Display comments for a meme, along with the buttonBar and the meme itself.
@@ -171,30 +167,34 @@ class CommentPage extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={95}>
-          <ScrollView
-            ref={(ref) => {
-              this.scrollView = ref;
-            }}
-          >
-            <TileHeader />
-            <Photo imageUrl={this.state.imageuri} />
-            <CommentList
-              memeId={this.state.memeId}
-              comments={this.state.comments}
-              fetchComments={this.fetchComments}
-              commentsLoaded={this.state.commentsLoaded}
-              commentCount={this.state.commentCount}
-            />
-          </ScrollView>
-          <AddComment
+      <KeyboardAvoidingView
+        // style={styles.container}
+        behavior='position'
+        keyboardVerticalOffset={95}
+      >
+        <ScrollView
+          ref={(ref) => {
+            this.scrollView = ref;
+          }}
+          style={{ height: '100%' }}
+        >
+          <TileHeader />
+          <Photo imageUrl={this.state.imageuri} />
+          <ButtonBar memeId={this.state.memeId} />
+          <CommentList
             memeId={this.state.memeId}
-            handleNewComment={this.handleNewComment}
-            style={styles.addComment}
+            comments={this.state.comments}
+            fetchComments={this.fetchComments}
+            commentsLoaded={this.state.commentsLoaded}
+            commentCount={this.state.commentCount}
           />
-        </KeyboardAvoidingView>
-      </View>
+        </ScrollView>
+        <AddComment
+          memeId={this.state.memeId}
+          handleNewComment={this.handleNewComment}
+          style={styles.addComment}
+        />
+      </KeyboardAvoidingView>
     );
   }
 }
@@ -206,8 +206,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    position: 'absolute',
-    bottom: 0,
+    alignItems: 'center',
   },
   addComment: {
     position: 'absolute',

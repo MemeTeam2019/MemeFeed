@@ -77,46 +77,34 @@ class ExploreFeed extends React.Component {
         .startAfter(oldestDoc)
         .get()
         .then(this.updateFeed);
-      }
-    };
+    }
+  };
 
+  updateFeed = (querySnapshot) => {
+    const newMemes = [];
+    querySnapshot.docs.forEach((doc) => {
+      const { url, time, sub } = doc.data();
+      newMemes.push({
+        key: doc.id,
+        doc,
+        src: url,
+        time,
+        sub,
+        postedBy: sub,
+      });
+    });
 
-    updateFeed = (querySnapshot) => {
-        const newMemes = [];
-        querySnapshot.docs.forEach((doc) => {
-          const { url, time, sub } = doc.data();
-          newMemes.push({
-            key: doc.id,
-            doc,
-            src: url,
-            time,
-            sub,
-            postedBy: sub,
-          });
-
-        });
-
-        Promise.all(newMemes).then((resolvedMemes) => {
-          this.setState((prevState) => {
-            const mergedMemes = (prevState.memes).concat(resolvedMemes);
-            return {
-              memes: mergedMemes,
-              updated: true,
-              oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
-            };
-          });
-        });
-    };
-
-
-
-
-
-
-
-
-
-
+    Promise.all(newMemes).then((resolvedMemes) => {
+      this.setState((prevState) => {
+        const mergedMemes = prevState.memes.concat(resolvedMemes);
+        return {
+          memes: mergedMemes,
+          updated: true,
+          oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+        };
+      });
+    });
+  };
 
   /**
    * Pulls all users whose username starts with the searchTerm
@@ -313,10 +301,7 @@ class ExploreFeed extends React.Component {
             </TouchableOpacity>
           </View>
           {/* List View */}
-          <MemeList
-            loadMemes={this.fetchMemes}
-            memes={this.state.memes}
-          />
+          <MemeList loadMemes={this.fetchMemes} memes={this.state.memes} />
         </View>
       );
     }
@@ -365,10 +350,7 @@ class ExploreFeed extends React.Component {
           </TouchableOpacity>
         </View>
 
-        <MemeGrid
-          loadMemes={this.fetchMemes}
-          memes={this.state.memes}
-        />
+        <MemeGrid loadMemes={this.fetchMemes} memes={this.state.memes} />
       </View>
     );
   }

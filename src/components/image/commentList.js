@@ -7,7 +7,7 @@ import {
   FlatList,
 } from 'react-native';
 
-import ButtonBar from './buttonBar';
+// import ButtonBar from './buttonBar';
 import Comment from './comment';
 
 class CommentList extends React.Component {
@@ -34,7 +34,7 @@ class CommentList extends React.Component {
     if (this.props.commentsLoaded < this.props.commentCount) {
       return (
         <View style={[styles.containerStyle]}>
-          <ButtonBar memeId={this.props.memeId} />
+          {/* <ButtonBar memeId={this.props.memeId} /> */}
           <TouchableOpacity
             onPress={this.props.fetchComments}
             style={{ justifyContent: 'center', alignItems: 'center' }}
@@ -51,7 +51,7 @@ class CommentList extends React.Component {
     // no more comments to load
     return (
       <View style={[styles.containerStyle]}>
-        <ButtonBar memeId={this.props.memeId} />
+        {/* <ButtonBar memeId={this.props.memeId} /> */}
         <FlatList data={this.props.comments} renderItem={this.renderComment} />
       </View>
     );
