@@ -10,7 +10,7 @@ import TilePage from '../screens/tilePage';
 import Profile from '../screens/profilePage';
 import HomeFeed from '../screens/homeFeed';
 import FriendProfile from '../screens/friendProfileScreen';
-import CommentPage from '../screens/CommentPage';
+import CommentPage from '../screens/commentPage';
 import FollowList from '../components/home/searchResultList';
 
 const ExploreStack = createStackNavigator(
@@ -87,36 +87,35 @@ const MainRouter = createBottomTabNavigator({
     screen: HomeStack,
     navigationOptions: {
       tabBarIcon: ({ tintColor }) => (
-        <Icon name="home" size={28} color={tintColor} />
+        <Icon name='home' size={28} color={tintColor} />
       ),
-      tabBarOptions:{
+      tabBarOptions: {
         showLabel: false,
         showIcon: true,
         activeTintColor: '#000000',
         inactiveTintColor: '#D3D3D3',
         style: {
-          height: '10%'
-        }
-      }
+          height: '10%',
+        },
+      },
     },
-    
   },
   Explore: {
     screen: ExploreStack,
     navigationOptions: {
       showLabel: false,
       tabBarIcon: ({ tintColor }) => (
-        <Icon name="search" size={28} color={tintColor} />
+        <Icon name='search' size={28} color={tintColor} />
       ),
-      tabBarOptions:{
+      tabBarOptions: {
         showLabel: false,
         showIcon: true,
         activeTintColor: '#000000',
         inactiveTintColor: '#D3D3D3',
         style: {
-          height: '10%'
-        }
-      }
+          height: '10%',
+        },
+      },
     },
   },
   Profile: {
@@ -124,17 +123,17 @@ const MainRouter = createBottomTabNavigator({
     navigationOptions: {
       showLabel: false,
       tabBarIcon: ({ tintColor }) => (
-        <Icon name="face" size={28} color={tintColor} />
+        <Icon name='face' size={28} color={tintColor} />
       ),
-      tabBarOptions:{
+      tabBarOptions: {
         showLabel: false,
         showIcon: true,
         activeTintColor: '#000000',
         inactiveTintColor: '#D3D3D3',
         style: {
-          height: '10%'
-        }
-      }
+          height: '10%',
+        },
+      },
     },
   },
 });
