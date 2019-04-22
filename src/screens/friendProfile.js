@@ -35,6 +35,7 @@ class FriendProfileScreen extends React.Component {
       imageuri: '',
       isFollowing: false,
       buttonText: '',
+      iconURL: ''
     };
   }
 
@@ -50,6 +51,26 @@ class FriendProfileScreen extends React.Component {
 
       const myUid = firebase.auth().currentUser.uid;
       const theirUid = this.props.navigation.getParam('uid');
+
+      //get the profile icon
+      firebase
+        .firestore()
+        .collection('Users')
+        .doc(theirUid)
+        .get()
+        .then((docSnapshot) => {
+          if(docSnapshot.exists) {
+            const { icon } = docSnapshot.data();
+              this.state.iconURL = icon
+            console.log(this.state.iconURL)
+          }
+          else{
+            console.log("doesn't exist")
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
 
       const myUserRef = firebase
         .firestore()
@@ -228,7 +249,7 @@ class FriendProfileScreen extends React.Component {
         <View style={styles.navBar2}>
           <View style={styles.leftContainer2}>
             <Image
-              source={require('../images/primePic.png')}
+              source={{uri: this.state.iconURL}}
               style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
             />
           </View>

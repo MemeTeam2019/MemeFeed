@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { StyleSheet, View, Button, ImageBackground, Text } from 'react-native';
 
@@ -47,7 +46,6 @@ const styles = StyleSheet.create({
     paddingRight: 3,
     paddingLeft: 3,
     paddingTop: 10, //50
-    //flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 36,

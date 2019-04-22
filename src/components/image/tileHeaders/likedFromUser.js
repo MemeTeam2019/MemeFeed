@@ -10,13 +10,34 @@ class LikedFromUser extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: ""
+      username: '',
+      iconURL: ''
     }
   }
 
   componentDidMount() {
     const uid = this.props.poster;
     const userRef = firebase.firestore().collection("Users").doc(uid);
+    //get the profile icon
+    firebase
+    .firestore()
+    .collection('Users')
+    .doc(uid)
+    .get()
+    .then((docSnapshot) => {
+      if(docSnapshot.exists) {
+        const { icon } = docSnapshot.data();
+          this.state.iconURL = icon
+        console.log(this.state.iconURL)
+        console.log(icon)
+      }
+      else{
+        console.log("doesn't exist")
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    });
     userRef.get().then(snapshot => {
       const data = snapshot.data();
       this.setState({username: data.username})
@@ -37,7 +58,7 @@ class LikedFromUser extends React.Component {
         <View style={styles.container}>
           <Image
             style={styles.userImg}
-            source={{uri:'https://animals.sandiegozoo.org/sites/default/files/inline-images/orang_male_hand.jpg'}}
+            source={{uri: this.state.iconURL}}
           />
           <Username uid={this.props.poster} navigation={this.props.navigation} />
           <Image

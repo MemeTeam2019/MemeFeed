@@ -1,6 +1,8 @@
 import React from 'react';
 import { StyleSheet, View, Button, ImageBackground, TouchableOpacity, Image, Text } from 'react-native';
 
+import firebase from 'react-native-firebase'
+
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
     header: null,
@@ -9,6 +11,18 @@ export default class LoginScreen extends React.Component {
     super();
     this.state = {
       selectedIcon: false,
+      icon: ''
+    };
+    this.iconImages = {
+      1: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon777.png?alt=media&token=715029a5-662d-4a5b-ab03-6d677fd63697',
+      2: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon666.png?alt=media&token=86089f45-4d4d-4604-b6e8-fa1d30269549',
+      3: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon999.png?alt=media&token=bf35e542-6e1e-4b8a-bc6a-5ebe30fd28a3',
+      4: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon111.png?alt=media&token=a826c2e3-b017-4572-920b-4acc2cf59adb',
+      5: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon222.png?alt=media&token=a53771f0-13ce-4aed-93b9-d8067dcb68b4',
+      6: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon888.png?alt=media&token=05558df6-bd5b-4da1-9cce-435a419347a0',
+      7: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon333.png?alt=media&token=5b8a4b01-e0cb-46b9-89e2-5e9a5e0757f1',
+      8: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon444.png?alt=media&token=5b36786a-2c7b-4bf9-8556-6e41e9bf621b',
+      9: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon555.png?alt=media&token=48fb9bf8-4efb-490c-a178-13a9efb2289c'
     }
   };
 
@@ -16,7 +30,19 @@ export default class LoginScreen extends React.Component {
     const oldIcon = this.state.selectedIcon;
     this.setState({
       selectedIcon: newIcon === oldIcon ? false : newIcon,
+      icon: newIcon
     });
+    firebase
+      .firestore()
+      .collection('Users')
+      .doc(firebase.auth().currentUser.uid)
+      .update({
+        icon: this.iconImages[newIcon]
+      });
+  };
+
+  _onNextButton = async () => {
+    this.props.navigation.push('About')
   };
 
 
@@ -190,7 +216,7 @@ export default class LoginScreen extends React.Component {
           <Button
             title="Next"
             color='#9F02FF'
-            onPress={() => this.props.navigation.push('About')}
+            onPress={this._onNextButton.bind()}
           />
         </View>
 
@@ -259,7 +285,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     //backgroundColor: 'green',
-    marginLeft: 15,
+    marginLeft: 20,
     marginRight: 15,
     justifyContent: 'center',
     alignItems: 'center',

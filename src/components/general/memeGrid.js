@@ -19,17 +19,6 @@ class MemeGrid extends React.Component {
 
   constructor() {
     super();
-    this._isMounted = false;
-    this.state = {
-      memesLoaded: 30,
-    };
-  }
-
-  componentDidMount() {
-    this._isMounted = true;
-    if (this._isMounted) {
-      this.props.loadMemes();
-    }
   }
 
   _renderItem = (data, i) => {
@@ -69,26 +58,22 @@ class MemeGrid extends React.Component {
   }
 
   render() {
-    const { memes } = this.props;
-    const { memesLoaded } = this.state;
+    //const { memes } = this.props;
     return (
       <Grid
         style={styles.list}
         renderItem={this._renderItem}
         renderPlaceholder={this._renderPlaceholder}
-        data={memes}
+        data={this.props.memes}
         itemsPerRow={3}
         onEndReached={() => {
-          // Ensuring there are actually memes to load
-          if (memes.length === memesLoaded) {
-            const newLoadCount = memesLoaded + 60;
-            this.setState({
-              memesLoaded: newLoadCount,
-            });
+          console.log('on end reached')
+          console.log('===========\n\n\n\nloading more memes\n===============')
+          // Call parent function
+          this.props.loadMemes();
+          console.log(this.props.memes)
 
-            // Call parent function
-            // this.props.loadMemes(newLoadCount);
-          }
+
         }}
       />
     );

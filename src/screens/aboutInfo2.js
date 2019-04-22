@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { StyleSheet, View, Button, ImageBackground, Image, Text,Dimensions } from 'react-native';
 
@@ -51,7 +50,6 @@ export default class LoginScreen extends React.Component {
 }
 
 const win = Dimensions.get('window');
-
 const styles = StyleSheet.create({
   container: {
     height: 100,

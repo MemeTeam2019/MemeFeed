@@ -9,6 +9,7 @@ import ButtonBar from './buttonBar';
 import Photo from './photo';
 import TileHeader from './tileHeader';
 import PostInfo from './postInfo';
+import CommentButton from './commentButton'
 
 class Tile extends React.Component {
   constructor(props) {
@@ -50,13 +51,23 @@ class Tile extends React.Component {
           poster={this.props.poster}
         />
         <Photo imageUrl={this.props.imageUrl} />
-        <ButtonBar
-          imageUrl={this.props.imageUrl}
-          memeId={this.props.memeId}
-          imageUrl={this.props.imageUrl}
-          postedBy={this.props.postedBy}
-          updateReacts={this.updateReactCount}
-        />
+        <View style={{flex: 1, flexDirection: 'row', borderColor: '#D6D6D6', borderTopWidth: .5,}}>
+          <View>
+            <CommentButton
+              imageUrl={this.props.imageUrl}
+              memeId={this.props.memeId} 
+            />
+          </View>
+          <View>
+            <ButtonBar
+              imageUrl={this.props.imageUrl}
+              memeId={this.props.memeId}
+              imageUrl={this.props.imageUrl}
+              postedBy={this.props.postedBy}
+              updateReacts={this.updateReactCount}
+            />
+          </View>
+        </View>
         <PostInfo
           memeId={this.props.memeId}
           reactCount={this.state.reactCount}
@@ -73,6 +84,10 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  buttonbar: {
+    flexDirection: 'row',
+  }
+
 });
 
 export default Tile;

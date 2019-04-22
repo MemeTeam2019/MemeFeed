@@ -58,6 +58,9 @@ class LoginScreen extends React.Component {
           case 'auth/wrong-password':
             errorMessage = 'Wrong email or password';
             break;
+          default:
+            errorMessage = 'Something went wrong';
+            break;
         }
         Alert.alert('Login Failed', errorMessage, [{ text: 'OK' }]);
       });
