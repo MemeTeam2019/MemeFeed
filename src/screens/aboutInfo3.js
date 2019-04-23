@@ -25,6 +25,10 @@ export default class LoginScreen extends React.Component {
             Recommendation Algorithm for meme suggestions personalized
             to your meme taste.
           </Text>
+          <Text style={styles.aboutText2}>
+            Contact us at memefeedaye@gmail.com
+          </Text>
+
         </View>
         <View style={styles.nextBut}>
           <Button
@@ -82,6 +86,22 @@ const styles = StyleSheet.create({
     marginLeft: '3%',
     marginRight: '3%',
     //height: '50%'
+  },
+  aboutText2: {
+    fontSize: 18,
+    fontFamily: 'AvenirNext-Regular',
+    color: '#9F02FF',
+    paddingHorizontal: '4%',
+    marginBottom: '1%',
+    paddingRight: 5,
+    paddingTop: 20, //50
+    paddingLeft: 5,
+    //backgroundColor: 'blue',
+    marginLeft: '3%',
+    marginRight: '3%',
+    //height: '50%'
+    justifyContent: 'center',
+    textAlign: 'center'
   },
   input: {
     height: '12%',

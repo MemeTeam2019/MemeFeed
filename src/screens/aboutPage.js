@@ -19,7 +19,7 @@ export default class LoginScreen extends React.Component {
         <View style={styles.aboutText}>
           <Text style={styles.aboutText}>
             Meme Feed is a place where you can view an endless supply
-            of Memes without having to look at any family photos or
+            of memes without having to look at any family photos or
             your ex-coworkers beach photos. (We don't care about your
             Bahama beach boyfriend Sally!)
           </Text>
