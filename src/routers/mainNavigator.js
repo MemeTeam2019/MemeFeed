@@ -16,6 +16,7 @@ import FollowList from '../components/home/searchResultList';
 import aboutInfo1 from '../screens/aboutInfo1';
 import aboutInfo2 from '../screens/aboutInfo2';
 import aboutInfo3 from '../screens/aboutInfo3';
+import PrivacyPolicyScreen from '../screens/privacyScreen';
 
 const InfoStack = createStackNavigator({
   aboutInfo1,
@@ -89,6 +90,9 @@ const ProfileStack = createStackNavigator(
     InfoStack: {
       screen: InfoStack,
     },
+    Privacy: {
+      screen: PrivacyPolicyScreen
+    }
   },
   {
     initialRouteName: 'Profile',

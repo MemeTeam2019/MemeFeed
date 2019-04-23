@@ -7,6 +7,7 @@ import AboutScreen from '../screens/aboutPage';
 import AboutScreen2 from '../screens/aboutPage2';
 import AboutScreen3 from '../screens/aboutPage3';
 import ChooseIcon from '../screens/chooseIconScreen';
+import AcceptPrivacyScreen from '../screens/privacyScreen';
 
 export default createStackNavigator(
   {
@@ -30,6 +31,9 @@ export default createStackNavigator(
     },
     Confirm: {
       screen: ConfirmScreen,
+    },
+    Privacy: {
+      screen: AcceptPrivacyScreen,
     },
   },
   {

@@ -35,7 +35,6 @@ class SignupScreen extends React.Component {
   }
 
   addUserDoc = (uid, email, name, username) => {
-    console.log('adding user for ' + uid);
     firebase
       .firestore()
       .runTransaction(async (transaction) => {
@@ -48,9 +47,9 @@ class SignupScreen extends React.Component {
         if (!doc.exists) {
           transaction.set(ref, {
             email: email.toLowerCase(),
-            name: name,
+            name,
             searchableName: name.toLowerCase(),
-            username: username,
+            username,
             searchableusername: username.toLowerCase(),
             followersCnt: 0,
             followingCnt: 0,
@@ -65,16 +64,16 @@ class SignupScreen extends React.Component {
       })
       .catch((err) => {
         Alert.alert('Signup Error', 'Error creating User doc for' + email, [
-          { text: 'OK' },
+          { text: 'OK', style: 'cancel' },
         ]);
       });
   };
 
   handleSubmit = () => {
-    let email = this.state.email;
-    let name = this.state.name;
-    let username = this.state.username;
-    let password = this.state.password;
+    const email = this.state.email;
+    const name = this.state.name;
+    const username = this.state.username;
+    const password = this.state.password;
     if (password !== this.state.cpassword) {
       Alert.alert("Passwords don't match", '', [{ text: 'OK' }]);
       return;
@@ -84,9 +83,8 @@ class SignupScreen extends React.Component {
       .createUserWithEmailAndPassword(email, password)
       .then((user) => {
         if (user) {
-          let uid = user.user.uid;
+          const uid = user.user.uid;
           this.addUserDoc(uid, email, name, username);
-          console.log('yuh');
           this.props.navigation.push('Icon');
         } else {
           Alert.alert('Error', "Couldn't create acount. Please try again", [
@@ -95,7 +93,9 @@ class SignupScreen extends React.Component {
         }
       })
       .catch((error) => {
-        Alert.alert('Error', error.code, [{ text: 'OK' }]);
+        Alert.alert('Error', error.code, [
+          { text: 'OK', onPress: () => this.props.navigation.popToTop() },
+        ]);
       });
   };
 
@@ -114,36 +114,34 @@ class SignupScreen extends React.Component {
             <TextInput
               style={styles.input}
               placeholder='Email'
-              onChangeText={(email) => this.setState({ email: email })}
+              onChangeText={(email) => this.setState({ email })}
               autoComplete='email'
               autoCapitalize='none'
             />
             <TextInput
               style={styles.input}
               placeholder='Name'
-              onChangeText={(name) => this.setState({ name: name })}
+              onChangeText={(name) => this.setState({ name })}
               autoComplete='name'
             />
             <TextInput
               style={styles.input}
               placeholder='Username'
-              onChangeText={(username) => this.setState({ username: username })}
+              onChangeText={(username) => this.setState({ username })}
               autoComplete='username'
             />
             <TextInput
               style={styles.input}
               placeholder='Password'
-              secureTextEntry={true}
-              onChangeText={(password) => this.setState({ password: password })}
+              secureTextEntry
+              onChangeText={(password) => this.setState({ password })}
               autoComplete='password'
             />
             <TextInput
               style={styles.input}
               placeholder='Confirm Password'
-              secureTextEntry={true}
-              onChangeText={(cpassword) =>
-                this.setState({ cpassword: cpassword })
-              }
+              secureTextEntry
+              onChangeText={(cpassword) => this.setState({ cpassword })}
             />
             <Button
               title='Submit'
@@ -157,6 +155,8 @@ class SignupScreen extends React.Component {
     );
   }
 }
+
+export default SignupScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -196,5 +196,3 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 });
-
-export default SignupScreen;

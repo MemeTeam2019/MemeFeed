@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { StyleSheet, View, Button, ImageBackground, Text } from 'react-native';
 
@@ -21,17 +20,18 @@ export default class LoginScreen extends React.Component {
             MemeFeed is current a Beta verison!
           </Text>
           <Text style={styles.aboutText}>
-            Be sure to update the app later this year for new features
-            including Meme Uploading, User Tagging, and an all new Meme
-            Recommendation Algorithm for meme suggestions personalized
-            to your meme taste.
+            Be sure to update the app later this year for new features including
+            Meme Uploading, User Tagging, and an all new Meme Recommendation
+            Algorithm for meme suggestions personalized to your meme taste.
           </Text>
         </View>
         <View style={styles.nextBut}>
           <Button
             title="Let's Get Started"
             color='#9F02FF'
-            onPress={() => this.props.navigation.push('Confirm')}
+            onPress={() =>
+              this.props.navigation.push('Privacy', { signup: true })
+            }
           />
         </View>
       </ImageBackground>
@@ -46,16 +46,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingRight: 3,
     paddingLeft: 3,
-    paddingTop: 10, //50
-    //flexDirection: 'row',
+    paddingTop: 10,
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 36,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
-    //backgroundColor: 'blue',
     marginTop: '25%',
-    //marginBottom: '2%'
   },
   title: {
     fontSize: 35,
@@ -65,7 +62,6 @@ const styles = StyleSheet.create({
     marginBottom: '0.5%',
     textAlign: 'center',
     height: 50,
-    //backgroundColor: 'red',
     shadowColor: 'black',
     shadowOffset: { width: 0, height: 0.5 },
     shadowOpacity: 0.5,
@@ -78,12 +74,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,
-    paddingTop: 1, //50
+    paddingTop: 1,
     paddingLeft: 5,
-    //backgroundColor: 'blue',
     marginLeft: '3%',
     marginRight: '3%',
-    //height: '50%'
   },
   input: {
     height: '12%',
@@ -107,5 +101,5 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     marginBottom: '5%',
-  }
+  },
 });

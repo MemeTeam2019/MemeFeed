@@ -40,24 +40,17 @@ export default class Profile extends React.Component {
       .orderBy('time', 'desc');
 
     this.state = {
-      email: '',
       username: '',
       name: '',
-      uid: '',
       followingCnt: 0,
       followersCnt: 0,
       followingLst: [],
       followersLst: [],
-      open: false,
       selectGridButtonP: true,
       selectListButtonP: false,
       updated: true,
       memes: [],
       oldestDoc: 0,
-      items: [],
-      text: '',
-      ModalVisibleStatus: false,
-      imageuri: '',
       iconURL: '',
     };
   }
@@ -66,7 +59,7 @@ export default class Profile extends React.Component {
     this._isMounted = true;
     if (this._isMounted) {
       const uid = firebase.auth().currentUser.uid;
-      //get the profile icon
+      // Get the profile icon
       firebase
         .firestore()
         .collection('Users')
@@ -196,18 +189,7 @@ export default class Profile extends React.Component {
       });
   };
 
-  ShowModalFunction(visible, imageUrl) {
-    //handler to handle the click on image of Grid
-    //and close button on modal
-    this.setState({
-      ModalVisibleStatus: visible,
-      imageuri: imageUrl,
-      memeId: memeId,
-    });
-  }
-
   renderItem(item, itemSize, itemPaddingHorizontal) {
-    //Single item of Grid
     return (
       <TouchableOpacity
         key={item.id}
@@ -228,14 +210,15 @@ export default class Profile extends React.Component {
       </TouchableOpacity>
     );
   }
-  renderTile({ item }) {
+
+  renderTile = ({ item }) => {
     return <Tile memeId={item.key} imageUrl={item.src} />;
-  }
+  };
 
   render() {
-    const optionArray = ['Logout', 'About', 'Cancel'];
+    const optionArray = ['About', 'Privacy Policy', 'Log Out', 'Cancel'];
 
-    if (this.state.memes.length == 0) {
+    if (this.state.memes.length === 0) {
       return (
         <View style={styles.containerStyle}>
           <View style={styles.navBar1}>
@@ -261,10 +244,12 @@ export default class Profile extends React.Component {
                 destructiveIndex={0}
                 onPress={(index) => {
                   console.log(index);
-                  if (optionArray[index] == 'Logout') {
+                  if (optionArray[index] == 'Log Out') {
                     this.logout();
                   } else if (optionArray[index] == 'About') {
                     this.props.navigation.push('InfoStack');
+                  } else if (optionArray[index] == 'Privacy Policy') {
+                    this.props.navigation.push('Privacy');
                   }
                 }}
               />
@@ -325,13 +310,15 @@ export default class Profile extends React.Component {
                   ref={(o) => (this.ActionSheet = o)}
                   title={'User Settings'}
                   options={optionArray}
-                  cancelButtonIndex={2}
+                  cancelButtonIndex={3}
                   destructiveIndex={0}
                   onPress={(index) => {
-                    if (optionArray[index] == 'Logout') {
+                    if (optionArray[index] == 'Log Out') {
                       this.logout();
                     } else if (optionArray[index] == 'About') {
                       this.props.navigation.push('InfoStack');
+                    } else if (optionArray[index] == 'Privacy Policy') {
+                      this.props.navigation.push('Privacy');
                     }
                   }}
                 />
@@ -427,8 +414,6 @@ export default class Profile extends React.Component {
 const styles = StyleSheet.create({
   containerStyle: {
     flex: 0,
-    // alignItems: "center",
-    // justifyContent: "center",
     backgroundColor: 'white',
   },
   headerSty: {
@@ -437,7 +422,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 50, //50
+    paddingTop: 50,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -508,8 +493,6 @@ const styles = StyleSheet.create({
     paddingRight: 2,
     paddingLeft: 2,
     paddingHorizontal: 10,
-    //fontWeight: 'bold',
-    //color: '#778899',
   },
   textSty4: {
     fontSize: 20,
@@ -628,7 +611,6 @@ const styles = StyleSheet.create({
   },
   leftContainer2: {
     flex: 1,
-    //flexDirection: 'row',
     paddingRight: 2,
     paddingLeft: '3%',
     paddingHorizontal: '5%',
@@ -637,10 +619,7 @@ const styles = StyleSheet.create({
   rightContainer2: {
     flex: 1,
     flexDirection: 'row',
-    //justifyContent: 'flex-end',
     alignItems: 'center',
-    //paddingLeft: 1,
-    //paddingHorizontal: 25,
     backgroundColor: 'white',
   },
   rightIcon2: {
