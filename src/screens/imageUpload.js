@@ -50,7 +50,7 @@ class ImageUpload extends React.Component {
     });
   }
   handleUpload = () => {
-    const storRef = firebase.storage().ref('MemeImages').child(firebase.auth().currentUser.uid+this.state.filename);
+    const storRef = firebase.storage().ref('meme_images').child(firebase.auth().currentUser.uid+this.state.filename);
     storRef.putFile(this.state.imageuri);
     storRef.getDownloadURL() .then((newurl) => {
 
