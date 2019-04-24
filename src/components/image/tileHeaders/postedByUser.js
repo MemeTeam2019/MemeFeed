@@ -57,6 +57,17 @@ class postedByUser extends React.Component {
     });
   }
 
+  flagMeme(){
+    console.log("meme flagged")
+    firebase
+      .firestore()
+      .collection('Memes')
+      .doc(this.props.memeId)
+      .update({
+        numFlags: 1,
+      });
+  }
+
   render() {
     var optionArray = ['Inappropriate/Irrelevant', 'Cancel'];
     // if there is someone that was liked from
@@ -86,7 +97,7 @@ class postedByUser extends React.Component {
               destructiveIndex={0}
               onPress={(index) => {
                 if (optionArray[index] == 'Inappropriate/Irrelevant') {
-
+                  this.flagMeme()
                 }
               }}
             />

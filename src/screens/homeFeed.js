@@ -77,7 +77,7 @@ class HomeFeed extends React.Component {
       const newMemes = [];
 
       querySnapshot.docs.forEach((doc) => {
-        const { time, url, posReacts, likedFrom, likers } = doc.data();
+        const { time, url, posReacts, likedFrom, likers, numFlags } = doc.data();
         if (posReacts > 0) {
           var recentLikedFrom = likedFrom[likedFrom.length - 1];
           var recentLiker = likers[likers.length - 1];

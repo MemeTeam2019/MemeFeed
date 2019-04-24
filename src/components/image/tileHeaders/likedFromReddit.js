@@ -55,16 +55,22 @@ class LikedFromReddit extends React.Component {
     this.ActionSheet.show();
   };
 
+  flagMeme(){
+    console.log("meme flagged")
+    firebase
+      .firestore()
+      .collection('Memes')
+      .doc(this.props.memeId)
+      .update({
+        numFlags: 1,
+      });
+  }
+
   render() {
     var optionArray = ['Inappropriate/Irrelevant', 'Cancel'];
     // if just from reddit (a.k.a. on the explore page)
     console.log(this.props.sub)
     return (
-
-
-
-
-
       <View style={styles.navBar1}>
       <View style={styles.leftContainer1}>
         <View style={styles.container}>
@@ -94,20 +100,12 @@ class LikedFromReddit extends React.Component {
             destructiveIndex={0}
             onPress={(index) => {
               if (optionArray[index] == 'Inappropriate/Irrelevant') {
-
+                this.flagMeme()
               }
             }}
           />
         </View>
       </View>
-
-
-
-
-
-
-
-
     );
   }
 }

@@ -49,6 +49,7 @@ class Tile extends React.Component {
           sub={this.props.sub}
           likedFrom={this.props.likedFrom}
           poster={this.props.poster}
+          memeId={this.props.memeId}
         />
         <Photo imageUrl={this.props.imageUrl} />
         <View style={{flex: 1, flexDirection: 'row', borderColor: '#D6D6D6', borderTopWidth: .5,}}>
