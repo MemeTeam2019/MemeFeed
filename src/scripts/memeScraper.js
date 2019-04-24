@@ -2,7 +2,6 @@ const request = require('request');
 const UUID = require("uuid-v4");
 const fs = require('fs');
 const fetch = require("node-fetch");
-var http = require('http');
 const {Storage} = require('@google-cloud/storage');
 const admin = require("firebase-admin");
 const serviceAccount = "memefeed-6b0e1-firebase-adminsdk-z2wdj-9eca8f2894.json";
@@ -14,22 +13,21 @@ const storage = new Storage({
 	keyFilename: serviceAccount,
 
 });
-var needToDelete = false;
 let uuid = UUID();
 
-
-async function getfile(url,filename){
-	await request(url)
-  	.pipe(fs.createWriteStream(filename));
+function getfile(url,filename){
+	 request(url)
+  	.pipe(fs.createWriteStream(filename))
+  	.on('close',function() {console.log("all good! "+filename)});
 }
 function deletefile(filename){
 	fs.unlink(filename, function (err) {
     if (err) throw err;
     // if no error, file has been deleted successfully
-    console.log('File deleted!');
+    console.log('File deleted! '+ filename);
 	}); 
 }
-function getJSON(sub){
+ function getJSON(sub){
 
 	var ret;
 	
@@ -41,7 +39,7 @@ function getJSON(sub){
   		//console.log(data.data.children);
   		var i;
   		list= data.data.children
-  		for(i=0;i<list.length;i++){
+  		for(i=0;i<2;i++){
   			curlist = list[i].data
   			if(curlist.domain==='i.redd.it'){
   				if(curlist.post_hint==='image'){
@@ -59,6 +57,7 @@ function getJSON(sub){
 		console.log(err.message);
 	});
 }
+
 function print(url,author,sub,time,score,filename,caption){
 	console.log(url);
 	console.log(author);
@@ -68,30 +67,31 @@ function print(url,author,sub,time,score,filename,caption){
 	console.log(filename);
 	console.log(caption);
 }
-async function sendToFirebase(filename,url,author,sub,time,score,caption){
+
+function sendToFirebase(filename,url,author,sub,time,score,caption){
 	var dbRef = admin.firestore().collection('Memes').doc(filename.substring(0,filename.indexOf('.')));
 	var s=storage.bucket('gs://memefeed-6b0e1.appspot.com');
+	var sfile = s.file("meme_images/"+filename);
 	console.log(path.resolve(filename));
-	await s.upload(path.resolve(filename),{
+	 request(url)
+  	.pipe(sfile.createWriteStream({
         destination: "meme_images/"+filename,
         uploadType: "media",
         metadata: {
-          contentType: 'image',
+          contentType: 'image/'+filename.substring(filename.indexOf('.')+1),
           metadata: {
             firebaseStorageDownloadTokens: uuid
           }
         }
-      }).catch(err =>	{
-  		console.log("I know its you");
-  		console.log(err.message);
-  	});          
-	var sfile = s.file("meme_image/"+filename);
+      }))
+  	.on('finish',function() {console.log("all good! "+filename)});
+	
 	var url = "https://firebasestorage.googleapis.com/v0/b/" + s.name + "/o/" + encodeURIComponent(sfile.name) + "?alt=media&token=" + uuid;
 	 
-	 print(url,author,sub,time,score,filename,caption);
+	print(url,author,sub,time,score,filename,caption);
 
 
-        var data = {
+    var data = {
 		filename: filename,
 		url: url,
 		author: author,
@@ -100,25 +100,26 @@ async function sendToFirebase(filename,url,author,sub,time,score,caption){
 		score: score,
 		reacts: 0,
 		caption: caption,
+		numFlags: 0,
 	};
-	dbRef.set(data);
 	console.log("push ok");
+	dbRef.set(data);
+	
 		
   	 
 
 
 	
-  //});
+
 
 	
 
 }
 
-function upload(url,author,sub,time,score,caption){
+async function upload(url,author,sub,time,score,caption){
 	var filename = url.substring(url.lastIndexOf('/')+1);
-	getfile(url,filename);
 	sendToFirebase(filename,url,author,sub,time,score,caption);
-	deletefile(filename);
+	
 	
 	
 
@@ -201,4 +202,4 @@ for(i=0;i<subreddits.length;i++){
 }
 
 
-//MemeFeed 2019 Plantano
+//MemeFeed 2019 Jesuisouef
