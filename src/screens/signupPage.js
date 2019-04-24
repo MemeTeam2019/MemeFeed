@@ -155,7 +155,7 @@ class SignupScreen extends React.Component {
 
               <CheckBox
                 center
-                title='Accept'
+                title='Accept Privacy Policy'
                 checkedIcon='dot-circle-o'
                 uncheckedIcon='circle-o'
                 checked={this.state.checked}
