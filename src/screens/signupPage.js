@@ -10,6 +10,7 @@ import {
   ImageBackground,
 } from 'react-native';
 import firebase from 'react-native-firebase';
+import { CheckBox } from 'react-native-elements';
 
 /**
  * Handles signing up for new accounts.
@@ -31,6 +32,7 @@ class SignupScreen extends React.Component {
       username: '',
       password: '',
       cpassword: '',
+      checked: false,
     };
   }
 
@@ -143,10 +145,23 @@ class SignupScreen extends React.Component {
               secureTextEntry
               onChangeText={(cpassword) => this.setState({ cpassword })}
             />
+            <CheckBox
+              center
+              title='Click Here'
+              checkedIcon='dot-circle-o'
+              uncheckedIcon='circle-o'
+              checked={this.state.checked}
+              onPress={() =>
+                this.setState((prevState) => {
+                  return { checked: !prevState.checked };
+                })
+              }
+            />
             <Button
               title='Submit'
               style={styles.submit}
               color='#fff'
+              disabled={!this.state.checked}
               onPress={() => this.handleSubmit()}
             />
           </KeyboardAvoidingView>
