@@ -65,7 +65,7 @@ class postedByUser extends React.Component {
         <View style={styles.navBar1}>
           <View style={styles.leftContainer1}>
             <View style={styles.container}>
-              <Text ststyle={styles.text}> Posted by </Text>
+              <Text style={styles.text}> Posted by </Text>
               <Image
                 style={styles.userImg}
                 source={{uri: this.state.iconURL}}
@@ -77,7 +77,7 @@ class postedByUser extends React.Component {
           <View style={styles.rightContainer1}>
             <View style={styles.rightIcon1} />
             <TouchableOpacity onPress={this.showActionSheet}>
-              <Text>... </Text>
+              <Text style={styles.report}>. . . </Text>
             </TouchableOpacity>
             <ActionSheet
               ref={(o) => (this.ActionSheet = o)}
@@ -176,4 +176,11 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Bold',
     marginLeft: '2.5%',
   },
+  report: {
+    fontFamily: 'AvenirNext-Bold',
+    marginRight: 10,
+    fontSize: 20,
+    marginBottom: 5,
+    color: '#919191'
+  }
 });
