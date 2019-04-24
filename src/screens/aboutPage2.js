@@ -42,7 +42,9 @@ export default class LoginScreen extends React.Component {
             title="Next"
             color='#9F02FF'
             style={{paddingTop: 30}}
-            onPress={() => this.props.navigation.push('About3')}
+            onPress={() =>
+              this.props.navigation.push('Privacy', { signup: true })
+            }
           />
         </View>
       </ImageBackground>

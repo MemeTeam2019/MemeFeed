@@ -44,10 +44,9 @@ export default class LoginScreen extends React.Component {
 
         <View style={styles.nextBut}>
           <Button
-            title='Next'
+            title="Done"
             color='#9F02FF'
-            style={{ paddingTop: 30 }}
-            onPress={() => this.props.navigation.push('aboutInfo3')}
+            onPress={() => this.props.navigation.push('Profile')}
           />
         </View>
       </ImageBackground>

@@ -28,6 +28,9 @@ export default class LoginScreen extends React.Component {
             the perfect app for meme browsing and finding other meme-holics like
             you!
           </Text>
+          <Text style={styles.aboutText2}>
+            Contact us at memefeedaye@gmail.com
+          </Text>
         </View>
 
         <View style={styles.nextBut}>
@@ -92,6 +95,22 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOpacity: 0.2,
     shadowRadius: 1,
+  },
+  aboutText2: {
+    fontSize: 18,
+    fontFamily: 'AvenirNext-Regular',
+    color: '#9F02FF',
+    paddingHorizontal: '4%',
+    marginBottom: '1%',
+    paddingRight: 5,
+    paddingTop: 20, //50
+    paddingLeft: 5,
+    //backgroundColor: 'blue',
+    marginLeft: '3%',
+    marginRight: '3%',
+    //height: '50%'
+    justifyContent: 'center',
+    textAlign: 'center'
   },
   background: {
     flex: 1,
