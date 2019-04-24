@@ -42,10 +42,9 @@ class Tile extends React.Component {
     return (
       <View style={styles.container}>
         <TileHeader
-          uid='F5bA3qC0dkca7h1INfoNNq4GIRh2'
           sub={this.props.sub}
           likedFrom={this.props.likedFrom}
-          poster={this.props.poster}
+          poster={this.props.poster}xp
         />
         <Photo imageUrl={this.props.imageUrl} />
         <View
