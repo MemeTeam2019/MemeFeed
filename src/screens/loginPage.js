@@ -95,7 +95,7 @@ class LoginScreen extends React.Component {
             <Button
               title='Sign Up'
               color='#fff'
-              onPress={() => this.props.navigation.push('About')}
+              onPress={() => this.props.navigation.push('Signup')}
             />
           </KeyboardAvoidingView>
         </View>

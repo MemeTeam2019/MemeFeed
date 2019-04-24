@@ -50,7 +50,7 @@ export default class LoginScreen extends React.Component {
   };
 
   _onNextButton = async () => {
-    this.props.navigation.push('Confirm');
+    this.props.navigation.push('About');
   };
 
   render() {
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 35,
     fontFamily: 'AvenirNext-Regular',
-    color: '#9F02FF',
+    //color: '#9F02FF',
     paddingHorizontal: '5%',
     marginBottom: '1%',
     textAlign: 'center',
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   aboutText: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
-    color: '#9F02FF',
+    //color: '#9F02FF',
     paddingHorizontal: '3%',
     marginBottom: '3%',
     paddingRight: 5,

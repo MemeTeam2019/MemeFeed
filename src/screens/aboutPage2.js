@@ -43,7 +43,7 @@ export default class LoginScreen extends React.Component {
             color='#9F02FF'
             style={{paddingTop: 30}}
             onPress={() =>
-              this.props.navigation.push('Privacy', { signup: true })
+              this.props.navigation.push('Confirm')
             }
           />
         </View>
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 35,
     fontFamily: 'AvenirNext-Regular',
-    color: '#9F02FF',
+    //color: '#9F02FF',
     paddingHorizontal: '5%',
     marginBottom: '0.5%',
     textAlign: 'center',
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   aboutText: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
-    color: '#9F02FF',
+    //color: '#9F02FF',
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,
@@ -133,3 +133,9 @@ const styles = StyleSheet.create({
     marginLeft: '1%'
   }
 });
+
+
+
+//            onPress={() =>
+//              this.props.navigation.push('Privacy', { signup: true })
+//            }

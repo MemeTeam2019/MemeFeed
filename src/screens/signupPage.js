@@ -8,6 +8,7 @@ import {
   TextInput,
   Alert,
   ImageBackground,
+  TouchableOpacity
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import { CheckBox } from 'react-native-elements';
@@ -145,18 +146,28 @@ class SignupScreen extends React.Component {
               secureTextEntry
               onChangeText={(cpassword) => this.setState({ cpassword })}
             />
-            <CheckBox
-              center
-              title='Click Here'
-              checkedIcon='dot-circle-o'
-              uncheckedIcon='circle-o'
-              checked={this.state.checked}
-              onPress={() =>
-                this.setState((prevState) => {
-                  return { checked: !prevState.checked };
-                })
-              }
-            />
+
+            <TouchableOpacity
+              onPress={() =>this.props.navigation.push('Privacy')}
+              style={styles.privacyText}>
+              <Text style={{fontSize: 18, color: 'white', marginTop: 5, marginBottom: 5}}> Read Privacy Policy </Text>
+            </TouchableOpacity>
+
+              <CheckBox
+                center
+                title='Accept'
+                checkedIcon='dot-circle-o'
+                uncheckedIcon='circle-o'
+                checked={this.state.checked}
+                style={styles.checkbox}
+                onPress={() =>
+                  this.setState((prevState) => {
+                    return { checked: !prevState.checked };
+                  })
+                }
+              />
+
+
             <Button
               title='Submit'
               style={styles.submit}
@@ -202,6 +213,10 @@ const styles = StyleSheet.create({
       width: 1,
     },
   },
+  checkbox: {
+    color: 'blue',
+    width: '10'
+  },
   submit: {
     marginTop: 15,
   },
@@ -210,4 +225,8 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
+  privacyText:{
+    justifyContent: 'center',
+    alignItems: 'center',
+  }
 });

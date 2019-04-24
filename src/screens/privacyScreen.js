@@ -11,7 +11,7 @@ class PrivacyPolicyScreen extends React.PureComponent {
     const signup = this.props.navigation.getParam('signup', false);
     return (
       <View>
-        <ScrollView>
+        <ScrollView style={{marginBottom: 40}}>
           <Text style={styles.header}>Meme Feed Privacy Policy</Text>
           <Text style={styles.body}>
             Effective date: April 22, 2019 {'\n\n'}
@@ -43,24 +43,15 @@ class PrivacyPolicyScreen extends React.PureComponent {
             contact us at:{' '}
             <Text style={styles.email}>memefeedaye@gmail.com</Text>
           </Text>
-          {signup ? (
-            <View style={styles.buttonContainer}>
-              <Button
-                title='Accept'
-                onPress={() => this.props.navigation.navigate('Signup')}
-              />
-              <Button
-                title='Decline'
-                onPress={() => this.props.navigation.popToTop()}
-                color='red'
-              />
-            </View>
-          ) : (
+
+
             <Button
-              title='OK'
-              onPress={() => this.props.navigation.popToTop()}
+              title="Back"
+              color='#9F02FF'
+              style={{paddingTop: 30, marginBottom: '30'}}
+              onPress={() => this.props.navigation.navigate('Signup')}
             />
-          )}
+
         </ScrollView>
       </View>
     );
@@ -91,4 +82,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: '5%',
   },
+  nextBut: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    marginBottom: '5%',
+  }
 });
