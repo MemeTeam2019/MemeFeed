@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
     marginRight: 10
   },
   rightIcon1: {

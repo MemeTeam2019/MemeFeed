@@ -81,7 +81,7 @@ class LikedFromReddit extends React.Component {
         </View>
         </View>
 
-        <Text style={styles.textSty4}> </Text>
+
         <View style={styles.rightContainer1}>
           <View style={styles.rightIcon1} />
           <TouchableOpacity onPress={this.showActionSheet}>
@@ -118,15 +118,14 @@ const styles = StyleSheet.create({
    container: {
     flexDirection: 'row',
     backgroundColor: '#fff',
-    width: '100%',
+    width: '80%',
     height: 30,
     paddingHorizontal: 10,
     alignItems: 'center',
-    marginTop: 5
+    marginTop: 5,
   },
   containerA: {
     flexDirection: 'column',
-    backgroundColor: '#fff',
     width: '100%',
     height: 50,
     alignItems: 'center',
@@ -134,7 +133,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: .5,
     borderColor: '#D6D6D6',
     //borderTopWidth: .5,
-    paddingTop: 7
+    paddingTop: 7,
   },
   text: {
     fontSize: 16,
@@ -163,28 +162,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: 'red',
   },
   leftContainer1: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    backgroundColor: 'white',
+    width: '80%'
   },
   rightContainer1: {
     flex: 1,
-    width: 200,
+    width: 5,
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    backgroundColor: 'white',
-    marginRight: 10
+    backgroundColor: 'transparent',
+    marginRight: 10,
   },
   rightIcon1: {
     height: 10,
     width: 20,
     resizeMode: 'contain',
-    backgroundColor: 'white',
   },
   report: {
     fontFamily: 'AvenirNext-Bold',
