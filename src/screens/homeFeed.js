@@ -10,6 +10,7 @@ class HomeFeed extends React.Component {
   static navigationOptions = {
     header: null,
   };
+
   constructor() {
     super();
     this._isMounted = false;
@@ -24,25 +25,15 @@ class HomeFeed extends React.Component {
       updated: true,
       oldestDoc: 0,
       memes: [],
-      updated: false,
-      imageuri: '',
-      ModalVisibleStatus: false,
-      isLoading: true,
       inGridView: false,
       inFullView: true,
-      items: [],
-      selectGridButton: false,
-      selectListButton: true,
-      following: [],
-      memerefs: [],
     };
   }
-
 
   componentDidMount() {
     this._isMounted = true;
     if (this._isMounted) {
-      this.unsubscribe = firebase
+      firebase
         .firestore()
         .collection('Feeds')
         .doc(firebase.auth().currentUser.uid)
@@ -74,54 +65,38 @@ class HomeFeed extends React.Component {
   };
 
   updateFeed = (querySnapshot) => {
-      const newMemes = [];
-
-      querySnapshot.docs.forEach((doc) => {
-        const { time, url, posReacts, likedFrom, likers } = doc.data();
-        if (posReacts > 0) {
-          var recentLikedFrom = likedFrom[likedFrom.length - 1];
-          var recentLiker = likers[likers.length - 1];
-
-          newMemes.push({
-            key: doc.id,
-            doc,
-            src: url,
-            time,
-            likedFrom: recentLikedFrom,
-            postedBy: recentLiker,
-            poster: recentLiker,
-          });
-        }
-      });
-
-      Promise.all(newMemes).then((resolvedMemes) => {
-        this.setState((prevState) => {
-          const mergedMemes = (prevState.memes).concat(resolvedMemes);
-          return {
-            memes: mergedMemes,
-            updated: true,
-            oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
-          };
+    const newMemes = [];
+    querySnapshot.docs.forEach((doc) => {
+      const { time, url, posReacts, likedFrom, likers } = doc.data();
+      if (posReacts > 0) {
+        const recentLikedFrom = likedFrom[likedFrom.length - 1];
+        const recentLiker = likers[likers.length - 1];
+        newMemes.push({
+          key: doc.id,
+          doc,
+          src: url,
+          time,
+          likedFrom: recentLikedFrom,
+          postedBy: recentLiker,
+          poster: recentLiker,
         });
+      }
+    });
+
+    Promise.all(newMemes).then((resolvedMemes) => {
+      this.setState((prevState) => {
+        const mergedMemes = prevState.memes.concat(resolvedMemes);
+        return {
+          memes: mergedMemes,
+          updated: true,
+          oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+        };
       });
+    });
   };
 
-  componentWillUnmount() {
-    this._isMounted = false;
-    this.unsubscribe = null;
-  }
-
-  ShowModalFunction(visible, imageURL, memeId) {
-    //handler to handle the click on image of Grid
-    //and close button on modal
-    this.setState({
-      ModalVisibleStatus: visible,
-      imageuri: imageURL,
-      memeId: memeId,
-    });
-  }
   showGridView = () => {
-    //when grid button is pressed, show grid view
+    // When grid button is pressed, show grid view
     this.setState({
       inGridView: true,
       inFullView: false,
@@ -129,14 +104,15 @@ class HomeFeed extends React.Component {
   };
 
   showFullView = () => {
-    //when full button is bressed, show full view
+    // When full button is bressed, show full view
     this.setState({
       inFullView: true,
       inGridView: false,
     });
   };
+
   renderItem(item, itemSize, itemPaddingHorizontal) {
-    //Single item of Grid
+    // Single item of Grid
     return (
       <TouchableOpacity
         key={item.id}
@@ -150,7 +126,7 @@ class HomeFeed extends React.Component {
         }}
       >
         <Image
-          resizeMode="cover"
+          resizeMode='cover'
           style={{ flex: 1 }}
           source={{ uri: item.src }}
         />
@@ -159,45 +135,7 @@ class HomeFeed extends React.Component {
   }
 
   render() {
-    if (this.state.ModalVisibleStatus) {
-      //Modal to show full image with close button
-      return (
-        <Modal
-          transparent={false}
-          animationType={'fade'}
-          visible={this.state.ModalVisibleStatus}
-          onRequestClose={() => {
-            this.ShowModalFunction(!this.state.ModalVisibleStatus, '');
-          }}
-        >
-          <View style={styles.modelStyle}>
-            {/* Single Image - Tile */}
-            <Tile
-              memeId={this.state.memeId}
-              imageUrl={this.state.imageuri}
-              likedFrom={item.friendUid}
-              poster={item.postedBy}
-            />
-            {/* Close Button */}
-            <TouchableOpacity
-              activeOpacity={0.5}
-              style={styles.closeButtonStyle}
-              onPress={() => {
-                this.ShowModalFunction(!this.state.ModalVisibleStatus, '');
-              }}
-            >
-              <Image
-                source={{
-                  uri:
-                    'https://aboutreact.com/wp-content/uploads/2018/09/close.png',
-                }}
-                style={{ width: 25, height: 25, marginTop: 16 }}
-              />
-            </TouchableOpacity>
-          </View>
-        </Modal>
-      );
-    } else if (this.state.memes.length == 0) {
+    if (this.state.memes.length === 0) {
       return (
         <View style={styles.containerStyle}>
           <View style={styles.navBar}>
@@ -214,54 +152,49 @@ class HomeFeed extends React.Component {
           </View>
         </View>
       );
-    } else {
-      return (
-        <View style={styles.containerStyle}>
-          <View style={styles.navBar}>
-            <Image
-              source={require('../images/banner3.png')}
-              style={{ width: 250, height: 50 }}
-            />
-          </View>
-          <View style={styles.navBut}>
-            <TouchableOpacity onPress={() => this.showFullView()}>
-              <Image
-                source={require('../images/fullFeedF.png')}
-                style={{
-                  opacity: this.state.inFullView ? 1 : 0.3,
-                  width: 100,
-                  height: 50,
-                }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.showGridView()}>
-              <Image
-                source={require('../images/gridFeedF.png')}
-                style={{
-                  opacity: this.state.inGridView ? 1 : 0.3,
-                  width: 100,
-                  height: 50,
-                }}
-              />
-            </TouchableOpacity>
-          </View>
-          {this.state.inGridView ? (
-            <MemeGrid
-              loadMemes={this.fetchMemes}
-              memes={this.state.memes}
-            />
-          ) : (
-            <MemeList
-              loadMemes={this.fetchMemes}
-              memes={this.state.memes}
-            />
-          )}
-        </View>
-      );
     }
+    return (
+      <View style={styles.containerStyle}>
+        <View style={styles.navBar}>
+          <Image
+            source={require('../images/banner3.png')}
+            style={{ width: 250, height: 50 }}
+          />
+        </View>
+        <View style={styles.navBut}>
+          <TouchableOpacity onPress={() => this.showFullView()}>
+            <Image
+              source={require('../images/fullFeedF.png')}
+              style={{
+                opacity: this.state.inFullView ? 1 : 0.3,
+                width: 100,
+                height: 50,
+              }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.showGridView()}>
+            <Image
+              source={require('../images/gridFeedF.png')}
+              style={{
+                opacity: this.state.inGridView ? 1 : 0.3,
+                width: 100,
+                height: 50,
+              }}
+            />
+          </TouchableOpacity>
+        </View>
+        {this.state.inGridView ? (
+          <MemeGrid loadMemes={this.fetchMemes} memes={this.state.memes} />
+        ) : (
+          <MemeList loadMemes={this.fetchMemes} memes={this.state.memes} />
+        )}
+      </View>
+    );
   }
 }
+
 export default HomeFeed;
+
 const styles = StyleSheet.create({
   containerStyle: {
     justifyContent: 'center',

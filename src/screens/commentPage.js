@@ -166,19 +166,24 @@ class CommentPage extends React.Component {
   };
 
   render() {
+    const sub = this.props.navigation.getParam('sub', '');
+    const likedFrom = this.props.navigation.getParam('likedFrom', '');
+    const postedBy = this.props.navigation.getParam('postedBy', '');
+    const poster = this.props.navigation.getParam('poster', '');
     return (
-      <KeyboardAvoidingView
-        // style={styles.container}
-        behavior='position'
-        keyboardVerticalOffset={95}
-      >
+      <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={95}>
         <ScrollView
           ref={(ref) => {
             this.scrollView = ref;
           }}
           style={{ height: '100%' }}
         >
-          <TileHeader />
+          <TileHeader
+            sub={sub}
+            likedFrom={likedFrom}
+            postedBy={postedBy}
+            poster={poster}
+          />
           <Photo imageUrl={this.state.imageuri} />
           <ButtonBar memeId={this.state.memeId} />
           <CommentList

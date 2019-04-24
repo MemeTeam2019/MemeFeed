@@ -21,6 +21,8 @@ class MemeGrid extends React.Component {
     if (!data || !data.src) {
       return this._renderPlaceholder(i);
     }
+    const { src, memeId, sub, likedFrom, postedBy, poster } = data;
+    console.log(data);
     return (
       <View style={[styles.item]} key={i}>
         <TouchableOpacity
@@ -29,8 +31,12 @@ class MemeGrid extends React.Component {
           }}
           onPress={() => {
             this.props.navigation.push('Comment', {
-              uri: data.src,
-              memeId: data.key,
+              uri: src,
+              memeId,
+              sub,
+              likedFrom,
+              postedBy,
+              poster,
             });
           }}
         >
