@@ -3,6 +3,7 @@ import {Text, StyleSheet, View, Image, TouchableOpacity} from 'react-native';
 import { withNavigation } from 'react-navigation';
 import Username from '../username';
 import ActionSheet from 'react-native-actionsheet';
+import email from 'react-native-email'
 
 import firebase from 'react-native-firebase';
 
@@ -56,6 +57,12 @@ class LikedFromReddit extends React.Component {
   };
 
   flagMeme(){
+    const to = ['memefeedaye@gmail.com'] // string or array of email addresses
+    email(to, {
+        subject: 'MemeFlagged',
+        body: 'this.props.memeId',
+    }).catch(console.error)
+
     console.log("meme flagged")
     firebase
       .firestore()
