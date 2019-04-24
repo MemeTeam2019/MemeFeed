@@ -22,7 +22,7 @@ class MemeList extends React.Component {
   }
 
   renderTile = ({ item }) => {
-    if (!item || !item.src) return;
+    if (!item || !item.src) return null;
     return (
       <Tile
         memeId={item.key}

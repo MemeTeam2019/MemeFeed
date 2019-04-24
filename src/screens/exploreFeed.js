@@ -3,7 +3,6 @@ import {
   Image,
   TouchableOpacity,
   View,
-  Modal,
   StyleSheet,
   FlatList,
 } from 'react-native';
@@ -36,7 +35,6 @@ class ExploreFeed extends React.Component {
     this.state = {
       updated: true,
       imageuri: '',
-      ModalVisibleStatus: false,
       inGridView: true,
       inFullView: false,
       memes: [],
@@ -97,6 +95,7 @@ class ExploreFeed extends React.Component {
     Promise.all(newMemes).then((resolvedMemes) => {
       this.setState((prevState) => {
         const mergedMemes = prevState.memes.concat(resolvedMemes);
+        console.log(mergedMemes);
         return {
           memes: mergedMemes,
           updated: true,
@@ -166,15 +165,7 @@ class ExploreFeed extends React.Component {
     });
   };
 
-  ShowModalFunction = (visible, imageURL) => {
-    this.setState({
-      ModalVisibleStatus: visible,
-      imageuri: imageURL,
-    });
-  };
-
   renderSearchResult = (userRef) => {
-    console.log(userRef.item);
     const data = userRef.item.data();
     const uid = userRef.item.ref.id;
     return <SearchResult data={data} uid={uid} />;
@@ -208,7 +199,6 @@ class ExploreFeed extends React.Component {
             />
           </View>
 
-          {/* List View */}
           <FlatList
             data={this.state.searchResults}
             renderItem={(userRef) => this.renderSearchResult(userRef)}
@@ -217,99 +207,11 @@ class ExploreFeed extends React.Component {
         </View>
       );
     }
-    if (this.state.ModalVisibleStatus) {
-      return (
-        <Modal
-          transparent={false}
-          animationType='fade'
-          visible={this.state.ModalVisibleStatus}
-          onRequestClose={() => {
-            this.ShowModalFunction(!this.state.ModalVisibleStatus, '');
-          }}
-        >
-          <View style={styles.modelStyle}>
-            {/* Single Image - Tile */}
-            <Image
-              style={styles.fullImageStyle}
-              source={{ uri: this.state.imageuri }}
-            />
-            {/* Close Button */}
-            <TouchableOpacity
-              activeOpacity={0.5}
-              style={styles.closeButtonStyle}
-              onPress={() => {
-                this.ShowModalFunction(!this.state.ModalVisibleStatus, '');
-              }}
-            >
-              <Image
-                source={{
-                  uri:
-                    'https://aboutreact.com/wp-content/uploads/2018/09/close.png',
-                }}
-                style={{ width: 25, height: 25, marginTop: 16 }}
-              />
-            </TouchableOpacity>
-          </View>
-        </Modal>
-      );
-    }
-    if (this.state.inFullView) {
-      return (
-        <View style={styles.containerStyle}>
-          <View style={styles.navBar}>
-            <SearchBar
-              placeholder='Find User'
-              onChangeText={this.updateSearch}
-              value={searchTerm}
-              containerStyle={{
-                backgroundColor: 'transparent',
-                borderTopWidth: 0,
-                borderBottomWidth: 0,
-              }}
-              inputStyle={{
-                backgroundColor: 'lightgrey',
-                color: 'black',
-              }}
-              onClear={() => {}}
-              onCancel={() => {
-                this.setState({ searchTerm: '' });
-              }}
-              platform='ios'
-              cancelButtonTitle='Cancel'
-            />
-          </View>
-          <View style={styles.navBut}>
-            <TouchableOpacity onPress={() => this.showFullView()}>
-              <Image
-                source={require('../images/fullFeedF.png')}
-                style={{
-                  opacity: this.state.inFullView ? 1 : 0.3,
-                  width: 100,
-                  height: 50,
-                }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.showGridView()}>
-              <Image
-                source={require('../images/gridFeedF.png')}
-                style={{
-                  opacity: this.state.inGridView ? 1 : 0.3,
-                  width: 100,
-                  height: 50,
-                }}
-              />
-            </TouchableOpacity>
-          </View>
-          {/* List View */}
-          <MemeList loadMemes={this.fetchMemes} memes={this.state.memes} />
-        </View>
-      );
-    }
     return (
       <View style={styles.containerStyle}>
         <View style={styles.navBar}>
           <SearchBar
-            placeholder='Search User'
+            placeholder='Find User'
             onChangeText={this.updateSearch}
             value={searchTerm}
             containerStyle={{
@@ -322,7 +224,9 @@ class ExploreFeed extends React.Component {
               color: 'black',
             }}
             onClear={() => {}}
-            onCancel={() => {}}
+            onCancel={() => {
+              this.setState({ searchTerm: '' });
+            }}
             platform='ios'
             cancelButtonTitle='Cancel'
           />
@@ -349,8 +253,12 @@ class ExploreFeed extends React.Component {
             />
           </TouchableOpacity>
         </View>
-
-        <MemeGrid loadMemes={this.fetchMemes} memes={this.state.memes} />
+        {/* List View */}
+        {this.state.inFullView ? (
+          <MemeList loadMemes={this.fetchMemes} memes={this.state.memes} />
+        ) : (
+          <MemeGrid loadMemes={this.fetchMemes} memes={this.state.memes} />
+        )}
       </View>
     );
   }

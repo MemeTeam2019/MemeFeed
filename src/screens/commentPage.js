@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
 import firebase from 'react-native-firebase';
 
+import Tile from '../components/image/tile';
 import AddComment from '../components/image/addComment';
 import CommentList from '../components/image/commentList';
 import TileHeader from '../components/image/tileHeader';
@@ -166,21 +167,34 @@ class CommentPage extends React.Component {
   };
 
   render() {
+    const sub = this.props.navigation.getParam('sub', '');
+    const likedFrom = this.props.navigation.getParam('likedFrom', '');
+    const postedBy = this.props.navigation.getParam('postedBy', '');
+    const poster = this.props.navigation.getParam('poster', '');
     return (
-      <KeyboardAvoidingView
-        // style={styles.container}
-        behavior='position'
-        keyboardVerticalOffset={95}
-      >
+      <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={95}>
         <ScrollView
           ref={(ref) => {
             this.scrollView = ref;
           }}
           style={{ height: '100%' }}
         >
-          <TileHeader />
+          <Tile
+            memeId={this.state.memeId}
+            imageUrl={this.state.imageuri}
+            sub={sub}
+            likedFrom={likedFrom}
+            postedBy={postedBy}
+            poster={poster}
+          />
+          {/* <TileHeader
+            sub={sub}
+            likedFrom={likedFrom}
+            postedBy={postedBy}
+            poster={poster}
+          />
           <Photo imageUrl={this.state.imageuri} />
-          <ButtonBar memeId={this.state.memeId} />
+          <ButtonBar memeId={this.state.memeId} /> */}
           <CommentList
             memeId={this.state.memeId}
             comments={this.state.comments}
