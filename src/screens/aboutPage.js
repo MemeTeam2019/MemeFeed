@@ -19,7 +19,7 @@ export default class LoginScreen extends React.Component {
         <View style={styles.aboutText}>
           <Text style={styles.aboutText}>
             Meme Feed is a place where you can view an endless supply
-            of Memes without having to look at any family photos or
+            of memes without having to look at any family photos or
             your ex-coworkers beach photos. (We don't care about your
             Bahama beach boyfriend Sally!)
           </Text>
@@ -28,6 +28,9 @@ export default class LoginScreen extends React.Component {
             provide the perfect app for meme browsing
             and finding other
             meme-holics like you!
+          </Text>
+          <Text style={styles.aboutText2}>
+            Contact us at memefeedaye@gmail.com
           </Text>
         </View>
 
@@ -64,7 +67,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 35,
     fontFamily: 'AvenirNext-Regular',
-    color: '#9F02FF',
+    //color: '#9F02FF',
     paddingHorizontal: '5%',
     marginBottom: '0.5%',
     textAlign: 'center',
@@ -75,10 +78,26 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 0.4,
   },
+  aboutText2: {
+    fontSize: 18,
+    fontFamily: 'AvenirNext-Regular',
+    //color: '#9F02FF',
+    paddingHorizontal: '4%',
+    marginBottom: '1%',
+    paddingRight: 5,
+    paddingTop: 20, //50
+    paddingLeft: 5,
+    //backgroundColor: 'blue',
+    marginLeft: '3%',
+    marginRight: '3%',
+    //height: '50%'
+    justifyContent: 'center',
+    textAlign: 'center'
+  },
   aboutText: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
-    color: '#9F02FF',
+    //color: '#9F02FF',
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,

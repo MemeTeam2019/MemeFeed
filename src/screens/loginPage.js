@@ -18,7 +18,6 @@ class LoginScreen extends React.Component {
 
   componentDidMount() {
     this.setState({
-      username: '',
       password: '',
     });
   }
@@ -59,7 +58,8 @@ class LoginScreen extends React.Component {
             errorMessage = 'Wrong email or password';
             break;
           default:
-            errorMessage = 'Something went wrong';
+            errorMessage =
+              'Something went wrong, please contact memefeedaye@gmail.com';
             break;
         }
         Alert.alert('Login Failed', errorMessage, [{ text: 'OK' }]);
@@ -73,28 +73,28 @@ class LoginScreen extends React.Component {
         style={styles.background}
       >
         <View style={styles.container}>
-          <KeyboardAvoidingView behavior="position">
+          <KeyboardAvoidingView behavior='position'>
             <Image style={styles.logo} source={require('../images/logo.png')} />
             <TextInput
               style={styles.input}
-              placeholder="Email"
+              placeholder='Email'
               onChangeText={(email) => this.setState({ email: email })}
-              autoCapitalize="none"
+              autoCapitalize='none'
             />
             <TextInput
               style={styles.input}
-              placeholder="Password"
+              placeholder='Password'
               secureTextEntry={true}
-              onChangeText={(password) => this.setState({ password: password })}
+              onChangeText={(password) => this.setState({ password })}
             />
             <Button
-              title="Log In"
-              color="#fff"
+              title='Log In'
+              color='#fff'
               onPress={() => this.handleLogin()}
             />
             <Button
-              title="Sign Up"
-              color="#fff"
+              title='Sign Up'
+              color='#fff'
               onPress={() => this.props.navigation.push('Signup')}
             />
           </KeyboardAvoidingView>

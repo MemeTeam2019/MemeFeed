@@ -1,5 +1,12 @@
 import React from 'react';
-import { Text, Button, StyleSheet, ImageBackground, View } from 'react-native';
+import {
+  Text,
+  Button,
+  StyleSheet,
+  ImageBackground,
+  View,
+  Alert,
+} from 'react-native';
 import firebase from 'react-native-firebase';
 
 export default class ConfirmScreen extends React.Component {
@@ -7,20 +14,29 @@ export default class ConfirmScreen extends React.Component {
     header: null,
   };
 
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
-    firebase
-      .auth()
-      .currentUser.sendEmailVerification()
-      .then(() => {
-        console.log('Email has been sent');
-      })
-      .catch(error => {
-        console.log('Email not sent', error);
-      });
+    if (firebase.auth().currentUser) {
+      firebase
+        .auth()
+        .currentUser.sendEmailVerification()
+        .then(() => {
+          console.log('Email has been sent');
+        })
+        .catch((error) => {
+          console.log('Email not sent', error);
+        });
+    } else {
+      Alert.alert(
+        'Authentication Error',
+        'Please try again or contact memefeedaye@gmail.com',
+        [
+          {
+            text: 'OK',
+            onPress: () => this.props.navigation.popToTop(),
+          },
+        ]
+      );
+    }
   }
 
   render() {
@@ -31,14 +47,17 @@ export default class ConfirmScreen extends React.Component {
       >
         <Text style={styles.aboutText}>
           Confirmation email has been sent to{' '}
-          {firebase.auth().currentUser.email}. Check your inbox
+          {firebase.auth().currentUser
+            ? firebase.auth().currentUser.email
+            : ' '}
+          . Check your inbox
         </Text>
         <View style={styles.nextBut}>
-        <Button
-          title="OK"
-          color="#9F02FF"
-          onPress={() => this.props.navigation.popToTop()}
-        />
+          <Button
+            title='OK'
+            color='#9F02FF'
+            onPress={() => this.props.navigation.popToTop()}
+          />
         </View>
       </ImageBackground>
     );
@@ -52,11 +71,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   text: {
-    color: '#9F02FF',
+    //color: '#9F02FF',
     fontSize: 18,
     paddingHorizontal: '5%',
     textAlign: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   nextBut: {
     flex: 1,
@@ -67,7 +86,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 35,
     fontFamily: 'AvenirNext-Regular',
-    color: '#9F02FF',
+    //color: '#9F02FF',
     paddingHorizontal: '5%',
     marginBottom: '0.5%',
     textAlign: 'center',
@@ -81,7 +100,7 @@ const styles = StyleSheet.create({
   aboutText: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
-    color: '#9F02FF',
+    //color: '#9F02FF',
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,
