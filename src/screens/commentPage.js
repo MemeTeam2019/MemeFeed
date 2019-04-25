@@ -24,6 +24,7 @@ class CommentPage extends React.Component {
 
   constructor(props) {
     super(props);
+    this.showAllComments=1;
     this.scrollView = null;
     this.fetchComments = this.fetchComments.bind(this);
     this.handleNewComment = this.handleNewComment.bind(this);
@@ -186,6 +187,7 @@ class CommentPage extends React.Component {
             likedFrom={likedFrom}
             postedBy={postedBy}
             poster={poster}
+            showAllComments={this.showAllComments}
           />
           {/* <TileHeader
             sub={sub}

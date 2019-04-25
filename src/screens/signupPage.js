@@ -8,7 +8,7 @@ import {
   TextInput,
   Alert,
   ImageBackground,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import { CheckBox } from 'react-native-elements';
@@ -46,7 +46,6 @@ class SignupScreen extends React.Component {
           .collection('Users')
           .doc(uid);
         const doc = await transaction.get(ref);
-
         if (!doc.exists) {
           transaction.set(ref, {
             email: email.toLowerCase(),
@@ -62,11 +61,9 @@ class SignupScreen extends React.Component {
           return uid;
         }
       })
-      .then((uid) => {
-        console.log('User doc successfully set for user with ' + uid);
-      })
-      .catch((err) => {
-        Alert.alert('Signup Error', 'Error creating User doc for' + email, [
+      .then(() => this.props.navigation.push('Icon'))
+      .catch(() => {
+        Alert.alert('Signup Error', `Error creating User doc for ${email}`, [
           { text: 'OK', style: 'cancel' },
         ]);
       });
@@ -88,16 +85,20 @@ class SignupScreen extends React.Component {
         if (user) {
           const uid = user.user.uid;
           this.addUserDoc(uid, email, name, username);
-          this.props.navigation.push('Icon');
         } else {
-          Alert.alert('Error', "Couldn't create acount. Please try again", [
-            { text: 'OK' },
-          ]);
+          Alert.alert(
+            'Signup Error',
+            "Couldn't create acount. Please try again",
+            [{ text: 'OK' }]
+          );
         }
       })
       .catch((error) => {
         Alert.alert('Error', error.code, [
-          { text: 'OK', onPress: () => this.props.navigation.popToTop() },
+          {
+            text: 'Dismiss',
+            style: 'cancel',
+          },
         ]);
       });
   };
@@ -146,27 +147,35 @@ class SignupScreen extends React.Component {
               secureTextEntry
               onChangeText={(cpassword) => this.setState({ cpassword })}
             />
-
+            <CheckBox
+              center
+              title='Accept Privacy Policy'
+              // checkedIcon='dot-circle-o'
+              // uncheckedIcon='circle-o'
+              checkedColor='white'
+              checked={this.state.checked}
+              containerStyle={styles.checkboxContainer}
+              textStyle={styles.checkboxText}
+              onPress={() => {
+                const checked = this.state.checked;
+                this.setState({ checked: !checked });
+              }}
+            />
             <TouchableOpacity
-              onPress={() =>this.props.navigation.push('Privacy')}
-              style={styles.privacyText}>
-              <Text style={{fontSize: 18, color: 'white', marginTop: 5, marginBottom: 5}}> Read Privacy Policy </Text>
+              onPress={() => this.props.navigation.push('Privacy')}
+              style={styles.privacyText}
+            >
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: 'white',
+                  marginTop: 5,
+                  marginBottom: 5,
+                }}
+              >
+                Read Privacy Policy
+              </Text>
             </TouchableOpacity>
-
-              <CheckBox
-                center
-                title='Accept Privacy Policy'
-                checkedIcon='dot-circle-o'
-                uncheckedIcon='circle-o'
-                checked={this.state.checked}
-                style={styles.checkbox}
-                onPress={() =>
-                  this.setState((prevState) => {
-                    return { checked: !prevState.checked };
-                  })
-                }
-              />
-
 
             <Button
               title='Submit'
@@ -213,9 +222,16 @@ const styles = StyleSheet.create({
       width: 1,
     },
   },
-  checkbox: {
-    color: 'blue',
-    width: '10'
+  checkboxContainer: {
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    margin: 0,
+  },
+  checkboxText: {
+    fontFamily: 'AvenirNext-Regular',
+    fontWeight: 'normal',
+    fontSize: 18,
+    color: 'white',
   },
   submit: {
     marginTop: 15,
@@ -225,8 +241,8 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
-  privacyText:{
+  privacyText: {
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
 });

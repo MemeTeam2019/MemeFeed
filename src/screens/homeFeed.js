@@ -2,7 +2,6 @@ import React from 'react';
 import { Image, TouchableOpacity, View, Modal, StyleSheet } from 'react-native';
 import firebase from 'react-native-firebase';
 
-import Tile from '../components/image/tile';
 import MemeGrid from '../components/general/memeGrid';
 import MemeList from '../components/general/memeList';
 

@@ -21,7 +21,7 @@ class MemeGrid extends React.Component {
     if (!data || !data.src) {
       return this._renderPlaceholder(i);
     }
-    const { src, memeId, sub, likedFrom, postedBy, poster } = data;
+    const { src, key, sub, likedFrom, postedBy, poster } = data;
     console.log(data);
     return (
       <View style={[styles.item]} key={i}>
@@ -32,7 +32,7 @@ class MemeGrid extends React.Component {
           onPress={() => {
             this.props.navigation.push('Comment', {
               uri: src,
-              memeId,
+              memeId: key,
               sub,
               likedFrom,
               postedBy,

@@ -57,7 +57,23 @@ class PostInfo extends React.Component {
   }
 
   render() {
-    if (this.state.commentCount > 2) {
+    if (this.props.showAllComments) {
+      return (
+        <View style={styles.postInfo}>
+          <Text
+            style={{
+              fontWeight: 'bold',
+              fontFamily: 'AvenirNext-Regular',
+              paddingTop: 3,
+              marginLeft: '2.5%',
+            }}
+          >
+            {this.props.reactCount} Reactions
+          </Text>
+        </View>
+      );
+    }
+    else if (this.state.commentCount > 2) {
       return (
         <View style={styles.postInfo}>
           <Text
