@@ -12,10 +12,6 @@ class PostInfo extends React.Component {
     this.state = {
       commentCount: 0,
       commentString: 'view all comments plz chng',
-      imageuri: '',
-      memeId: '',
-      ModalVisibleStatus: false,
-      source: 'testing',
     };
   }
 
@@ -44,7 +40,7 @@ class PostInfo extends React.Component {
   componentDidMount() {
     this.unsubscribe = firebase
       .firestore()
-      .collection('Comments/' + this.props.memeId + '/Info')
+      .collection(`Comments/${this.props.memeId}/Info`)
       .doc('CommentInfo')
       .onSnapshot(this.onCollectionUpdate); // we choose decsending to get most recent
   }
@@ -53,15 +49,36 @@ class PostInfo extends React.Component {
     this.props.navigation.navigate('Comment', {
       memeId: this.props.memeId,
       uri: this.props.imageUrl,
+      sub: this.props.sub,
+      likedFrom: this.props.likedFrom,
+      postedBy: this.props.postedBy,
+      poster: this.props.poster,
     });
   }
 
   render() {
-    if (this.state.commentCount > 2) {
+    if (this.props.showAllComments) {
       return (
         <View style={styles.postInfo}>
           <Text
             style={{
+              fontWeight: 'bold',
+              fontFamily: 'AvenirNext-Regular',
+              paddingTop: 3,
+              marginLeft: '2.5%',
+            }}
+          >
+            {this.props.reactCount} Reactions
+          </Text>
+        </View>
+      );
+    }
+    else if (this.state.commentCount > 2) {
+      return (
+        <View style={styles.postInfo}>
+          <Text
+            style={{
+              fontWeight: 'bold',
               fontFamily: 'AvenirNext-Regular',
               paddingTop: 3,
               marginLeft: '2.5%',
