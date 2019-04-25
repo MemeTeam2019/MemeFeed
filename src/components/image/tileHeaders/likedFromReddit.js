@@ -60,7 +60,7 @@ class LikedFromReddit extends React.Component {
     const to = ['memefeedaye@gmail.com'] // string or array of email addresses
     email(to, {
         subject: 'MemeFlagged',
-        body: 'this.props.memeId',
+        body: this.props.memeId,
     }).catch(console.error)
 
     console.log("meme flagged")
