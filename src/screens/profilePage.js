@@ -240,7 +240,7 @@ export default class Profile extends React.Component {
                 }}
                 title='User Settings'
                 options={optionArray}
-                cancelButtonIndex={2}
+                cancelButtonIndex={3}
                 destructiveIndex={0}
                 onPress={(index) => {
                   console.log(index);
@@ -563,7 +563,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: 'white',
-    
+
   },
   leftContainer1: {
     flex: 1,

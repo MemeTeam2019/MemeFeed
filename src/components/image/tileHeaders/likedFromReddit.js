@@ -117,8 +117,8 @@ export default withNavigation(LikedFromReddit);
 const styles = StyleSheet.create({
    container: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
-    width: '80%',
+    backgroundColor: 'transparent',
+    width: '85%',
     height: 30,
     paddingHorizontal: 10,
     alignItems: 'center',

@@ -63,7 +63,7 @@ export default withNavigation(SourceReddit);
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: 'yellow',
     width: '100%',
     height: 30,
     paddingHorizontal: 10,
@@ -109,17 +109,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
   },
   leftContainer1: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    backgroundColor: 'white',
+    backgroundColor: 'red',
   },
   rightContainer1: {
     flex: 1,
-    width: 200,
+    width: '10%',
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
@@ -128,9 +128,9 @@ const styles = StyleSheet.create({
   },
   rightIcon1: {
     height: 10,
-    width: 20,
+    width: '10%',
     resizeMode: 'contain',
-    backgroundColor: 'white',
+    backgroundColor: 'blue',
   },
   report: {
     fontFamily: 'AvenirNext-Bold',
