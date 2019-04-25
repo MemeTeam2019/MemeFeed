@@ -85,7 +85,7 @@ class LikedFromReddit extends React.Component {
         <View style={styles.rightContainer1}>
           <View style={styles.rightIcon1} />
           <TouchableOpacity onPress={this.showActionSheet}>
-            <Text style={styles.report}>. . . </Text>
+            <Text style={styles.report}> . . . </Text>
           </TouchableOpacity>
           <ActionSheet
             ref={(o) => (this.ActionSheet = o)}
@@ -188,7 +188,9 @@ const styles = StyleSheet.create({
     marginRight: 10,
     fontSize: 20,
     marginBottom: 5,
-    color: '#919191'
+    color: '#919191',
+    backgroundColor: 'white',
+    marginLeft: 2
   }
 
 });
