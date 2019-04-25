@@ -39,16 +39,20 @@ function deletefile(filename){
   		//console.log(data.data.children);
   		var i;
   		list= data.data.children
-  		for(i=0;i<2;i++){
+  		for(i=0;i<5;i=i){
   			curlist = list[i].data
   			if(curlist.domain==='i.redd.it'){
   				if(curlist.post_hint==='image'){
+            var filename = url.substring(url.lastIndexOf('/')+1);
+            if(admin.firestore().collection('Memes').doc(filename.substring(0,filename.indexOf('.'))).exists()){
+              i++;
   					var url =curlist.url;
   					var author=curlist.author;
   					var time=curlist.created_utc;
   					var score = curlist.score;
   					var caption =curlist.title;
   					upload(url,author,sub,time,score,caption);
+          }
   			}
 
   			}
