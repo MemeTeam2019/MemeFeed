@@ -82,6 +82,7 @@ class Tile extends React.Component {
           likedFrom={this.props.likedFrom}
           postedBy={this.props.postedBy}
           poster={this.props.poster}
+          showAllComments={this.props.showAllComments}
         />
       </View>
     );
