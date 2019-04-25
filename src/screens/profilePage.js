@@ -563,6 +563,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: 'white',
+    
   },
   leftContainer1: {
     flex: 1,

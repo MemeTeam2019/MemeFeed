@@ -311,5 +311,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    borderBottomWidth: .5,
+    borderColor: '#D6D6D6',
   },
 });

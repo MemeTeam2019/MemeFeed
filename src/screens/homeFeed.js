@@ -200,6 +200,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
     backgroundColor: 'rgba(255,255,255,1)',
+    borderBottomWidth: .5,
+    borderColor: '#D6D6D6',
   },
   modelStyle: {
     flex: 1,
@@ -234,6 +236,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    borderBottomWidth: .5,
+    borderColor: '#D6D6D6',
   },
   tile: {
     width: 300,
@@ -249,5 +253,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 5,
     paddingRight: 5,
+    borderBottomWidth: .5,
+    borderColor: '#D6D6D6',
   },
 });
