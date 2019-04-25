@@ -260,6 +260,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
     backgroundColor: 'rgba(255,255,255,1)',
+    borderBottomWidth: .5,
+    borderColor: '#D6D6D6',
   },
   modelStyle: {
     flex: 1,
@@ -309,6 +311,8 @@ containerStyle2: {
   alignItems: 'center',
   paddingLeft: 5,
   paddingRight: 5,
+  borderBottomWidth: .5,
+  borderColor: '#D6D6D6',
 }
 
 });

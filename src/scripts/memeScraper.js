@@ -8,6 +8,7 @@ const serviceAccount = "memefeed-6b0e1-firebase-adminsdk-z2wdj-9eca8f2894.json";
 const projectID = "memefeed-6b0e1";
 const path = require('path');
 const os = require('os');
+
 const storage = new Storage({
 	projectId: projectID,
 	keyFilename: serviceAccount,
@@ -118,7 +119,10 @@ function sendToFirebase(filename,url,author,sub,time,score,caption){
 
 	
 
+
+  //});
 }
+
 
 async function upload(url,author,sub,time,score,caption){
 	var filename = url.substring(url.lastIndexOf('/')+1);
@@ -126,6 +130,7 @@ async function upload(url,author,sub,time,score,caption){
 	
 	
 	
+
 
 }
 
@@ -135,7 +140,8 @@ admin.initializeApp({
 
 
 
-var subreddits = ['wholesomememes',
+
+var subreddits = ['memes',
 'BikiniBottomTwitter',
 'OneProtectRestAttack',
 'ProgrammerHumor',
@@ -207,3 +213,4 @@ for(i=0;i<subreddits.length;i++){
 
 
 //MemeFeed 2019 Jesuisouef
+

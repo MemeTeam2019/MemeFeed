@@ -1,17 +1,25 @@
 import React from 'react';
-import { StyleSheet, View, Button, ImageBackground, TouchableOpacity, Image, Text } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Button,
+  ImageBackground,
+  TouchableOpacity,
+  Image,
+  Text,
+} from 'react-native';
 
-import firebase from 'react-native-firebase'
+import firebase from 'react-native-firebase';
 
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
-  constructor(){
+  constructor() {
     super();
     this.state = {
       selectedIcon: false,
-      icon: ''
+      icon: '',
     };
     this.iconImages = {
       1: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon777.png?alt=media&token=715029a5-662d-4a5b-ab03-6d677fd63697',
@@ -22,70 +30,64 @@ export default class LoginScreen extends React.Component {
       6: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon888.png?alt=media&token=05558df6-bd5b-4da1-9cce-435a419347a0',
       7: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon333.png?alt=media&token=5b8a4b01-e0cb-46b9-89e2-5e9a5e0757f1',
       8: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon444.png?alt=media&token=5b36786a-2c7b-4bf9-8556-6e41e9bf621b',
-      9: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon555.png?alt=media&token=48fb9bf8-4efb-490c-a178-13a9efb2289c'
-    }
-  };
+      9: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon555.png?alt=media&token=48fb9bf8-4efb-490c-a178-13a9efb2289c',
+    };
+  }
 
   _onPressButton = async (newIcon) => {
     const oldIcon = this.state.selectedIcon;
     this.setState({
       selectedIcon: newIcon === oldIcon ? false : newIcon,
-      icon: newIcon
+      icon: newIcon,
     });
     firebase
       .firestore()
       .collection('Users')
       .doc(firebase.auth().currentUser.uid)
       .update({
-        icon: this.iconImages[newIcon]
+        icon: this.iconImages[newIcon],
       });
   };
 
   _onNextButton = async () => {
-    this.props.navigation.push('About')
+    this.props.navigation.push('About');
   };
-
 
   render() {
     return (
       <ImageBackground
         source={require('../images/white.png')}
-        style={styles.background}>
-
+        style={styles.background}
+      >
         <View style={styles.container}>
           <Text style={styles.title}>Choose your Icon</Text>
         </View>
 
         <View style={styles.navBar}>
-
           <View style={styles.leftContainer}>
             <TouchableOpacity onPress={this._onPressButton.bind(this, 1)}>
               <Image
-                source={this.state.selectedIcon === 1 ||
-                        this.state.selectedIcon === false
-                        ? require('../images/userIcons/icon777.png')
-                        : require('../images/userIcons/iconG7.png')
-                      }
-                style={{width: 80,
-                        height: 80,
-                        borderRadius: 80/2,
-                        }}
+                source={
+                  this.state.selectedIcon === 1 ||
+                  this.state.selectedIcon === false
+                    ? require('../images/userIcons/icon777.png')
+                    : require('../images/userIcons/iconG7.png')
+                }
+                style={{ width: 80, height: 80, borderRadius: 80 / 2 }}
               />
             </TouchableOpacity>
-            </View>
+          </View>
 
           <View style={styles.middleContainer}>
             <TouchableOpacity onPress={this._onPressButton.bind(this, 2)}>
               <Image
-                source={this.state.selectedIcon === 2 ||
-                        this.state.selectedIcon === false
-                        ? require('../images/userIcons/icon666.png')
-                        : require('../images/userIcons/iconG6.png')
-                      }
-                style={{width: 80,
-                        height: 80,
-                        borderRadius: 80/2,
-                        }}
+                source={
+                  this.state.selectedIcon === 2 ||
+                  this.state.selectedIcon === false
+                    ? require('../images/userIcons/icon666.png')
+                    : require('../images/userIcons/iconG6.png')
+                }
+                style={{ width: 80, height: 80, borderRadius: 80 / 2 }}
               />
             </TouchableOpacity>
           </View>
@@ -93,35 +95,29 @@ export default class LoginScreen extends React.Component {
           <View style={styles.rightContainer}>
             <TouchableOpacity onPress={this._onPressButton.bind(this, 3)}>
               <Image
-                source={this.state.selectedIcon === 3 ||
-                        this.state.selectedIcon === false
-                        ? require('../images/userIcons/icon999.png')
-                        : require('../images/userIcons/iconG9.png')
-                      }
-                style={{width: 80,
-                        height: 80,
-                        borderRadius: 80/2,
-                        }}
+                source={
+                  this.state.selectedIcon === 3 ||
+                  this.state.selectedIcon === false
+                    ? require('../images/userIcons/icon999.png')
+                    : require('../images/userIcons/iconG9.png')
+                }
+                style={{ width: 80, height: 80, borderRadius: 80 / 2 }}
               />
             </TouchableOpacity>
           </View>
-
         </View>
 
         <View style={styles.navBar}>
-
           <View style={styles.leftContainer}>
             <TouchableOpacity onPress={this._onPressButton.bind(this, 4)}>
               <Image
-                source={this.state.selectedIcon === 4 ||
-                        this.state.selectedIcon === false
-                        ? require('../images/userIcons/icon111.png')
-                        : require('../images/userIcons/iconG1.png')
-                      }
-                style={{width: 80,
-                        height: 80,
-                        borderRadius: 80/2,
-                        }}
+                source={
+                  this.state.selectedIcon === 4 ||
+                  this.state.selectedIcon === false
+                    ? require('../images/userIcons/icon111.png')
+                    : require('../images/userIcons/iconG1.png')
+                }
+                style={{ width: 80, height: 80, borderRadius: 80 / 2 }}
               />
             </TouchableOpacity>
           </View>
@@ -129,15 +125,13 @@ export default class LoginScreen extends React.Component {
           <View style={styles.middleContainer}>
             <TouchableOpacity onPress={this._onPressButton.bind(this, 5)}>
               <Image
-                source={this.state.selectedIcon === 5 ||
-                        this.state.selectedIcon === false
-                        ? require('../images/userIcons/icon222.png')
-                        : require('../images/userIcons/iconG2.png')
-                      }
-                style={{width: 80,
-                        height: 80,
-                        borderRadius: 80/2,
-                        }}
+                source={
+                  this.state.selectedIcon === 5 ||
+                  this.state.selectedIcon === false
+                    ? require('../images/userIcons/icon222.png')
+                    : require('../images/userIcons/iconG2.png')
+                }
+                style={{ width: 80, height: 80, borderRadius: 80 / 2 }}
               />
             </TouchableOpacity>
           </View>
@@ -145,35 +139,29 @@ export default class LoginScreen extends React.Component {
           <View style={styles.rightContainer}>
             <TouchableOpacity onPress={this._onPressButton.bind(this, 6)}>
               <Image
-                source={this.state.selectedIcon === 6 ||
-                        this.state.selectedIcon === false
-                        ? require('../images/userIcons/icon888.png')
-                        : require('../images/userIcons/iconG8.png')
-                      }
-                style={{width: 80,
-                        height: 80,
-                        borderRadius: 80/2,
-                        }}
+                source={
+                  this.state.selectedIcon === 6 ||
+                  this.state.selectedIcon === false
+                    ? require('../images/userIcons/icon888.png')
+                    : require('../images/userIcons/iconG8.png')
+                }
+                style={{ width: 80, height: 80, borderRadius: 80 / 2 }}
               />
             </TouchableOpacity>
           </View>
-
         </View>
 
         <View style={styles.navBar}>
-
           <View style={styles.leftContainer}>
             <TouchableOpacity onPress={this._onPressButton.bind(this, 7)}>
               <Image
-                source={this.state.selectedIcon === 7 ||
-                        this.state.selectedIcon === false
-                        ? require('../images/userIcons/icon333.png')
-                        : require('../images/userIcons/iconG3.png')
-                      }
-                style={{width: 80,
-                        height: 80,
-                        borderRadius: 80/2,
-                        }}
+                source={
+                  this.state.selectedIcon === 7 ||
+                  this.state.selectedIcon === false
+                    ? require('../images/userIcons/icon333.png')
+                    : require('../images/userIcons/iconG3.png')
+                }
+                style={{ width: 80, height: 80, borderRadius: 80 / 2 }}
               />
             </TouchableOpacity>
           </View>
@@ -181,15 +169,13 @@ export default class LoginScreen extends React.Component {
           <View style={styles.middleContainer}>
             <TouchableOpacity onPress={this._onPressButton.bind(this, 8)}>
               <Image
-                source={this.state.selectedIcon === 8 ||
-                        this.state.selectedIcon === false
-                        ? require('../images/userIcons/icon444.png')
-                        : require('../images/userIcons/iconG4.png')
-                      }
-                style={{width: 80,
-                        height: 80,
-                        borderRadius: 80/2,
-                        }}
+                source={
+                  this.state.selectedIcon === 8 ||
+                  this.state.selectedIcon === false
+                    ? require('../images/userIcons/icon444.png')
+                    : require('../images/userIcons/iconG4.png')
+                }
+                style={{ width: 80, height: 80, borderRadius: 80 / 2 }}
               />
             </TouchableOpacity>
           </View>
@@ -197,30 +183,25 @@ export default class LoginScreen extends React.Component {
           <View style={styles.rightContainer}>
             <TouchableOpacity onPress={this._onPressButton.bind(this, 9)}>
               <Image
-                source={this.state.selectedIcon === 9 ||
-                        this.state.selectedIcon === false
-                        ? require('../images/userIcons/icon555.png')
-                        : require('../images/userIcons/iconG5.png')
-                      }
-                style={{width: 80,
-                        height: 80,
-                        borderRadius: 80/2,
-                        }}
+                source={
+                  this.state.selectedIcon === 9 ||
+                  this.state.selectedIcon === false
+                    ? require('../images/userIcons/icon555.png')
+                    : require('../images/userIcons/iconG5.png')
+                }
+                style={{ width: 80, height: 80, borderRadius: 80 / 2 }}
               />
             </TouchableOpacity>
           </View>
-
         </View>
 
         <View style={styles.nextBut}>
           <Button
-            title="Next"
+            title='Next'
             color='#9F02FF'
             onPress={this._onNextButton.bind()}
           />
         </View>
-
-
       </ImageBackground>
     );
   }
@@ -241,12 +222,12 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
     marginTop: '20%',
-    marginBottom: '3%'
+    marginBottom: '3%',
   },
   title: {
     fontSize: 35,
     fontFamily: 'AvenirNext-Regular',
-    color: '#9F02FF',
+    //color: '#9F02FF',
     paddingHorizontal: '5%',
     marginBottom: '1%',
     textAlign: 'center',
@@ -260,7 +241,7 @@ const styles = StyleSheet.create({
   aboutText: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
-    color: '#9F02FF',
+    //color: '#9F02FF',
     paddingHorizontal: '3%',
     marginBottom: '3%',
     paddingRight: 5,
@@ -279,7 +260,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     //backgroundColor: 'blue',
     marginTop: '7%',
-    marginBottom: '7%'
+    marginBottom: '7%',
   },
   leftContainer: {
     flex: 1,
@@ -315,5 +296,5 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     marginBottom: '5%',
-  }
+  },
 });

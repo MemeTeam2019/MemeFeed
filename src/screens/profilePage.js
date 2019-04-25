@@ -40,46 +40,38 @@ export default class Profile extends React.Component {
       .orderBy('time', 'desc');
 
     this.state = {
-      email: '',
       username: '',
       name: '',
-      uid: '',
       followingCnt: 0,
       followersCnt: 0,
       followingLst: [],
       followersLst: [],
-      open: false,
       selectGridButtonP: true,
       selectListButtonP: false,
       updated: true,
       memes: [],
       oldestDoc: 0,
-      items: [],
-      text: '',
-      ModalVisibleStatus: false,
-      imageuri: '',
       iconURL: '',
     };
   }
 
-  componentDidMount(memesLoaded) {
+  componentDidMount() {
     this._isMounted = true;
     if (this._isMounted) {
       const uid = firebase.auth().currentUser.uid;
-      //get the profile icon
+      // Get the profile icon
       firebase
         .firestore()
         .collection('Users')
         .doc(uid)
         .get()
         .then((docSnapshot) => {
-          if(docSnapshot.exists) {
+          if (docSnapshot.exists) {
             const { icon } = docSnapshot.data();
-              this.state.iconURL = icon
-            console.log(this.state.iconURL)
-          }
-          else{
-            console.log("doesn't exist")
+            this.state.iconURL = icon;
+            console.log(this.state.iconURL);
+          } else {
+            console.log("doesn't exist");
           }
         })
         .catch((error) => {
@@ -102,6 +94,11 @@ export default class Profile extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.unsubscribe = null;
+    this.userListener = null;
+  }
+
   fetchMemes = () => {
     // garentees not uploading duplicate memes by checking if memes have finished
     // updating
@@ -122,43 +119,36 @@ export default class Profile extends React.Component {
   };
 
   updateFeed = (querySnapshot) => {
-      const newMemes = [];
+    const newMemes = [];
 
-      querySnapshot.docs.forEach((doc) => {
-        const { time, url, rank, likedFrom } = doc.data();
-        if (rank > 1) {
-          newMemes.push({
-            key: doc.id,
-            doc, // DocumentSnapshot
-            src: url,
-            time,
-            likedFrom,
-            // this is to ensure that if a user changes their reaction to a meme
-            // on their own page that the liked from source is still the same
-            postedBy: likedFrom,
-            poster: firebase.auth().currentUser.uid,
-          });
-        }
-      });
-
-      Promise.all(newMemes).then((resolvedMemes) => {
-        this.setState((prevState) => {
-          const mergedMemes = (prevState.memes).concat(resolvedMemes);
-          return {
-            memes: mergedMemes,
-            updated: true,
-            oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
-          };
+    querySnapshot.docs.forEach((doc) => {
+      const { time, url, rank, likedFrom } = doc.data();
+      if (rank > 1) {
+        newMemes.push({
+          key: doc.id,
+          doc, // DocumentSnapshot
+          src: url,
+          time,
+          likedFrom,
+          // this is to ensure that if a user changes their reaction to a meme
+          // on their own page that the liked from source is still the same
+          postedBy: likedFrom,
+          poster: firebase.auth().currentUser.uid,
         });
+      }
+    });
+
+    Promise.all(newMemes).then((resolvedMemes) => {
+      this.setState((prevState) => {
+        const mergedMemes = prevState.memes.concat(resolvedMemes);
+        return {
+          memes: mergedMemes,
+          updated: true,
+          oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+        };
       });
+    });
   };
-
-
-  componentWillUnmount() {
-    this.unsubscribe = null;
-    this.userListener = null;
-  }
-
 
   getUserInfo = () => {
     let firestore = firebase.firestore();
@@ -169,7 +159,7 @@ export default class Profile extends React.Component {
       .get()
       .then((snapshot) => {
         const data = snapshot.data();
-        this.setState(Object.assign(data, { uid: uid }));
+        this.setState(Object.assign(data, { uid }));
       });
   };
 
@@ -199,18 +189,7 @@ export default class Profile extends React.Component {
       });
   };
 
-  ShowModalFunction(visible, imageUrl) {
-    //handler to handle the click on image of Grid
-    //and close button on modal
-    this.setState({
-      ModalVisibleStatus: visible,
-      imageuri: imageUrl,
-      memeId: memeId,
-    });
-  }
-
   renderItem(item, itemSize, itemPaddingHorizontal) {
-    //Single item of Grid
     return (
       <TouchableOpacity
         key={item.id}
@@ -224,21 +203,22 @@ export default class Profile extends React.Component {
         }}
       >
         <Image
-          resizeMode="cover"
+          resizeMode='cover'
           style={{ flex: 1 }}
           source={{ uri: item.src }}
         />
       </TouchableOpacity>
     );
   }
-  renderTile({ item }) {
+
+  renderTile = ({ item }) => {
     return <Tile memeId={item.key} imageUrl={item.src} />;
-  }
+  };
 
   render() {
-    var optionArray = ['Logout', 'About', 'Cancel'];
+    const optionArray = ['About', 'Privacy Policy', 'Log Out', 'Cancel'];
 
-    if (this.state.memes.length == 0) {
+    if (this.state.memes.length === 0) {
       return (
         <View style={styles.containerStyle}>
           <View style={styles.navBar1}>
@@ -255,16 +235,21 @@ export default class Profile extends React.Component {
                 />
               </TouchableOpacity>
               <ActionSheet
-                ref={(o) => (this.ActionSheet = o)}
-                title={'User Settings'}
+                ref={(o) => {
+                  this.ActionSheet = o;
+                }}
+                title='User Settings'
                 options={optionArray}
                 cancelButtonIndex={2}
                 destructiveIndex={0}
                 onPress={(index) => {
-                  if (optionArray[index] == 'Logout') {
+                  console.log(index);
+                  if (optionArray[index] == 'Log Out') {
                     this.logout();
-                  }else if (optionArray[index] == 'About'){
-                    this.props.navigation.push('aboutInfo');
+                  } else if (optionArray[index] == 'About') {
+                    this.props.navigation.push('InfoStack');
+                  } else if (optionArray[index] == 'Privacy Policy') {
+                    this.props.navigation.push('Privacy');
                   }
                 }}
               />
@@ -274,12 +259,11 @@ export default class Profile extends React.Component {
           <View style={styles.navBar2}>
             <View style={styles.leftContainer2}>
               <Image
-                source={{uri: this.state.iconURL}}
+                source={{ uri: this.state.iconURL }}
                 style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
               />
             </View>
             <Text style={styles.textSty}>
-
               {this.state.followingCnt} {'\n'}{' '}
               <Text style={styles.textSty3}>Following</Text>
             </Text>
@@ -304,138 +288,130 @@ export default class Profile extends React.Component {
           </View>
         </View>
       );
-    } else {
-      //Photo List/Full View of images
-      return (
-        <React.Fragment>
-          <View style={styles.containerStyle}>
-            <View style={styles.navBar1}>
-              <View style={styles.leftContainer1}>
-                <Text style={[styles.text, { textAlign: 'left' }]}>{}</Text>
-              </View>
-              <Text style={styles.textSty4}>{this.state.username}</Text>
-              <View style={styles.rightContainer1}>
-                <View style={styles.rightIcon1} />
-                <TouchableOpacity onPress={this.showActionSheet}>
-                  <Image
-                    source={require('../images/setting.png')}
-                    style={{ width: 60, height: 30 }}
-                  />
-                </TouchableOpacity>
-                <ActionSheet
-                  ref={(o) => (this.ActionSheet = o)}
-                  title={'User Settings'}
-                  options={optionArray}
-                  cancelButtonIndex={2}
-                  destructiveIndex={0}
-                  onPress={(index) => {
-                    if (optionArray[index] == 'Logout') {
-                      this.logout();
-                    }else if (optionArray[index] == 'About'){
-                      this.props.navigation.push('aboutInfo');
-                    }
-                  }}
+    }
+    // Photo List/Full View of images
+    return (
+      <React.Fragment>
+        <View style={styles.containerStyle}>
+          <View style={styles.navBar1}>
+            <View style={styles.leftContainer1}>
+              <Text style={[styles.text, { textAlign: 'left' }]}>{}</Text>
+            </View>
+            <Text style={styles.textSty4}>{this.state.username}</Text>
+            <View style={styles.rightContainer1}>
+              <View style={styles.rightIcon1} />
+              <TouchableOpacity onPress={this.showActionSheet}>
+                <Image
+                  source={require('../images/setting.png')}
+                  style={{ width: 60, height: 30 }}
                 />
-              </View>
+              </TouchableOpacity>
+              <ActionSheet
+                ref={(o) => (this.ActionSheet = o)}
+                title={'User Settings'}
+                options={optionArray}
+                cancelButtonIndex={3}
+                destructiveIndex={0}
+                onPress={(index) => {
+                  if (optionArray[index] == 'Log Out') {
+                    this.logout();
+                  } else if (optionArray[index] == 'About') {
+                    this.props.navigation.push('InfoStack');
+                  } else if (optionArray[index] == 'Privacy Policy') {
+                    this.props.navigation.push('Privacy');
+                  }
+                }}
+              />
             </View>
           </View>
-          <ScrollView>
-            <View style={styles.containerStyle}>
-              {/*Profile Pic, Follwers, Follwing Block*/}
-
-              <View style={styles.navBar2}>
+        </View>
+        <ScrollView>
+          <View style={styles.containerStyle}>
+            {/* Profile Pic, Follwers, Follwing Block */}
+            <View style={styles.navBar2}>
               {/* Profile Picture */}
-                <View style={styles.leftContainer2}>
-                  <Image
-                    source={{uri: this.state.iconURL}}
-                    style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
-                  />
-                </View>
+              <View style={styles.leftContainer2}>
+                <Image
+                  source={{ uri: this.state.iconURL }}
+                  style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
+                />
+              </View>
 
-                <TouchableOpacity
-                  onPress={() => {
-                    this.props.navigation.navigate('FollowList', {
-                      arrayOfUids: this.state.followingLst,
-                      title: 'Following',
-                    });
-                  }}
-                >
+              <TouchableOpacity
+                onPress={() => {
+                  this.props.navigation.navigate('FollowList', {
+                    arrayOfUids: this.state.followingLst,
+                    title: 'Following',
+                  });
+                }}
+              >
+                <Text style={styles.textSty}>
+                  {this.state.followingLst.length} {'\n'}
+                  <Text style={styles.textSty3}>Following</Text>
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.rightContainer2}
+                onPress={() => {
+                  this.props.navigation.navigate('FollowList', {
+                    arrayOfUids: this.state.followersLst,
+                    title: 'Followers',
+                  });
+                }}
+              >
+                <View>
                   <Text style={styles.textSty}>
-                    {this.state.followingLst.length} {'\n'}
-                    <Text style={styles.textSty3}>Following</Text>
+                    {this.state.followersLst.length} {'\n'}{' '}
+                    <Text style={styles.textSty3}>Followers</Text>{' '}
                   </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.rightContainer2}
-                  onPress={() => {
-                    this.props.navigation.navigate('FollowList', {
-                      arrayOfUids: this.state.followersLst,
-                      title: 'Followers',
-                    });
-                  }}
-                >
-                  <View>
-                    <Text style={styles.textSty}>
-                      {this.state.followersLst.length} {'\n'}{' '}
-                      <Text style={styles.textSty3}>Followers</Text>{' '}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-
-              {/*DISPLAY NAME*/}
-              <View style={styles.profilePic}>
-                <Text style={styles.textSty2}>{this.state.name}</Text>
-              </View>
-              {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
-              <View style={styles.navBut}>
-                <TouchableOpacity onPress={() => this.onListViewPressedP()}>
-                  <Image
-                    source={require('../images/fullFeedF.png')}
-                    style={{
-                      opacity: this.state.selectListButtonP ? 1 : 0.3,
-                      width: 100,
-                      height: 50,
-                    }}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => this.onGridViewPressedP()}>
-                  <Image
-                    source={require('../images/gridFeedF.png')}
-                    style={{
-                      opacity: this.state.selectGridButtonP ? 1 : 0.3,
-                      width: 100,
-                      height: 50,
-                    }}
-                  />
-                </TouchableOpacity>
-              </View>
+                </View>
+              </TouchableOpacity>
             </View>
 
-            {this.state.selectListButtonP ? (
-              <MemeList
-                loadMemes={this.fetchMemes}
-                memes={this.state.memes}
-              />
-            ) : (
-              <MemeGrid
-                loadMemes={this.fetchMemes}
-                memes={this.state.memes}
-              />
-            )}
-          </ScrollView>
-        </React.Fragment>
-      );
-    }
+            {/*DISPLAY NAME*/}
+            <View style={styles.profilePic}>
+              <Text style={styles.textSty2}>{this.state.name}</Text>
+            </View>
+            {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
+            <View style={styles.navBut}>
+              <TouchableOpacity onPress={() => this.onListViewPressedP()}>
+                <Image
+                  source={require('../images/fullFeedF.png')}
+                  style={{
+                    opacity: this.state.selectListButtonP ? 1 : 0.3,
+                    width: 100,
+                    height: 50,
+                  }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.onGridViewPressedP()}>
+                <Image
+                  source={require('../images/gridFeedF.png')}
+                  style={{
+                    opacity: this.state.selectGridButtonP ? 1 : 0.3,
+                    width: 100,
+                    height: 50,
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {this.state.selectListButtonP ? (
+            <MemeList loadMemes={this.fetchMemes} memes={this.state.memes} />
+          ) : (
+            <MemeGrid loadMemes={this.fetchMemes} memes={this.state.memes} />
+          )}
+        </ScrollView>
+      </React.Fragment>
+    );
   }
 }
 
 const styles = StyleSheet.create({
   containerStyle: {
     flex: 0,
-    // alignItems: "center",
-    // justifyContent: "center",
     backgroundColor: 'white',
   },
   headerSty: {
@@ -444,7 +420,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 50, //50
+    paddingTop: 50,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -498,7 +474,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: 'white',
     marginRight: '9%',
-    marginLeft: '9%'
+    marginLeft: '9%',
   },
   textSty2: {
     fontSize: 20,
@@ -515,8 +491,6 @@ const styles = StyleSheet.create({
     paddingRight: 2,
     paddingLeft: 2,
     paddingHorizontal: 10,
-    //fontWeight: 'bold',
-    //color: '#778899',
   },
   textSty4: {
     fontSize: 20,
@@ -589,6 +563,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: 'white',
+    
   },
   leftContainer1: {
     flex: 1,
@@ -635,20 +610,16 @@ const styles = StyleSheet.create({
   },
   leftContainer2: {
     flex: 1,
-    //flexDirection: 'row',
     paddingRight: 2,
     paddingLeft: '3%',
     paddingHorizontal: '5%',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   rightContainer2: {
     flex: 1,
     flexDirection: 'row',
-    //justifyContent: 'flex-end',
     alignItems: 'center',
-    //paddingLeft: 1,
-    //paddingHorizontal: 25,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   rightIcon2: {
     height: 10,
