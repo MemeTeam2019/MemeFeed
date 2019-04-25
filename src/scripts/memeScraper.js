@@ -8,78 +8,74 @@ const serviceAccount = "memefeed-6b0e1-firebase-adminsdk-z2wdj-9eca8f2894.json";
 const projectID = "memefeed-6b0e1";
 const path = require('path');
 const os = require('os');
-
 const storage = new Storage({
-	projectId: projectID,
-	keyFilename: serviceAccount,
+  projectId: projectID,
+  keyFilename: serviceAccount,
 
 });
 let uuid = UUID();
 
 function getfile(url,filename){
-	 request(url)
-  	.pipe(fs.createWriteStream(filename))
-  	.on('close',function() {console.log("all good! "+filename)});
+   request(url)
+    .pipe(fs.createWriteStream(filename))
+    .on('close',function() {console.log("all good! "+filename)});
 }
 function deletefile(filename){
-	fs.unlink(filename, function (err) {
+  fs.unlink(filename, function (err) {
     if (err) throw err;
     // if no error, file has been deleted successfully
     console.log('File deleted! '+ filename);
-	}); 
+  }); 
 }
  function getJSON(sub){
 
-	var ret;
-	
-	var yourUrl="https://www.reddit.com/r/"+sub+".json";
+  var ret;
+  
+  var yourUrl="https://www.reddit.com/r/"+sub+".json";
 
-	fetch(yourUrl).then(response => {
-  		return response.json();
-	}).then(function(data){
-  		//console.log(data.data.children);
-  		var i;
-  		list= data.data.children
-  		for(i=0;i<5;i=i){
-  			curlist = list[i].data
-  			if(curlist.domain==='i.redd.it'){
-  				if(curlist.post_hint==='image'){
-            var filename = url.substring(url.lastIndexOf('/')+1);
-            if(admin.firestore().collection('Memes').doc(filename.substring(0,filename.indexOf('.'))).exists()){
-              i++;
-  					var url =curlist.url;
-  					var author=curlist.author;
-  					var time=curlist.created_utc;
-  					var score = curlist.score;
-  					var caption =curlist.title;
-  					upload(url,author,sub,time,score,caption);
-          }
-  			}
+  fetch(yourUrl).then(response => {
+      return response.json();
+  }).then(function(data){
+      //console.log(data.data.children);
+      var i;
+      list= data.data.children
+      for(i=0;i<5;i++){
+        curlist = list[i].data
+        if(curlist.domain==='i.redd.it'){
+          if(curlist.post_hint==='image'){
+            var url =curlist.url;
+            var author=curlist.author;
+            var time=curlist.created_utc;
+            var score = curlist.score;
+            var caption =curlist.title;
+            upload(url,author,sub,time,score,caption);
+          
+        }
 
-  			}
-  		}
-	}).catch(err => {
-		console.log(err.message);
-	});
+        }
+      }
+  }).catch(err => {
+    console.log(err.message);
+  });
 }
 
 function print(url,author,sub,time,score,filename,caption){
-	console.log(url);
-	console.log(author);
-	console.log(sub);
-	console.log(time);
-	console.log(score);
-	console.log(filename);
-	console.log(caption);
+  console.log(url);
+  console.log(author);
+  console.log(sub);
+  console.log(time);
+  console.log(score);
+  console.log(filename);
+  console.log(caption);
 }
 
 function sendToFirebase(filename,url,author,sub,time,score,caption){
-	var dbRef = admin.firestore().collection('Memes').doc(filename.substring(0,filename.indexOf('.')));
-	var s=storage.bucket('gs://memefeed-6b0e1.appspot.com');
-	var sfile = s.file("meme_images/"+filename);
-	console.log(path.resolve(filename));
-	 request(url)
-  	.pipe(sfile.createWriteStream({
+  var dbRef = admin.firestore().collection('Memes').doc(filename.substring(0,filename.indexOf('.')));
+  var s=storage.bucket('gs://memefeed-6b0e1.appspot.com');
+  var sfile = s.file("meme_images/"+filename);
+  console.log(path.resolve(filename));
+   request(url)
+    .pipe(sfile.createWriteStream({
         destination: "meme_images/"+filename,
         uploadType: "media",
         metadata: {
@@ -89,48 +85,44 @@ function sendToFirebase(filename,url,author,sub,time,score,caption){
           }
         }
       }))
-  	.on('finish',function() {console.log("all good! "+filename)});
-	
-	var url = "https://firebasestorage.googleapis.com/v0/b/" + s.name + "/o/" + encodeURIComponent(sfile.name) + "?alt=media&token=" + uuid;
-	 
-	print(url,author,sub,time,score,filename,caption);
+    .on('finish',function() {console.log("all good! "+filename)});
+  
+  var url = "https://firebasestorage.googleapis.com/v0/b/" + s.name + "/o/" + encodeURIComponent(sfile.name) + "?alt=media&token=" + uuid;
+   
+  print(url,author,sub,time,score,filename,caption);
 
 
     var data = {
-		filename: filename,
-		url: url,
-		author: author,
-		sub: sub,
-		time: time,
-		score: score,
-		reacts: 0,
-		caption: caption,
-		numFlags: 0,
-	};
-	console.log("push ok");
-	dbRef.set(data);
-	
-		
-  	 
+    filename: filename,
+    url: url,
+    author: author,
+    sub: sub,
+    time: time,
+    score: score,
+    reacts: 0,
+    caption: caption,
+    numFlags: 0,
+  };
+  console.log("push ok");
+  dbRef.set(data);
+  
+    
+     
 
 
-	
+  
 
 
-	
+  
 
-
-  //});
 }
 
-
 async function upload(url,author,sub,time,score,caption){
-	var filename = url.substring(url.lastIndexOf('/')+1);
-	sendToFirebase(filename,url,author,sub,time,score,caption);
-	
-	
-	
-
+  var filename = url.substring(url.lastIndexOf('/')+1);
+  sendToFirebase(filename,url,author,sub,time,score,caption);
+  
+  
+  
 
 }
 
@@ -140,8 +132,7 @@ admin.initializeApp({
 
 
 
-
-var subreddits = ['memes',
+var subreddits = ['wholesomememes',
 'BikiniBottomTwitter',
 'OneProtectRestAttack',
 'ProgrammerHumor',
@@ -208,9 +199,8 @@ var subreddits = ['memes',
 ]
 
 for(i=0;i<subreddits.length;i++){
-	getJSON(subreddits[i]);
+  getJSON(subreddits[i]);
 }
 
 
 //MemeFeed 2019 Jesuisouef
-
