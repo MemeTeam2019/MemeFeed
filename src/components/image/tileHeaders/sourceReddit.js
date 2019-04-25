@@ -28,7 +28,7 @@ class SourceReddit extends React.Component {
                 <View style={styles.leftContainer1}>
                 <View style={styles.container}>
                     <Text style={{fontSize: 15}}>sourced from </Text>
-                    <Text style={{fontSize: 15, fontWeight: 'bold', fontStyle: 'italic'}}> 'r/{this.props.sub}'</Text>
+                    <Text style={{fontSize: 15, fontWeight: 'bold', fontStyle: 'italic', color: '#919191'}}> 'r/{this.props.sub}'</Text>
                   </View>
                 </View>
                 <Text style={styles.textSty4}></Text>
