@@ -99,6 +99,26 @@ class LikedFromReddit extends React.Component {
             }}
           />
         </View>
+        </View>
+
+
+        <View style={styles.rightContainer1}>
+          <View style={styles.rightIcon1} />
+          <TouchableOpacity onPress={this.showActionSheet}>
+            <Text style={styles.report}>. . . </Text>
+          </TouchableOpacity>
+          <ActionSheet
+            ref={(o) => (this.ActionSheet = o)}
+            options={optionArray}
+            cancelButtonIndex={1}
+            destructiveIndex={0}
+            onPress={(index) => {
+              if (optionArray[index] == 'Inappropriate/Irrelevant') {
+
+              }
+            }}
+          />
+        </View>
       </View>
 
 
