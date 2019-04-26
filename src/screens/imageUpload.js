@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Text,
   Button,
-  
+  Dimensions
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import ImagePicker from 'react-native-image-picker';
@@ -80,28 +80,32 @@ class ImageUpload extends React.Component {
     });
       
   }
-  render(){
+
+  render() {
     if(this.state.isChosen==false&&this.state.isUploaded==false){
       //choose the photo
     return (
         <View style={styles.containerStyle}>
           <View style={styles.navBar}>
-          <Text style={styles.textSty4}>
-            Choose Image
-          </Text>
+            <Text style={styles.textSty4}>
+              Upload
+            </Text>
           </View>
+          <View style={styles.container3}>
           <View style={styles.containerStyle2}>
-          <Image
-            source={require('../images/image.png.gif')}
-            style={styles.tile}
-            />
-          <Button
-            title="Open Library"
-            onPress={this.handlePhoto}
-          />
+            <Image
+              source={require('../images/image.png.gif')}
+              style={styles.tile}
+              />
+          </View>
+          <View style={styles.container}>
+            <TouchableOpacity onPress={this.handlePhoto}>
+              <Text style={styles.button}>Open Library</Text>
+            </TouchableOpacity>
+          </View>
           </View>
         </View>
-
+        
       );
   }
   if(this.state.isChosen==true&&this.state.isUploaded==false){
@@ -110,22 +114,32 @@ class ImageUpload extends React.Component {
       return (
         <View style={styles.containerStyle}>
           <View style={styles.navBar}>
-          <Text style={styles.textSty4}>
-            Choose Image
-          </Text>
+            <Text style={styles.textSty4}>
+              Upload
+            </Text>
           </View>
           <View style={styles.containerStyle2}>
-          <Image
-            source={{uri}}
-            style={styles.tile}
+            <Image
+              source={{uri}}
+              style={styles.tile}
             />
-          <Button
-            title="Upload"
-            onPress={this.handleUpload}
-          />
           </View>
+          <View style={styles.container}>
+              <View style={styles.leftContainer}>
+                <TouchableOpacity>
+                  <Text style={styles.button2}>Retake</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.rightContainer}>
+                <TouchableOpacity onPress={this.handleUpload}> 
+                  <Image 
+                    source={require('../images/post.png')}
+                    style = {styles.post}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
         </View>
-
       );
   }
   if(this.state.isChosen==true&&this.state.isUploaded==true){
@@ -133,19 +147,18 @@ class ImageUpload extends React.Component {
       return (
         <View style={styles.containerStyle}>
           <View style={styles.navBar}>
-          <Text style={styles.textSty4}>
-            Choose Image
-          </Text>
+            <Text style={styles.textSty4}>
+              Upload
+            </Text>
           </View>
           <View style={styles.containerStyle2}>
-          <Image
-            source={require('../images/image.png.gif')}
-            style={styles.tile}
+            <Image
+              source={require('../images/image.png.gif')}
+              style={styles.tile}
             />
-          <Button
-            title="Open Library"
-            onPress={this.handlePhoto}
-          />
+          <TouchableOpacity onPress={this.handlePhoto}>
+            <Text style={styles.button}>Open Library</Text>
+          </TouchableOpacity>
           </View>
         </View>
 
@@ -153,8 +166,8 @@ class ImageUpload extends React.Component {
   }
   }
 }
-
 export default ImageUpload;
+
 const styles = StyleSheet.create({
   containerStyle: {
     flex: 1,
@@ -170,27 +183,31 @@ const styles = StyleSheet.create({
   },
   textSty4: {
     fontSize: 20,
-    fontFamily: 'HelveticaNeue-Bold',
+    fontFamily: 'AvenirNext-Bold',
     backgroundColor: 'white',
     paddingRight: 3,
     paddingHorizontal: 10,
-    fontWeight: 'bold',
   },
-   containerStyle2: {
-    flex: 2,
+  containerStyle2: {
+    flex: 1,
     backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingLeft: 5,
-    paddingRight: 5,
+    paddingLeft: '2%',
+    paddingRight: '2%',
+  },
+  container3: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   tile: {
-    width: 300,
-    height: 300,
+    width: Dimensions.get('screen').width * 0.85,
+    height: Dimensions.get('screen').width * 0.85,
     justifyContent: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 10,
     alignItems: 'center',
+    position: 'absolute',
+    top: 50
   },
   navBut: {
     height: 50,
@@ -202,5 +219,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  button: {
+    fontFamily: 'Avenir Next',
+    fontSize: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+
+  },
+  button2: {
+    fontFamily: 'Avenir Next',
+    fontSize: 20,
+  },
+  container: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    bottom: 6
+  },
+  leftContainer: {
+    justifyContent: 'flex-start',
+    marginLeft: '10%'
+
+  },
+  rightContainer: {
+    justifyContent: 'flex-end',
+    marginLeft: '55%'
+
+  },
+  post: {
+    width: 50,
+    height: 50
+  }
 });
 
