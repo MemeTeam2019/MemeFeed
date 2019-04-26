@@ -77,7 +77,7 @@ class LikedFromReddit extends React.Component {
             style={styles.likedFromImg}
             source={require('../repostIcon.png')}
           />
-          <Text style={{fontSize: 12, fontWeight: 'bold', fontStyle: 'italic', color: '#919191'}}> 'r/{this.props.sub}'</Text>
+          <Text style={{fontSize: 12, fontWeight: 'bold', fontStyle: 'italic', color: '#919191', width: 800}}> 'r/{this.props.sub}'</Text>
         </View>
         </View>
 
@@ -85,7 +85,7 @@ class LikedFromReddit extends React.Component {
         <View style={styles.rightContainer1}>
           <View style={styles.rightIcon1} />
           <TouchableOpacity onPress={this.showActionSheet}>
-            <Text style={styles.report}>. . . </Text>
+            <Text style={styles.report}> . . . </Text>
           </TouchableOpacity>
           <ActionSheet
             ref={(o) => (this.ActionSheet = o)}
@@ -117,8 +117,8 @@ export default withNavigation(LikedFromReddit);
 const styles = StyleSheet.create({
    container: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
-    width: '80%',
+    backgroundColor: 'transparent',
+    width: '85%',
     height: 30,
     paddingHorizontal: 10,
     alignItems: 'center',
@@ -188,7 +188,9 @@ const styles = StyleSheet.create({
     marginRight: 10,
     fontSize: 20,
     marginBottom: 5,
-    color: '#919191'
+    color: '#919191',
+    backgroundColor: 'white',
+    marginLeft: 2
   }
 
 });

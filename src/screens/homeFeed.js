@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   navBar: {
-    height: 80,
+    height: 85,
     backgroundColor: 'white',
     elevation: 3,
     paddingHorizontal: 20,
