@@ -1,8 +1,6 @@
 import React from 'react';
 import { Text, StyleSheet, TouchableOpacity, View, Image } from 'react-native';
 import { withNavigation } from 'react-navigation';
-
-const primePic = require('../../images/primePic.png');
 import firebase from 'react-native-firebase';
 
 /**
@@ -18,40 +16,6 @@ import firebase from 'react-native-firebase';
  *                   collection for the expected object properties.
  */
 class SearchResult extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this._isMounted = false;
-    this.unsubscribe = null;
-    this.state = {
-      iconURL: '',
-    };
-  }
-
-  componentDidMount() {
-    this._isMounted = true;
-    if (this._isMounted) {
-      //get the profile icon
-      firebase
-        .firestore()
-        .collection('Users')
-        .doc(this.props.uid)
-        .get()
-        .then((docSnapshot) => {
-          if (docSnapshot.exists) {
-            const { icon } = docSnapshot.data();
-            this.state.iconURL = icon;
-            console.log(this.state.iconURL);
-            console.log(icon);
-          } else {
-            console.log("doesn't exist");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  }
-
   render() {
     const { navigation, data, uid } = this.props;
     if (!data || !uid) return null;
