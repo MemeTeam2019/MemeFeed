@@ -15,6 +15,15 @@ class PostInfo extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.unsubscribe = firebase
+      .firestore()
+      .collection(`Comments/${this.props.memeId}/Info`)
+      .doc('CommentInfo')
+      .get()
+      .then(this.onCollectionUpdate); // we choose decsending to get most recent
+  }
+
   // function for extracting Firebase responses to the state
   onCollectionUpdate = () => {
     var countRef = firebase
@@ -36,14 +45,6 @@ class PostInfo extends React.Component {
         console.log('Error getting document', err);
       });
   };
-
-  componentDidMount() {
-    this.unsubscribe = firebase
-      .firestore()
-      .collection(`Comments/${this.props.memeId}/Info`)
-      .doc('CommentInfo')
-      .onSnapshot(this.onCollectionUpdate); // we choose decsending to get most recent
-  }
 
   handleCommentClick() {
     this.props.navigation.navigate('Comment', {

@@ -1,5 +1,12 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import firebase from 'react-native-firebase';
 
 import Tile from '../components/image/Tile';
@@ -19,23 +26,16 @@ class FriendProfileScreen extends React.Component {
 
     this.unsubscribe = null;
     this.state = {
-      email: '',
       username: '',
       name: '',
-      uid: '',
       followingLst: [],
       followersLst: [],
-      open: false,
       selectGridButtonP: true,
       selectListButtonP: false,
       memes: [],
-      items: [],
-      text: '',
-      ModalVisibleStatus: false,
-      imageuri: '',
       isFollowing: false,
       buttonText: '',
-      iconURL: ''
+      iconURL: '',
     };
   }
 
@@ -45,27 +45,27 @@ class FriendProfileScreen extends React.Component {
       if (!memesLoaded) {
         memesLoaded = 10;
       }
-      this.unsubscribe = this.memeRef
+      this.memeRef
         .limit(memesLoaded)
-        .onSnapshot(this.onCollectionUpdate);
+        .get()
+        .then(this.onCollectionUpdate);
 
       const myUid = firebase.auth().currentUser.uid;
       const theirUid = this.props.navigation.getParam('uid');
 
-      //get the profile icon
+      // Get the profile icon
       firebase
         .firestore()
         .collection('Users')
         .doc(theirUid)
         .get()
         .then((docSnapshot) => {
-          if(docSnapshot.exists) {
+          if (docSnapshot.exists) {
             const { icon } = docSnapshot.data();
-              this.state.iconURL = icon
-            console.log(this.state.iconURL)
-          }
-          else{
-            console.log("doesn't exist")
+            this.state.iconURL = icon;
+            console.log(this.state.iconURL);
+          } else {
+            console.log("doesn't exist");
           }
         })
         .catch((error) => {
@@ -83,27 +83,27 @@ class FriendProfileScreen extends React.Component {
 
       myUserRef
         .get()
-        .then(snapshot => {
+        .then((snapshot) => {
           const data = snapshot.data();
           const followingLst = data.followingLst || [];
           console.log(snapshot);
           const isFollowing = followingLst.indexOf(theirUid) > -1;
           this.setState(
             Object.assign({
-              isFollowing: isFollowing,
+              isFollowing,
               buttonText: isFollowing ? 'Unfollow' : 'Follow',
             })
           );
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
-      theirUserRef.get().then(snapshot => this.setState(snapshot.data()));
+      theirUserRef.get().then((snapshot) => this.setState(snapshot.data()));
     }
   }
 
   componentWillUnmount() {
-    this.unsubscribe = null;
+    this.unsubscribe();
   }
 
   showActionSheet = () => {
@@ -135,12 +135,12 @@ class FriendProfileScreen extends React.Component {
     let nowFollowing = !this.state.isFollowing;
 
     // Get my myFollowingLst
-    let followingLst = await myUserRef.get().then(mySnapshot => {
+    let followingLst = await myUserRef.get().then((mySnapshot) => {
       return mySnapshot.data().followingLst || [];
     });
 
     // Get theirFollowersLst
-    let followersLst = await theirUserRef.get().then(theirSnapshot => {
+    let followersLst = await theirUserRef.get().then((theirSnapshot) => {
       return theirSnapshot.data().followersLst || [];
     });
 
@@ -177,9 +177,9 @@ class FriendProfileScreen extends React.Component {
   };
 
   // function for extracting Firebase responses to the state
-  onCollectionUpdate = querySnapshot => {
+  onCollectionUpdate = (querySnapshot) => {
     const memes = [];
-    querySnapshot.forEach(doc => {
+    querySnapshot.forEach((doc) => {
       const { time, url, rank, likedFrom } = doc.data();
       if (rank > 1)
         memes.push({
@@ -224,7 +224,7 @@ class FriendProfileScreen extends React.Component {
         }}
       >
         <Image
-          resizeMode="cover"
+          resizeMode='cover'
           style={{ flex: 1 }}
           source={{ uri: item.src }}
         />
@@ -245,104 +245,104 @@ class FriendProfileScreen extends React.Component {
           <Text style={styles.textSty4}>{this.state.username}</Text>
         </View>
         <ScrollView>
-        {/*Profile Pic, Follwers, Follwing Block*/}
-        <View style={styles.navBar2}>
-          <View style={styles.leftContainer2}>
-            <Image
-              source={{uri: this.state.iconURL}}
-              style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
-            />
-          </View>
-
-          <TouchableOpacity
-            onPress={() => {
-              this.props.navigation.push('FollowList', {
-                arrayOfUids: this.state.followingLst,
-                title: 'Following',
-              });
-            }}
-          >
-            <Text style={styles.textSty}>
-              {' '}
-              {this.state.followingCnt} {'\n'}{' '}
-              <Text style={styles.textSty3}>Following</Text>
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.rightContainer2}
-            onPress={() => {
-              this.props.navigation.push('FollowList', {
-                arrayOfUids: this.state.followersLst,
-                title: 'Followers',
-              });
-            }}
-          >
-            <View>
-              <Text style={styles.textSty}>
-                {this.state.followersCnt} {'\n'}{' '}
-                <Text style={styles.textSty3}>Followers</Text>{' '}
-              </Text>
+          {/*Profile Pic, Follwers, Follwing Block*/}
+          <View style={styles.navBar2}>
+            <View style={styles.leftContainer2}>
+              <Image
+                source={{ uri: this.state.iconURL }}
+                style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
+              />
             </View>
-          </TouchableOpacity>
-        </View>
 
-        {/*DISPLAY NAME*/}
-        <View style={styles.navBar1}>
-          <View style={styles.leftContainer1}>
-            <Text style={[styles.textSty2, { textAlign: 'left' }]}>
-              {<Text style={styles.textSty2}>{this.state.name}</Text>}
-            </Text>
-          </View>
-
-          <View style={styles.rightContainer1}>
-            <TouchableOpacity onPress={() => this.updateFollowing()}>
-              <Text style={styles.followBut}>
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.push('FollowList', {
+                  arrayOfUids: this.state.followingLst,
+                  title: 'Following',
+                });
+              }}
+            >
+              <Text style={styles.textSty}>
                 {' '}
-                {this.state.buttonText}{' '}
-                <Image
-                  source={require('../images/follower2.png')}
-                  style={{ width: 17, height: 17 }}
-                />
+                {this.state.followingCnt} {'\n'}{' '}
+                <Text style={styles.textSty3}>Following</Text>
               </Text>
             </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.rightContainer2}
+              onPress={() => {
+                this.props.navigation.push('FollowList', {
+                  arrayOfUids: this.state.followersLst,
+                  title: 'Followers',
+                });
+              }}
+            >
+              <View>
+                <Text style={styles.textSty}>
+                  {this.state.followersCnt} {'\n'}{' '}
+                  <Text style={styles.textSty3}>Followers</Text>{' '}
+                </Text>
+              </View>
+            </TouchableOpacity>
           </View>
-        </View>
-        {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
-        <View style={styles.navBut}>
-          <TouchableOpacity onPress={() => this.onListViewPressedP()}>
-            <Image
-              source={require('../images/fullFeedF.png')}
-              style={{
-                opacity: this.state.selectListButtonP ? 1 : 0.3,
-                width: 100,
-                height: 50,
-              }}
+
+          {/*DISPLAY NAME*/}
+          <View style={styles.navBar1}>
+            <View style={styles.leftContainer1}>
+              <Text style={[styles.textSty2, { textAlign: 'left' }]}>
+                {<Text style={styles.textSty2}>{this.state.name}</Text>}
+              </Text>
+            </View>
+
+            <View style={styles.rightContainer1}>
+              <TouchableOpacity onPress={() => this.updateFollowing()}>
+                <Text style={styles.followBut}>
+                  {' '}
+                  {this.state.buttonText}{' '}
+                  <Image
+                    source={require('../images/follower2.png')}
+                    style={{ width: 17, height: 17 }}
+                  />
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
+          <View style={styles.navBut}>
+            <TouchableOpacity onPress={() => this.onListViewPressedP()}>
+              <Image
+                source={require('../images/fullFeedF.png')}
+                style={{
+                  opacity: this.state.selectListButtonP ? 1 : 0.3,
+                  width: 100,
+                  height: 50,
+                }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.onGridViewPressedP()}>
+              <Image
+                source={require('../images/gridFeedF.png')}
+                style={{
+                  opacity: this.state.selectGridButtonP ? 1 : 0.3,
+                  width: 100,
+                  height: 50,
+                }}
+              />
+            </TouchableOpacity>
+          </View>
+          {this.state.selectListButtonP ? (
+            <MemeList
+              loadMemes={this.componentDidMount}
+              memes={this.state.memes}
             />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.onGridViewPressedP()}>
-            <Image
-              source={require('../images/gridFeedF.png')}
-              style={{
-                opacity: this.state.selectGridButtonP ? 1 : 0.3,
-                width: 100,
-                height: 50,
-              }}
+          ) : (
+            <MemeGrid
+              loadMemes={this.componentDidMount}
+              memes={this.state.memes}
             />
-          </TouchableOpacity>
-        </View>
-        {this.state.selectListButtonP ? (
-          <MemeList
-            loadMemes={this.componentDidMount}
-            memes={this.state.memes}
-          />
-        ) : (
-          <MemeGrid
-            loadMemes={this.componentDidMount}
-            memes={this.state.memes}
-          />
-        )}
-         </ScrollView>
+          )}
+        </ScrollView>
       </View>
     );
   }

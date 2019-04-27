@@ -51,7 +51,7 @@ export default class Profile extends React.Component {
       updated: true,
       memes: [],
       oldestDoc: 0,
-      iconURL: '',
+      icon: ''
     };
   }
 
@@ -68,8 +68,7 @@ export default class Profile extends React.Component {
         .then((docSnapshot) => {
           if (docSnapshot.exists) {
             const { icon } = docSnapshot.data();
-            this.state.iconURL = icon;
-            console.log(this.state.iconURL);
+            this.setState({ icon })
           } else {
             console.log("doesn't exist");
           }
@@ -81,8 +80,9 @@ export default class Profile extends React.Component {
         .firestore()
         .collection('Users')
         .doc(uid)
-        .onSnapshot((snapshot) => this.setState(snapshot.data()));
-      this.unsubscribe = firebase
+        .get()
+        .then((snapshot) => this.setState(snapshot.data()));
+      firebase
         .firestore()
         .collection('Reacts')
         .doc(firebase.auth().currentUser.uid)
@@ -92,11 +92,6 @@ export default class Profile extends React.Component {
         .get()
         .then(this.updateFeed);
     }
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe = null;
-    this.userListener = null;
   }
 
   fetchMemes = () => {
@@ -151,9 +146,9 @@ export default class Profile extends React.Component {
   };
 
   getUserInfo = () => {
-    let firestore = firebase.firestore();
     const uid = firebase.auth().currentUser.uid;
-    firestore
+    firebase
+      .firestore()
       .collection('Users')
       .doc(uid)
       .get()
@@ -255,11 +250,11 @@ export default class Profile extends React.Component {
               />
             </View>
           </View>
-          {/*Profile Pic, Follwers, Follwing Block*/}
+          {/* Profile Pic, Follwers, Follwing Block */}
           <View style={styles.navBar2}>
             <View style={styles.leftContainer2}>
               <Image
-                source={{ uri: this.state.iconURL }}
+                source={{ uri: this.state.icon }}
                 style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
               />
             </View>
@@ -332,7 +327,7 @@ export default class Profile extends React.Component {
               {/* Profile Picture */}
               <View style={styles.leftContainer2}>
                 <Image
-                  source={{ uri: this.state.iconURL }}
+                  source={{ uri: this.state.icon }}
                   style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
                 />
               </View>
