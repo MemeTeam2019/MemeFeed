@@ -9,7 +9,7 @@
   "dependencies": {
     "prettier": "^1.16.4",
     "react": "^16.8.3",
-    "react-native": "^0.59.3",
+    "react-native": "^0.59.6",
     "react-native-actionsheet": "^2.4.2",
     "react-native-android-image-polyfill": "^1.0.0",
     "react-native-auto-height-image": "^1.0.5",
