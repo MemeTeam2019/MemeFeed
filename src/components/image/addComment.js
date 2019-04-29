@@ -19,7 +19,7 @@ class AddComment extends React.Component {
 
     const countRef = firebase
       .firestore()
-      .collection(`Comments/${memeId}/Info`)
+      .collection(`CommentsTest/${memeId}/Info`)
       .doc('CommentInfo');
     countRef
       .get()
@@ -45,7 +45,7 @@ class AddComment extends React.Component {
         console.log('Error getting document', err);
       });
 
-    const ref = firebase.firestore().collection(`Comments/${memeId}/Text`);
+    const ref = firebase.firestore().collection(`CommentsTest/${memeId}/Text`);
 
     ref
       .get()
@@ -54,11 +54,11 @@ class AddComment extends React.Component {
           // Add necessary infrastruction
           firebase
             .firestore()
-            .collection('Comments')
+            .collection('CommentsTest')
             .doc(memeId);
           firebase
             .firestore()
-            .collection('Comments')
+            .collection('CommentsTest')
             .doc(memeId)
             .collection('Text');
         }
@@ -66,7 +66,7 @@ class AddComment extends React.Component {
         // Add this comment to the proper folder
         firebase
           .firestore()
-          .collection(`Comments/${memeId}/Text`)
+          .collection(`CommentsTest/${memeId}/Text`)
           .add({
             uid: user.uid,
             text: this.state.text.trim(),

@@ -52,7 +52,7 @@ class ButtonBar extends React.Component {
     const memeId = this.props.memeId;
     const ref = firebase
       .firestore()
-      .collection('Reacts')
+      .collection('ReactsTest')
       .doc(user.uid)
       .collection('Likes')
       .doc(memeId);
@@ -86,7 +86,7 @@ class ButtonBar extends React.Component {
     // Update the Reacts collection for current uid
     const reactRef = firebase
       .firestore()
-      .collection('Reacts')
+      .collection('ReactsTest')
       .doc(user.uid)
       .collection('Likes')
       .doc(memeId);
@@ -145,7 +145,7 @@ class ButtonBar extends React.Component {
           let friendUid = followersLst[i];
           firebase
             .firestore()
-            .collection('Feeds')
+            .collection('FeedsTest')
             .doc(friendUid)
             .collection('Likes')
             .doc(memeId)
@@ -162,7 +162,7 @@ class ButtonBar extends React.Component {
                     const newPosReacts = posReacts+1
                     firebase
                       .firestore()
-                      .collection('Feeds')
+                      .collection('FeedsTest')
                       .doc(friendUid)
                       .collection('Likes')
                       .doc(memeId)
@@ -188,7 +188,7 @@ class ButtonBar extends React.Component {
                   }
                   firebase
                     .firestore()
-                    .collection('Feeds')
+                    .collection('FeedsTest')
                     .doc(friendUid)
                     .collection('Likes')
                     .doc(memeId)
@@ -209,7 +209,7 @@ class ButtonBar extends React.Component {
                 if (newReact > 1) {
                   firebase
                     .firestore()
-                    .collection('Feeds')
+                    .collection('FeedsTest')
                     .doc(friendUid)
                     .collection('Likes')
                     .doc(memeId)
@@ -258,7 +258,7 @@ class ButtonBar extends React.Component {
 
       <View style={styles.buttonBar}>
         <View style={styles.button}>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={this._onPressButton.bind(this, 0)}>
             <Image
               resizeMode="cover"
@@ -290,7 +290,7 @@ class ButtonBar extends React.Component {
         </View>
 
         <View style={styles.button}>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={this._onPressButton.bind(this, 2)}>
             <Image
               resizeMode="cover"
@@ -306,7 +306,7 @@ class ButtonBar extends React.Component {
         </View>
 
         <View style={styles.button}>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={this._onPressButton.bind(this, 3)}>
             <Image
               resizeMode="cover"
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingRight: '35%',
-    
+
   },
   button: {
     width: 50,

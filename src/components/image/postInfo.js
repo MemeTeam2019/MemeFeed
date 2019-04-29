@@ -18,7 +18,7 @@ class PostInfo extends React.Component {
   componentDidMount() {
     this.unsubscribe = firebase
       .firestore()
-      .collection(`Comments/${this.props.memeId}/Info`)
+      .collection(`CommentsTest/${this.props.memeId}/Info`)
       .doc('CommentInfo')
       .get()
       .then(this.onCollectionUpdate); // we choose decsending to get most recent
@@ -28,7 +28,7 @@ class PostInfo extends React.Component {
   onCollectionUpdate = () => {
     var countRef = firebase
       .firestore()
-      .collection('Comments/' + this.props.memeId + '/Info')
+      .collection('CommentsTest/' + this.props.memeId + '/Info')
       .doc('CommentInfo');
     countRef
       .get()
