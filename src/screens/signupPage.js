@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   StyleSheet,
-  View,
+  ScrollView,
   Text,
   KeyboardAvoidingView,
   Button,
@@ -9,6 +9,7 @@ import {
   Alert,
   ImageBackground,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import { CheckBox } from 'react-native-elements';
@@ -109,10 +110,13 @@ class SignupScreen extends React.Component {
         source={require('../images/bkgrnd.jpeg')}
         style={styles.background}
       >
-        <View style={styles.container}>
-          <KeyboardAvoidingView
-            contentContainerStyle={styles.addBottomPadding}
-            behavior='position'
+        <KeyboardAvoidingView
+          behavior='padding'
+          style={styles.container}
+          keyboardVerticalOffset={0}
+        >
+          <ScrollView
+            contentContainerStyle={{ flex: 1, justifyContent: 'center' }}
           >
             <Text style={styles.title}>Sign Up</Text>
             <TextInput
@@ -184,8 +188,8 @@ class SignupScreen extends React.Component {
               disabled={!this.state.checked}
               onPress={() => this.handleSubmit()}
             />
-          </KeyboardAvoidingView>
-        </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </ImageBackground>
     );
   }
@@ -196,9 +200,11 @@ export default SignupScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: '18%',
     alignItems: 'center',
     justifyContent: 'center',
+    flexGrow: 1,
+    height: Dimensions.get('window').height,
+    width: Dimensions.get('window').width,
   },
   title: {
     fontSize: 36,
@@ -207,8 +213,8 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   input: {
-    width: 325,
-    height: 55,
+    width: Dimensions.get('window').width * 0.85,
+    height: 50,
     backgroundColor: '#FFFFFF',
     borderRadius: 5,
     fontSize: 18,
