@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  ScrollView,
-  KeyboardAvoidingView,
-  Keyboard,
-  Dimensions,
-} from 'react-native';
+import { ScrollView, KeyboardAvoidingView, Dimensions } from 'react-native';
 import firebase from 'react-native-firebase';
 
 import Tile from '../components/image/tile';
