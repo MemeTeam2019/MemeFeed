@@ -91,8 +91,8 @@ const ProfileStack = createStackNavigator(
       screen: InfoStack,
     },
     Privacy: {
-      screen: PrivacyPolicyScreen
-    }
+      screen: PrivacyPolicyScreen,
+    },
   },
   {
     initialRouteName: 'Profile',
@@ -112,7 +112,7 @@ const MainRouter = createBottomTabNavigator({
         activeTintColor: '#000000',
         inactiveTintColor: '#D3D3D3',
         style: {
-          height: '10%',
+          height: '9%',
         },
       },
     },
@@ -130,7 +130,7 @@ const MainRouter = createBottomTabNavigator({
         activeTintColor: '#000000',
         inactiveTintColor: '#D3D3D3',
         style: {
-          height: '10%',
+          height: '9%',
         },
       },
     },
@@ -148,7 +148,7 @@ const MainRouter = createBottomTabNavigator({
         activeTintColor: '#000000',
         inactiveTintColor: '#D3D3D3',
         style: {
-          height: '10%',
+          height: '9%',
         },
       },
     },
