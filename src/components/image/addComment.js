@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Button, TextInput } from 'react-native';
+import { StyleSheet, View, Button, TextInput, Keyboard } from 'react-native';
 import firebase from 'react-native-firebase';
 
 class AddComment extends React.Component {
@@ -85,6 +85,7 @@ class AddComment extends React.Component {
       .catch((err) => {
         console.log('Error getting document', err);
       });
+    Keyboard.dismiss();
   };
 
   render() {
@@ -138,7 +139,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '80%',
-    // bottom: 0,
+    bottom: 0,
     backgroundColor: '#fff',
     borderRadius: 25,
     paddingHorizontal: 15,

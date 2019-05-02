@@ -1,13 +1,10 @@
 import React from 'react';
-import { StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { ScrollView, KeyboardAvoidingView, Dimensions } from 'react-native';
 import firebase from 'react-native-firebase';
 
 import Tile from '../components/image/tile';
 import AddComment from '../components/image/addComment';
 import CommentList from '../components/image/commentList';
-import TileHeader from '../components/image/tileHeader';
-import Photo from '../components/image/photo';
-import ButtonBar from '../components/image/buttonBar';
 
 /**
  * Display comments for a meme, along with the buttonBar and the meme itself.
@@ -24,7 +21,7 @@ class CommentPage extends React.Component {
 
   constructor(props) {
     super(props);
-    this.showAllComments=1;
+    this.showAllComments = 1;
     this.scrollView = null;
     this.fetchComments = this.fetchComments.bind(this);
     this.handleNewComment = this.handleNewComment.bind(this);
@@ -118,7 +115,6 @@ class CommentPage extends React.Component {
       );
     });
     Promise.all(newComments).then((resolvedComments) => {
-      // resolvedComments.sort((a, b) => a.time < b.time);
       resolvedComments.reverse();
       this.setState((prevState) => {
         const mergedComments = resolvedComments.concat(prevState.comments);
@@ -173,7 +169,10 @@ class CommentPage extends React.Component {
     const postedBy = this.props.navigation.getParam('postedBy', '');
     const poster = this.props.navigation.getParam('poster', '');
     return (
-      <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={95}>
+      <KeyboardAvoidingView
+        behavior='position'
+        keyboardVerticalOffset={Dimensions.get('window').height * 0.1}
+      >
         <ScrollView
           ref={(ref) => {
             this.scrollView = ref;
@@ -189,14 +188,6 @@ class CommentPage extends React.Component {
             poster={poster}
             showAllComments={this.showAllComments}
           />
-          {/* <TileHeader
-            sub={sub}
-            likedFrom={likedFrom}
-            postedBy={postedBy}
-            poster={poster}
-          />
-          <Photo imageUrl={this.state.imageuri} />
-          <ButtonBar memeId={this.state.memeId} /> */}
           <CommentList
             memeId={this.state.memeId}
             comments={this.state.comments}
@@ -208,7 +199,6 @@ class CommentPage extends React.Component {
         <AddComment
           memeId={this.state.memeId}
           handleNewComment={this.handleNewComment}
-          style={styles.addComment}
         />
       </KeyboardAvoidingView>
     );
@@ -216,15 +206,3 @@ class CommentPage extends React.Component {
 }
 
 export default CommentPage;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-  },
-  addComment: {
-    position: 'absolute',
-  },
-});
