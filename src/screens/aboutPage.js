@@ -1,13 +1,16 @@
 import React from 'react';
-import { StyleSheet, View, Button, ImageBackground, Text } from 'react-native';
+import { StyleSheet, ScrollView, View, Button, ImageBackground, Text } from 'react-native';
 
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
+  // style={{paddingBottom : 100}}>
 
   render() {
     return (
+      <View style={StyleSheet.absoluteFill}>
+      <ScrollView style={{ marginBottom: 40 }}>
       <ImageBackground
         source={require('../images/white.png')}
         style={styles.background}
@@ -27,7 +30,7 @@ export default class LoginScreen extends React.Component {
             With memes ranging in all categories, Meme Feed strives to
             provide the perfect app for meme browsing
             and finding other
-            meme-holics like you!
+            memers like you!
           </Text>
           <Text style={styles.aboutText2}>
             Contact us at memefeedaye@gmail.com
@@ -42,6 +45,9 @@ export default class LoginScreen extends React.Component {
           />
         </View>
       </ImageBackground>
+      </ScrollView>
+      </View>
+
     );
   }
 }
@@ -129,6 +135,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginBottom: '5%',
+    // marginBottom: '20%',
   }
 });

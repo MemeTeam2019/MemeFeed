@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Button, ImageBackground, Text } from 'react-native';
+import { StyleSheet, ScrollView, View, Button, ImageBackground, Text } from 'react-native';
 
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -8,6 +8,8 @@ export default class LoginScreen extends React.Component {
 
   render() {
     return (
+      <View>
+      <ScrollView>
       <ImageBackground
         source={require('../images/white.png')}
         style={styles.background}
@@ -25,7 +27,7 @@ export default class LoginScreen extends React.Component {
           </Text>
           <Text style={styles.aboutText}>
             With memes ranging in all categories, Meme Feed strives to provide
-            the perfect app for meme browsing and finding other meme-holics like
+            the perfect app for meme browsing and finding other memers like
             you!
           </Text>
           <Text style={styles.aboutText2}>
@@ -41,6 +43,8 @@ export default class LoginScreen extends React.Component {
           />
         </View>
       </ImageBackground>
+              </ScrollView>
+                </View>
     );
   }
 }
