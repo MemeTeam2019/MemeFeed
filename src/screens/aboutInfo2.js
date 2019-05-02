@@ -38,10 +38,10 @@ export default class LoginScreen extends React.Component {
           </Text>
         </View>
 
-        <View style={styles.buttonBar}>
+        <View style={styles.containerStyle2}>
           <Image
-            source={require('../images/Tile/buttonBar.png')}
-            style={{ alignSelf: 'stretch', width: win.width, height: '40.5%' }}
+            source={require('../images/Tile/bar2.png')}
+            style={styles.tile}
           />
         </View>
 
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
-    marginTop: '25%',
+    marginTop: '5%',
   },
   title: {
     fontSize: 35,
@@ -128,5 +128,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: '1%',
     marginLeft: '1%',
+  },
+  containerStyle2: {
+    flex: 2,
+    //backgroundColor: 'blue',
+    alignItems: 'center',
+    paddingLeft: 5,
+    paddingRight: 5,
+    borderBottomWidth: .5,
+    borderColor: '#D6D6D6',
+  },
+  tile: {
+    width: 300,
+    height: 300,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    alignItems: 'center',
   },
 });

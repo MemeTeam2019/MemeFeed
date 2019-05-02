@@ -19,6 +19,7 @@ import aboutInfo3 from '../screens/aboutInfo3';
 import PrivacyPolicyScreen from '../screens/privacyScreen';
 
 const InfoStack = createStackNavigator({
+
   aboutInfo1,
   aboutInfo2,
   aboutInfo3,
