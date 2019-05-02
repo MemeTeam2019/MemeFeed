@@ -18,7 +18,7 @@ export default class LoginScreen extends React.Component {
   render() {
     return (
       <View style={StyleSheet.absoluteFill}>
-      <ScrollView style={{ marginBottom: 40 }}>
+      <ScrollView>
       <ImageBackground
         source={require('../images/white.png')}
         style={styles.background}
