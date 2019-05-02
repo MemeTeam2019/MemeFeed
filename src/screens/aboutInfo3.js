@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, ImageBackground, Text, Button } from 'react-native';
+import { StyleSheet, ScrollView, View, ImageBackground, Text, Button } from 'react-native';
 
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -8,6 +8,8 @@ export default class LoginScreen extends React.Component {
 
   render() {
     return (
+      <View style={StyleSheet.absoluteFill}>
+      <ScrollView style={{ marginBottom: 40 }}>
       <ImageBackground
         source={require('../images/white.png')}
         style={styles.background}
@@ -37,6 +39,8 @@ export default class LoginScreen extends React.Component {
           />
         </View>
       </ImageBackground>
+      </ScrollView>
+      </View>
     );
   }
 }
@@ -121,7 +125,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginBottom: '5%',
   },
   aboutText2: {
     fontSize: 18,
