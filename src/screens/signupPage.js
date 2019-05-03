@@ -116,7 +116,11 @@ class SignupScreen extends React.Component {
           keyboardVerticalOffset={0}
         >
           <ScrollView
-            contentContainerStyle={{ flex: 1, justifyContent: 'center' }}
+            contentContainerStyle={{
+              flex: 1,
+              justifyContent: 'center',
+              marginTop: '25%',
+            }}
           >
             <Text style={styles.title}>Sign Up</Text>
             <TextInput

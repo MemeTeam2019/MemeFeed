@@ -11,7 +11,7 @@ class PrivacyPolicyScreen extends React.PureComponent {
     const signup = this.props.navigation.getParam('signup', false);
     return (
       <View>
-        <ScrollView style={{ marginBottom: 40 }}>
+        <ScrollView>
           <Text style={styles.header}>Meme Feed Privacy Policy</Text>
           <Text style={styles.body}>
             Effective date: April 22, 2019 {'\n\n'}
@@ -45,7 +45,7 @@ class PrivacyPolicyScreen extends React.PureComponent {
           </Text>
           <Button
             title='Back'
-            color='#9F02FF'
+            color='#000'
             style={{ paddingTop: 30, marginBottom: '30' }}
             onPress={() => this.props.navigation.pop()}
           />

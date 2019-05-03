@@ -55,7 +55,7 @@ export default class ConfirmScreen extends React.Component {
         <View style={styles.nextBut}>
           <Button
             title='OK'
-            color='#9F02FF'
+            color='#000'
             onPress={() => this.props.navigation.popToTop()}
           />
         </View>

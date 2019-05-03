@@ -40,7 +40,7 @@ export default class LoginScreen extends React.Component {
         <View style={styles.nextBut}>
           <Button
             title="Next"
-            color='#9F02FF'
+            color='#000'
             onPress={() => this.props.navigation.push('About2')}
           />
         </View>
