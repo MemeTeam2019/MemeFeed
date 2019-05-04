@@ -236,17 +236,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    bottom: 6
+    bottom: 6,
+    paddingHorizontal: '20%'
   },
   leftContainer: {
     justifyContent: 'flex-start',
-    marginLeft: '10%'
+    paddingLeft: '5%', 
+    width: Dimensions.get('screen').width * 0.5 
 
   },
   rightContainer: {
     justifyContent: 'flex-end',
-    marginLeft: '55%'
-
+    paddingLeft: '18%',
+    width: Dimensions.get('screen').width * 0.5 
   },
   post: {
     width: 50,
