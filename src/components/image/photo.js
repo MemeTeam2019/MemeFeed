@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Dimensions, StyleSheet, View, TouchableOpacity, Image, Text } from 'react-native';
 
- import AutoHeightImage from 'react-native-auto-height-image';
+import AutoHeightImage from 'react-native-auto-height-image';
 import Grid from 'react-native-grid-component';
  
 class Photo extends React.Component {

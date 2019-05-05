@@ -9,8 +9,10 @@ import {
   Button,
   Dimensions
 } from 'react-native';
+
 import firebase from 'react-native-firebase';
 import ImagePicker from 'react-native-image-picker';
+import AutoHeightImage from 'react-native-auto-height-image';
 
 
 /**
@@ -119,9 +121,9 @@ class ImageUpload extends React.Component {
             </Text>
           </View>
           <View style={styles.containerStyle2}>
-            <Image
+            <AutoHeightImage
               source={{uri}}
-              style={styles.tile}
+              width={Dimensions.get("window").width}
             />
           </View>
           <View style={styles.container}>
@@ -132,10 +134,7 @@ class ImageUpload extends React.Component {
               </View>
               <View style={styles.rightContainer}>
                 <TouchableOpacity onPress={this.handleUpload}> 
-                  <Image 
-                    source={require('../images/post.png')}
-                    style = {styles.post}
-                  />
+                  <Text style={styles.button2}>Post</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -173,17 +172,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
-    navBar: {
+  navBar: {
     height: 95,
     paddingTop: 50,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: 'white',
+    borderBottomWidth: 0.5,
+    borderColor: '#D6D6D6'
   },
   textSty4: {
     fontSize: 20,
-    fontFamily: 'AvenirNext-Bold',
+    fontFamily: 'AvenirNext-Regular',
     backgroundColor: 'white',
     paddingRight: 3,
     paddingHorizontal: 10,
@@ -193,8 +194,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingLeft: '2%',
-    paddingRight: '2%',
   },
   container3: {
     flex: 1,
@@ -202,8 +201,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   tile: {
-    width: Dimensions.get('screen').width * 0.85,
-    height: Dimensions.get('screen').width * 0.85,
+    width: Dimensions.get('screen').width,
+    height: Dimensions.get('screen').width,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
@@ -220,14 +219,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   button: {
-    fontFamily: 'Avenir Next',
+    fontFamily: 'AvenirNext-Regular',
     fontSize: 20,
     justifyContent: 'center',
     alignItems: 'center',
 
   },
   button2: {
-    fontFamily: 'Avenir Next',
+    fontFamily: 'AvenirNext-Regular',
     fontSize: 20,
   },
   container: {
@@ -236,7 +235,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    bottom: 6,
+    bottom: 0,
     paddingHorizontal: '20%'
   },
   leftContainer: {
