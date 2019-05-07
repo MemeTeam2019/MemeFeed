@@ -78,7 +78,7 @@ class ImageUpload extends React.Component {
       			]
       		});
       		let response = await fetch(
-      			'https://vision.googleapis.com/v1/images:annotate?key=AIzaSyAlmwiODtc85aWjIl1gs5Gwix0-C6NyQe4',
+      			'https://vision.googleapis.com/v1/images:annotate?key=AIzaSyBkNi8Hda7YUkYfLQEm3hT_3ABcMXq9hTQ',
       			{
       				headers: {
       					Accept: 'application/json',
@@ -89,6 +89,7 @@ class ImageUpload extends React.Component {
       			}
       		);
       		let responseJson = await response.json();
+          console.log(responseJson)
           console.log(responseJson.responses[0]['safeSearchAnnotation']['adult']);
           let isNSFW = responseJson.responses[0]['safeSearchAnnotation']['adult'];
           // if image is nsfw don't post
@@ -98,32 +99,63 @@ class ImageUpload extends React.Component {
             ]);
           } else {
             // image is okay to post
-            // post in Memes
-            var memePost = {
-              filename: this.state.filename,
+            // post in Memes and use the doc id it creates elsewhere
+            const memeCollection = firebase.firestore().collection('MemesTest');
+            memeCollection.add({
               url: newurl,
               author: firebase.auth().currentUser.uid,
-              sub: 'MemeFeed',
+              sub: '',
               time: Math.round(+new Date() / 1000),
               score: 0,
               caption: '',
               reacts: 0
-            };
-            const memeCollection = firebase.firestore().collection('Memes');
-            memeCollection.add(memePost);
+            })
+            .then(function(meme) {
+                console.log("Document written with ID: ", meme.id);
 
-            // post in this users reacts
-            const userReactsREf = firebase.firestore().collection('ReactsTest').doc(firebase.auth().currentUser.uid).collection('Likes');
-            var react = {
-              rank: 4,
-              time: Math.round(+new Date() / 1000),
-              url: newurl,
-              likeFrom: firebase.auth().currentUser.uid,
-            };
-              userReactsREf.add(data2);
-              });
+                // post in this users reacts
+                const userReactsRef = firebase
+                  .firestore()
+                  .collection('ReactsTest')
+                  .doc(firebase.auth().currentUser.uid)
+                  .collection('Likes')
+                  .doc(meme.id).set({
+                    rank: 4,
+                    time: Math.round(+new Date() / 1000),
+                    url: newurl,
+                    likeFrom: firebase.auth().currentUser.uid,
+                  });
 
-
+                // put meme in their followers feeds
+                this.unsubscribe = firebase
+                  .firestore()
+                  .collection('Users')
+                  .doc(firebase.auth().currentUser.uid)
+                  .get()
+                  .then(async (doc) => {
+                    const { followersLst } = doc.data();
+                    // go through the people are following us
+                    var i;
+                    for (i = 0; i < followersLst.length; i++) {
+                      // grab friend uid
+                      let friendUid = followersLst[i];
+                      firebase
+                        .firestore()
+                        .collection('FeedsTest')
+                        .doc(friendUid)
+                        .collection('Likes')
+                        .doc(meme.id)
+                        .set({
+                          posReacts: 1,
+                          time: Math.round(+new Date() / 1000),
+                          url: newurl,
+                          // add this user as someone that liked this meme
+                          likers: [firebase.auth().currentUser.uid],
+                          likedFrom: [firebase.auth().currentUser.uid],
+                        });
+                    }
+                });
+            });
           }
           this.setState({
             isChosen: false,
