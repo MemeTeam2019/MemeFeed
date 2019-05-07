@@ -15,7 +15,7 @@ import firebase from 'react-native-firebase';
 // import vision from 'react-native-firebase';
 import ImagePicker from 'react-native-image-picker';
 
-
+import vision from "react-cloud-vision-api";
 // import vision from 'react-native-firebase';
 
 
@@ -57,60 +57,82 @@ class ImageUpload extends React.Component {
   }
 
   handleUpload = async () => {
-    console.log('HANDLE UPLOAD START====')
-    Alert.alert('Upload Error', 'This image was flagged for showing NSFW content, which goes against our policy. If you think this was a mistake email us at: memefeedaye@gmail.com', [
-      { text: 'OK' },
-    ]);
+    // first create URL
+    const storRef = firebase.storage().ref('meme_images').child(firebase.auth().currentUser.uid+this.state.filename);
+    storRef.putFile(this.state.imageuri);
 
-    try {
-    		let body = JSON.stringify({
-    			requests: [
-    				{
-    					features: [
-    						{ type: 'LABEL_DETECTION', maxResults: 10 },
-    						{ type: 'LANDMARK_DETECTION', maxResults: 5 },
-    						{ type: 'FACE_DETECTION', maxResults: 5 },
-    						{ type: 'LOGO_DETECTION', maxResults: 5 },
-    						{ type: 'TEXT_DETECTION', maxResults: 5 },
-    						{ type: 'DOCUMENT_TEXT_DETECTION', maxResults: 5 },
-    						{ type: 'SAFE_SEARCH_DETECTION', maxResults: 5 },
-    						{ type: 'IMAGE_PROPERTIES', maxResults: 5 },
-    						{ type: 'CROP_HINTS', maxResults: 5 },
-    						{ type: 'WEB_DETECTION', maxResults: 5 }
-    					],
-    					image: {
-    						source: {
-    							imageUri:'https://news.nationalgeographic.com/content/dam/news/2018/05/17/you-can-train-your-cat/02-cat-training-NationalGeographic_1484324.ngsversion.1526587209178.adapt.1900.1.jpg'
+    storRef.getDownloadURL().then(async (newurl) => {
+      try {
+      		let body = JSON.stringify({
+      			requests: [
+      				{
+      					features: [
+      						{ type: 'SAFE_SEARCH_DETECTION', maxResults: 5 },
+      					],
+      					image: {
+      						source: {
+      							imageUri: newurl,
+      						}
+      					}
+      				}
+      			]
+      		});
+      		let response = await fetch(
+      			'https://vision.googleapis.com/v1/images:annotate?key=AIzaSyAlmwiODtc85aWjIl1gs5Gwix0-C6NyQe4',
+      			{
+      				headers: {
+      					Accept: 'application/json',
+      					'Content-Type': 'application/json'
+      				},
+      				method: 'POST',
+      				body: body
+      			}
+      		);
+      		let responseJson = await response.json();
+          console.log(responseJson.responses[0]['safeSearchAnnotation']['adult']);
+          let isNSFW = responseJson.responses[0]['safeSearchAnnotation']['adult'];
+          // if image is nsfw don't post
+          if(isNSFW === 'VERY_LIKELY' || isNSFW === 'LIKELY') {
+            Alert.alert('Upload Error', 'This image was flagged for showing NSFW content, which goes against our policy. If you think this was a mistake email us at: memefeedaye@gmail.com', [
+              { text: 'OK' },
+            ]);
+          } else {
+            // image is okay to post
+            // post in Memes
+            var memePost = {
+              filename: this.state.filename,
+              url: newurl,
+              author: firebase.auth().currentUser.uid,
+              sub: 'MemeFeed',
+              time: Math.round(+new Date() / 1000),
+              score: 0,
+              caption: '',
+              reacts: 0
+            };
+            const memeCollection = firebase.firestore().collection('Memes');
+            memeCollection.add(memePost);
 
-    						}
-    					}
-    				}
-    			]
-    		});
-    		let response = await fetch(
-    			'POST https://vision.googleapis.com/v1/images:annotate?key=9eca8f28946de6a135f7dbaff8a85455efd95460',
-    			{
-    				headers: {
-    					Accept: 'application/json',
-    					'Content-Type': 'application/json'
-    				},
-    				method: 'POST',
-    				body: body
-    			}
-    		);
-    		let responseJson = await response.json();
-        Alert.alert('Upload Error', 'got das respomse : )', [
-          { text: 'OK' },
-        ]);
-    		console.log(responseJson);
-    	} catch (error) {
-    		console.log(error);
-        Alert.alert('Upload Error', 'no response : (', [
-          { text: 'OK' },
-        ]);
-    	}
+            // post in this users reacts
+            const userReactsREf = firebase.firestore().collection('ReactsTest').doc(firebase.auth().currentUser.uid).collection('Likes');
+            var react = {
+              rank: 4,
+              time: Math.round(+new Date() / 1000),
+              url: newurl,
+              likeFrom: firebase.auth().currentUser.uid,
+            };
+              userReactsREf.add(data2);
+              });
 
-    console.log('HANDLE UPLOAD END===')
+
+          }
+          this.setState({
+            isChosen: false,
+          });
+
+      	} catch (error) {
+      		console.log(error);
+      	}
+      });
   }
 
 

@@ -12,6 +12,7 @@
     "https": "^1.0.0",
     "prettier": "^1.16.4",
     "react": "^16.8.6",
+    "react-cloud-vision-api": "^0.3.0",
     "react-native": "^0.59.6",
     "react-native-actionsheet": "^2.4.2",
     "react-native-android-image-polyfill": "^1.0.0",
