@@ -171,23 +171,6 @@ class FriendProfile extends React.Component {
         });
     };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-  showActionSheet = () => {
-    this.ActionSheet.show();
-  };
-
   onGridViewPressedP = () => {
     this.setState({ selectGridButtonP: true });
     this.setState({ selectListButtonP: false });
@@ -412,6 +395,90 @@ class FriendProfile extends React.Component {
       return <Profile />;
     }
 
+    if (this.state.memes.length === 0) {
+      return (
+
+        <View style={styles.containerStyle}>
+          <View style={styles.navBar}>
+            <Text style={styles.textSty4}>{this.state.username}</Text>
+          </View>
+            {/* Profile Pic, Follwers, Follwing Block */}
+            <View style={styles.navBar2}>
+              <View style={styles.leftContainer2}>
+                <Image
+                  source={{uri: this.state.iconURL}}
+                  style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
+                />
+              </View>
+
+              <TouchableOpacity
+                onPress={() => {
+                  this.props.navigation.push('FollowList', {
+                    arrayOfUids: this.state.followingLst,
+                    title: 'Following',
+                  });
+                }}
+              >
+                <Text style={styles.textSty}>
+                  {' '}
+                  {this.state.followingCnt} {'\n'}{' '}
+                  <Text style={styles.textSty3}>Following</Text>
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.rightContainer2}
+                onPress={() => {
+                  this.props.navigation.push('FollowList', {
+                    arrayOfUids: this.state.followersLst,
+                    title: 'Followers',
+                  });
+                }}
+              >
+                <View>
+                  <Text style={styles.textSty}>
+                    {this.state.followersCnt} {'\n'}{' '}
+                    <Text style={styles.textSty3}>Followers</Text>{' '}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            {/* DISPLAY NAME */}
+            <View style={styles.navBar1}>
+              <View style={styles.leftContainer1}>
+                <Text style={[styles.textSty2, { textAlign: 'left' }]}>
+                  {<Text style={styles.textSty2}>{this.state.name}</Text>}
+                </Text>
+              </View>
+
+              <View style={styles.rightContainer1}>
+                <TouchableOpacity
+                  onPress={() => this.updateFollowing(followingState)}
+                >
+                  <Text style={styles.followBut}>
+                    {' '}
+                    {this.state.buttonText}{' '}
+                    <Image
+                      source={require('../images/follower2.png')}
+                      style={{ width: 17, height: 17 }}
+                    />
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            {/* DIFFERENT VIEW TYPE FEED BUTTONS */}
+            <View style={styles.containerStyle2}>
+              <Image
+                source={require('../components/misc/noLikesFriend.png')}
+                style={styles.tile}
+              />
+            </View>
+        </View>
+
+
+      );
+    }
     return (
       <View style={styles.containerStyle}>
         <View style={styles.navBar}>
@@ -740,5 +807,20 @@ const styles = StyleSheet.create({
     width: 10,
     resizeMode: 'contain',
     backgroundColor: 'white',
+  },
+  tile: {
+    width: 300,
+    height: 300,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    alignItems: 'center',
+  },
+  containerStyle2: {
+    flex: 2,
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    paddingLeft: 5,
+    paddingRight: 5,
   },
 });
