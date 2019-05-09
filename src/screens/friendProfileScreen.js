@@ -52,7 +52,7 @@ class FriendProfile extends React.Component {
     if (this._isMounted) {
       this.unsubscribe = firebase
         .firestore()
-        .collection('Reacts')
+        .collection('ReactsTest')
         .doc(this.props.navigation.getParam('uid'))
         .collection('Likes')
         .orderBy('time', 'desc')
@@ -130,7 +130,7 @@ class FriendProfile extends React.Component {
       const oldestDoc = this.state.oldestDoc;
       firebase
         .firestore()
-        .collection('Reacts')
+        .collection('ReactsTest')
         .doc(this.props.navigation.getParam('uid'))
         .collection('Likes')
         .orderBy('time', 'desc')
@@ -251,7 +251,7 @@ class FriendProfile extends React.Component {
 
     const theirLikes = firebase
       .firestore()
-      .collection('Reacts')
+      .collection('ReactsTest')
       .doc(theirUid)
       .collection('Likes')
       .orderBy('time', 'desc') // most recent
@@ -269,7 +269,7 @@ class FriendProfile extends React.Component {
               const userLikedTime = time
               const feedRef = firebase
                 .firestore()
-                .collection('Feeds')
+                .collection('FeedsTest')
                 .doc(myUid)
                 .collection('Likes')
                 .doc(memeId);
@@ -307,7 +307,7 @@ class FriendProfile extends React.Component {
                     // only make it exist if its a positive react
                     firebase
                       .firestore()
-                      .collection('Feeds')
+                      .collection('FeedsTest')
                       .doc(myUid)
                       .collection('Likes')
                       .doc(memeId)
@@ -333,7 +333,7 @@ class FriendProfile extends React.Component {
               var memeId = doc.id
               const feedRef = firebase
                 .firestore()
-                .collection('Feeds')
+                .collection('FeedsTest')
                 .doc(myUid)
                 .collection('Likes')
                 .doc(memeId);

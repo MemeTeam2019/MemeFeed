@@ -39,7 +39,7 @@ class CommentPage extends React.Component {
     // Grab total # of comments
     const countRef = firebase
       .firestore()
-      .collection(`Comments/${this.state.memeId}/Info`)
+      .collection(`CommentsTest/${this.state.memeId}/Info`)
       .doc('CommentInfo');
     countRef
       .get()
@@ -52,7 +52,7 @@ class CommentPage extends React.Component {
 
           firebase
             .firestore()
-            .collection(`Comments/${this.state.memeId}/Text`)
+            .collection(`CommentsTest/${this.state.memeId}/Text`)
             .orderBy('time', 'desc') // we choose decsending to get most recent
             .limit(Math.min(this.state.commentCount, 5))
             .get()
@@ -73,7 +73,7 @@ class CommentPage extends React.Component {
     if (oldestDoc) {
       firebase
         .firestore()
-        .collection(`Comments/${this.state.memeId}/Text`)
+        .collection(`CommentsTest/${this.state.memeId}/Text`)
         .orderBy('time', 'desc')
         .limit(5)
         .startAfter(oldestDoc)
