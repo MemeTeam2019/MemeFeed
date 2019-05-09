@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  RefreshControl,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import ActionSheet from 'react-native-actionsheet';
@@ -51,7 +52,8 @@ export default class Profile extends React.Component {
       updated: true,
       memes: [],
       oldestDoc: 0,
-      icon: ''
+      icon: '',
+      refreshing: false,
     };
   }
 
@@ -68,7 +70,7 @@ export default class Profile extends React.Component {
         .then((docSnapshot) => {
           if (docSnapshot.exists) {
             const { icon } = docSnapshot.data();
-            this.setState({ icon })
+            this.setState({ icon });
           } else {
             console.log("doesn't exist");
           }
@@ -76,7 +78,7 @@ export default class Profile extends React.Component {
         .catch((error) => {
           console.log(error);
         });
-      this.userListener = firebase
+      firebase
         .firestore()
         .collection('Users')
         .doc(uid)
@@ -93,6 +95,39 @@ export default class Profile extends React.Component {
         .then(this.updateFeed);
     }
   }
+
+  refresh = () => {
+    this.setState(
+      {
+        refreshing: true,
+        followingLst: [],
+        followersLst: [],
+        memes: [],
+        oldestDoc: null,
+      },
+      () => {
+        const uid = firebase.auth().currentUser.uid;
+        firebase
+          .firestore()
+          .collection('Users')
+          .doc(uid)
+          .get()
+          .then((userSnapshot) => {
+            const { followingLst, followersLst } = userSnapshot.data();
+            this.setState({ followingLst, followersLst, refreshing: false });
+          });
+        firebase
+          .firestore()
+          .collection('Reacts')
+          .doc(firebase.auth().currentUser.uid)
+          .collection('Likes')
+          .orderBy('time', 'desc')
+          .limit(15)
+          .get()
+          .then(this.updateFeed);
+      }
+    );
+  };
 
   fetchMemes = () => {
     // garentees not uploading duplicate memes by checking if memes have finished
@@ -213,77 +248,6 @@ export default class Profile extends React.Component {
   render() {
     const optionArray = ['About', 'Privacy Policy', 'Log Out', 'Cancel'];
 
-    if (this.state.memes.length === 0) {
-      return (
-        <View style={styles.containerStyle}>
-          <View style={styles.navBar1}>
-            <View style={styles.leftContainer1}>
-              <Text style={[styles.text, { textAlign: 'left' }]}>{}</Text>
-            </View>
-            <Text style={styles.textSty4}>{this.state.username}</Text>
-            <View style={styles.rightContainer1}>
-              <View style={styles.rightIcon1} />
-              <TouchableOpacity onPress={this.showActionSheet}>
-                <Image
-                  source={require('../images/setting.png')}
-                  style={{ width: 60, height: 30 }}
-                />
-              </TouchableOpacity>
-              <ActionSheet
-                ref={(o) => {
-                  this.ActionSheet = o;
-                }}
-                title='User Settings'
-                options={optionArray}
-                cancelButtonIndex={3}
-                destructiveIndex={0}
-                onPress={(index) => {
-                  console.log(index);
-                  if (optionArray[index] == 'Log Out') {
-                    this.logout();
-                  } else if (optionArray[index] == 'About') {
-                    this.props.navigation.push('InfoStack');
-                  } else if (optionArray[index] == 'Privacy Policy') {
-                    this.props.navigation.push('Privacy');
-                  }
-                }}
-              />
-            </View>
-          </View>
-          {/* Profile Pic, Follwers, Follwing Block */}
-          <View style={styles.navBar2}>
-            <View style={styles.leftContainer2}>
-              <Image
-                source={{ uri: this.state.icon }}
-                style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
-              />
-            </View>
-            <Text style={styles.textSty}>
-              {this.state.followingCnt} {'\n'}{' '}
-              <Text style={styles.textSty3}>Following</Text>
-            </Text>
-            <View style={styles.rightContainer2}>
-              <Text style={styles.textSty}>
-                {this.state.followersCnt} {'\n'}{' '}
-                <Text style={styles.textSty3}>Followers</Text>{' '}
-              </Text>
-            </View>
-          </View>
-          {/*DISPLAY NAME*/}
-          <View style={styles.profilePic}>
-            <Text style={styles.textSty2}>{this.state.name}</Text>
-            <Text> </Text>
-            <Text> </Text>
-          </View>
-          <View style={styles.containerStyle2}>
-            <Image
-              source={require('../components/misc/noLikes.png')}
-              style={styles.tile}
-            />
-          </View>
-        </View>
-      );
-    }
     // Photo List/Full View of images
     return (
       <React.Fragment>
@@ -303,16 +267,16 @@ export default class Profile extends React.Component {
               </TouchableOpacity>
               <ActionSheet
                 ref={(o) => (this.ActionSheet = o)}
-                title={'User Settings'}
+                title='User Settings'
                 options={optionArray}
                 cancelButtonIndex={3}
                 destructiveIndex={0}
                 onPress={(index) => {
-                  if (optionArray[index] == 'Log Out') {
+                  if (optionArray[index] === 'Log Out') {
                     this.logout();
-                  } else if (optionArray[index] == 'About') {
+                  } else if (optionArray[index] === 'About') {
                     this.props.navigation.push('InfoStack');
-                  } else if (optionArray[index] == 'Privacy Policy') {
+                  } else if (optionArray[index] === 'Privacy Policy') {
                     this.props.navigation.push('Privacy');
                   }
                 }}
@@ -320,7 +284,14 @@ export default class Profile extends React.Component {
             </View>
           </View>
         </View>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              onRefresh={this.refresh}
+              refreshing={this.state.refreshing}
+            />
+          }
+        >
           <View style={styles.containerStyle}>
             {/* Profile Pic, Follwers, Follwing Block */}
             <View style={styles.navBar2}>
@@ -364,11 +335,11 @@ export default class Profile extends React.Component {
               </TouchableOpacity>
             </View>
 
-            {/*DISPLAY NAME*/}
+            {/* DISPLAY NAME */}
             <View style={styles.profilePic}>
               <Text style={styles.textSty2}>{this.state.name}</Text>
             </View>
-            {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
+            {/* DIFFERENT VIEW TYPE FEED BUTTONS */}
             <View style={styles.navBut}>
               <TouchableOpacity onPress={() => this.onListViewPressedP()}>
                 <Image
@@ -392,11 +363,19 @@ export default class Profile extends React.Component {
               </TouchableOpacity>
             </View>
           </View>
-
-          {this.state.selectListButtonP ? (
-            <MemeList loadMemes={this.fetchMemes} memes={this.state.memes} />
+          {this.state.memes.length !== 0 ? (
+            this.state.selectListButtonP ? (
+              <MemeList loadMemes={this.fetchMemes} memes={this.state.memes} />
+            ) : (
+              <MemeGrid loadMemes={this.fetchMemes} memes={this.state.memes} />
+            )
           ) : (
-            <MemeGrid loadMemes={this.fetchMemes} memes={this.state.memes} />
+            <View style={styles.containerStyle2}>
+              <Image
+                source={require('../components/misc/noLikes.png')}
+                style={styles.tile}
+              />
+            </View>
           )}
         </ScrollView>
       </React.Fragment>
@@ -440,7 +419,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 50, //50
+    paddingTop: 50,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -513,13 +492,12 @@ const styles = StyleSheet.create({
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 10, //50
+    paddingTop: 10,
     flexDirection: 'row',
     alignItems: 'center',
     fontSize: 360,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
-    backgroundColor: 'white',
   },
   textshadow: {
     fontSize: 40,
@@ -553,7 +531,7 @@ const styles = StyleSheet.create({
   },
   navBar1: {
     height: 95,
-    paddingTop: 50, //50
+    paddingTop: 50,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',

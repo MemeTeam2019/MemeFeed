@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, TouchableOpacity, View, Modal, StyleSheet } from 'react-native';
+import { Image, TouchableOpacity, View, StyleSheet } from 'react-native';
 import firebase from 'react-native-firebase';
 
 import MemeGrid from '../components/general/memeGrid';
@@ -14,18 +14,15 @@ class HomeFeed extends React.Component {
     super();
     this._isMounted = false;
     this.unsubscribe = null;
-    this.ref = firebase
-      .firestore()
-      .collection('Feeds')
-      .doc(firebase.auth().currentUser.uid)
-      .collection('Likes')
-      .orderBy('time', 'desc');
+    this.fetchMemes = this.fetchMemes.bind(this);
+    this.refreshMemes = this.refreshMemes.bind(this);
     this.state = {
       updated: true,
-      oldestDoc: 0,
+      oldestDoc: null,
       memes: [],
       inGridView: false,
       inFullView: true,
+      refreshing: false,
     };
   }
 
@@ -89,8 +86,23 @@ class HomeFeed extends React.Component {
           memes: mergedMemes,
           updated: true,
           oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+          refreshing: false,
         };
       });
+    });
+  };
+
+  refreshMemes = () => {
+    this.setState({ memes: [], refreshing: true, oldestDoc: null }, () => {
+      firebase
+        .firestore()
+        .collection('Feeds')
+        .doc(firebase.auth().currentUser.uid)
+        .collection('Likes')
+        .orderBy('time', 'desc')
+        .limit(15)
+        .get()
+        .then(this.updateFeed);
     });
   };
 
@@ -183,9 +195,19 @@ class HomeFeed extends React.Component {
           </TouchableOpacity>
         </View>
         {this.state.inGridView ? (
-          <MemeGrid loadMemes={this.fetchMemes} memes={this.state.memes} />
+          <MemeGrid
+            loadMemes={this.fetchMemes}
+            memes={this.state.memes}
+            refreshing={this.state.refreshing}
+            onRefresh={this.refreshMemes}
+          />
         ) : (
-          <MemeList loadMemes={this.fetchMemes} memes={this.state.memes} />
+          <MemeList
+            loadMemes={this.fetchMemes}
+            memes={this.state.memes}
+            refreshing={this.state.refreshing}
+            onRefresh={this.refreshMemes}
+          />
         )}
       </View>
     );
@@ -199,7 +221,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
     backgroundColor: 'rgba(255,255,255,1)',
-    borderBottomWidth: .5,
+    borderBottomWidth: 0.5,
     borderColor: '#D6D6D6',
   },
   modelStyle: {
@@ -235,7 +257,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    borderBottomWidth: .5,
+    borderBottomWidth: 0.5,
     borderColor: '#D6D6D6',
   },
   tile: {
@@ -252,7 +274,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 5,
     paddingRight: 5,
-    borderBottomWidth: .5,
+    borderBottomWidth: 0.5,
     borderColor: '#D6D6D6',
   },
 });
