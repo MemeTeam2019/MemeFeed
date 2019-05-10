@@ -20,10 +20,10 @@ export default class ConfirmScreen extends React.Component {
         .auth()
         .currentUser.sendEmailVerification()
         .then(() => {
-          console.log('Email has been sent');
+          //console.log('Email has been sent');
         })
         .catch((error) => {
-          console.log('Email not sent', error);
+          //console.log('Email not sent', error);
         });
     } else {
       Alert.alert(

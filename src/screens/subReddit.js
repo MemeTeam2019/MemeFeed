@@ -113,6 +113,9 @@ export default class Profile extends React.Component {
     }
   };
 
+  //firebase.collection(memes).where(subreditname).orderby(time)
+
+
   updateFeed = (querySnapshot) => {
     const newMemes = [];
 
@@ -210,80 +213,9 @@ export default class Profile extends React.Component {
     return <Tile memeId={item.key} imageUrl={item.src} />;
   };
 
-  render() {
-    const optionArray = ['About', 'Privacy Policy', 'Log Out', 'Cancel'];
 
-    if (this.state.memes.length === 0) {
-      return (
-        <View style={styles.containerStyle}>
-          <View style={styles.navBar1}>
-            <View style={styles.leftContainer1}>
-              <Text style={[styles.text, { textAlign: 'left' }]}>{}</Text>
-            </View>
-            <Text style={styles.textSty4}>{this.state.username}</Text>
-            <View style={styles.rightContainer1}>
-              <View style={styles.rightIcon1} />
-              <TouchableOpacity onPress={this.showActionSheet}>
-                <Image
-                  source={require('../images/setting.png')}
-                  style={{ width: 60, height: 30 }}
-                />
-              </TouchableOpacity>
-              <ActionSheet
-                ref={(o) => {
-                  this.ActionSheet = o;
-                }}
-                title='User Settings'
-                options={optionArray}
-                cancelButtonIndex={3}
-                destructiveIndex={0}
-                onPress={(index) => {
-                  //console.log(index);
-                  if (optionArray[index] == 'Log Out') {
-                    this.logout();
-                  } else if (optionArray[index] == 'About') {
-                    this.props.navigation.push('InfoStack');
-                  } else if (optionArray[index] == 'Privacy Policy') {
-                    this.props.navigation.push('Privacy');
-                  }
-                }}
-              />
-            </View>
-          </View>
-          {/* Profile Pic, Follwers, Follwing Block */}
-          <View style={styles.navBar2}>
-            <View style={styles.leftContainer2}>
-              <Image
-                source={{ uri: this.state.icon }}
-                style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
-              />
-            </View>
-            <Text style={styles.textSty}>
-              {this.state.followingCnt} {'\n'}{' '}
-              <Text style={styles.textSty3}>Following</Text>
-            </Text>
-            <View style={styles.rightContainer2}>
-              <Text style={styles.textSty}>
-                {this.state.followersCnt} {'\n'}{' '}
-                <Text style={styles.textSty3}>Followers</Text>{' '}
-              </Text>
-            </View>
-          </View>
-          {/*DISPLAY NAME*/}
-          <View style={styles.profilePic}>
-            <Text style={styles.textSty2}>{this.state.name}</Text>
-            <Text> </Text>
-            <Text> </Text>
-          </View>
-          <View style={styles.containerStyle2}>
-            <Image
-              source={require('../components/misc/noLikes.png')}
-              style={styles.tile}
-            />
-          </View>
-        </View>
-      );
-    }
+render() {
+    const optionArray = ['About', 'Privacy Policy', 'Log Out', 'Cancel'];
     // Photo List/Full View of images
     return (
       <React.Fragment>
@@ -292,82 +224,15 @@ export default class Profile extends React.Component {
             <View style={styles.leftContainer1}>
               <Text style={[styles.text, { textAlign: 'left' }]}>{}</Text>
             </View>
-            <Text style={styles.textSty4}>{this.state.username}</Text>
+            <Text style={styles.textSty4}> Subreddit</Text>
             <View style={styles.rightContainer1}>
               <View style={styles.rightIcon1} />
-              <TouchableOpacity onPress={this.showActionSheet}>
-                <Image
-                  source={require('../images/setting.png')}
-                  style={{ width: 60, height: 30 }}
-                />
-              </TouchableOpacity>
-              <ActionSheet
-                ref={(o) => (this.ActionSheet = o)}
-                title={'User Settings'}
-                options={optionArray}
-                cancelButtonIndex={3}
-                destructiveIndex={0}
-                onPress={(index) => {
-                  if (optionArray[index] == 'Log Out') {
-                    this.logout();
-                  } else if (optionArray[index] == 'About') {
-                    this.props.navigation.push('InfoStack');
-                  } else if (optionArray[index] == 'Privacy Policy') {
-                    this.props.navigation.push('Privacy');
-                  }
-                }}
-              />
             </View>
           </View>
         </View>
         <ScrollView>
           <View style={styles.containerStyle}>
             {/* Profile Pic, Follwers, Follwing Block */}
-            <View style={styles.navBar2}>
-              {/* Profile Picture */}
-              <View style={styles.leftContainer2}>
-                <Image
-                  source={{ uri: this.state.icon }}
-                  style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
-                />
-              </View>
-
-              <TouchableOpacity
-                onPress={() => {
-                  this.props.navigation.navigate('FollowList', {
-                    arrayOfUids: this.state.followingLst,
-                    title: 'Following',
-                  });
-                }}
-              >
-                <Text style={styles.textSty}>
-                  {this.state.followingLst.length} {'\n'}
-                  <Text style={styles.textSty3}>Following</Text>
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.rightContainer2}
-                onPress={() => {
-                  this.props.navigation.navigate('FollowList', {
-                    arrayOfUids: this.state.followersLst,
-                    title: 'Followers',
-                  });
-                }}
-              >
-                <View>
-                  <Text style={styles.textSty}>
-                    {this.state.followersLst.length} {'\n'}{' '}
-                    <Text style={styles.textSty3}>Followers</Text>{' '}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-
-            {/*DISPLAY NAME*/}
-            <View style={styles.profilePic}>
-              <Text style={styles.textSty2}>{this.state.name}</Text>
-            </View>
             {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
             <View style={styles.navBut}>
               <TouchableOpacity onPress={() => this.onListViewPressedP()}>

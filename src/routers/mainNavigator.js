@@ -17,6 +17,7 @@ import aboutInfo1 from '../screens/aboutInfo1';
 import aboutInfo2 from '../screens/aboutInfo2';
 import aboutInfo3 from '../screens/aboutInfo3';
 import PrivacyPolicyScreen from '../screens/privacyScreen';
+import Subreddit from '../screens/subReddit';
 
 const InfoStack = createStackNavigator({
 
@@ -138,6 +139,24 @@ const MainRouter = createBottomTabNavigator({
   },
   Profile: {
     screen: ProfileStack,
+    navigationOptions: {
+      showLabel: false,
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name='face' size={28} color={tintColor} />
+      ),
+      tabBarOptions: {
+        showLabel: false,
+        showIcon: true,
+        activeTintColor: '#000000',
+        inactiveTintColor: '#D3D3D3',
+        style: {
+          height: '9%',
+        },
+      },
+    },
+  },
+  Reddit: {
+    screen: Subreddit,
     navigationOptions: {
       showLabel: false,
       tabBarIcon: ({ tintColor }) => (
