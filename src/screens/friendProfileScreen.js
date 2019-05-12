@@ -249,6 +249,21 @@ class FriendProfile extends React.Component {
       followersCnt: followersLst.length,
     });
 
+    //send follow notification to user
+    if(nowFollowing){
+    const theirNoteRef = firebase
+        .firestore()
+        .collection('TestNotifications')
+        .doc(theirUid)
+        .collection('Notes')
+        .add({
+          type: "follow",
+          uid: myUid,
+          time: Math.round(+new Date() / 1000),
+          memeid: "",
+        });
+
+    }
     const theirLikes = firebase
       .firestore()
       .collection('ReactsTest')
