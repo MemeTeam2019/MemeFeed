@@ -110,6 +110,7 @@ class ExploreFeed extends React.Component {
    */
   updateSearch = async (searchTerm = '') => {
     // Set search term state immediately to update SearchBar contents
+    console.log(searchTerm)
     this.setState({ searchTerm });
 
     const usersRef = firebase.firestore().collection('Users');
