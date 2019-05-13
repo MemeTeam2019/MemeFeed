@@ -34,7 +34,8 @@ export default class subReddit extends React.Component {
     this._isMounted = false;
     this.ref = firebase
       .firestore()
-      .collection('ReactsTest')
+      .collection('Memes')
+      //.where('sub')
       .doc(firebase.auth().currentUser.uid)
       .collection('Likes')
       .orderBy('time', 'desc');
@@ -163,7 +164,7 @@ render() {
             <View style={styles.leftContainer1}>
               <Text style={[styles.text, { textAlign: 'left' }]}>{}</Text>
             </View>
-            <Text style={styles.textSty4}> Subreddit</Text>
+            <Text style={styles.textSty4}> r/Subreddit</Text>
             <View style={styles.rightContainer1}>
               <View style={styles.rightIcon1} />
             </View>

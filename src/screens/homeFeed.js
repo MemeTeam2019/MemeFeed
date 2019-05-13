@@ -4,6 +4,7 @@ import firebase from 'react-native-firebase';
 
 import MemeGrid from '../components/general/memeGrid';
 import MemeList from '../components/general/memeList';
+import SuggestUser from '../components/home/suggestUser'
 
 class HomeFeed extends React.Component {
   static navigationOptions = {
@@ -170,6 +171,7 @@ class HomeFeed extends React.Component {
                 <TouchableOpacity>
                   <Text style={styles.suggestText}> Siddhi </Text>
                 </TouchableOpacity>
+                <SuggestUser/>
               </View>
               <View style={styles.suggestText}>
                 <TouchableOpacity>

@@ -15,10 +15,10 @@ import firebase from 'react-native-firebase';
  *                   e.g. userSnapshot.data(). Refer to the Firebase Users
  *                   collection for the expected object properties.
  */
-class SearchResult extends React.PureComponent {
+class SuggestUser extends React.PureComponent {
   render() {
-    const { navigation, data, uid } = this.props;
-    if (!data || !uid) return null;
+    const uid = '3khrPuSqO4XhPKWuz2gSoNFGgdA2'
+    if (!uid) return null;
     return (
       <React.Fragment>
         <TouchableOpacity
@@ -26,11 +26,8 @@ class SearchResult extends React.PureComponent {
           style={styles.resultContainer}
         >
           <View>
-            <Image style={styles.profilePic} source={{ uri: data.icon }} />
-          </View>
-          <View>
-            <Text style={styles.primaryText}>{data.username}</Text>
-            <Text style={styles.secondaryText}>{data.name}</Text>
+            <Text style={styles.primaryText}>Siddhi</Text>
+
           </View>
         </TouchableOpacity>
       </React.Fragment>
@@ -63,4 +60,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withNavigation(SearchResult);
+export default withNavigation(SuggestUser);
