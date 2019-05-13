@@ -13,6 +13,9 @@ class SourceReddit extends React.Component {
     }
   }
 
+  goToSubreddit(){
+    this.props.navigation.navigate('SubReddit', {})
+  }
 
   showActionSheet = () => {
     this.ActionSheet.show();
@@ -22,8 +25,6 @@ class SourceReddit extends React.Component {
         var optionArray = ['Inappropriate/Irrelevant', 'Cancel'];
     // if just from reddit (a.k.a. on the explore page)
     return (
-
-
               <View style={styles.navBar1}>
                 <View style={styles.leftContainer1}>
                 <View style={styles.container}>
@@ -49,10 +50,6 @@ class SourceReddit extends React.Component {
                     />
                 </View>
               </View>
-
-
-
-
     );
   }
 }

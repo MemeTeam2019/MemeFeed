@@ -22,7 +22,7 @@ import MemeList from '../components/general/memeList';
  * -----
  * None
  */
-export default class Profile extends React.Component {
+export default class subReddit extends React.Component {
   static navigationOptions = {
     header: null,
   };
@@ -55,38 +55,14 @@ export default class Profile extends React.Component {
     };
   }
 
+
+
   componentDidMount() {
     this._isMounted = true;
     if (this._isMounted) {
-      const uid = firebase.auth().currentUser.uid;
-      // Get the profile icon
-      firebase
+      this.unsubscribe = firebase
         .firestore()
-        .collection('Users')
-        .doc(uid)
-        .get()
-        .then((docSnapshot) => {
-          if (docSnapshot.exists) {
-            const { icon } = docSnapshot.data();
-            this.setState({ icon })
-          } else {
-            //console.log("doesn't exist");
-          }
-        })
-        .catch((error) => {
-          //console.log(error);
-        });
-      this.userListener = firebase
-        .firestore()
-        .collection('Users')
-        .doc(uid)
-        .get()
-        .then((snapshot) => this.setState(snapshot.data()));
-      firebase
-        .firestore()
-        .collection('ReactsTest')
-        .doc(firebase.auth().currentUser.uid)
-        .collection('Likes')
+        .collection('Memes')
         .orderBy('time', 'desc')
         .limit(15)
         .get()
@@ -102,9 +78,7 @@ export default class Profile extends React.Component {
       const oldestDoc = this.state.oldestDoc;
       firebase
         .firestore()
-        .collection('Reacts')
-        .doc(firebase.auth().currentUser.uid)
-        .collection('Likes')
+        .collection('Memes')
         .orderBy('time', 'desc')
         .limit(15)
         .startAfter(oldestDoc)
@@ -113,32 +87,24 @@ export default class Profile extends React.Component {
     }
   };
 
-  //firebase.collection(memes).where(subreditname).orderby(time)
-
-
   updateFeed = (querySnapshot) => {
     const newMemes = [];
-
     querySnapshot.docs.forEach((doc) => {
-      const { time, url, rank, likedFrom } = doc.data();
-      if (rank > 1) {
-        newMemes.push({
-          key: doc.id,
-          doc, // DocumentSnapshot
-          src: url,
-          time,
-          likedFrom,
-          // this is to ensure that if a user changes their reaction to a meme
-          // on their own page that the liked from source is still the same
-          postedBy: likedFrom,
-          poster: firebase.auth().currentUser.uid,
-        });
-      }
+      const { url, time, sub } = doc.data();
+      newMemes.push({
+        key: doc.id,
+        doc,
+        src: url,
+        time,
+        sub,
+        postedBy: sub,
+      });
     });
 
     Promise.all(newMemes).then((resolvedMemes) => {
       this.setState((prevState) => {
         const mergedMemes = prevState.memes.concat(resolvedMemes);
+        //console.log(mergedMemes);
         return {
           memes: mergedMemes,
           updated: true,
@@ -146,23 +112,6 @@ export default class Profile extends React.Component {
         };
       });
     });
-  };
-
-  getUserInfo = () => {
-    const uid = firebase.auth().currentUser.uid;
-    firebase
-      .firestore()
-      .collection('Users')
-      .doc(uid)
-      .get()
-      .then((snapshot) => {
-        const data = snapshot.data();
-        this.setState(Object.assign(data, { uid }));
-      });
-  };
-
-  showActionSheet = () => {
-    this.ActionSheet.show();
   };
 
   onGridViewPressedP = () => {
@@ -175,17 +124,7 @@ export default class Profile extends React.Component {
     this.setState({ selectListButtonP: true });
   };
 
-  logout = () => {
-    firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        this.props.navigation.navigate('Auth');
-      })
-      .catch((err) => {
-        //console.log(err);
-      });
-  };
+
 
   renderItem(item, itemSize, itemPaddingHorizontal) {
     return (
@@ -373,19 +312,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
   },
-  profilePic: {
-    backgroundColor: 'white',
-    elevation: 3,
-    paddingHorizontal: 20,
-    paddingRight: 3,
-    paddingTop: 10, //50
-    flexDirection: 'row',
-    alignItems: 'center',
-    fontSize: 360,
-    fontFamily: 'AvenirNext-Regular',
-    textAlign: 'center',
-    backgroundColor: 'white',
-  },
+
   textshadow: {
     fontSize: 40,
     color: '#FFFFFF',

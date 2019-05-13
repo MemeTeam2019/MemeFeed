@@ -12,6 +12,7 @@ import HomeFeed from '../screens/homeFeed';
 import FriendProfile from '../screens/friendProfileScreen';
 import CommentPage from '../screens/commentPage';
 import FollowList from '../components/home/searchResultList';
+import SubReddit from '../screens/subReddit';
 
 import aboutInfo1 from '../screens/aboutInfo1';
 import aboutInfo2 from '../screens/aboutInfo2';
@@ -66,6 +67,9 @@ const HomeStack = createStackNavigator(
     FollowList: {
       screen: FollowList,
     },
+    SubReddit: {
+      screen: SubReddit,
+    }
   },
   {
     initialRouteName: 'Friend',
