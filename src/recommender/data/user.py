@@ -5,8 +5,20 @@ class User:
     def __init__(self, uid, data):
         try:
             self.uid = uid
+            self.memes = {}
+            self.top_1_subreddit = ''
+            self.top_2_subreddit = ''
+            self.top_3_subreddit = ''
+            self.bottom_1_subreddit = ''
+            self.bottom_2_subreddit = ''
+            self.bottom_3_subreddit = ''
+            self.top_1_user = ''
+            self.top_2_user = ''
+            self.top_3_user = ''
+
             self.rank_subreddits()
             self.rank_users()
+            self.get_reacts()
         except Exception as e:
             print('Failed to instantiate object for user ' + uid)
             print(e)
@@ -20,9 +32,9 @@ class User:
             .collection('Likes') \
             .stream()
         for react in reacts:
-            meme_data = db.collection('Memes').document(react.id).to_dict()
+            meme_data = db.collection('Memes').document(react.id).get().to_dict()
             react_data = react.to_dict()
-            rank = react_data['rank']
+            rank = react_data.get('rank')
             likedFrom = meme_data['sub']
             if likedFrom != '':
                 if likedFrom not in subreddit_counter:
@@ -32,13 +44,20 @@ class User:
                 else:
                     subreddit_counter[likedFrom] += rank - 4
 
+        # this is fucking disgusting
         top_subreddits = subreddit_counter.most_common(len(subreddit_counter))
-        self.top_1_subreddit = top_subreddits[0][0]
-        self.top_2_subreddit = top_subreddits[1][0]
-        self.top_3_subreddit = top_subreddits[2][0]
-        self.bottom_1_subreddit = top_subreddits[-1][0]
-        self.bottom_2_subreddit = top_subreddits[-2][0]
-        self.bottom_3_subreddit = top_subreddits[-3][0]
+        if len(top_subreddits) >= 1:
+            self.top_1_subreddit = top_subreddits[0][0]
+        if len(top_subreddits) >= 2:
+            self.top_2_subreddit = top_subreddits[1][0]
+        if len(top_subreddits) >= 3:
+            self.top_3_subreddit = top_subreddits[2][0]
+        if len(top_subreddits) >= 4:
+            self.bottom_1_subreddit = top_subreddits[-1][0]
+        if len(top_subreddits) >= 5:
+            self.bottom_2_subreddit = top_subreddits[-2][0]
+        if len(top_subreddits) >= 6:
+            self.bottom_3_subreddit = top_subreddits[-3][0]
 
     def rank_users(self):
         user_counter = Counter()
@@ -64,10 +83,13 @@ class User:
                 continue
 
         top_users = user_counter.most_common(len(user_counter))
-        self.top_1_user = top_users[0][0]
-        self.top_2_user = top_users[1][0]
-        self.top_3_user = top_users[2][0]
-    
+        if len(top_users) >= 1:
+            self.top_1_user = top_users[0][0]
+        if len(top_users) >= 2:
+            self.top_2_user = top_users[1][0]
+        if len(top_users) >= 3:
+            self.top_3_user = top_users[2][0]
+
     def vectorize(self):
         return [
             self.top_1_subreddit,
@@ -81,11 +103,17 @@ class User:
             self.top_3_user
         ]
 
+    def get_reacts(self):
+        memes = db.collection(f'Reacts/{self.uid}/Likes').stream()
+        for meme in memes:
+            self.memes[meme.id] = meme.to_dict()
+
     def recent_subreddits(self):
         pass
 
-users = db.collection('User').stream()
+users = db.collection('Users').stream()
 for user in users:
-    u = User(user.id, user.data)
+    u = User(user.id, user.to_dict())
     print(u.vectorize())
+    print(u.memes)
     break

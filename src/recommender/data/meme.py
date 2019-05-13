@@ -1,4 +1,4 @@
-from db import *
+from db import db
 
 class Meme:
     def __init__(self, meme_id, data):
@@ -34,7 +34,7 @@ class Meme:
 
 docs = db.collection('Memes').stream()
 for doc in docs:
-    meme = Meme(doc.meme_id, doc.to_dict())
+    meme = Meme(doc.id, doc.to_dict())
     print(meme.vectorize())
     meme.store_in_firebase()
     break
