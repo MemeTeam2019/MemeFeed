@@ -79,7 +79,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'AvenirNext-Bold',
     marginLeft: '2.5%',
-    color: '#919191'
+    color: '#919191',
+    backgroundColor: 'red',
   },
 });
 
