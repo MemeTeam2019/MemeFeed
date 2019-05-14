@@ -99,6 +99,9 @@ class AddComment extends React.Component {
         console.log('Error getting document', err);
       });
     Keyboard.dismiss();
+    this.sendTagNotifications();
+
+
   };
 
 
@@ -200,14 +203,29 @@ class AddComment extends React.Component {
   }
 
   sendTagNotifications = () => {
-    for (var i = 0; i < this.state.usersTagging.length; i++) {
-      username = this.state.usersTagging[i]
+    for (var i = 0; i < this.state.peopleToTag.length; i++) {
+      username = this.state.usernamesTagged[i];
       // verfiy that we are still tagging the people added to the list
-      if ((this.state.text).indexOf(username) > -1) {
-        console.log('tagging ',username)
+     // if ((this.state.text).indexOf(username) > -1) {
+        console.log('tagging ',username);
         // send notification to this.state.peopleToTag[i])
+            const uid = firebase.auth().currentUser.uid;
+            const time = Math.round(+new Date() / 1000);
+            const memeId = this.props.memeId;
+            const viewed = false;
+            const noteRef = firebase
+              .firestore()
+              .collection("NotificationsTest")
+              .doc(this.state.peopleToTag[i])
+              .collection("Notes");
+            noteRef.add({type: 'tag',
+                          uid: uid,
+                          time: time,
+                          memeId: memeId,
+                          viewed: viewed});
+
       }
-    }
+    //}
   }
 
   render() {

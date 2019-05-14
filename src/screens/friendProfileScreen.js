@@ -211,7 +211,7 @@ class FriendProfile extends React.Component {
       .doc(theirUid);
 
     const nowFollowing = !followingState;
-
+    
     // Get my myFollowingLst
     const followingLst = await myUserRef.get().then((mySnapshot) => {
       return mySnapshot.data().followingLst || [];
@@ -253,14 +253,15 @@ class FriendProfile extends React.Component {
     if(nowFollowing){
     const theirNoteRef = firebase
         .firestore()
-        .collection('TestNotifications')
+        .collection('NotificationsTest')
         .doc(theirUid)
         .collection('Notes')
         .add({
           type: "follow",
           uid: myUid,
           time: Math.round(+new Date() / 1000),
-          memeid: "",
+          memeId: "",
+          viewed: false
         });
 
     }

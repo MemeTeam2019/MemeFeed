@@ -46,6 +46,11 @@ class Followed extends React.Component {
 
   render() {
     return (
+
+
+
+
+
       <View style={styles.navBar1}>
       <View style={styles.leftContainer1}>
         <View style={styles.container}>
@@ -54,7 +59,7 @@ class Followed extends React.Component {
             source={{uri: this.state.iconURL}}
           />
           <Username uid={this.props.uid} navigation={this.props.navigation} />
-          <Text style={{fontSize: 12, fontWeight: 'bold', fontStyle: 'italic', color: '#919191', width: 800}}> followed you </Text>
+          <Text style={{fontSize: 12, fontWeight: 'bold', fontStyle: 'italic', color: '#919191', width: 800}}> tagged you in a meme</Text>
         </View>
         </View>
 
@@ -82,6 +87,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     alignItems: 'center',
     marginTop: 5,
+
   },
   containerA: {
     flexDirection: 'column',

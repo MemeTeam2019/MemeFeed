@@ -23,11 +23,13 @@ class NoteList extends React.Component {
 
   renderNote = ({ item }) => {
     if (!item || !item.type) return null;
+    console.log(item.type);
     return (
       <Notification
         type={item.type}
         uid={item.uid}
-        memeid={item.memeid}
+        memeId={item.memeId}
+        viewed={item.viewed}
       />
     );
   };
@@ -39,7 +41,6 @@ class NoteList extends React.Component {
         data={this.props.notes}
         renderItem={this.renderNote.bind(this)}
         onEndReached={() => {
-          // only load memes if previous ones finished loading
           this.props.loadNotes();
         }}
       />

@@ -22,7 +22,7 @@ import NoteList from '../components/notifications/noteList';
  */
 class NotePage extends React.Component {
   static navigationOptions = {
-    header: null,
+    title: 'Notifications',
   };
 
   constructor(props) {
@@ -41,13 +41,14 @@ class NotePage extends React.Component {
   }
 
   componentDidMount() {
+    console.log('comp did moutn')
     this._isMounted = true;
     if (this._isMounted) {
       this.unsubscribe = firebase
         .firestore()
-        .collection('Notification')
-        .doc()
-        .collection()
+        .collection('NotificationsTest')
+        .doc(firebase.auth().currentUser.uid)
+        .collection('Notes')
         .orderBy('time', 'desc')
         .limit(15)
         .get()
@@ -59,13 +60,14 @@ class NotePage extends React.Component {
     // garentees not uploading duplicate memes by checking if memes have finished
     // updating
     if (this.state.updated) {
+      console.log(firebase.auth().currentUser.uid);
       this.state.updated = false;
       const oldestDoc = this.state.oldestDoc;
       firebase
         .firestore()
-        .collection('Notification')
-        .doc()
-        .collection()
+        .collection('NotificationsTest')
+        .doc(firebase.auth().currentUser.uid)
+        .collection('Notes')
         .orderBy('time', 'desc')
         .limit(15)
         .startAfter(oldestDoc)
@@ -75,19 +77,23 @@ class NotePage extends React.Component {
   };
 
   updateList = (querySnapshot) => {
+    console.log(querySnapshot);
     const newNotes = [];
     querySnapshot.docs.forEach((doc) => {
-      const { type,time,uid,memeid} = doc.data();
+      const { type,time,uid,memeId,viewed} = doc.data();
+      console.log(doc.data);
       newNotes.push({
         type,
         doc,
         uid,
         time,
-        memeid,
+        memeId,
+        viewed,
       });
     });
 
     Promise.all(newNotes).then((resolvedNotes) => {
+      console.log(resolvedNotes)
       this.setState((prevState) => {
         const mergedNotes = prevState.notes.concat(resolvedNotes);
         return {

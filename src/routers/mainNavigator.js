@@ -165,7 +165,7 @@ const MainRouter = createBottomTabNavigator({
     navigationOptions: {
       showLabel: false,
       tabBarIcon: ({ tintColor }) => (
-        <Icon name='exclamation' size={28} color={tintColor} />
+        <Icon name='notifications' size={28} color={tintColor} />
       ),
       tabBarOptions: {
         showLabel: false,

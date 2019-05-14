@@ -1,7 +1,7 @@
 import React from 'react';
 import { withNavigation } from 'react-navigation';
 import firebase from 'react-native-firebase';
-
+import { TouchableOpacity } from 'react-native';
 import Followed from './specifics/followed';
 import Liked from './specifics/liked';
 import Tagged from './specifics/tagged';
@@ -23,6 +23,7 @@ class Notification extends React.Component {
     super(props);
     this.state = {
       username: '',
+      data: {},
     };
   }
 
@@ -43,33 +44,98 @@ class Notification extends React.Component {
       });
   }
 
+  handleFollowed = () => {
+    this.props.navigation.push('FriendProfile', {
+        uid: this.props.uid,
+
+      });
+  }
+
+  handleLiked = () => {
+    firebase
+      .firestore()
+      .collection('Memes')
+      .doc(this.props.memeId)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          const {url, time, sub} = doc.data();
+          const data = {key: doc.id,
+        doc,
+        src: url,
+        time,
+        sub,
+        postedBy: sub,};
+          this.setState({ data });
+               this.props.navigation.push('Tile',{                                   
+                memes:[this.state.data],
+
+    });
+        }
+      })
+      .catch((err) => {
+        console.log('Error getting document', err);
+      });
+    
+  }
+handleTagged = () => {
+  firebase
+      .firestore()
+      .collection('Memes')
+      .doc(this.props.memeId)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          const {url, time, sub} = doc.data();
+          const data = {key: doc.id,
+        doc,
+        src: url,
+        time,
+        sub,
+        postedBy: sub,};
+          this.setState({ data });
+               this.props.navigation.push('Tile',{                                   
+                memes:[this.state.data],
+
+    });
+        }
+      })
+      .catch((err) => {
+        console.log('Error getting document', err);
+      });
+}
   render() {
     // if follow
     if (this.props.type=="follow") {
-      return <Followed 
-      who={this.state.username}
-      uid={this.props.uid}
-      viewed ={this.props.viewed} />;
+      return (
+         <TouchableOpacity onPress={this.handleFollowed}>
+        <Followed 
+          uid={this.props.uid}
+          viewed ={this.props.viewed} />
+       </TouchableOpacity>
+    );
     }
     // if like
     if (this.props.type=="like") {
       return (
+         <TouchableOpacity onPress={this.handleLiked}>
         <Liked
-          who={this.state.username}
-          meme= {this.props.memeid}
+          meme= {this.props.memeId}
           uid={this.props.uid}
           viewed ={this.props.viewed}
         />
+         </TouchableOpacity>
       );
     }
     // if tag
     return (
+       <TouchableOpacity onPress={this.handleTagged}>
       <Tagged
-        who={this.state.username}
-        meme= {this.props.memeid}
+        meme= {this.props.memeId}
         uid={this.props.uid}
         viewed ={this.props.viewed}
       />
+       </TouchableOpacity>
     );
   }
 }
