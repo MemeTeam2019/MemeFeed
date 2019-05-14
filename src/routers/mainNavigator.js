@@ -15,6 +15,18 @@ import FollowList from '../components/home/searchResultList';
 import ImageUpload from '../screens/imageUpload';
 import CaptionPage from '../screens/captionPage';
 
+import aboutInfo1 from '../screens/aboutInfo1';
+import aboutInfo2 from '../screens/aboutInfo2';
+import aboutInfo3 from '../screens/aboutInfo3';
+import PrivacyPolicyScreen from '../screens/privacyScreen';
+
+const InfoStack = createStackNavigator({
+
+  aboutInfo1,
+  aboutInfo2,
+  aboutInfo3,
+});
+
 const ExploreStack = createStackNavigator(
   {
     Explore: {
@@ -78,6 +90,12 @@ const ProfileStack = createStackNavigator(
     Comment: {
       screen: CommentPage,
     },
+    InfoStack: {
+      screen: InfoStack,
+    },
+    Privacy: {
+      screen: PrivacyPolicyScreen,
+    },
   },
   {
     initialRouteName: 'Profile',
@@ -103,10 +121,18 @@ const MainRouter = createBottomTabNavigator({
   Home: {
     screen: HomeStack,
     navigationOptions: {
-      showLabel: false,
       tabBarIcon: ({ tintColor }) => (
-        <Icon name='home' size={35} color={tintColor} />
+        <Icon name='home' size={28} color={tintColor} />
       ),
+      tabBarOptions: {
+        showLabel: false,
+        showIcon: true,
+        activeTintColor: '#000000',
+        inactiveTintColor: '#D3D3D3',
+        style: {
+          height: '9%',
+        },
+      },
     },
   },
   Explore: {
@@ -114,8 +140,17 @@ const MainRouter = createBottomTabNavigator({
     navigationOptions: {
       showLabel: false,
       tabBarIcon: ({ tintColor }) => (
-        <Icon name='search' size={35} color={tintColor} />
+        <Icon name='search' size={28} color={tintColor} />
       ),
+      tabBarOptions: {
+        showLabel: false,
+        showIcon: true,
+        activeTintColor: '#000000',
+        inactiveTintColor: '#D3D3D3',
+        style: {
+          height: '9%',
+        },
+      },
     },
   },
   Upload:{
@@ -132,8 +167,17 @@ const MainRouter = createBottomTabNavigator({
     navigationOptions: {
       showLabel: false,
       tabBarIcon: ({ tintColor }) => (
-        <Icon name='face' size={35} color={tintColor} />
+        <Icon name='face' size={28} color={tintColor} />
       ),
+      tabBarOptions: {
+        showLabel: false,
+        showIcon: true,
+        activeTintColor: '#000000',
+        inactiveTintColor: '#D3D3D3',
+        style: {
+          height: '9%',
+        },
+      },
     },
   },
 });

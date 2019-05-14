@@ -6,100 +6,16 @@ import {
   StyleSheet,
   FlatList,
 } from 'react-native';
-import firebase from 'react-native-firebase';
 
-import ButtonBar from './buttonBar';
+// import ButtonBar from './buttonBar';
 import Comment from './comment';
 
 class CommentList extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.renderComment.bind(this);
-    this.state = {
-      commentsLoaded: 0,
-      commentCount: 0,
-      comments: [],
-    };
+    console.log(props);
   }
-
-  componentDidMount() {
-    // Grab total # of comments
-    const countRef = firebase
-      .firestore()
-      .collection(`Comments/${this.props.memeId}/Info`)
-      .doc('CommentInfo');
-    countRef
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          const { count } = doc.data();
-          this.setState({
-            commentCount: count,
-          });
-
-          firebase
-            .firestore()
-            .collection(`Comments/${this.props.memeId}/Text`)
-            .orderBy('time', 'desc') // we choose decsending to get most recent
-            .limit(Math.min(this.state.commentCount, 5))
-            .get()
-            .then(this.updateComments);
-        }
-      })
-      .catch((err) => {
-        console.log('Error getting document', err);
-      });
-  }
-
-  fetchComments = () => {
-    const oldestDoc = this.state.oldestDoc;
-    if (oldestDoc) {
-      firebase
-        .firestore()
-        .collection(`Comments/${this.props.memeId}/Text`)
-        .orderBy('time', 'desc')
-        .limit(5)
-        .startAfter(oldestDoc)
-        .get()
-        .then(this.updateComments);
-    }
-  };
-
-  updateComments = (querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-      const { text, uid, time } = doc.data();
-      const userRef = firebase
-        .firestore()
-        .collection('Users')
-        .doc(uid);
-
-      userRef
-        .get()
-        .then((user) => {
-          const newComments = [];
-          const { username } = user.data();
-          newComments.push({
-            key: doc.id,
-            uid: user.id,
-            doc: user,
-            content: text,
-            time,
-            username,
-          });
-          this.setState((prevState) => {
-            const mergedComments = newComments.concat(prevState.comments);
-            return {
-              comments: mergedComments,
-              commentsLoaded: mergedComments.length,
-              oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
-            };
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    });
-  };
 
   // Single comment
   renderComment = ({ item }) => {
@@ -115,18 +31,18 @@ class CommentList extends React.Component {
 
   render() {
     // if there are more comments to load
-    if (this.state.commentsLoaded < this.state.commentCount) {
+    if (this.props.commentsLoaded < this.props.commentCount) {
       return (
         <View style={[styles.containerStyle]}>
-          <ButtonBar memeId={this.props.memeId} />
+          {/* <ButtonBar memeId={this.props.memeId} /> */}
           <TouchableOpacity
-            onPress={this.fetchComments}
+            onPress={this.props.fetchComments}
             style={{ justifyContent: 'center', alignItems: 'center' }}
           >
             <Text style={styles.buttonSty}>Load more comments</Text>
           </TouchableOpacity>
           <FlatList
-            data={this.state.comments}
+            data={this.props.comments}
             renderItem={this.renderComment}
           />
         </View>
@@ -135,8 +51,8 @@ class CommentList extends React.Component {
     // no more comments to load
     return (
       <View style={[styles.containerStyle]}>
-        <ButtonBar memeId={this.props.memeId} />
-        <FlatList data={this.state.comments} renderItem={this.renderComment} />
+        {/* <ButtonBar memeId={this.props.memeId} /> */}
+        <FlatList data={this.props.comments} renderItem={this.renderComment} />
       </View>
     );
   }

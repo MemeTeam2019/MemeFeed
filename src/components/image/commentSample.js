@@ -1,20 +1,26 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  FlatList
-} from 'react-native';
+import { View, StyleSheet, FlatList } from 'react-native';
 import firebase from 'react-native-firebase';
 
 import Comment from './comment';
 
-class CommentSample extends React.Component{
-  constructor(){
+class CommentSample extends React.Component {
+  constructor() {
     super();
     this.unsubscribe = null;
     this.state = {
       comments: [],
     };
+  }
+
+  componentDidMount() {
+    this.unsubscribe = firebase
+      .firestore()
+      .collection(`Comments/${this.props.memeId}/Text`)
+      .orderBy('time', 'desc')
+      .limit(2) // we choose decsending to get most recent
+      .get()
+      .then(this.onCollectionUpdate);
   }
 
   // function for extracting Firebase responses to the state
@@ -23,58 +29,44 @@ class CommentSample extends React.Component{
 
     querySnapshot.forEach((doc) => {
       const { text, uid, time } = doc.data();
-      console.log("\n\n\n~~~~~~~~~~~"+text+" "+time+" "+"\n\n\n");
+      console.log('\n\n\n~~~~~~~~~~~' + text + ' ' + time + ' ' + '\n\n\n');
 
-      var userRef = firebase.firestore().collection('Users').doc(uid);
-      var getDoc = userRef.get()
-        .then(doc => {
+      firebase
+        .firestore()
+        .collection('Users')
+        .doc(uid)
+        .get()
+        .then((doc) => {
           if (!doc.exists) {
-            console.log('No such user '+uid+' exist!');
+            console.log(`No such user ${uid} exist!`);
           } else {
-            const {username} = doc.data();
+            const { username } = doc.data();
             comments.push({
               key: doc.id,
               doc, // DocumentSnapshot
               content: text,
-              time: time,
-              username: username,
+              time,
+              username,
             });
 
             // resort comments since nested asynchronous function
-            function compareTime(a,b) {
-              console.log("sorting comments bb")
-              if (a.time < b.time)
-                return -1;
-              if (a.time > b.time)
-                return 1;
+            const compareTime = (a, b) => {
+              console.log('sorting comments bb');
+              if (a.time < b.time) return -1;
+              if (a.time > b.time) return 1;
               return 0;
             }
 
-            sortedComments = comments.sort(compareTime);
-
             this.setState({
-              comments: sortedComments,
+              comments: comments.sort(compareTime),
             });
-
           }
-
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('Error getting document', err);
         });
-      
-
     });
-
-
-  }
-
-  componentDidMount() {
-    this.unsubscribe = firebase.firestore()
-      .collection("Comments/"+this.props.memeId+"/Text")
-      .orderBy('time', 'desc').limit(2) // we choose decsending to get most recent
-      .onSnapshot(this.onCollectionUpdate);
-  }
+  };
 
   // componentWillUnmount() {
   //   this.unsubscribe = null
@@ -85,26 +77,21 @@ class CommentSample extends React.Component{
   // }
 
   //Single comment
-  renderComment({item}) {
+  renderComment({ item }) {
     return (
-      <Comment 
-        username={item.username}
-        content={item.content}
-        uid={item.key}
-      />
+      <Comment username={item.username} content={item.content} uid={item.key} />
     );
   }
 
-
-  render(){
-    return(
+  render() {
+    return (
       <View style={styles.containerStyle}>
-        <FlatList 
+        <FlatList
           data={this.state.comments}
           renderItem={this.renderComment.bind(this)}
         />
       </View>
-    );  
+    );
   }
 }
 
@@ -116,5 +103,4 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'rgba(255,255,255,1)',
   },
-
-})
+});

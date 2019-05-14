@@ -10,6 +10,7 @@ import {
 import firebase from 'react-native-firebase';
 import ActionSheet from 'react-native-actionsheet';
 
+import Tile from '../components/image/tile';
 import MemeGrid from '../components/general/memeGrid';
 import MemeList from '../components/general/memeList';
 
@@ -31,6 +32,12 @@ export default class Profile extends React.Component {
     this.unsubscribe = null;
     this.userListener = null;
     this._isMounted = false;
+    this.ref = firebase
+      .firestore()
+      .collection('ReactsTest')
+      .doc(firebase.auth().currentUser.uid)
+      .collection('Likes')
+      .orderBy('time', 'desc');
 
     this.state = {
       username: '',
@@ -41,44 +48,78 @@ export default class Profile extends React.Component {
       followersLst: [],
       selectGridButtonP: true,
       selectListButtonP: false,
+      updated: true,
       memes: [],
+      oldestDoc: 0,
+      icon: ''
     };
   }
 
-  componentDidMount(memesLoaded) {
+  componentDidMount() {
     this._isMounted = true;
-    const ref = firebase
-      .firestore()
-      .collection('Reacts')
-      .doc(firebase.auth().currentUser.uid)
-      .collection('Likes')
-      .orderBy('time', 'desc');
     if (this._isMounted) {
       const uid = firebase.auth().currentUser.uid;
+      // Get the profile icon
+      firebase
+        .firestore()
+        .collection('Users')
+        .doc(uid)
+        .get()
+        .then((docSnapshot) => {
+          if (docSnapshot.exists) {
+            const { icon } = docSnapshot.data();
+            this.setState({ icon })
+          } else {
+            console.log("doesn't exist");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
       this.userListener = firebase
         .firestore()
         .collection('Users')
         .doc(uid)
-        .onSnapshot((snapshot) => this.setState(snapshot.data()));
-      this.unsubscribe = ref
-        .limit(memesLoaded)
-        .onSnapshot(this.onCollectionUpdate);
+        .get()
+        .then((snapshot) => this.setState(snapshot.data()));
+      firebase
+        .firestore()
+        .collection('ReactsTest')
+        .doc(firebase.auth().currentUser.uid)
+        .collection('Likes')
+        .orderBy('time', 'desc')
+        .limit(15)
+        .get()
+        .then(this.updateFeed);
     }
   }
 
-  componentWillUnmount() {
-    this.unsubscribe = null;
-    this.userListener = null;
-  }
+  fetchMemes = () => {
+    // garentees not uploading duplicate memes by checking if memes have finished
+    // updating
+    if (this.state.updated) {
+      this.state.updated = false;
+      const oldestDoc = this.state.oldestDoc;
+      firebase
+        .firestore()
+        .collection('Reacts')
+        .doc(firebase.auth().currentUser.uid)
+        .collection('Likes')
+        .orderBy('time', 'desc')
+        .limit(15)
+        .startAfter(oldestDoc)
+        .get()
+        .then(this.updateFeed);
+    }
+  };
 
-  // function for extracting Firebase responses to the state
-  onCollectionUpdate = (querySnapshot) => {
-    const memes = [];
-    querySnapshot.forEach((doc) => {
-      console.log(doc.data());
+  updateFeed = (querySnapshot) => {
+    const newMemes = [];
+
+    querySnapshot.docs.forEach((doc) => {
       const { time, url, rank, likedFrom } = doc.data();
-      if (rank > 1)
-        memes.push({
+      if (rank > 1) {
+        newMemes.push({
           key: doc.id,
           doc, // DocumentSnapshot
           src: url,
@@ -89,17 +130,25 @@ export default class Profile extends React.Component {
           postedBy: likedFrom,
           poster: firebase.auth().currentUser.uid,
         });
+      }
+    });
 
-      this.setState({
-        memes,
+    Promise.all(newMemes).then((resolvedMemes) => {
+      this.setState((prevState) => {
+        const mergedMemes = prevState.memes.concat(resolvedMemes);
+        return {
+          memes: mergedMemes,
+          updated: true,
+          oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+        };
       });
     });
   };
 
   getUserInfo = () => {
-    const firestore = firebase.firestore();
     const uid = firebase.auth().currentUser.uid;
-    firestore
+    firebase
+      .firestore()
       .collection('Users')
       .doc(uid)
       .get()
@@ -135,8 +184,34 @@ export default class Profile extends React.Component {
       });
   };
 
+  renderItem(item, itemSize, itemPaddingHorizontal) {
+    return (
+      <TouchableOpacity
+        key={item.id}
+        style={{
+          width: itemSize,
+          height: itemSize,
+          paddingHorizontal: itemPaddingHorizontal,
+        }}
+        onPress={() => {
+          this.ShowModalFunction(true, item.src);
+        }}
+      >
+        <Image
+          resizeMode='cover'
+          style={{ flex: 1 }}
+          source={{ uri: item.src }}
+        />
+      </TouchableOpacity>
+    );
+  }
+
+  renderTile = ({ item }) => {
+    return <Tile memeId={item.key} imageUrl={item.src} />;
+  };
+
   render() {
-    const optionArray = ['Logout', 'Cancel'];
+    const optionArray = ['About', 'Privacy Policy', 'Log Out', 'Cancel'];
 
     if (this.state.memes.length === 0) {
       return (
@@ -160,11 +235,16 @@ export default class Profile extends React.Component {
                 }}
                 title='User Settings'
                 options={optionArray}
-                cancelButtonIndex={1}
+                cancelButtonIndex={3}
                 destructiveIndex={0}
                 onPress={(index) => {
-                  if (optionArray[index] === 'Logout') {
+                  console.log(index);
+                  if (optionArray[index] == 'Log Out') {
                     this.logout();
+                  } else if (optionArray[index] == 'About') {
+                    this.props.navigation.push('InfoStack');
+                  } else if (optionArray[index] == 'Privacy Policy') {
+                    this.props.navigation.push('Privacy');
                   }
                 }}
               />
@@ -174,12 +254,11 @@ export default class Profile extends React.Component {
           <View style={styles.navBar2}>
             <View style={styles.leftContainer2}>
               <Image
-                source={require('../images/profilePic.png')}
+                source={{ uri: this.state.icon }}
                 style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
               />
             </View>
             <Text style={styles.textSty}>
-              {' '}
               {this.state.followingCnt} {'\n'}{' '}
               <Text style={styles.textSty3}>Following</Text>
             </Text>
@@ -190,7 +269,7 @@ export default class Profile extends React.Component {
               </Text>
             </View>
           </View>
-          {/* DISPLAY NAME */}
+          {/*DISPLAY NAME*/}
           <View style={styles.profilePic}>
             <Text style={styles.textSty2}>{this.state.name}</Text>
             <Text> </Text>
@@ -205,7 +284,6 @@ export default class Profile extends React.Component {
         </View>
       );
     }
-
     // Photo List/Full View of images
     return (
       <React.Fragment>
@@ -224,16 +302,18 @@ export default class Profile extends React.Component {
                 />
               </TouchableOpacity>
               <ActionSheet
-                ref={(o) => {
-                  this.ActionSheet = o;
-                }}
-                title='User Settings'
+                ref={(o) => (this.ActionSheet = o)}
+                title={'User Settings'}
                 options={optionArray}
-                cancelButtonIndex={1}
+                cancelButtonIndex={3}
                 destructiveIndex={0}
                 onPress={(index) => {
-                  if (optionArray[index] === 'Logout') {
+                  if (optionArray[index] == 'Log Out') {
                     this.logout();
+                  } else if (optionArray[index] == 'About') {
+                    this.props.navigation.push('InfoStack');
+                  } else if (optionArray[index] == 'Privacy Policy') {
+                    this.props.navigation.push('Privacy');
                   }
                 }}
               />
@@ -243,11 +323,11 @@ export default class Profile extends React.Component {
         <ScrollView>
           <View style={styles.containerStyle}>
             {/* Profile Pic, Follwers, Follwing Block */}
-
             <View style={styles.navBar2}>
+              {/* Profile Picture */}
               <View style={styles.leftContainer2}>
                 <Image
-                  source={require('../images/profilePic.png')}
+                  source={{ uri: this.state.icon }}
                   style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
                 />
               </View>
@@ -284,11 +364,11 @@ export default class Profile extends React.Component {
               </TouchableOpacity>
             </View>
 
-            {/* DISPLAY NAME */}
+            {/*DISPLAY NAME*/}
             <View style={styles.profilePic}>
               <Text style={styles.textSty2}>{this.state.name}</Text>
             </View>
-            {/* DIFFERENT VIEW TYPE FEED BUTTONS */}
+            {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
             <View style={styles.navBut}>
               <TouchableOpacity onPress={() => this.onListViewPressedP()}>
                 <Image
@@ -314,15 +394,9 @@ export default class Profile extends React.Component {
           </View>
 
           {this.state.selectListButtonP ? (
-            <MemeList
-              loadMemes={this.componentDidMount}
-              memes={this.state.memes}
-            />
+            <MemeList loadMemes={this.fetchMemes} memes={this.state.memes} />
           ) : (
-            <MemeGrid
-              loadMemes={this.componentDidMount}
-              memes={this.state.memes}
-            />
+            <MemeGrid loadMemes={this.fetchMemes} memes={this.state.memes} />
           )}
         </ScrollView>
       </React.Fragment>
@@ -333,9 +407,7 @@ export default class Profile extends React.Component {
 const styles = StyleSheet.create({
   containerStyle: {
     flex: 0,
-    // alignItems: "center",
-    // justifyContent: "center",
-    backgroundColor: '#ffffff',
+    backgroundColor: 'white',
   },
   headerSty: {
     height: 0,
@@ -368,13 +440,14 @@ const styles = StyleSheet.create({
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 50,
+    paddingTop: 50, //50
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 360,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
+    backgroundColor: 'white',
   },
   navBut: {
     height: 50,
@@ -391,9 +464,12 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
     backgroundColor: 'white',
-    paddingRight: 2,
-    paddingLeft: 2,
+    paddingRight: 1,
+    paddingLeft: 1,
     paddingHorizontal: 10,
+    backgroundColor: 'white',
+    marginRight: '9%',
+    marginLeft: '9%',
   },
   textSty2: {
     fontSize: 20,
@@ -437,12 +513,13 @@ const styles = StyleSheet.create({
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 10,
+    paddingTop: 10, //50
     flexDirection: 'row',
     alignItems: 'center',
     fontSize: 360,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
+    backgroundColor: 'white',
   },
   textshadow: {
     fontSize: 40,
@@ -476,7 +553,7 @@ const styles = StyleSheet.create({
   },
   navBar1: {
     height: 95,
-    paddingTop: 50,
+    paddingTop: 50, //50
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -528,14 +605,15 @@ const styles = StyleSheet.create({
   leftContainer2: {
     flex: 1,
     paddingRight: 2,
-    paddingHorizontal: 25,
+    paddingLeft: '3%',
+    paddingHorizontal: '5%',
+    backgroundColor: 'white',
   },
   rightContainer2: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: 1,
-    paddingHorizontal: 25,
+    backgroundColor: 'white',
   },
   rightIcon2: {
     height: 10,

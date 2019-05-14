@@ -1,3 +1,4 @@
+/* eslint-disable no-loop-func */
 import React from 'react';
 import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import firebase from 'react-native-firebase';
@@ -7,11 +8,11 @@ import { withNavigation } from 'react-navigation';
 /**
  * Handles user reacts for a specific meme, sets the state of tile.js and
  * updates the appropriate firebase documents.
- * 
+ *
  * Used by:
  *    tile.js
  *    commentList.js
- * 
+ *
  * Props:
  *    memeId (String): The id of the Firebase document in the Memes collection
  *    imageUrl (String): The image URL of the meme
@@ -25,7 +26,6 @@ class ButtonBar extends React.Component {
     this.unsubscribe = null;
     this.state = {
       selectedButton: null,
-      userHasReacted: false,
     };
     this.emojiRank = {
       0: '../../images/Tile/button0.png',
@@ -48,7 +48,7 @@ class ButtonBar extends React.Component {
     const memeId = this.props.memeId;
     const ref = firebase
       .firestore()
-      .collection('Reacts')
+      .collection('ReactsTest')
       .doc(user.uid)
       .collection('Likes')
       .doc(memeId);
@@ -60,7 +60,7 @@ class ButtonBar extends React.Component {
           let data = docSnapshot.data();
           if (data) {
             let rank = data.rank;
-            this.setState({ selectedButton: rank == -1 ? null : rank });
+            this.setState({ selectedButton: rank === -1 ? null : rank });
           }
         }
       })
@@ -69,19 +69,19 @@ class ButtonBar extends React.Component {
       });
   }
 
+  componentWillUnmount() {
+    this.unsubscribe = null;
+  }
+
   _onPressButton = async (newReact) => {
     const oldReact = this.state.selectedButton;
-    this.setState({
-      selectedButton: newReact === oldReact ? null : newReact,
-    });
-
     const user = firebase.auth().currentUser;
     const memeId = this.props.memeId;
 
     // Update the Reacts collection for current uid
     const reactRef = firebase
       .firestore()
-      .collection('Reacts')
+      .collection('ReactsTest')
       .doc(user.uid)
       .collection('Likes')
       .doc(memeId);
@@ -93,8 +93,7 @@ class ButtonBar extends React.Component {
 
     reactRef.get().then((likesSnapshot) => {
       const data = likesSnapshot.data();
-      var hasReacted = likesSnapshot.exists && data.rank !== -1;
-      console.log('LIKIND DAS MEME MIA ALTIERI');
+      const hasReacted = likesSnapshot.exists && data.rank !== -1;
       console.log(this.props.postedBy);
       reactRef.set({
         rank: oldReact === newReact ? -1 : newReact,
@@ -105,23 +104,207 @@ class ButtonBar extends React.Component {
       memeRef
         .get()
         .then(async (memeSnapshot) => {
-          const data = memeSnapshot.data();
+          const memeData = memeSnapshot.data();
           let newReactCount = 0;
           console.log(hasReacted);
           if (!hasReacted) {
-            newReactCount = data.reactCount + 1 || 1;
+            newReactCount = memeData.reactCount + 1 || 1;
           } else if (hasReacted && oldReact === newReact) {
-            newReactCount = data.reactCount - 1;
+            newReactCount = memeData.reactCount - 1;
           } else {
-            newReactCount = data.reactCount;
+            newReactCount = memeData.reactCount;
           }
-          memeRef.update({ reactCount: newReactCount });
+
+          let positiveWeight = memeData.positiveWeight || 0;
+          let negativeWeight = memeData.negativeWeight || 0;
+
+          if (newReact > 1) {
+            positiveWeight = positiveWeight + newReact + 1;
+          } else {
+            negativeWeight = negativeWeight + newReact + 1;
+          }
+
+          if (oldReact != null) {
+            if (oldReact > 1) {
+              positiveWeight = positiveWeight - oldReact - 1;
+            } else {
+              negativeWeight = negativeWeight - oldReact - 1;
+            }
+          }
+
+          if (oldReact === newReact) {
+            if (newReact > 1) {
+              positiveWeight = positiveWeight - oldReact - 1;
+            } else {
+              negativeWeight = negativeWeight - oldReact - 1;
+            }
+          }
+
+          memeRef.update({
+            positiveWeight: positiveWeight,
+            negativeWeight: negativeWeight,
+            reactCount: newReactCount,
+            lastReacted: date,
+          });
+
+          const subredditRef = firebase
+            .firestore()
+            .collection('SubredditVectors')
+            .doc(memeData.sub);
+          subredditRef.get().then((snapshot) => {
+            if (!snapshot.exists) {
+              subredditRef.set({
+                positiveWeight: newReact > 1 ? newReact : 0,
+                negativeWeight: newReact < 2 ? newReact : 0,
+                lastReacted: date,
+              });
+            } else {
+              const subredditData = snapshot.data();
+              let posWeight = subredditData.positiveWeight;
+              let negWeight = subredditData.negativeWeight;
+
+              if (newReact > 1) {
+                posWeight = posWeight + newReact + 1;
+              } else {
+                negWeight = negWeight + newReact + 1;
+              }
+
+              if (oldReact != null) {
+                if (oldReact > 1) {
+                  posWeight = posWeight - oldReact - 1;
+                } else {
+                  negWeight = negWeight - oldReact - 1;
+                }
+              }
+
+              if (oldReact === newReact) {
+                if (newReact > 1) {
+                  posWeight = posWeight - oldReact - 1;
+                } else {
+                  negWeight = negWeight - oldReact - 1;
+                }
+              }
+
+              subredditRef.update({
+                positiveWeight: posWeight,
+                negativeWeight: negWeight,
+                lastReacted: date,
+              });
+            }
+          });
+
           this.props.updateReacts(newReactCount);
         })
         .catch((err) => {
           console.log(err);
         });
     });
+
+    this.setState({
+      selectedButton: newReact === oldReact ? null : newReact,
+    });
+
+    // grab this users follower list
+    // go through each follower,and get that f_uid
+    // add to the collection Feeds/f_uid and add that react
+    this.unsubscribe = firebase
+      .firestore()
+      .collection('Users')
+      .doc(firebase.auth().currentUser.uid)
+      .get()
+      .then(async (doc) => {
+        const { followersLst } = doc.data();
+        // go through the people are following us
+        var i;
+        for (i = 0; i < followersLst.length; i++) {
+          // grab friend uid
+          let friendUid = followersLst[i];
+          firebase
+            .firestore()
+            .collection('FeedsTest')
+            .doc(friendUid)
+            .collection('Likes')
+            .doc(memeId)
+            .get()
+            .then(async (doc) => {
+              if (doc.exists) {
+                const { posReacts, time } = doc.data();
+                // originally did not like the meme but now does
+                // or first time liking the meme and ranking it highly
+                // then add to the total number of positive votes
+                if (
+                  (oldReact < 2 && newReact > 1 && oldReact != newReact) ||
+                  (oldReact === null && newReact > 1)
+                ) {
+                  const newPosReacts = posReacts + 1;
+                  firebase
+                    .firestore()
+                    .collection('FeedsTest')
+                    .doc(friendUid)
+                    .collection('Likes')
+                    .doc(memeId)
+                    .update({
+                      posReacts: newPosReacts,
+                      time: date,
+                      // add this user as someone that liked this meme
+                      likers: firebase.firestore.FieldValue.arrayUnion(
+                        firebase.auth().currentUser.uid
+                      ),
+                      likedFrom: firebase.firestore.FieldValue.arrayUnion(
+                        this.props.postedBy
+                      ),
+                    });
+                }
+
+                // originally liked the meme, but now does not
+                // OR unreacting to meme
+                // decrement number of posReacts
+                if ((oldReact > 1 && newReact < 2) || oldReact === newReact) {
+                  var newTime = time;
+                  if (newPosReacts < 1) {
+                    newTime = 0;
+                  }
+                  firebase
+                    .firestore()
+                    .collection('FeedsTest')
+                    .doc(friendUid)
+                    .collection('Likes')
+                    .doc(memeId)
+                    .update({
+                      posReacts: posReacts - 1,
+                      time: newTime,
+                      // remove this user as someone that liked this meme
+                      likers: firebase.firestore.FieldValue.arrayRemove(
+                        firebase.auth().currentUser.uid
+                      ),
+                      likedFrom: firebase.firestore.FieldValue.arrayRemove(
+                        this.props.postedBy
+                      ),
+                    });
+                }
+              } else {
+                // doc doesn't exist
+                // only make it exist if its a positive react
+                if (newReact > 1) {
+                  firebase
+                    .firestore()
+                    .collection('FeedsTest')
+                    .doc(friendUid)
+                    .collection('Likes')
+                    .doc(memeId)
+                    .set({
+                      posReacts: 1,
+                      time: date,
+                      url: this.props.imageUrl,
+                      // add this user as someone that liked this meme
+                      likers: [firebase.auth().currentUser.uid],
+                      likedFrom: [this.props.postedBy],
+                    });
+                }
+              }
+            });
+        }
+      });
   };
 
   handleCommentClick() {
@@ -140,7 +323,7 @@ class ButtonBar extends React.Component {
       onPress={this._onPressButton}
     >
       <Image
-        resizeMode="cover"
+        resizeMode='cover'
         style={{ flex: 1 }}
         source={{ uri: this.emojiRank[data] }}
       />
@@ -152,24 +335,10 @@ class ButtonBar extends React.Component {
   render() {
     return (
       <View style={styles.buttonBar}>
-        <TouchableOpacity
-          style={{
-            flex: 1,
-            justifyContent: 'flex-start',
-          }}
-          onPress={() => {
-            this.handleCommentClick();
-          }}
-        >
-          <Image
-            style={styles.button1}
-            source={require('../../images/Tile/chatLogo2.png')}
-          />
-        </TouchableOpacity>
         <View style={styles.button}>
           <TouchableOpacity onPress={this._onPressButton.bind(this, 0)}>
             <Image
-              resizeMode="cover"
+              resizeMode='cover'
               style={{ height: 35, width: 35 }}
               source={
                 this.state.selectedButton === 0 ||
@@ -182,15 +351,9 @@ class ButtonBar extends React.Component {
         </View>
 
         <View style={styles.button}>
-          <TouchableOpacity
-            // style={{
-            //   width: 35,
-            //   height: 35,
-            // }}
-            onPress={this._onPressButton.bind(this, 1)}
-          >
+          <TouchableOpacity onPress={this._onPressButton.bind(this, 1)}>
             <Image
-              resizeMode="cover"
+              resizeMode='cover'
               style={{ height: 35, width: 35 }}
               source={
                 this.state.selectedButton === 1 ||
@@ -205,7 +368,7 @@ class ButtonBar extends React.Component {
         <View style={styles.button}>
           <TouchableOpacity onPress={this._onPressButton.bind(this, 2)}>
             <Image
-              resizeMode="cover"
+              resizeMode='cover'
               style={{ height: 35, width: 35 }}
               source={
                 this.state.selectedButton === 2 ||
@@ -220,7 +383,7 @@ class ButtonBar extends React.Component {
         <View style={styles.button}>
           <TouchableOpacity onPress={this._onPressButton.bind(this, 3)}>
             <Image
-              resizeMode="cover"
+              resizeMode='cover'
               style={{ height: 35, width: 35 }}
               source={
                 this.state.selectedButton === 3 ||
@@ -232,16 +395,9 @@ class ButtonBar extends React.Component {
           </TouchableOpacity>
         </View>
         <View style={styles.button}>
-          <TouchableOpacity
-            style={{
-              width: 35,
-              height: 35,
-            }}
-            // this.resPress.bind(this,yourData)
-            onPress={this._onPressButton.bind(this, 4)}
-          >
+          <TouchableOpacity onPress={this._onPressButton.bind(this, 4)}>
             <Image
-              resizeMode="cover"
+              resizeMode='cover'
               style={{ height: 34, width: 34 }}
               source={
                 this.state.selectedButton === 4 ||
@@ -260,21 +416,14 @@ class ButtonBar extends React.Component {
 const styles = StyleSheet.create({
   buttonBar: {
     flexDirection: 'row',
-    width: '85%',
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingRight: '35%',
   },
   button: {
     width: 50,
     height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  button1: {
-    width: 30,
-    height: 32,
-    marginLeft: '20%',
-    marginTop: '3%',
     alignItems: 'center',
     justifyContent: 'center',
   },

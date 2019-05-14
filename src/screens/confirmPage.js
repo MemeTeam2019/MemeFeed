@@ -1,5 +1,12 @@
 import React from 'react';
-import { Text, Button, StyleSheet, ImageBackground } from 'react-native';
+import {
+  Text,
+  Button,
+  StyleSheet,
+  ImageBackground,
+  View,
+  Alert,
+} from 'react-native';
 import firebase from 'react-native-firebase';
 
 export default class ConfirmScreen extends React.Component {
@@ -7,37 +14,51 @@ export default class ConfirmScreen extends React.Component {
     header: null,
   };
 
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
-    firebase
-      .auth()
-      .currentUser.sendEmailVerification()
-      .then(() => {
-        console.log('Email has been sent');
-      })
-      .catch(error => {
-        console.log('Email not sent', error);
-      });
+    if (firebase.auth().currentUser) {
+      firebase
+        .auth()
+        .currentUser.sendEmailVerification()
+        .then(() => {
+          console.log('Email has been sent');
+        })
+        .catch((error) => {
+          console.log('Email not sent', error);
+        });
+    } else {
+      Alert.alert(
+        'Authentication Error',
+        'Please try again or contact memefeedaye@gmail.com',
+        [
+          {
+            text: 'OK',
+            onPress: () => this.props.navigation.popToTop(),
+          },
+        ]
+      );
+    }
   }
 
   render() {
     return (
       <ImageBackground
         style={styles.container}
-        source={require('../images/bkgrnd.jpeg')}
+        source={require('../images/white.png')}
       >
-        <Text style={styles.text}>
+        <Text style={styles.aboutText}>
           Confirmation email has been sent to{' '}
-          {firebase.auth().currentUser.email}. Check your inbox
+          {firebase.auth().currentUser
+            ? firebase.auth().currentUser.email
+            : ' '}
+          . Check your inbox
         </Text>
-        <Button
-          title="OK"
-          color="#fff"
-          onPress={() => this.props.navigation.popToTop()}
-        />
+        <View style={styles.nextBut}>
+          <Button
+            title='OK'
+            color='#000'
+            onPress={() => this.props.navigation.popToTop()}
+          />
+        </View>
       </ImageBackground>
     );
   }
@@ -50,8 +71,44 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   text: {
-    color: '#fff',
+    //color: '#9F02FF',
     fontSize: 18,
     paddingHorizontal: '5%',
+    textAlign: 'center',
+    justifyContent: 'center',
+  },
+  nextBut: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    marginBottom: '5%',
+  },
+  title: {
+    fontSize: 35,
+    fontFamily: 'AvenirNext-Regular',
+    //color: '#9F02FF',
+    paddingHorizontal: '5%',
+    marginBottom: '0.5%',
+    textAlign: 'center',
+    height: 50,
+    //backgroundColor: 'red',
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 0.5 },
+    shadowOpacity: 0.5,
+    shadowRadius: 0.4,
+  },
+  aboutText: {
+    fontSize: 18,
+    fontFamily: 'AvenirNext-Regular',
+    //color: '#9F02FF',
+    paddingHorizontal: '4%',
+    marginBottom: '1%',
+    paddingRight: 5,
+    paddingTop: 150, //50
+    paddingLeft: 5,
+    //backgroundColor: 'blue',
+    marginLeft: '3%',
+    marginRight: '3%',
+    //height: '50%'
   },
 });

@@ -36,11 +36,14 @@ class FriendProfile extends React.Component {
       buttonText: '',
       followingLst: [],
       followersLst: [],
+      updated: true,
       memes: [],
+      oldestDoc: 0,
       selectGridButtonP: true,
       selectListButtonP: false,
       isFollowing: false,
       userExists: false,
+      iconURL: ''
     };
   }
 
@@ -49,12 +52,13 @@ class FriendProfile extends React.Component {
     if (this._isMounted) {
       this.unsubscribe = firebase
         .firestore()
-        .collection('Reacts')
+        .collection('ReactsTest')
         .doc(this.props.navigation.getParam('uid'))
         .collection('Likes')
         .orderBy('time', 'desc')
-        .limit(10)
-        .onSnapshot(this.onCollectionUpdate);
+        .limit(15)
+        .get()
+        .then(this.updateFeed);
 
       const myUid = firebase.auth().currentUser.uid;
       const theirUid = this.props.navigation.getParam('uid');
@@ -71,13 +75,32 @@ class FriendProfile extends React.Component {
         this.setState(snapshot.data());
       });
 
+      //get the profile icon
+      firebase
+        .firestore()
+        .collection('Users')
+        .doc(theirUid)
+        .get()
+        .then((docSnapshot) => {
+          if(docSnapshot.exists) {
+            const { icon } = docSnapshot.data();
+              this.state.iconURL = icon
+            console.log(this.state.iconURL)
+          }
+          else{
+            console.log("doesn't exist")
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
       myUserRef
         .get()
         .then((snapshot) => {
           if (snapshot.exists) {
             const data = snapshot.data();
             const followingLst = data.followingLst || [];
-            // console.log(snapshot);
             const isFollowing = followingLst.indexOf(theirUid) > -1;
             this.setState({
               isFollowing,
@@ -95,8 +118,71 @@ class FriendProfile extends React.Component {
   }
 
   componentWillUnmount() {
+    this._isMounted = false;
     this.unsubscribe = null;
   }
+
+  fetchMemes = () => {
+    // garentees not uploading duplicate memes by checking if memes have finished
+    // updating
+    if (this.state.updated) {
+      this.state.updated = false;
+      const oldestDoc = this.state.oldestDoc;
+      firebase
+        .firestore()
+        .collection('ReactsTest')
+        .doc(this.props.navigation.getParam('uid'))
+        .collection('Likes')
+        .orderBy('time', 'desc')
+        .limit(15)
+        .startAfter(oldestDoc)
+        .get()
+        .then(this.updateFeed);
+      }
+    };
+
+
+    updateFeed = (querySnapshot) => {
+        const newMemes = [];
+        querySnapshot.docs.forEach((doc) => {
+          const { time, url, rank, likedFrom } = doc.data();
+          if (rank > 1) {
+            newMemes.push({
+              key: doc.id,
+              doc,
+              src: url,
+              time,
+              likedFrom,
+              postedBy: this.props.navigation.getParam('uid'),
+              poster: this.props.navigation.getParam('uid'),
+            });
+          }
+        });
+
+        Promise.all(newMemes).then((resolvedMemes) => {
+          this.setState((prevState) => {
+            const mergedMemes = (prevState.memes).concat(resolvedMemes);
+            return {
+              memes: mergedMemes,
+              updated: true,
+              oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+            };
+          });
+        });
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   showActionSheet = () => {
     this.ActionSheet.show();
@@ -148,8 +234,6 @@ class FriendProfile extends React.Component {
       if (inFollowersLst) followersLst.splice(followersLst.indexOf(myUid), 1);
     }
 
-    console.log(`After: ${followingLst}`);
-
     theirUserRef.update({
       followersLst,
       followersCnt: followersLst.length,
@@ -164,6 +248,133 @@ class FriendProfile extends React.Component {
       followersLst,
       followersCnt: followersLst.length,
     });
+
+    const theirLikes = firebase
+      .firestore()
+      .collection('ReactsTest')
+      .doc(theirUid)
+      .collection('Likes')
+      .orderBy('time', 'desc') // most recent
+      .limit(150)
+
+    // If just followed an individual take their most recent 150 reactions and
+    // add them to our Feed
+    if (nowFollowing) {
+        theirLikes.get().then((snapshot) => {
+          snapshot.forEach(function(doc) {
+            const { time, likedFrom, url, rank} = doc.data();
+            // only add memes they have liked
+            if (rank > 1) {
+              var memeId = doc.id
+              const userLikedTime = time
+              const feedRef = firebase
+                .firestore()
+                .collection('FeedsTest')
+                .doc(myUid)
+                .collection('Likes')
+                .doc(memeId);
+
+              feedRef
+                .get()
+                .then(async (doc) => {
+
+                  // if this meme is already in this persons feed
+                  if (doc.exists) {
+                    const { posReacts, time } = doc.data();
+                    const newPosReacts = posReacts+1
+                    const recentLikedTime = time
+
+                    // if the person we just followed has liked this meme more recently
+                    if (recentLikedTime < userLikedTime) {
+                      feedRef
+                        .update({
+                          posReacts: newPosReacts,
+                          time: userLikedTime,
+                          // add this user as someone that liked this meme
+                          likers:
+                            firebase.firestore.FieldValue.arrayUnion(theirUid),
+                          likedFrom:
+                            firebase.firestore.FieldValue.arrayUnion(likedFrom),
+                        });
+                      } else {
+                        feedRef
+                          .update({
+                            posReacts: newPosReacts,
+                          });
+                      }
+                  } else {
+                    // doc doesn't exist
+                    // only make it exist if its a positive react
+                    firebase
+                      .firestore()
+                      .collection('FeedsTest')
+                      .doc(myUid)
+                      .collection('Likes')
+                      .doc(memeId)
+                      .set({
+                        posReacts: 1,
+                        time: userLikedTime,
+                        url: url,
+                        // add this user as someone that liked this meme
+                        likers: [theirUid],
+                        likedFrom: [likedFrom]
+                      });
+                  }
+                });
+              }
+          });
+        });
+      } else {
+        theirLikes.get().then((snapshot) => {
+          snapshot.forEach(function(doc) {
+            const { time, likedFrom, url, rank} = doc.data();
+            // only remove memes they have liked
+            if (rank > 1) {
+              var memeId = doc.id
+              const feedRef = firebase
+                .firestore()
+                .collection('FeedsTest')
+                .doc(myUid)
+                .collection('Likes')
+                .doc(memeId);
+
+              feedRef
+                .get()
+                .then(async (doc) => {
+                  // if this meme is already in this persons feed
+                  if (doc.exists) {
+                    const { posReacts, time} = doc.data();
+                    const newPosReacts = posReacts-1;
+                    var newTime = time
+                    if (newPosReacts < 1){
+                      newTime = 0
+                    }
+
+                    // if the person we just followed has liked this meme more recently
+                    if (rank > 1) {
+                      feedRef
+                        .update({
+                          posReacts: newPosReacts,
+                          time: newTime,
+                          // remove this user as someone that liked this meme
+                          likers:
+                            firebase.firestore.FieldValue.arrayRemove(theirUid),
+                          likedFrom:
+                            firebase.firestore.FieldValue.arrayRemove(likedFrom),
+                        });
+                      } else {
+                        feedRef
+                          .update({
+                            posReacts: newPosReacts,
+                          });
+                      }
+                  }
+                });
+            }
+          });
+        });
+      }
+      // If unfollowing
   };
 
   // Function for extracting Firebase responses to the state
@@ -211,7 +422,7 @@ class FriendProfile extends React.Component {
           <View style={styles.navBar2}>
             <View style={styles.leftContainer2}>
               <Image
-                source={require('../images/primePic.png')}
+                source={{uri: this.state.iconURL}}
                 style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
               />
             </View>
@@ -297,12 +508,12 @@ class FriendProfile extends React.Component {
           </View>
           {this.state.selectListButtonP ? (
             <MemeList
-              loadMemes={this.componentDidMount}
+              loadMemes={this.fetchMemes}
               memes={this.state.memes}
             />
           ) : (
             <MemeGrid
-              loadMemes={() => this.componentDidMount()}
+              loadMemes={this.fetchMemes}
               memes={this.state.memes}
             />
           )}
@@ -374,9 +585,12 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
     backgroundColor: 'white',
-    paddingRight: 2,
-    paddingLeft: 2,
+    paddingRight: 1,
+    paddingLeft: 1,
     paddingHorizontal: 10,
+    backgroundColor: 'white',
+    marginRight: '9%',
+    marginLeft: '9%'
   },
   textSty2: {
     fontSize: 20,
@@ -464,6 +678,7 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     borderColor: '#A4A4A4',
     justifyContent: 'center',
+    marginLeft: '9%',
   },
   followBut2: {
     width: '30%',
@@ -488,6 +703,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 1,
+    marginLeft: '13%',
+    paddingRight: 5
   },
   rightIcon1: {
     height: 10,
@@ -503,14 +720,20 @@ const styles = StyleSheet.create({
   },
   leftContainer2: {
     flex: 1,
+    //flexDirection: 'row',
     paddingRight: 2,
-    paddingHorizontal: 25,
+    paddingLeft: '3%',
+    paddingHorizontal: '5%',
+    backgroundColor: 'white'
   },
   rightContainer2: {
     flex: 1,
     flexDirection: 'row',
+    //justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingLeft: 1,
+    //paddingLeft: 1,
+    //paddingHorizontal: 25,
+    backgroundColor: 'white'
   },
   rightIcon2: {
     height: 10,
