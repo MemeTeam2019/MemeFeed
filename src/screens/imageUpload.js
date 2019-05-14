@@ -1,21 +1,22 @@
 import * as React from 'react';
 import {
+  Alert,
   Image,
   TouchableOpacity,
   View,
   Modal,
   StyleSheet,
   Text,
+  TouchableHighlight,
   Button,
   Dimensions
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import ImagePicker from 'react-native-image-picker';
 
-
 /**
  * Screen used for users to upload memes
- * 
+ *
  *
  * Used by:
  *     mainNavigator.js
@@ -31,10 +32,10 @@ class ImageUpload extends React.Component {
       imageuri: '',
       isChosen: false,
       isUploaded: false,
+      modalVisible: false,
     };
   }
 
-  
   handlePhoto = () => {
     const options = {
       noData: true
@@ -49,39 +50,159 @@ class ImageUpload extends React.Component {
       }
     });
   }
-  handleUpload = () => {
+
+  handleUpload = async () => {
+    // first create URL
+
+    console.log(process.env.REACT_APP_API_KEY)
+    const API_KEY = process.env.REACT_APP_API_KEY
+
     const storRef = firebase.storage().ref('meme_images').child(firebase.auth().currentUser.uid+this.state.filename);
     storRef.putFile(this.state.imageuri);
-    storRef.getDownloadURL() .then((newurl) => {
 
-    const reactRef = firebase.firestore().collection('Memes');
-    var data = {
-    filename: this.state.filename,
-    url: newurl,
-    author: firebase.auth().currentUser.uid,
-    sub: 'MemeFeed',
-    time: Math.round(+new Date() / 1000),
-    score: 0,
-    caption: '',
-    reacts: 0
-  };
-  reactRef.add(data);
-  this.setState({
-    isChosen: false,
-  });
-  const proRef = firebase.firestore().collection('Reacts').doc(firebase.auth().currentUser.uid).collection('Likes');
-    var data2 = {
-      rank: 4,
-      time: Math.round(+new Date() / 1000),
-      url: newurl,
-      likeFrom: 'MemeFeed',
-    };
-    proRef.add(data2);
-    });
-      
+    storRef.getDownloadURL().then(async (newurl) => {
+      try {
+      		let body = JSON.stringify({
+      			requests: [
+      				{
+      					features: [
+      						{ type: 'SAFE_SEARCH_DETECTION', maxResults: 5 },
+      					],
+      					image: {
+      						source: {
+      							imageUri: newurl,
+      						}
+      					}
+      				}
+      			]
+      		});
+      		let response = await fetch(
+      			'https://vision.googleapis.com/v1/images:annotate?key='+API_KEY,
+      			{
+      				headers: {
+      					Accept: 'application/json',
+      					'Content-Type': 'application/json'
+      				},
+      				method: 'POST',
+      				body: body
+      			}
+      		);
+      		let responseJson = await response.json();
+          console.log(responseJson)
+          console.log(responseJson.responses[0]['safeSearchAnnotation']['adult']);
+          let isNSFW = responseJson.responses[0]['safeSearchAnnotation']['adult'];
+          // if image is nsfw don't post
+          if(isNSFW === 'VERY_LIKELY' || isNSFW === 'LIKELY') {
+            Alert.alert('Upload Error', 'This image was flagged for showing NSFW content, which goes against our policy. If you think this was a mistake email us at: memefeedaye@gmail.com', [
+              { text: 'OK' },
+            ]);
+          } else {
+            // image is okay to post
+            // post in Memes and use the doc id it creates elsewhere
+            const memeCollection = firebase.firestore().collection('MemesTest');
+            memeCollection.add({
+              url: newurl,
+              author: firebase.auth().currentUser.uid,
+              sub: '',
+              time: Math.round(+new Date() / 1000),
+              score: 0,
+              caption: '',
+              reacts: 0
+            })
+            .then(function(meme) {
+                console.log("Document written with ID: ", meme.id);
+
+                // post in this users reacts
+                const userReactsRef = firebase
+                  .firestore()
+                  .collection('ReactsTest')
+                  .doc(firebase.auth().currentUser.uid)
+                  .collection('Likes')
+                  .doc(meme.id).set({
+                    rank: 4,
+                    time: Math.round(+new Date() / 1000),
+                    url: newurl,
+                    likeFrom: firebase.auth().currentUser.uid,
+                  });
+
+                // put meme in their followers feeds
+                this.unsubscribe = firebase
+                  .firestore()
+                  .collection('Users')
+                  .doc(firebase.auth().currentUser.uid)
+                  .get()
+                  .then(async (doc) => {
+                    const { followersLst } = doc.data();
+                    // go through the people are following us
+                    var i;
+                    for (i = 0; i < followersLst.length; i++) {
+                      // grab friend uid
+                      let friendUid = followersLst[i];
+                      firebase
+                        .firestore()
+                        .collection('FeedsTest')
+                        .doc(friendUid)
+                        .collection('Likes')
+                        .doc(meme.id)
+                        .set({
+                          posReacts: 1,
+                          time: Math.round(+new Date() / 1000),
+                          url: newurl,
+                          // add this user as someone that liked this meme
+                          likers: [firebase.auth().currentUser.uid],
+                          likedFrom: [firebase.auth().currentUser.uid],
+                        });
+                    }
+                });
+            });
+          }
+          this.setState({
+            isChosen: false,
+          });
+
+      	} catch (error) {
+      		console.log(error);
+      	}
+      });
   }
 
+
+  // handleUpload = () => {
+  //   const storRef = firebase.storage().ref('meme_images').child(firebase.auth().currentUser.uid+this.state.filename);
+  //   storRef.putFile(this.state.imageuri);
+  //   storRef.getDownloadURL() .then((newurl) => {
+  //
+  //   const reactRef = firebase.firestore().collection('Memes');
+  //   var data = {
+  //   filename: this.state.filename,
+  //   url: newurl,
+  //   author: firebase.auth().currentUser.uid,
+  //   sub: 'MemeFeed',
+  //   time: Math.round(+new Date() / 1000),
+  //   score: 0,
+  //   caption: '',
+  //   reacts: 0
+  // };
+  // reactRef.add(data);
+  // this.setState({
+  //   isChosen: false,
+  // });
+  // const proRef = firebase.firestore().collection('Reacts').doc(firebase.auth().currentUser.uid).collection('Likes');
+  //   var data2 = {
+  //     rank: 4,
+  //     time: Math.round(+new Date() / 1000),
+  //     url: newurl,
+  //     likeFrom: 'MemeFeed',
+  //   };
+  //   proRef.add(data2);
+  //   });
+  //
+  // }
+
   render() {
+    const optionArray = ['okau'];
+    const title='This image was flagged for showing NSFW content, which goes against our policy. If you think this was a mistake email us at: memefeedaye@gmail.com'
+
     if(this.state.isChosen==false&&this.state.isUploaded==false){
       //choose the photo
     return (
@@ -105,13 +226,14 @@ class ImageUpload extends React.Component {
           </View>
           </View>
         </View>
-        
+
       );
   }
   if(this.state.isChosen==true&&this.state.isUploaded==false){
     //photo is chosen and not uploaded
     var uri = this.state.imageuri;
       return (
+
         <View style={styles.containerStyle}>
           <View style={styles.navBar}>
             <Text style={styles.textSty4}>
@@ -131,8 +253,8 @@ class ImageUpload extends React.Component {
                 </TouchableOpacity>
               </View>
               <View style={styles.rightContainer}>
-                <TouchableOpacity onPress={this.handleUpload}> 
-                  <Image 
+                <TouchableOpacity onPress={this.handleUpload}>
+                  <Image
                     source={require('../images/post.png')}
                     style = {styles.post}
                   />
@@ -236,23 +358,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    bottom: 6,
-    paddingHorizontal: '20%'
+    bottom: 6
   },
   leftContainer: {
     justifyContent: 'flex-start',
-    paddingLeft: '5%', 
-    width: Dimensions.get('screen').width * 0.5 
+    marginLeft: '10%'
 
   },
   rightContainer: {
     justifyContent: 'flex-end',
-    paddingLeft: '18%',
-    width: Dimensions.get('screen').width * 0.5 
+    marginLeft: '55%'
+
   },
   post: {
     width: 50,
     height: 50
   }
 });
-
