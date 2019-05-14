@@ -1,21 +1,14 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  KeyboardAvoidingView,
-  Button,
-  TextInput,
-} from 'react-native';
+import { StyleSheet, View, Button, TextInput, Keyboard } from 'react-native';
 import firebase from 'react-native-firebase';
-import { Header } from 'react-navigation';
 
 class AddComment extends React.Component {
   constructor(props) {
     super(props);
     this._onPressButton = this._onPressButton.bind(this);
     this.state = {
-      text: '',
       height: 0,
+      text: ''
     };
   }
 
@@ -26,7 +19,7 @@ class AddComment extends React.Component {
 
     const countRef = firebase
       .firestore()
-      .collection(`Comments/${memeId}/Info`)
+      .collection(`CommentsTest/${memeId}/Info`)
       .doc('CommentInfo');
     countRef
       .get()
@@ -52,7 +45,7 @@ class AddComment extends React.Component {
         console.log('Error getting document', err);
       });
 
-    const ref = firebase.firestore().collection(`Comments/${memeId}/Text`);
+    const ref = firebase.firestore().collection(`CommentsTest/${memeId}/Text`);
 
     ref
       .get()
@@ -61,11 +54,11 @@ class AddComment extends React.Component {
           // Add necessary infrastruction
           firebase
             .firestore()
-            .collection('Comments')
+            .collection('CommentsTest')
             .doc(memeId);
           firebase
             .firestore()
-            .collection('Comments')
+            .collection('CommentsTest')
             .doc(memeId)
             .collection('Text');
         }
@@ -73,67 +66,62 @@ class AddComment extends React.Component {
         // Add this comment to the proper folder
         firebase
           .firestore()
-          .collection(`Comments/${memeId}/Text`)
+          .collection(`CommentsTest/${memeId}/Text`)
           .add({
             uid: user.uid,
             text: this.state.text.trim(),
             time: date,
           })
-          .then(() => {
+          .then((commentRef) => {
             this.setState({
               text: '',
             });
-            console.log('Added document with ID: ', ref.id);
+            console.log(this.props);
+            this.props.handleNewComment(commentRef);
+            console.log('Added document with ID: ', commentRef.id);
           });
         console.log('Document data:', doc.data());
       })
       .catch((err) => {
         console.log('Error getting document', err);
       });
+    Keyboard.dismiss();
   };
 
   render() {
     return (
-      <KeyboardAvoidingView
-        keyboardVerticalOffset={
-          Header.HEIGHT + Math.max(35, this.state.height) - 12
-        } // adjust the value here if you need more padding
-        style={{ position: 'absolute', left: 0, right: 0, bottom: 0 }}
-        behavior='position'
+      <View
+        style={[
+          styles.container,
+          { height: Math.max(35, this.state.height) + 10 },
+        ]}
       >
-        <View
-          style={[
-            styles.container,
-            { height: Math.max(35, this.state.height) + 10 },
-          ]}
-        >
-          <TextInput
-            {...this.props}
-            multiline
-            placeholder='Add a comment...'
-            autoCapitalize='none'
-            onChangeText={(text) => this.setState({ text })}
-            onContentSizeChange={(event) => {
-              this.setState({
-                height: Math.min(120, event.nativeEvent.contentSize.height),
-              });
-            }}
-            style={[styles.input, { height: Math.max(35, this.state.height) }]}
-            value={this.state.text}
-          />
+        <TextInput
+          {...this.props}
+          multiline
+          placeholder='Add a comment...'
+          autoCapitalize='none'
+          onChangeText={(text) => this.setState({ text })}
+          onContentSizeChange={(event) => {
+            this.setState({
+              height: Math.min(120, event.nativeEvent.contentSize.height),
+            });
+          }}
+          style={[styles.input, { height: Math.max(35, this.state.height) }]}
+          value={this.state.text}
+        />
 
-          <Button
-            onPress={this._onPressButton}
-            style={[
-              styles.postButton,
-              { height: Math.max(35, this.state.height) },
-            ]}
-            disabled={!this.state.text.trim()}
-            title='Post'
-            color='#000'
-          />
-        </View>
-      </KeyboardAvoidingView>
+        <Button
+          onPress={this._onPressButton}
+          style={[
+            styles.postButton,
+            { height: Math.max(35, this.state.height) },
+          ]}
+          disabled={!this.state.text.trim()}
+          title='Post'
+          color='#000'
+        />
+      </View>
     );
   }
 }
@@ -149,9 +137,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     bottom: 0,
   },
-  postButton: {},
   input: {
-    width: 300,
+    width: '80%',
+    bottom: 0,
     backgroundColor: '#fff',
     borderRadius: 25,
     paddingHorizontal: 15,

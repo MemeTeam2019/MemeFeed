@@ -1,91 +1,118 @@
 import React from 'react';
-import { StyleSheet, View, Button, ImageBackground, Text } from 'react-native';
+import { StyleSheet, ScrollView, View, Button, ImageBackground, Text } from 'react-native';
 
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
+  // style={{paddingBottom : 100}}>
 
   render() {
     return (
+      <View style={StyleSheet.absoluteFill}>
+      <ScrollView>
       <ImageBackground
-        source={require('../images/bkgrnd.jpeg')}
+        source={require('../images/white.png')}
         style={styles.background}
       >
         <View style={styles.container}>
-          <Text style={styles.title}> About Us! </Text>
+          <Text style={styles.title}>Welcome to</Text>
+          <Text style={styles.title}>MemeFeed</Text>
         </View>
         <View style={styles.aboutText}>
-          <Text style={styles.aboutText}>Thanks for joining Meme Feed!</Text>
           <Text style={styles.aboutText}>
-            Meme Feed is a place where you can view an endless supply of Memes
-            without having to look at any family photos or your ex-coworkers
-            beach photos. (We don't care about your Bahama beach boyfriend
-            Sally!) With memes ranging in all categories, Meme Feed strives to
-            provide the perfect app for meme browsing and finding other
-            meme-holics like you!
+            Meme Feed is a place where you can view an endless supply
+            of memes without having to look at any family photos or
+            your ex-coworkers beach photos. (We don't care about your
+            Bahama beach boyfriend Sally!)
           </Text>
           <Text style={styles.aboutText}>
-            By ranking Memes you provide us with an insight into your refined
-            meme taste. And with this insight we hope to be able to generate a
-            feed of quality Memes just for you, making it so you will never have
-            to mine for memes again.
+            With memes ranging in all categories, Meme Feed strives to
+            provide the perfect app for meme browsing
+            and finding other
+            memers like you!
           </Text>
-          <Text style={styles.aboutText}>
-            Meme feed is currently in Beta, so be sure to update the application
-            to get features such as Meme upload, curated feeds, and DMing.
+          <Text style={styles.aboutText2}>
+            Contact us at memefeedaye@gmail.com
           </Text>
-          <Text style={styles.aboutText}>01100100</Text>
+        </View>
 
-          <Text style={styles.aboutText}>01100001</Text>
-          <Text style={styles.aboutText}>01100010</Text>
+        <View style={styles.nextBut}>
           <Button
             title="Next"
-            color="#fff"
-            onPress={() => this.props.navigation.push('Confirm')}
+            color='#000'
+            onPress={() => this.props.navigation.push('About2')}
           />
         </View>
       </ImageBackground>
+      </ScrollView>
+      </View>
+
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    height: 170,
-    elevation: 3,
+    height: 100,
+    elevation: 10,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 40, //50
-    flexDirection: 'row',
+    paddingLeft: 3,
+    paddingTop: 5, //50
+    //flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 36,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
+    //backgroundColor: 'blue',
+    marginTop: '25%',
+    //marginBottom: '2%'
   },
   title: {
-    fontSize: 50,
+    fontSize: 35,
     fontFamily: 'AvenirNext-Regular',
-    color: 'white',
+    //color: '#9F02FF',
     paddingHorizontal: '5%',
-    marginBottom: '5%',
+    marginBottom: '0.5%',
     textAlign: 'center',
-  },
-  aboutText: {
-    fontSize: 16,
-    fontFamily: 'AvenirNext-Regular',
-    color: 'white',
-    paddingHorizontal: '3%',
-    marginBottom: '3%',
-    textAlign: 'center',
-    paddingRight: 5,
-    paddingTop: 5, //50
-    paddingLeft: 5,
+    height: 50,
+    //backgroundColor: 'red',
     shadowColor: 'black',
     shadowOffset: { width: 0, height: 0.5 },
     shadowOpacity: 0.5,
     shadowRadius: 0.4,
+  },
+  aboutText2: {
+    fontSize: 18,
+    fontFamily: 'AvenirNext-Regular',
+    //color: '#9F02FF',
+    paddingHorizontal: '4%',
+    marginBottom: '1%',
+    paddingRight: 5,
+    paddingTop: 20, //50
+    paddingLeft: 5,
+    //backgroundColor: 'blue',
+    marginLeft: '3%',
+    marginRight: '3%',
+    //height: '50%'
+    justifyContent: 'center',
+    textAlign: 'center'
+  },
+  aboutText: {
+    fontSize: 18,
+    fontFamily: 'AvenirNext-Regular',
+    //color: '#9F02FF',
+    paddingHorizontal: '4%',
+    marginBottom: '1%',
+    paddingRight: 5,
+    //paddingTop: 1, //50
+    paddingLeft: 5,
+    //backgroundColor: 'blue',
+    marginLeft: '3%',
+    marginRight: '3%',
+    //height: '50%'
   },
   input: {
     height: '12%',
@@ -104,4 +131,10 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
+  nextBut: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    // marginBottom: '20%',
+  }
 });

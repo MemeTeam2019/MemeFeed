@@ -1,15 +1,18 @@
 import React from 'react';
 import {
   StyleSheet,
-  View,
+  ScrollView,
   Text,
   KeyboardAvoidingView,
   Button,
   TextInput,
   Alert,
   ImageBackground,
+  TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import firebase from 'react-native-firebase';
+import { CheckBox } from 'react-native-elements';
 
 /**
  * Handles signing up for new accounts.
@@ -31,11 +34,11 @@ class SignupScreen extends React.Component {
       username: '',
       password: '',
       cpassword: '',
+      checked: false,
     };
   }
 
   addUserDoc = (uid, email, name, username) => {
-    console.log('adding user for ' + uid);
     firebase
       .firestore()
       .runTransaction(async (transaction) => {
@@ -44,13 +47,12 @@ class SignupScreen extends React.Component {
           .collection('Users')
           .doc(uid);
         const doc = await transaction.get(ref);
-
         if (!doc.exists) {
           transaction.set(ref, {
             email: email.toLowerCase(),
-            name: name,
+            name,
             searchableName: name.toLowerCase(),
-            username: username,
+            username,
             searchableusername: username.toLowerCase(),
             followersCnt: 0,
             followingCnt: 0,
@@ -60,21 +62,19 @@ class SignupScreen extends React.Component {
           return uid;
         }
       })
-      .then((uid) => {
-        console.log('User doc successfully set for user with ' + uid);
-      })
-      .catch((err) => {
-        Alert.alert('Signup Error', 'Error creating User doc for' + email, [
-          { text: 'OK' },
+      .then(() => this.props.navigation.push('Icon'))
+      .catch(() => {
+        Alert.alert('Signup Error', `Error creating User doc for ${email}`, [
+          { text: 'OK', style: 'cancel' },
         ]);
       });
   };
 
   handleSubmit = () => {
-    let email = this.state.email;
-    let name = this.state.name;
-    let username = this.state.username;
-    let password = this.state.password;
+    const email = this.state.email;
+    const name = this.state.name;
+    const username = this.state.username;
+    const password = this.state.password;
     if (password !== this.state.cpassword) {
       Alert.alert("Passwords don't match", '', [{ text: 'OK' }]);
       return;
@@ -84,18 +84,23 @@ class SignupScreen extends React.Component {
       .createUserWithEmailAndPassword(email, password)
       .then((user) => {
         if (user) {
-          let uid = user.user.uid;
+          const uid = user.user.uid;
           this.addUserDoc(uid, email, name, username);
-          console.log('yuh');
-          this.props.navigation.push('About');
         } else {
-          Alert.alert('Error', "Couldn't create acount. Please try again", [
-            { text: 'OK' },
-          ]);
+          Alert.alert(
+            'Signup Error',
+            "Couldn't create acount. Please try again",
+            [{ text: 'OK' }]
+          );
         }
       })
       .catch((error) => {
-        Alert.alert('Error', error.code, [{ text: 'OK' }]);
+        Alert.alert('Error', error.code, [
+          {
+            text: 'Dismiss',
+            style: 'cancel',
+          },
+        ]);
       });
   };
 
@@ -105,70 +110,105 @@ class SignupScreen extends React.Component {
         source={require('../images/bkgrnd.jpeg')}
         style={styles.background}
       >
-        <View style={styles.container}>
-          <KeyboardAvoidingView
-            contentContainerStyle={styles.addBottomPadding}
-            behavior="position"
+        <KeyboardAvoidingView
+          behavior='padding'
+          style={styles.container}
+          keyboardVerticalOffset={0}
+        >
+          <ScrollView
+            contentContainerStyle={{
+              flex: 1,
+              justifyContent: 'center',
+              marginTop: '25%',
+            }}
           >
             <Text style={styles.title}>Sign Up</Text>
             <TextInput
               style={styles.input}
-              placeholder="Email"
-              onChangeText={(email) => this.setState({ email: email })}
-              autoComplete="email"
-              autoCapitalize="none"
+              placeholder='Email'
+              onChangeText={(email) => this.setState({ email })}
+              autoComplete='email'
+              autoCapitalize='none'
             />
             <TextInput
               style={styles.input}
-              placeholder="Name"
-              onChangeText={(name) => this.setState({ name: name })}
-              autoComplete="name"
+              placeholder='Name'
+              onChangeText={(name) => this.setState({ name })}
+              autoComplete='name'
             />
             <TextInput
               style={styles.input}
-              placeholder="Username"
-              onChangeText={(username) => this.setState({ username: username })}
-              autoComplete="username"
+              placeholder='Username'
+              onChangeText={(username) => this.setState({ username })}
+              autoComplete='username'
             />
             <TextInput
               style={styles.input}
-              placeholder="Password"
-              secureTextEntry={true}
-              onChangeText={(password) => this.setState({ password: password })}
-              autoComplete="password"
+              placeholder='Password'
+              secureTextEntry
+              onChangeText={(password) => this.setState({ password })}
+              autoComplete='password'
             />
             <TextInput
               style={styles.input}
-              placeholder="Confirm Password"
-              secureTextEntry={true}
-              onChangeText={(cpassword) =>
-                this.setState({ cpassword: cpassword })
-              }
+              placeholder='Confirm Password'
+              secureTextEntry
+              onChangeText={(cpassword) => this.setState({ cpassword })}
             />
+            <CheckBox
+              center
+              title='Accept Privacy Policy'
+              // checkedIcon='dot-circle-o'
+              // uncheckedIcon='circle-o'
+              checkedColor='white'
+              checked={this.state.checked}
+              containerStyle={styles.checkboxContainer}
+              textStyle={styles.checkboxText}
+              onPress={() => {
+                const checked = this.state.checked;
+                this.setState({ checked: !checked });
+              }}
+            />
+            <TouchableOpacity
+              onPress={() => this.props.navigation.push('Privacy')}
+              style={styles.privacyText}
+            >
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: 'white',
+                  marginTop: 5,
+                  marginBottom: 5,
+                }}
+              >
+                Read Privacy Policy
+              </Text>
+            </TouchableOpacity>
+
             <Button
-              title="Submit"
+              title='Submit'
               style={styles.submit}
-              color="#fff"
+              color='#fff'
+              disabled={!this.state.checked}
               onPress={() => this.handleSubmit()}
             />
-            <Button
-              title="About"
-              color="#fff"
-              onPress={() => this.props.navigation.push('About')}
-            />
-          </KeyboardAvoidingView>
-        </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </ImageBackground>
     );
   }
 }
 
+export default SignupScreen;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: '18%',
     alignItems: 'center',
     justifyContent: 'center',
+    flexGrow: 1,
+    height: Dimensions.get('window').height,
+    width: Dimensions.get('window').width,
   },
   title: {
     fontSize: 36,
@@ -177,8 +217,8 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   input: {
-    width: 325,
-    height: 55,
+    width: Dimensions.get('window').width * 0.85,
+    height: 50,
     backgroundColor: '#FFFFFF',
     borderRadius: 5,
     fontSize: 18,
@@ -192,6 +232,17 @@ const styles = StyleSheet.create({
       width: 1,
     },
   },
+  checkboxContainer: {
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    margin: 0,
+  },
+  checkboxText: {
+    fontFamily: 'AvenirNext-Regular',
+    fontWeight: 'normal',
+    fontSize: 18,
+    color: 'white',
+  },
   submit: {
     marginTop: 15,
   },
@@ -200,6 +251,8 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
   },
+  privacyText: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
-
-export default SignupScreen;

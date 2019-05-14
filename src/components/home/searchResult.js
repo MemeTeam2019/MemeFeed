@@ -1,8 +1,7 @@
 import React from 'react';
 import { Text, StyleSheet, TouchableOpacity, View, Image } from 'react-native';
 import { withNavigation } from 'react-navigation';
-
-const primePic = require('../../images/primePic.png');
+import firebase from 'react-native-firebase';
 
 /**
  * Component to display a search result when using the search feature.
@@ -19,6 +18,7 @@ const primePic = require('../../images/primePic.png');
 class SearchResult extends React.PureComponent {
   render() {
     const { navigation, data, uid } = this.props;
+    if (!data || !uid) return null;
     return (
       <React.Fragment>
         <TouchableOpacity
@@ -26,7 +26,7 @@ class SearchResult extends React.PureComponent {
           style={styles.resultContainer}
         >
           <View>
-            <Image style={styles.profilePic} source={primePic} />
+            <Image style={styles.profilePic} source={{ uri: data.icon }} />
           </View>
           <View>
             <Text style={styles.primaryText}>{data.username}</Text>
@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     height: 50,
     width: 50,
     marginRight: '5%',
+    borderRadius: 50 / 2,
   },
 });
 

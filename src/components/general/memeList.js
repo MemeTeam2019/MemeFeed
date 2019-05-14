@@ -15,7 +15,6 @@ class MemeList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      memesLoaded: 30,
       imageuri: '',
       isLoading: true,
       memes: [],
@@ -23,7 +22,7 @@ class MemeList extends React.Component {
   }
 
   renderTile = ({ item }) => {
-    if (!item || !item.src) return;
+    if (!item || !item.src) return null;
     return (
       <Tile
         memeId={item.key}
@@ -43,16 +42,8 @@ class MemeList extends React.Component {
         data={this.props.memes}
         renderItem={this.renderTile.bind(this)}
         onEndReached={() => {
-          // Ensuring there are actually memes to load
-          if (this.props.memes.length == this.state.memesLoaded) {
-            newLoadCount = this.state.memesLoaded + 60;
-            this.setState({
-              memesLoaded: newLoadCount,
-            });
-
-            // Call parent function
-            this.props.loadMemes(newLoadCount);
-          }
+          // only load memes if previous ones finished loading
+          this.props.loadMemes();
         }}
       />
     );

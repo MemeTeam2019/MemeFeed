@@ -3,21 +3,17 @@ import {
   Image,
   TouchableOpacity,
   View,
-  Modal,
   StyleSheet,
   Text,
-  Button,
   Dimensions
 } from 'react-native';
 
-import firebase from 'react-native-firebase';
 import ImagePicker from 'react-native-image-picker';
-import AutoHeightImage from 'react-native-auto-height-image';
 
 
 /**
  * Screen used for users to upload memes
- * 
+ *
  *
  * Used by:
  *     mainNavigator.js
@@ -26,6 +22,10 @@ import AutoHeightImage from 'react-native-auto-height-image';
  *     None
  */
 class ImageUpload extends React.Component {
+  static navigationOptions = {
+    header: null,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -36,7 +36,7 @@ class ImageUpload extends React.Component {
     };
   }
 
-  
+
   handlePhoto = () => {
     const options = {
       noData: true
@@ -47,44 +47,16 @@ class ImageUpload extends React.Component {
                         filename: response.filename,
                         isChosen: true
         });
+        this.props.navigation.push("CaptionPage", {
+          imageuri: this.state.imageuri,
+          filename: this.state.filename})
 
       }
     });
   }
-  handleUpload = () => {
-    const storRef = firebase.storage().ref('meme_images').child(firebase.auth().currentUser.uid+this.state.filename);
-    storRef.putFile(this.state.imageuri);
-    storRef.getDownloadURL() .then((newurl) => {
-
-    const reactRef = firebase.firestore().collection('Memes');
-    var data = {
-    filename: this.state.filename,
-    url: newurl,
-    author: firebase.auth().currentUser.uid,
-    sub: 'MemeFeed',
-    time: Math.round(+new Date() / 1000),
-    score: 0,
-    caption: '',
-    reacts: 0
-  };
-  reactRef.add(data);
-  this.setState({
-    isChosen: false,
-  });
-  const proRef = firebase.firestore().collection('Reacts').doc(firebase.auth().currentUser.uid).collection('Likes');
-    var data2 = {
-      rank: 4,
-      time: Math.round(+new Date() / 1000),
-      url: newurl,
-      likeFrom: 'MemeFeed',
-    };
-    proRef.add(data2);
-    });
-      
-  }
 
   render() {
-    if(this.state.isChosen==false&&this.state.isUploaded==false){
+    // if(this.state.isChosen==false&&this.state.isUploaded==false){
       //choose the photo
     return (
         <View style={styles.containerStyle}>
@@ -94,75 +66,21 @@ class ImageUpload extends React.Component {
             </Text>
           </View>
           <View style={styles.container3}>
-          <View style={styles.containerStyle2}>
-            <Image
-              source={require('../images/image.png.gif')}
-              style={styles.tile}
+            <View style={styles.containerStyle2}>
+              <Image
+                source={require('../images/image.png.gif')}
+                style={styles.tile}
               />
-          </View>
-          <View style={styles.container}>
-            <TouchableOpacity onPress={this.handlePhoto}>
-              <Text style={styles.button}>Open Library</Text>
-            </TouchableOpacity>
-          </View>
-          </View>
-        </View>
-        
-      );
-  }
-  if(this.state.isChosen==true&&this.state.isUploaded==false){
-    //photo is chosen and not uploaded
-    var uri = this.state.imageuri;
-      return (
-        <View style={styles.containerStyle}>
-          <View style={styles.navBar}>
-            <Text style={styles.textSty4}>
-              Upload
-            </Text>
-          </View>
-          <View style={styles.containerStyle2}>
-            <AutoHeightImage
-              source={{uri}}
-              width={Dimensions.get("window").width}
-            />
-          </View>
-          <View style={styles.container}>
-              <View style={styles.leftContainer}>
-                <TouchableOpacity>
-                  <Text style={styles.button2}>Retake</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.rightContainer}>
-                <TouchableOpacity onPress={this.handleUpload}> 
-                  <Text style={styles.button2}>Post</Text>
-                </TouchableOpacity>
-              </View>
             </View>
-        </View>
-      );
-  }
-  if(this.state.isChosen==true&&this.state.isUploaded==true){
-      //photo is set
-      return (
-        <View style={styles.containerStyle}>
-          <View style={styles.navBar}>
-            <Text style={styles.textSty4}>
-              Upload
-            </Text>
-          </View>
-          <View style={styles.containerStyle2}>
-            <Image
-              source={require('../images/image.png.gif')}
-              style={styles.tile}
-            />
-          <TouchableOpacity onPress={this.handlePhoto}>
-            <Text style={styles.button}>Open Library</Text>
-          </TouchableOpacity>
+            <View style={styles.container}>
+              <TouchableOpacity onPress={this.handlePhoto}>
+                <Text style={styles.button}>Open Library</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
 
       );
-  }
   }
 }
 export default ImageUpload;
@@ -173,7 +91,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   navBar: {
-    height: 95,
+    height: '15%',
     paddingTop: 50,
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -194,6 +112,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: '5%'
   },
   container3: {
     flex: 1,
@@ -205,53 +124,11 @@ const styles = StyleSheet.create({
     height: Dimensions.get('screen').width,
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    top: 50
-  },
-  navBut: {
-    height: 50,
-    backgroundColor: 'white',
-    elevation: 3,
-    paddingHorizontal: 20,
-    paddingRight: 3,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   button: {
     fontFamily: 'AvenirNext-Regular',
     fontSize: 20,
     justifyContent: 'center',
     alignItems: 'center',
-
   },
-  button2: {
-    fontFamily: 'AvenirNext-Regular',
-    fontSize: 20,
-  },
-  container: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    bottom: 0,
-    paddingHorizontal: '20%'
-  },
-  leftContainer: {
-    justifyContent: 'flex-start',
-    paddingLeft: '5%', 
-    width: Dimensions.get('screen').width * 0.5 
-
-  },
-  rightContainer: {
-    justifyContent: 'flex-end',
-    paddingLeft: '18%',
-    width: Dimensions.get('screen').width * 0.5 
-  },
-  post: {
-    width: 50,
-    height: 50
-  }
 });
-
