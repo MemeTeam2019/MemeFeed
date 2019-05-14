@@ -8,10 +8,13 @@ import {
 	Dimensions,
 	Image,
 	KeyboardAvoidingView,
+	Button,
+	ScrollView
 } from 'react-native';
 
 import firebase from 'react-native-firebase';
 import { TextInput } from 'react-native-gesture-handler';
+import AutoHeightImage from 'react-native-auto-height-image';
 
 class CaptionPage extends React.Component{
 	static navigationOptions = {
@@ -20,7 +23,13 @@ class CaptionPage extends React.Component{
 			fontSize: 20,
 			fontFamily: 'Avenir Next',
 			fontWeight: 'normal'
-		}
+		},
+		headerRight: (
+			<Button 
+				onPress={this.handleUpload}
+				title="Post  "
+			/>
+		)
 	};
 	
   constructor(props) {
@@ -66,29 +75,30 @@ class CaptionPage extends React.Component{
 	
 	render() {
 		return(
-			<KeyboardAvoidingView behavior="position">
+			<KeyboardAvoidingView 
+			  behavior="position"
+				keyboardVerticalOffset={Dimensions.get('window').height * 0.12 }>
 				<View>
-					{/* <View style={styles.navBar}>
-						<Text style={styles.textSty4}>
-							Upload
-						</Text>
-					</View> */}
-					<View style={styles.conatiner}>
-						<Image
-							style={styles.image}
-							source={{uri: this.state.imageuri}}
-						/>
-						<TextInput
-							style = {styles.input}
-							placeholder="Enter a Caption"
-							onChangeText = {(caption) => this.setState({caption: caption})}
-							autoCapitalize="none"
-							multiline
-						/>
-						<TouchableOpacity onPress={this.handleUpload}>
-							<Text style={styles.postButton}>Post</Text>
-						</TouchableOpacity>
-					</View>
+					<ScrollView
+					ref={(ref) => {
+						this.scrollView = ref;
+					}}
+					>
+					  <View style={styles.conatiner}>
+						  <AutoHeightImage
+								style={styles.image}
+								source={{uri: this.state.imageuri}}
+								width={Dimensions.get("window").width}
+						  />
+							<TextInput
+								style = {styles.input}
+								placeholder="Enter a Caption"
+								onChangeText = {(caption) => this.setState({caption: caption})}
+								autoCapitalize="none"
+								multiline
+							/>
+						</View>
+					</ScrollView>
 				</View>
 			</KeyboardAvoidingView>
 		);
@@ -99,7 +109,6 @@ export default CaptionPage;
 
 const styles = StyleSheet.create({
 	conatiner: {
-		//flex: 1,
 		alignItems: 'center',
 		justifyContent: 'center'
 	},
@@ -137,8 +146,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
 	},
 	image: {
-		width: Dimensions.get('screen').width * 0.95,
-		height: 250,
 		justifyContent: 'center',
 		alignItems: 'center',
 		marginTop: '10%',
