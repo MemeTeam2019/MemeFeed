@@ -37,6 +37,7 @@ class MemeGrid extends React.Component {
               likedFrom,
               postedBy,
               poster,
+              isSubRedditPg: this.props.isSubRedditPg,
             });
           }}
         >
@@ -52,13 +53,6 @@ class MemeGrid extends React.Component {
   };
 
   _renderPlaceholder = (i) => <View style={styles.item} key={i} />;
-
-  navigateToTilePage(data) {
-    const { navigation } = this.props;
-    navigation.push('Tile', {
-      memes: [data],
-    });
-  }
 
   render() {
     return (

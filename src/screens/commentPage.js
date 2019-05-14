@@ -187,6 +187,7 @@ class CommentPage extends React.Component {
             postedBy={postedBy}
             poster={poster}
             showAllComments={this.showAllComments}
+            isSubRedditPg={this.props.navigation.getParam('isSubRedditPg')}
           />
           <CommentList
             memeId={this.state.memeId}

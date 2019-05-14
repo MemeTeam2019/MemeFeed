@@ -31,6 +31,7 @@ class MemeList extends React.Component {
         likedFrom={item.likedFrom}
         postedBy={item.postedBy}
         poster={item.poster}
+        isSubRedditPg={this.props.isSubRedditPg}
       />
     );
   };

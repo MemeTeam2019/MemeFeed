@@ -14,10 +14,12 @@ class SourceReddit extends React.Component {
   }
 
   goToSubreddit() {
-    console.log(this.props.sub)
-    this.props.navigation.push('SubReddit', {
-      sub: this.props.sub
-    });
+    console.log(this.props.isSubRedditPg);
+    if (!this.props.isSubRedditPg) {
+      this.props.navigation.push('SubReddit', {
+        sub: this.props.sub
+      });
+    }
   }
 
   showActionSheet = () => {
