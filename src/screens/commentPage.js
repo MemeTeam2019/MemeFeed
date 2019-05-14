@@ -308,12 +308,12 @@ class CommentPage extends React.Component {
             const map = new Map();
             combined.forEach((snapshot) => {
               // check if this person is following up
-              if (followersLst.includes(snapshot.ref.id)) {
+              //if (followersLst.includes(snapshot.ref.id)) {
                 if (!map.has(snapshot.ref.id) && myUid !== snapshot.ref.id) {
                   map.set(snapshot.ref.id);
                   searchResults.push(snapshot);
                 }
-              }
+              //}
             });
             this.setState({ searchResults: searchResults.sort() });
 
@@ -345,7 +345,7 @@ class CommentPage extends React.Component {
         return
       }
 
-      const newText = this.state.text.substring(0,this.state.mostRecentAt+1)+username
+      const newText = this.state.text.substring(0,this.state.mostRecentAt+1)+username+" "
       this.state.peopleToTag.push(uid)
       this.state.usernamesTagged.push(username)
       this.setState({
@@ -376,18 +376,46 @@ class CommentPage extends React.Component {
     const postedBy = this.props.navigation.getParam('postedBy', '');
     const poster = this.props.navigation.getParam('poster', '');
     return (
+      <View>
+
+      { this.state.modalVisible &&
+
+        <KeyboardAvoidingView
+          behavior='position'
+          keyboardVerticalOffset={Dimensions.get('window').height * 0.1}
+        >
+
+          <ScrollView
+            keyboardShouldPersistTaps="handled"
+            ref={(ref) => {
+              this.scrollView = ref;
+            }}
+            style={{ height: '100%' }}
+          >
+            <FlatList
+              data={this.state.searchResults}
+              keyboardShouldPersistTaps='always'
+              renderItem={(userRef) => this.renderSearchResult(userRef)}
+              style={{ height: '100%' }}
+              keyExtractor={(item) => item.ref.id}
+            />
+          </ScrollView>
+        </KeyboardAvoidingView>
+      }
+
+
+
       <KeyboardAvoidingView
-      behavior='padding'
-      style={styles.containerA}
-      keyboardVerticalOffset={0}
+        behavior='position'
+        keyboardVerticalOffset={Dimensions.get('window').height * 0.1 }
       >
+      { !this.state.modalVisible &&
         <ScrollView
           ref={(ref) => {
             this.scrollView = ref;
           }}
           style={{ height: '100%' }}
         >
-        { !this.state.modalVisible &&
           <View>
             <Tile
               memeId={this.state.memeId}
@@ -406,16 +434,9 @@ class CommentPage extends React.Component {
               commentCount={this.state.commentCount}
             />
           </View>
-        }
-        { this.state.modalVisible &&
-          <FlatList
-            data={this.state.searchResults}
-            renderItem={(userRef) => this.renderSearchResult(userRef)}
-            style={{ height: '100%' }}
-            keyExtractor={(item) => item.ref.id}
-          />
-        }
         </ScrollView>
+        }
+
 
         {/* please forgive me this is the add comment button stuff all right here*/}
         <View
@@ -469,6 +490,7 @@ class CommentPage extends React.Component {
           />
         </View>
       </KeyboardAvoidingView>
+      </View>
     );
   }
 }
