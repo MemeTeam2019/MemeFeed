@@ -61,12 +61,12 @@ class ImageUpload extends React.Component {
     return (
         <View style={styles.containerStyle}>
           <View style={styles.navBar}>
-            <Text style={styles.textSty4}>
+            <Text style={styles.textStyle}>
               Upload
             </Text>
           </View>
           <View style={styles.container3}>
-            <View style={styles.containerStyle2}>
+            <View style={styles.container2}>
               <Image
                 source={require('../images/image.png.gif')}
                 style={styles.tile}
@@ -100,14 +100,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderColor: '#D6D6D6'
   },
-  textSty4: {
+  textStyle: {
     fontSize: 20,
     fontFamily: 'AvenirNext-Regular',
     backgroundColor: 'white',
     paddingRight: 3,
     paddingHorizontal: 10,
   },
-  containerStyle2: {
+  container2: {
     flex: 1,
     backgroundColor: '#ffffff',
     alignItems: 'center',
@@ -131,5 +131,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  container: {
+    bottom: '5%',
+    alignItems: 'center',
+		justifyContent: 'center'
+  }
 });
 

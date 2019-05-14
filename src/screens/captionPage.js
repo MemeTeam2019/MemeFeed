@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
 		padding: 8,
 		backgroundColor: '#efefef',
 		marginHorizontal: '2.5%',
-		marginTop: '10%'
+		marginTop: '5%'
 	},
 	postButton: {
 		fontFamily: 'AvenirNext-Regular',
