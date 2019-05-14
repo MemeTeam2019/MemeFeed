@@ -13,8 +13,11 @@ class SourceReddit extends React.Component {
     }
   }
 
-  goToSubreddit(){
-    this.props.navigation.navigate('SubReddit', {})
+  goToSubreddit() {
+    console.log(this.props.sub)
+    this.props.navigation.push('SubReddit', {
+      sub: this.props.sub
+    });
   }
 
   showActionSheet = () => {
@@ -29,7 +32,9 @@ class SourceReddit extends React.Component {
                 <View style={styles.leftContainer1}>
                 <View style={styles.container}>
                     <Text style={{fontSize: 15}}>sourced from </Text>
-                    <Text style={{fontSize: 15, fontWeight: 'bold', fontStyle: 'italic', color: '#919191', width: 900, marginRight: 2}}> 'r/{this.props.sub}'</Text>
+                    <TouchableOpacity onPress={() => this.goToSubreddit()}>
+                      <Text style={{fontSize: 15, fontWeight: 'bold', fontStyle: 'italic', color: '#919191', width: 900, marginRight: 2}}> 'r/{this.props.sub}'</Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
                 <View style={styles.rightContainer1}>
