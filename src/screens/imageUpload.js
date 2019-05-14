@@ -13,6 +13,8 @@ import {
 import firebase from 'react-native-firebase';
 import ImagePicker from 'react-native-image-picker';
 import AutoHeightImage from 'react-native-auto-height-image';
+import { ScrollView } from 'react-native-gesture-handler';
+import CaptionPage from './captionPage';
 
 
 /**
@@ -26,6 +28,10 @@ import AutoHeightImage from 'react-native-auto-height-image';
  *     None
  */
 class ImageUpload extends React.Component {
+  static navigationOptions = {
+    header: null,
+  };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -56,7 +62,7 @@ class ImageUpload extends React.Component {
     storRef.putFile(this.state.imageuri);
     storRef.getDownloadURL() .then((newurl) => {
 
-    const reactRef = firebase.firestore().collection('Memes');
+    const reactRef = firebase.firestore().collection('MemesTest');
     var data = {
     filename: this.state.filename,
     url: newurl,
@@ -71,7 +77,7 @@ class ImageUpload extends React.Component {
   this.setState({
     isChosen: false,
   });
-  const proRef = firebase.firestore().collection('Reacts').doc(firebase.auth().currentUser.uid).collection('Likes');
+  const proRef = firebase.firestore().collection('ReactsTest').doc(firebase.auth().currentUser.uid).collection('Likes');
     var data2 = {
       rank: 4,
       time: Math.round(+new Date() / 1000),
@@ -79,8 +85,7 @@ class ImageUpload extends React.Component {
       likeFrom: 'MemeFeed',
     };
     proRef.add(data2);
-    });
-      
+    });   
   }
 
   render() {
@@ -94,17 +99,17 @@ class ImageUpload extends React.Component {
             </Text>
           </View>
           <View style={styles.container3}>
-          <View style={styles.containerStyle2}>
-            <Image
-              source={require('../images/image.png.gif')}
-              style={styles.tile}
+            <View style={styles.containerStyle2}>
+              <Image
+                source={require('../images/image.png.gif')}
+                style={styles.tile}
               />
-          </View>
-          <View style={styles.container}>
-            <TouchableOpacity onPress={this.handlePhoto}>
-              <Text style={styles.button}>Open Library</Text>
-            </TouchableOpacity>
-          </View>
+            </View>
+            <View style={styles.container}>
+              <TouchableOpacity onPress={this.handlePhoto}>
+                <Text style={styles.button}>Open Library</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
         
@@ -120,25 +125,32 @@ class ImageUpload extends React.Component {
               Upload
             </Text>
           </View>
-          <View style={styles.containerStyle2}>
-            <AutoHeightImage
-              source={{uri}}
-              width={Dimensions.get("window").width}
-            />
-          </View>
-          <View style={styles.container}>
+          <ScrollView contentContainerStyle={{flex: 1, justifyContent: 'space-evenly'}}>
+            <View style={styles.containerStyle2}>
+              <AutoHeightImage
+                source={{uri}}
+                width={Dimensions.get("window").width}
+              />
+            </View>
+            <View style={styles.container}>
               <View style={styles.leftContainer}>
-                <TouchableOpacity>
+              {/* go back to photos */}
+                <TouchableOpacity onPress={this.handlePhoto}>
                   <Text style={styles.button2}>Retake</Text>
                 </TouchableOpacity>
               </View>
               <View style={styles.rightContainer}>
-                <TouchableOpacity onPress={this.handleUpload}> 
+              {/* go to captionPage, save photo */}
+                <TouchableOpacity onPress={() => this.props.navigation.push("CaptionPage", {
+                  imageuri: this.state.imageuri, 
+                  filename: this.state.filename})
+                }>
                   <Text style={styles.button2}>Post</Text>
                 </TouchableOpacity>
               </View>
             </View>
-        </View>
+        </ScrollView>
+      </View>
       );
   }
   if(this.state.isChosen==true&&this.state.isUploaded==true){
@@ -160,7 +172,6 @@ class ImageUpload extends React.Component {
           </TouchableOpacity>
           </View>
         </View>
-
       );
   }
   }
@@ -171,6 +182,7 @@ const styles = StyleSheet.create({
   containerStyle: {
     flex: 1,
     backgroundColor: '#ffffff',
+    height: 2000,
   },
   navBar: {
     height: 95,
@@ -194,6 +206,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: '5%'
   },
   container3: {
     flex: 1,
@@ -205,8 +218,6 @@ const styles = StyleSheet.create({
     height: Dimensions.get('screen').width,
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    top: 50
   },
   navBut: {
     height: 50,
@@ -223,7 +234,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     justifyContent: 'center',
     alignItems: 'center',
-
   },
   button2: {
     fontFamily: 'AvenirNext-Regular',
@@ -235,23 +245,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    bottom: 0,
+    bottom: 7,
     paddingHorizontal: '20%'
   },
   leftContainer: {
     justifyContent: 'flex-start',
     paddingLeft: '5%', 
     width: Dimensions.get('screen').width * 0.5 
-
   },
   rightContainer: {
     justifyContent: 'flex-end',
     paddingLeft: '18%',
     width: Dimensions.get('screen').width * 0.5 
   },
-  post: {
-    width: 50,
-    height: 50
-  }
 });
 

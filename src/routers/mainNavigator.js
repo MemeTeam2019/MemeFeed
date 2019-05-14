@@ -13,6 +13,7 @@ import FriendProfile from '../screens/friendProfileScreen';
 import CommentPage from '../screens/commentPage';
 import FollowList from '../components/home/searchResultList';
 import ImageUpload from '../screens/imageUpload';
+import CaptionPage from '../screens/captionPage';
 
 const ExploreStack = createStackNavigator(
   {
@@ -83,6 +84,20 @@ const ProfileStack = createStackNavigator(
   }
 );
 
+const UploadStack = createStackNavigator(
+  {
+    ImageUpload: {
+      screen: ImageUpload,
+    },
+    CaptionPage: {
+      screen: CaptionPage,
+    }
+  },
+  {
+    initialRouteName: 'ImageUpload'
+  }
+);
+
 const MainRouter = createBottomTabNavigator({
 
   Home: {
@@ -104,7 +119,7 @@ const MainRouter = createBottomTabNavigator({
     },
   },
   Upload:{
-    screen: ImageUpload,
+    screen: UploadStack,
     navigationOptions: {
       showLabel: false,
       tabBarIcon: ({ tintColor }) => (

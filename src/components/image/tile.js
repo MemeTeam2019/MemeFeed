@@ -17,11 +17,11 @@ class Tile extends React.Component {
     this.updateReactCount = this.updateReactCount.bind(this);
     this.state = {
       reactCount: 0,
+      caption: '',
     };
   }
 
   componentDidMount() {
-    this._isMounted = true;
     const memeid = this.props.memeId;
     const ref = firebase
       .firestore()
@@ -29,10 +29,7 @@ class Tile extends React.Component {
       .doc(memeid);
     ref.get().then(docSnapshot => {
       const data = docSnapshot.data();
-      const reactCount = data.reactCount || 0;
-      if (this._isMounted) {
-        this.setState({ reactCount: reactCount });
-      }
+      this.setState({ reactCount: data.reactCount, caption: data.caption });
     });
   }
 
@@ -61,6 +58,7 @@ class Tile extends React.Component {
           memeId={this.props.memeId}
           reactCount={this.state.reactCount}
           imageUrl={this.props.imageUrl}
+          caption={this.state.caption}
         />
       </View>
     );

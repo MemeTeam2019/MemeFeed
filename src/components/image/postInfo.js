@@ -99,6 +99,9 @@ class PostInfo extends React.Component {
           >
             {this.props.reactCount} Reactions
           </Text>
+          <View style={styles.caption}>
+            <Text style={styles.captionText}>{this.props.caption}</Text>
+          </View>
           <CommentSample memeId={this.props.memeId} />
         </View>
       );
@@ -141,4 +144,12 @@ const styles = StyleSheet.create({
     marginLeft: '2.5%',
     //color: '#383838'
   },
+  caption: {
+    marginLeft: '2.5%',
+    paddingTop: 10
+  },
+  captionText: {
+    fontFamily: 'AvenirNext-Regular',
+    fontSize: 16
+  }
 });
