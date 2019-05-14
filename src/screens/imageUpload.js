@@ -8,7 +8,6 @@ import {
   Dimensions
 } from 'react-native';
 
-import firebase from 'react-native-firebase';
 import ImagePicker from 'react-native-image-picker';
 
 
@@ -82,61 +81,6 @@ class ImageUpload extends React.Component {
         </View>
         
       );
-  // }
-  // if(this.state.isChosen==true&&this.state.isUploaded==false){
-  //   //photo is chosen and not uploaded
-  //   var uri = this.state.imageuri;
-  //     return (
-  //     <View style={styles.containerStyle}>
-  //       <View style={styles.navBar}>
-  //         {/* go back to photos */}
-  //         <TouchableOpacity onPress={this.handlePhoto}>
-  //           <Text style={styles.button2}>Back</Text>
-  //         </TouchableOpacity>
-  //         {/* Header */}
-  //         <Text style={styles.textSty4}>
-  //           Upload
-  //         </Text>
-  //         {/* go to captionPage, save photo */}
-  //         <TouchableOpacity onPress={() => this.props.navigation.push("CaptionPage", {
-  //           imageuri: this.state.imageuri, 
-  //           filename: this.state.filename})}
-  //         >
-  //           <Text style={styles.button2}>Next</Text>
-  //         </TouchableOpacity>
-  //       </View>
-  //       <ScrollView>
-  //         <View style={styles.containerStyle2}>
-  //           <AutoHeightImage
-  //             source={{uri}}
-  //             width={Dimensions.get("window").width}
-  //           />
-  //         </View>
-  //       </ScrollView>
-  //     </View>
-  //     );
-  // }
-  // if(this.state.isChosen==true&&this.state.isUploaded==true){
-  //     //photo is set
-  //     return (
-  //       <View style={styles.containerStyle}>
-  //         <View style={styles.navBar}>
-  //           <Text style={styles.textSty4}>
-  //             Upload
-  //           </Text>
-  //         </View>
-  //         <View style={styles.containerStyle2}>
-  //           <Image
-  //             source={require('../images/image.png.gif')}
-  //             style={styles.tile}
-  //           />
-  //         <TouchableOpacity onPress={this.handlePhoto}>
-  //           <Text style={styles.button}>Open Library</Text>
-  //         </TouchableOpacity>
-  //         </View>
-  //       </View>
-  //     );
-  // }
   }
 }
 export default ImageUpload;
@@ -181,25 +125,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  navBut: {
-    height: 50,
-    backgroundColor: 'white',
-    elevation: 3,
-    paddingHorizontal: 20,
-    paddingRight: 3,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   button: {
     fontFamily: 'AvenirNext-Regular',
     fontSize: 20,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  button2: {
-    fontFamily: 'AvenirNext-Regular',
-    fontSize: 20,
   },
 });
 

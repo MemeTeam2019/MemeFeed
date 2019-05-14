@@ -1,12 +1,9 @@
 import * as React from 'react';
 import {
-  TouchableOpacity,
   View,
   StyleSheet,
-	Text,
 	Alert,
 	Dimensions,
-	Image,
 	KeyboardAvoidingView,
 	Button,
 	ScrollView
