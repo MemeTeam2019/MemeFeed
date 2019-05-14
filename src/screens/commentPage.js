@@ -379,31 +379,28 @@ class CommentPage extends React.Component {
       <View>
 
       { this.state.modalVisible &&
-
         <KeyboardAvoidingView
           behavior='position'
-          keyboardVerticalOffset={Dimensions.get('window').height * 0.1}
+          keyboardVerticalOffset={Dimensions.get('window').height * 0.1 }
         >
 
-          <ScrollView
-            keyboardShouldPersistTaps="handled"
-            ref={(ref) => {
-              this.scrollView = ref;
-            }}
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          ref={(ref) => {
+            this.scrollView = ref;
+          }}
+          style={{ height: '100%' }}
+        >
+          <FlatList
+            data={this.state.searchResults}
+            keyboardShouldPersistTaps='always'
+            renderItem={(userRef) => this.renderSearchResult(userRef)}
             style={{ height: '100%' }}
-          >
-            <FlatList
-              data={this.state.searchResults}
-              keyboardShouldPersistTaps='always'
-              renderItem={(userRef) => this.renderSearchResult(userRef)}
-              style={{ height: '100%' }}
-              keyExtractor={(item) => item.ref.id}
-            />
-          </ScrollView>
+            keyExtractor={(item) => item.ref.id}
+          />
+        </ScrollView>
         </KeyboardAvoidingView>
       }
-
-
 
       <KeyboardAvoidingView
         behavior='position'
