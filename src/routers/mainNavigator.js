@@ -44,6 +44,9 @@ const ExploreStack = createStackNavigator(
     Comment: {
       screen: CommentPage,
     },
+    SubReddit: {
+      screen: SubReddit,
+    }
   },
   {
     initialRouteName: 'Explore',
@@ -99,6 +102,9 @@ const ProfileStack = createStackNavigator(
     Privacy: {
       screen: PrivacyPolicyScreen,
     },
+    SubReddit: {
+      screen: SubReddit,
+    }
   },
   {
     initialRouteName: 'Profile',
@@ -143,24 +149,6 @@ const MainRouter = createBottomTabNavigator({
   },
   Profile: {
     screen: ProfileStack,
-    navigationOptions: {
-      showLabel: false,
-      tabBarIcon: ({ tintColor }) => (
-        <Icon name='face' size={28} color={tintColor} />
-      ),
-      tabBarOptions: {
-        showLabel: false,
-        showIcon: true,
-        activeTintColor: '#000000',
-        inactiveTintColor: '#D3D3D3',
-        style: {
-          height: '9%',
-        },
-      },
-    },
-  },
-  Reddit: {
-    screen: Subreddit,
     navigationOptions: {
       showLabel: false,
       tabBarIcon: ({ tintColor }) => (

@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import {
   View,
   Text,
@@ -22,7 +22,7 @@ import MemeList from '../components/general/memeList';
  * -----
  * None
  */
-export default class subReddit extends React.Component {
+class SubReddit extends React.Component {
   static navigationOptions = {
     header: null,
   };
@@ -35,10 +35,7 @@ export default class subReddit extends React.Component {
     this.ref = firebase
       .firestore()
       .collection('Memes')
-      //.where('sub')
-      .doc(firebase.auth().currentUser.uid)
-      .collection('Likes')
-      .orderBy('time', 'desc');
+      .where('sub', '==', this.props.navigation.getParam('sub'));
 
     this.state = {
       username: '',
@@ -52,7 +49,8 @@ export default class subReddit extends React.Component {
       updated: true,
       memes: [],
       oldestDoc: 0,
-      icon: ''
+      icon: '',
+      //sub: ''
     };
   }
 
@@ -60,12 +58,13 @@ export default class subReddit extends React.Component {
 
   componentDidMount() {
     this._isMounted = true;
+    console.log('==========')
+    console.log(this.props.navigation.getParam('sub'))
     if (this._isMounted) {
       this.unsubscribe = firebase
         .firestore()
         .collection('Memes')
-        .orderBy('time', 'desc')
-        .limit(15)
+        .where('sub', '==', this.props.navigation.getParam('sub'))
         .get()
         .then(this.updateFeed);
     }
@@ -80,9 +79,7 @@ export default class subReddit extends React.Component {
       firebase
         .firestore()
         .collection('Memes')
-        .orderBy('time', 'desc')
-        .limit(15)
-        .startAfter(oldestDoc)
+        .where('sub', '==', this.props.navigation.getParam('sub'))
         .get()
         .then(this.updateFeed);
     }
@@ -100,12 +97,23 @@ export default class subReddit extends React.Component {
         sub,
         postedBy: sub,
       });
+
+      const compareTime = (a, b) => {
+        if (a.time > b.time) return -1;
+        if (a.time < b.time) return 1;
+        return 0;
+      }
+
+      newMemes.sort(compareTime)
+
     });
+
+
 
     Promise.all(newMemes).then((resolvedMemes) => {
       this.setState((prevState) => {
-        const mergedMemes = prevState.memes.concat(resolvedMemes);
-        //console.log(mergedMemes);
+        var mergedMemes = prevState.memes.concat(resolvedMemes);
+
         return {
           memes: mergedMemes,
           updated: true,
@@ -114,6 +122,10 @@ export default class subReddit extends React.Component {
       });
     });
   };
+
+  //comment sample line 53 (sorting the meme list)
+
+
 
   onGridViewPressedP = () => {
     this.setState({ selectGridButtonP: true });
@@ -164,7 +176,7 @@ render() {
             <View style={styles.leftContainer1}>
               <Text style={[styles.text, { textAlign: 'left' }]}>{}</Text>
             </View>
-            <Text style={styles.textSty4}> r/Subreddit</Text>
+            <Text style={styles.textSty4}> r/{this.props.navigation.getParam('sub')}</Text>
             <View style={styles.rightContainer1}>
               <View style={styles.rightIcon1} />
             </View>
@@ -320,6 +332,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Times New Roman',
     paddingLeft: 30,
     paddingRight: 30,
+    backgroundColor: 'white',
     textShadowColor: '#585858',
     textShadowOffset: { width: 5, height: 5 },
     textShadowRadius: 20,
@@ -330,12 +343,13 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '98%',
     resizeMode: 'contain',
+    backgroundColor: 'white',
   },
   modelStyle: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,1)',
+    backgroundColor: 'white',
   },
   closeButtonStyle: {
     width: 25,
@@ -343,6 +357,7 @@ const styles = StyleSheet.create({
     top: 9,
     right: 9,
     position: 'absolute',
+    backgroundColor: 'white',
   },
   navBar1: {
     height: 95,
@@ -378,6 +393,7 @@ const styles = StyleSheet.create({
     borderColor: '#A4A4A4',
     color: '#5B5B5B',
     justifyContent: 'center',
+    backgroundColor: 'white',
   },
   followBut2: {
     borderWidth: 0.6,
@@ -387,10 +403,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 10,
+   backgroundColor: 'white',
   },
 
   navBar2: {
     height: 100,
+    backgroundColor: 'white',
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -421,12 +439,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 10,
     alignItems: 'center',
+        backgroundColor: 'white',
   },
   containerStyle2: {
     flex: 2,
-    backgroundColor: '#ffffff',
+    backgroundColor: 'white',
     alignItems: 'center',
     paddingLeft: 5,
     paddingRight: 5,
   },
 });
+
+export default SubReddit;
