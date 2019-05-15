@@ -6,6 +6,7 @@ import {
   ImageBackground,
   View,
   Alert,
+  Platform,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 

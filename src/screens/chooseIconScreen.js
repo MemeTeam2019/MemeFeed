@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Text,
+  Platform
 } from 'react-native';
 
 import firebase from 'react-native-firebase';

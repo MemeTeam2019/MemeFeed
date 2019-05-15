@@ -10,6 +10,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   Dimensions,
+  Platform,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import { CheckBox } from 'react-native-elements';

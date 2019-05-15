@@ -1,6 +1,6 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet, Button } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Button, Platform } from 'react-native';
 
 class PrivacyPolicyScreen extends React.PureComponent {
   static navigationOptions = {
