@@ -1,5 +1,12 @@
 import React from 'react';
-import { Text, StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import { withNavigation } from 'react-navigation';
 import ActionSheet from 'react-native-actionsheet';
 import firebase from 'react-native-firebase';
@@ -11,17 +18,12 @@ class LikedFromUser extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      iconURL: '',
+      icon: '',
     };
   }
 
   componentDidMount() {
     const uid = this.props.poster;
-    const userRef = firebase
-      .firestore()
-      .collection('Users')
-      .doc(uid);
-    // get the profile icon
     firebase
       .firestore()
       .collection('Users')
@@ -30,9 +32,7 @@ class LikedFromUser extends React.Component {
       .then((docSnapshot) => {
         if (docSnapshot.exists) {
           const { icon } = docSnapshot.data();
-          this.state.iconURL = icon;
-          console.log(this.state.iconURL);
-          console.log(icon);
+          this.setState({ icon });
         } else {
           console.log("doesn't exist");
         }
@@ -40,13 +40,6 @@ class LikedFromUser extends React.Component {
       .catch((error) => {
         console.log(error);
       });
-    userRef
-      .get()
-      .then((snapshot) => {
-        const data = snapshot.data();
-        this.setState({ username: data.username });
-      })
-      .catch((err) => console.log(err));
   }
 
   showActionSheet = () => {
@@ -84,10 +77,7 @@ class LikedFromUser extends React.Component {
       <View style={styles.navBar1}>
         <View style={styles.leftContainer1}>
           <View style={styles.container}>
-            <Image
-              style={styles.userImg}
-              source={{ uri: this.state.iconURL }}
-            />
+            <Image style={styles.userImg} source={{ uri: this.state.icon }} />
             <Username
               uid={this.props.poster}
               navigation={this.props.navigation}
@@ -106,7 +96,7 @@ class LikedFromUser extends React.Component {
         <View style={styles.rightContainer1}>
           <View style={styles.rightIcon1} />
           <TouchableOpacity onPress={this.showActionSheet}>
-            <Text style={styles.report}> . . . </Text>
+            <Text style={styles.report}>...</Text>
           </TouchableOpacity>
           <ActionSheet
             ref={(o) => {
@@ -148,7 +138,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
     borderBottomWidth: 0.5,
     borderColor: '#D6D6D6',
-    //borderTopWidth: .5,
     paddingTop: 7,
   },
   text: {
@@ -174,7 +163,7 @@ const styles = StyleSheet.create({
   },
   navBar1: {
     height: 95,
-    paddingTop: 50, //50
+    paddingTop: 50,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',

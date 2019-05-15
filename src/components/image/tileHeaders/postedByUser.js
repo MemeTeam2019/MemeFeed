@@ -1,5 +1,12 @@
 import React from 'react';
-import { Text, StyleSheet, View, Image, TouchableOpacity } from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import { withNavigation } from 'react-navigation';
 import ActionSheet from 'react-native-actionsheet';
 import firebase from 'react-native-firebase';
@@ -67,7 +74,7 @@ class postedByUser extends React.Component {
     this.props.navigation.navigate('FriendProfile', {
       uid: this.props.poster,
     });
-  }
+  };
 
   render() {
     const optionArray = ['Inappropriate/Irrelevant', 'Cancel'];
@@ -91,10 +98,12 @@ class postedByUser extends React.Component {
         <View style={styles.rightContainer1}>
           <View style={styles.rightIcon1} />
           <TouchableOpacity onPress={this.showActionSheet}>
-            <Text style={styles.report}>. . . </Text>
+            <Text style={styles.report}>...</Text>
           </TouchableOpacity>
           <ActionSheet
-            ref={(o) => (this.ActionSheet = o)}
+            ref={(o) => {
+              this.ActionSheet = o;
+            }}
             options={optionArray}
             cancelButtonIndex={1}
             destructiveIndex={0}
@@ -131,7 +140,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
     borderBottomWidth: 0.5,
     borderColor: '#D6D6D6',
-    //borderTopWidth: .5,
     paddingTop: 7,
   },
   text: {
@@ -157,7 +165,7 @@ const styles = StyleSheet.create({
   },
   navBar1: {
     height: 95,
-    paddingTop: 50, //50
+    paddingTop: 50,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -183,11 +191,6 @@ const styles = StyleSheet.create({
     width: 20,
     resizeMode: 'contain',
     backgroundColor: 'white',
-  },
-  text: {
-    fontSize: 16,
-    fontFamily: 'AvenirNext-Bold',
-    marginLeft: '2.5%',
   },
   report: {
     fontFamily: 'AvenirNext-Bold',

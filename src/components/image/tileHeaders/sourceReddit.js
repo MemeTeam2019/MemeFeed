@@ -53,7 +53,7 @@ class SourceReddit extends React.PureComponent {
         <View style={styles.rightContainer1}>
           <View style={styles.rightIcon1} />
           <TouchableOpacity onPress={this.showActionSheet}>
-            <Text style={styles.report}> ... </Text>
+            <Text style={styles.report}>...</Text>
           </TouchableOpacity>
           <ActionSheet
             ref={(o) => {
