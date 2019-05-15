@@ -1,58 +1,75 @@
-import React, { Component } from 'react';
-import {Text, StyleSheet, View, Image, TouchableOpacity} from 'react-native';
+import React from 'react';
+import { Text, StyleSheet, View, TouchableOpacity, Alert } from 'react-native';
 import { withNavigation } from 'react-navigation';
-import Username from '../username';
 import ActionSheet from 'react-native-actionsheet';
 import firebase from 'react-native-firebase';
 
-class SourceReddit extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: ""
-    }
-  }
-
-
+class SourceReddit extends React.PureComponent {
   showActionSheet = () => {
     this.ActionSheet.show();
   };
 
+  flagMeme = () => {
+    const memeRef = firebase.firestore().doc(`Memes/${this.props.memeId}`);
+    memeRef
+      .get()
+      .then((docSnapshot) => {
+        const { numFlags } = docSnapshot.data();
+        memeRef.update({ numFlags: numFlags + 1 });
+      })
+      .catch((err) => {
+        Alert.alert(
+          'Oops!',
+          'Something went wrong when flagging this image. Please contact us at memefeedaye@gmail.com',
+          { text: 'Ok' }
+        );
+        console.log(err);
+      });
+  };
+
   render() {
-        var optionArray = ['Inappropriate/Irrelevant', 'Cancel'];
+    const optionArray = ['Inappropriate/Irrelevant', 'Cancel'];
     // if just from reddit (a.k.a. on the explore page)
     return (
-
-
-              <View style={styles.navBar1}>
-                <View style={styles.leftContainer1}>
-                <View style={styles.container}>
-                    <Text style={{fontSize: 15}}>sourced from </Text>
-                    <Text style={{fontSize: 15, fontWeight: 'bold', fontStyle: 'italic', color: '#919191', width: 900, marginRight: 2}}> 'r/{this.props.sub}'</Text>
-                  </View>
-                </View>
-                <View style={styles.rightContainer1}>
-                  <View style={styles.rightIcon1} />
-                    <TouchableOpacity onPress={this.showActionSheet}>
-                      <Text style={styles.report}> . . . </Text>
-                    </TouchableOpacity>
-                    <ActionSheet
-                      ref={(o) => (this.ActionSheet = o)}
-                      options={optionArray}
-                      cancelButtonIndex={1}
-                      destructiveIndex={0}
-                      onPress={(index) => {
-                        if (optionArray[index] == 'Inappropriate/Irrelevant') {
-
-                        }
-                      }}
-                    />
-                </View>
-              </View>
-
-
-
-
+      <View style={styles.navBar1}>
+        <View style={styles.leftContainer1}>
+          <View style={styles.container}>
+            <Text style={{ fontSize: 15 }}>sourced from </Text>
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: 'bold',
+                fontStyle: 'italic',
+                color: '#919191',
+                width: 900,
+                marginRight: 2,
+              }}
+            >
+              {' '}
+              'r/{this.props.sub}'
+            </Text>
+          </View>
+        </View>
+        <View style={styles.rightContainer1}>
+          <View style={styles.rightIcon1} />
+          <TouchableOpacity onPress={this.showActionSheet}>
+            <Text style={styles.report}> ... </Text>
+          </TouchableOpacity>
+          <ActionSheet
+            ref={(o) => {
+              this.ActionSheet = o;
+            }}
+            options={optionArray}
+            cancelButtonIndex={1}
+            destructiveIndex={0}
+            onPress={(index) => {
+              if (optionArray[index] === 'Inappropriate/Irrelevant') {
+                this.flagMeme();
+              }
+            }}
+          />
+        </View>
+      </View>
     );
   }
 }
@@ -90,7 +107,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     backgroundColor: 'transparent',
-    marginRight: 10
+    marginRight: 10,
   },
   rightIcon1: {
     height: 10,
@@ -103,6 +120,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 5,
     color: '#919191',
-    backgroundColor: 'white'
-  }
+    backgroundColor: 'white',
+  },
 });

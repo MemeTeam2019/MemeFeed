@@ -11,14 +11,10 @@ import Tile from '../image/tile';
  * memes: Array[Object]
  * loadMemes: function
  */
-class MemeList extends React.Component {
+class MemeList extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      imageuri: '',
-      isLoading: true,
-      memes: [],
-    };
+    this.renderTile = this.renderTile.bind(this);
   }
 
   renderTile = ({ item }) => {
@@ -40,7 +36,7 @@ class MemeList extends React.Component {
       <FlatList
         style={styles.containerStyle}
         data={this.props.memes}
-        renderItem={this.renderTile.bind(this)}
+        renderItem={this.renderTile}
         onEndReached={() => {
           // only load memes if previous ones finished loading
           this.props.loadMemes();
