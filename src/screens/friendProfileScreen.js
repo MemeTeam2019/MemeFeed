@@ -677,7 +677,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: 'white',
     marginRight: '9%',
-    marginLeft: '9%'
+    marginLeft: '9%',
+    color: 'black'
   },
   textSty2: {
     fontSize: 20,
@@ -685,6 +686,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingRight: 3,
     paddingHorizontal: 10,
+    color: 'black'
   },
   textSty3: {
     fontSize: 15,
@@ -694,6 +696,7 @@ const styles = StyleSheet.create({
     paddingRight: 2,
     paddingLeft: 2,
     paddingHorizontal: 10,
+    color: 'black'
   },
   textSty4: {
     fontSize: 20,
@@ -702,6 +705,7 @@ const styles = StyleSheet.create({
     paddingRight: 3,
     paddingHorizontal: 10,
     fontWeight: 'bold',
+    color: 'black'
   },
   textSty5: {
     fontSize: 20,

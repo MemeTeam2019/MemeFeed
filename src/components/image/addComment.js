@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Button, TextInput, Keyboard } from 'react-native';
+import { StyleSheet, View, Button, TextInput, Keyboard, TouchableOpacity, Text } from 'react-native';
 import firebase from 'react-native-firebase';
 
 class AddComment extends React.Component {
@@ -111,16 +111,11 @@ class AddComment extends React.Component {
           value={this.state.text}
         />
 
-        <Button
-          onPress={this._onPressButton}
-          style={[
-            styles.postButton,
-            { height: Math.max(35, this.state.height) },
-          ]}
-          disabled={!this.state.text.trim()}
-          title='Post'
-          color='#000'
-        />
+        <TouchableOpacity onPress={this._onPressButton}
+            style={styles.button}
+            disabled={!this.state.text.trim()} >
+            <Text style={styles.button}>Post </Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -148,4 +143,15 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: '#d6d7da',
   },
+  button: {
+    backgroundColor: 'transparent',
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center',
+    fontSize: 20,
+    color: 'black',
+    marginBottom: 3,
+    height: 35,
+    justifyContent: 'center'
+    //height: Math.max(35, this.state.height),
+  }
 });

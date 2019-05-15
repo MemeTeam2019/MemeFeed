@@ -158,7 +158,8 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
     fontSize: 20,
-    color: '#fff'
+    color: '#fff',
+    marginBottom: 3
   }
 });
 

@@ -186,13 +186,11 @@ class SignupScreen extends React.Component {
               </Text>
             </TouchableOpacity>
 
-            <Button
-              title='Submit'
-              style={styles.submit}
-              color='#fff'
-              disabled={!this.state.checked}
-              onPress={() => this.handleSubmit()}
-            />
+            <TouchableOpacity onPress={() => this.handleSubmit()}
+                              style={styles.button}
+                              disabled={!this.state.checked}>
+              <Text style={styles.button}>Submit </Text>
+            </TouchableOpacity>
           </ScrollView>
         </KeyboardAvoidingView>
       </ImageBackground>
@@ -256,4 +254,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  button: {
+    backgroundColor: 'transparent',
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center',
+    fontSize: 20,
+    color: '#fff',
+    marginBottom: 3
+  }
 });
