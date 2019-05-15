@@ -9,6 +9,7 @@ import {
   ImageBackground,
   Image,
   Dimensions,
+  Platform
 } from 'react-native';
 import firebase from 'react-native-firebase';
 
