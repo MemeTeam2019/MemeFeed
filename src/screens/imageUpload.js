@@ -13,7 +13,7 @@ import ImagePicker from 'react-native-image-picker';
 
 /**
  * Screen used for users to upload memes
- * 
+ *
  *
  * Used by:
  *     mainNavigator.js
@@ -36,8 +36,19 @@ class ImageUpload extends React.Component {
     };
   }
 
-  
+  componentWillUnmount() {
+    this._isMounted = false;
+    this.unsubscribe = null;
+  }
+
+  componentDidMount() {
+    console.log('calling handel photo')
+    this.handlePhoto()
+  }
+
+
   handlePhoto = () => {
+    console.log('picking das photo')
     const options = {
       noData: true
     };
@@ -48,38 +59,23 @@ class ImageUpload extends React.Component {
                         isChosen: true
         });
         this.props.navigation.push("CaptionPage", {
-          imageuri: this.state.imageuri, 
+          imageuri: this.state.imageuri,
           filename: this.state.filename})
 
       }
     });
+    this.state.isChosen = false;
   }
 
   render() {
     // if(this.state.isChosen==false&&this.state.isUploaded==false){
       //choose the photo
+      if (this.state.isChosen === false){
+        this.handlePhoto();
+      }
     return (
-        <View style={styles.containerStyle}>
-          <View style={styles.navBar}>
-            <Text style={styles.textStyle}>
-              Upload
-            </Text>
-          </View>
-          <View style={styles.container3}>
-            <View style={styles.container2}>
-              <Image
-                source={require('../images/uploadFillerPic.png')}
-                style={styles.tile}
-              />
-            </View>
-            <View style={styles.container}>
-              <TouchableOpacity onPress={this.handlePhoto}>
-                <Text style={styles.button}>Open Library</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-        
+
+      <View/>
       );
   }
 }
@@ -137,4 +133,3 @@ const styles = StyleSheet.create({
 		justifyContent: 'center'
   }
 });
-

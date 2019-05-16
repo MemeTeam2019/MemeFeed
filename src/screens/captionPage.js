@@ -11,6 +11,7 @@ import {
 
 import firebase from 'react-native-firebase';
 import { TextInput } from 'react-native-gesture-handler';
+import ImagePicker from 'react-native-image-picker';
 import AutoHeightImage from 'react-native-auto-height-image';
 
 class CaptionPage extends React.Component{
@@ -22,6 +23,12 @@ class CaptionPage extends React.Component{
         fontFamily: 'Avenir Next',
         fontWeight: 'normal'
       },
+      headerLeft: (
+        <Button
+          onPress={navigation.getParam('back')}
+          title=" Back"
+        />
+      ),
       headerRight: (
         <Button
           onPress={navigation.getParam('upload')}
@@ -51,7 +58,9 @@ class CaptionPage extends React.Component{
 
   // this gets the api key from the server
   componentDidMount() {
+    console.log('mouning hnnng')
     this.props.navigation.setParams({ upload: this.handleUpload });
+    this.props.navigation.setParams({ back: this.pickPhoto });
     this._isMounted = true;
     if (this._isMounted) {
       this.unsubscribe = firebase
@@ -70,6 +79,30 @@ class CaptionPage extends React.Component{
   }
 
 
+  pickPhoto = () => {
+    console.log('picking das photo')
+    const options = {
+      noData: true
+    };
+    ImagePicker.launchImageLibrary(options, (response)=>{
+      if(response.uri){
+        this.setState({ imageuri: response.uri,
+                        filename: response.filename,
+                        isChosen: true,
+                        caption: '',
+        });
+      }
+      if (response.didCancel) {
+        this.props.navigation.popToTop()
+        this.props.navigation.navigate('Profile', {
+          uid: firebase.auth().currentUser.uid,
+        });
+        this.componentWillUnmount()
+      }
+    });
+  }
+
+
 	handleUpload = () => {
     console.log('UPLOADING HNNNG')
 		if (!this.state.imageuri) {
@@ -79,6 +112,7 @@ class CaptionPage extends React.Component{
 
     if (this.state.caption === '') {
       Alert.alert('Empty caption! Say something about your meme :)')
+      return
     }
 
     const storRef = firebase.storage().ref('meme_images').child(firebase.auth().currentUser.uid+this.state.filename);
@@ -183,14 +217,21 @@ class CaptionPage extends React.Component{
 
             // if safe for work, then after being posted this our users Reacts
             // navigate to their profile,
-            this.props.navigation.push('Profile', {
+
+
+
+            this.props.navigation.popToTop()
+            this.props.navigation.navigate('Profile', {
               uid: firebase.auth().currentUser.uid,
             });
-          }
-          this.setState({
-            isChosen: false,
-          });
 
+            this.componentWillUnmount()
+            this.setState({
+              isChosen: false,
+              caption: '',
+              imageuri: '',
+            });
+          }
       	} catch (error) {
       		console.log(error);
       	}
@@ -198,6 +239,9 @@ class CaptionPage extends React.Component{
 	}
 
 	render() {
+    // if (this.state.isChosen === false){
+    //   this.pickPhoto()
+    // }
 		return(
 			<KeyboardAvoidingView
 			  behavior="position"
