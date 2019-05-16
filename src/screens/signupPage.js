@@ -118,7 +118,7 @@ class SignupScreen extends React.Component {
         style={styles.background}
       >
         <KeyboardAvoidingView
-          behavior='padding'
+          behavior={Platform.OS === 'android' ? null : 'padding'}
           style={styles.container}
           keyboardVerticalOffset={0}
         >
@@ -126,7 +126,7 @@ class SignupScreen extends React.Component {
             contentContainerStyle={{
               flex: 1,
               justifyContent: 'center',
-              marginTop: '25%',
+              // marginTop: '25%',
             }}
           >
             <Text style={styles.title}>Sign Up</Text>

@@ -86,7 +86,7 @@ class LoginScreen extends React.Component {
         style={styles.background}
       >
         <KeyboardAvoidingView
-          behavior='padding'
+          behavior={Platform.OS === 'android' ? null : 'padding'}
           style={styles.container}
           keyboardVerticalOffset={0}
         >
