@@ -1,6 +1,14 @@
 
 import React from 'react';
-import { StyleSheet, ScrollView, View, Button, ImageBackground, Image, Text,Dimensions } from 'react-native';
+import { StyleSheet,
+         ScrollView,
+         View,
+         Button,
+         ImageBackground,
+         Image,
+         Text,
+         TouchableOpacity,
+         Dimensions } from 'react-native';
 
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -41,14 +49,11 @@ export default class LoginScreen extends React.Component {
         </View>
 
         <View style={styles.nextBut}>
-          <Button
-            title="Next"
-            color='#000'
-            style={{paddingTop: 30}}
-            onPress={() =>
-              this.props.navigation.push('Confirm')
-            }
-          />
+          <TouchableOpacity onPress={() => this.props.navigation.push('Confirm')}
+                            style={styles.button}>
+              <Text style={styles.button}> Next </Text>
+          </TouchableOpacity>
+
         </View>
       </ImageBackground>
       </ScrollView>
@@ -80,7 +85,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 35,
     fontFamily: 'AvenirNext-Regular',
-    //color: '#9F02FF',
+    color: 'black',
     paddingHorizontal: '5%',
     marginBottom: '0.5%',
     textAlign: 'center',
@@ -94,7 +99,7 @@ const styles = StyleSheet.create({
   aboutText: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
-    color: '#000',
+    color: 'black',
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,
@@ -152,6 +157,17 @@ const styles = StyleSheet.create({
     // paddingTop: 10,
     alignItems: 'center',
   },
+  button: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center',
+    fontSize: 20,
+    color: 'black',
+    marginBottom: 10,
+    paddingTop: 20,
+    justifyContent: 'flex-end',
+  }
 });
 
 

@@ -31,7 +31,7 @@ class SourceReddit extends React.Component {
               <View style={styles.navBar1}>
                 <View style={styles.leftContainer1}>
                 <View style={styles.container}>
-                    <Text style={{fontSize: 15}}>sourced from </Text>
+                    <Text style={{fontSize: 15, color: 'black'}}>sourced from </Text>
                     <TouchableOpacity onPress={() => this.goToSubreddit()}>
                       <Text style={{fontSize: 15, fontWeight: 'bold', fontStyle: 'italic', color: '#919191', width: 900, marginRight: 2}}> 'r/{this.props.sub}'</Text>
                     </TouchableOpacity>

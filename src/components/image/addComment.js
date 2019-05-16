@@ -112,7 +112,17 @@ class AddComment extends React.Component {
         />
 
         <TouchableOpacity onPress={this._onPressButton}
-            style={styles.button}
+            style={{backgroundColor: 'transparent',
+                fontFamily: 'AvenirNext-Regular',
+                textAlign: 'center',
+                fontSize: 20,
+                color: 'black',
+                marginBottom: 3,
+                height: Math.max(35, this.state.height),
+                justifyContent: 'center',
+                marginLeft: 10,
+                marginTop: 3}}
+
             disabled={!this.state.text.trim()} >
             <Text style={styles.button}>Post </Text>
         </TouchableOpacity>

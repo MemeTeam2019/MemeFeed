@@ -67,6 +67,7 @@ class PostInfo extends React.Component {
               fontFamily: 'AvenirNext-Regular',
               paddingTop: 3,
               marginLeft: '2.5%',
+              color: 'black'
             }}
           >
             {this.props.reactCount} Reactions

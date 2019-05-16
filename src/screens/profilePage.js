@@ -465,6 +465,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     backgroundColor: 'white',
     paddingRight: 1,
+    color: 'black',
     paddingLeft: 1,
     paddingHorizontal: 10,
     backgroundColor: 'white',
@@ -476,6 +477,7 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     backgroundColor: 'white',
     paddingRight: 3,
+    color: 'black',
     paddingHorizontal: 10,
   },
   textSty3: {
@@ -485,6 +487,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingRight: 2,
     paddingLeft: 2,
+    color: 'black',
     paddingHorizontal: 10,
   },
   textSty4: {
@@ -493,6 +496,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingRight: 3,
     paddingHorizontal: 10,
+    color: 'black',
     fontWeight: 'bold',
   },
   textSty5: {
