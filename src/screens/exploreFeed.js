@@ -30,11 +30,9 @@ class ExploreFeed extends React.Component {
 
   constructor(props) {
     super(props);
-    this._isMounted = false;
-    this.unsubscribe = null;
+    this.fetchMemes = this.fetchMemes.bind(this);
     this.state = {
       updated: true,
-      imageuri: '',
       inGridView: true,
       inFullView: false,
       memes: [],
@@ -43,22 +41,15 @@ class ExploreFeed extends React.Component {
     };
   }
 
-  componentWillUnmount() {
-    this._isMounted = false;
-    this.unsubscribe = null;
-  }
-
   componentDidMount() {
-    this._isMounted = true;
-    if (this._isMounted) {
-      this.unsubscribe = firebase
-        .firestore()
-        .collection('Memes')
-        .orderBy('time', 'desc')
-        .limit(15)
-        .get()
-        .then(this.updateFeed);
-    }
+    firebase
+      .firestore()
+      .collection('Memes')
+      .orderBy('time', 'desc')
+      .limit(15)
+      .where('numFlags', '<', 10)
+      .get()
+      .then(this.updateFeed);
   }
 
   fetchMemes = () => {
@@ -78,9 +69,9 @@ class ExploreFeed extends React.Component {
     }
   };
 
-  updateFeed = (querySnapshot) => {
+  updateFeed = (memesSnapshot) => {
     const newMemes = [];
-    querySnapshot.docs.forEach((doc) => {
+    memesSnapshot.docs.forEach((doc) => {
       const { url, time, sub } = doc.data();
       newMemes.push({
         key: doc.id,
@@ -99,7 +90,7 @@ class ExploreFeed extends React.Component {
         return {
           memes: mergedMemes,
           updated: true,
-          oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+          oldestDoc: memesSnapshot.docs[memesSnapshot.docs.length - 1],
         };
       });
     });
@@ -311,7 +302,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    borderBottomWidth: .5,
+    borderBottomWidth: 0.5,
     borderColor: '#D6D6D6',
   },
 });

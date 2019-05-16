@@ -17,7 +17,8 @@ class postedByUser extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      iconURL: '',
+      iconURL:
+        'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon555.png?alt=media&token=48fb9bf8-4efb-490c-a178-13a9efb2289c',
     };
   }
 
@@ -36,9 +37,7 @@ class postedByUser extends React.Component {
       .then((docSnapshot) => {
         if (docSnapshot.exists) {
           const { icon } = docSnapshot.data();
-          this.state.iconURL = icon;
-          console.log(this.state.iconURL);
-          console.log(icon);
+          this.setState({ iconURL: icon });
         } else {
           console.log("doesn't exist");
         }

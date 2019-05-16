@@ -21,8 +21,8 @@ class MemeGrid extends React.Component {
     if (!data || !data.src) {
       return this._renderPlaceholder(i);
     }
-    const { src, key, sub, likedFrom, postedBy, poster } = data;
-    console.log(data);
+    const { src, key, sub, likedFrom, postedBy, poster, numFlags } = data;
+    if (numFlags >= 10 || src === '') return null;
     return (
       <View style={[styles.item]} key={i}>
         <TouchableOpacity

@@ -18,7 +18,8 @@ class MemeList extends React.PureComponent {
   }
 
   renderTile = ({ item }) => {
-    if (!item || !item.src) return null;
+    if (!item || !item.src || item.numFlags >= 10 || item.src === '')
+      return null;
     return (
       <Tile
         memeId={item.key}
@@ -38,7 +39,7 @@ class MemeList extends React.PureComponent {
         data={this.props.memes}
         renderItem={this.renderTile}
         onEndReached={() => {
-          // only load memes if previous ones finished loading
+          // Load new memes once end of list is reached
           this.props.loadMemes();
         }}
       />

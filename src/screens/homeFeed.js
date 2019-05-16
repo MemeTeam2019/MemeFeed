@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, TouchableOpacity, View, Modal, StyleSheet } from 'react-native';
+import { Image, TouchableOpacity, View, StyleSheet } from 'react-native';
 import firebase from 'react-native-firebase';
 
 import MemeGrid from '../components/general/memeGrid';
@@ -10,10 +10,11 @@ class HomeFeed extends React.Component {
     header: null,
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this._isMounted = false;
     this.unsubscribe = null;
+    this.fetchMemes = this.fetchMemes.bind(this);
     this.ref = firebase
       .firestore()
       .collection('FeedsTest')
@@ -67,6 +68,7 @@ class HomeFeed extends React.Component {
     const newMemes = [];
     querySnapshot.docs.forEach((doc) => {
       const { time, url, posReacts, likedFrom, likers } = doc.data();
+      console.log(doc.data());
       if (posReacts > 0) {
         const recentLikedFrom = likedFrom[likedFrom.length - 1];
         const recentLiker = likers[likers.length - 1];
@@ -199,7 +201,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
     backgroundColor: 'rgba(255,255,255,1)',
-    borderBottomWidth: .5,
+    borderBottomWidth: 0.5,
     borderColor: '#D6D6D6',
   },
   modelStyle: {
@@ -221,7 +223,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 50, //50
+    paddingTop: 50,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -235,7 +237,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    borderBottomWidth: .5,
+    borderBottomWidth: 0.5,
     borderColor: '#D6D6D6',
   },
   tile: {
@@ -252,7 +254,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 5,
     paddingRight: 5,
-    borderBottomWidth: .5,
+    borderBottomWidth: 0.5,
     borderColor: '#D6D6D6',
   },
 });
