@@ -80,6 +80,12 @@ class SignupScreen extends React.Component {
       Alert.alert("Passwords don't match", '', [{ text: 'OK' }]);
       return;
     }
+    if (email === '' || password === '' || name === '' || username === '') {
+      Alert.alert('Error', 'Enter in all information', [
+        { text: 'OK' },
+      ]);
+      return;
+    }
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)

@@ -171,7 +171,6 @@ class HomeFeed extends React.Component {
                 <TouchableOpacity>
                   <Text style={styles.suggestText}> Siddhi </Text>
                 </TouchableOpacity>
-                <SuggestUser/>
               </View>
               <View style={styles.suggestText}>
                 <TouchableOpacity>

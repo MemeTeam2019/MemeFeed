@@ -22,6 +22,7 @@ class LoginScreen extends React.Component {
 
   componentDidMount() {
     this.setState({
+      email: '',
       password: '',
     });
   }
@@ -29,6 +30,14 @@ class LoginScreen extends React.Component {
   handleLogin = () => {
     const email = this.state.email;
     const password = this.state.password;
+
+    if (email === '' || password === '') {
+      Alert.alert('Error', 'Enter Email and Password', [
+        { text: 'OK' },
+      ]);
+      return;
+    }
+
 
     firebase
       .auth()
