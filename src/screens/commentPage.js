@@ -170,7 +170,7 @@ class CommentPage extends React.Component {
     const poster = this.props.navigation.getParam('poster', '');
     return (
       <KeyboardAvoidingView
-        behavior='position'
+        behavior={Platform.OS === 'android' ? null : 'position'}
         keyboardVerticalOffset={Dimensions.get('window').height * 0.1}
       >
         <ScrollView
