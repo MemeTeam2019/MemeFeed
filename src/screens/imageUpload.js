@@ -68,7 +68,7 @@ class ImageUpload extends React.Component {
           <View style={styles.container3}>
             <View style={styles.container2}>
               <Image
-                source={require('../images/image.png.gif')}
+                source={require('../images/uploadFillerPic.png')}
                 style={styles.tile}
               />
             </View>
