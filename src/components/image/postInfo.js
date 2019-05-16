@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Timestamp } from 'react-native';
 import firebase from 'react-native-firebase';
 
 import CommentSample from './commentSample';
 import { withNavigation } from 'react-navigation';
+import moment from 'moment';
 
 class PostInfo extends React.Component {
   constructor() {
@@ -12,10 +13,12 @@ class PostInfo extends React.Component {
     this.state = {
       commentCount: 0,
       commentString: 'view all comments plz chng',
+      date: '',
     };
   }
 
   componentDidMount() {
+    this.dateConverter();
     this.unsubscribe = firebase
       .firestore()
       .collection(`Comments/${this.props.memeId}/Info`)
@@ -56,6 +59,11 @@ class PostInfo extends React.Component {
       poster: this.props.poster,
     });
   }
+  //posted time -- converts epoch date to an actual date
+  dateConverter = () => {
+    date = new Date(parseInt(this.props.time) * 1000);
+    this.setState({date: moment(date.toString()).fromNow()})
+  }
 
   render() {
     if (this.props.showAllComments) {
@@ -71,6 +79,7 @@ class PostInfo extends React.Component {
           >
             {this.props.reactCount} Reactions
           </Text>
+          <Text style={styles.time}>{this.state.date}</Text>
         </View>
       );
     }
@@ -98,6 +107,7 @@ class PostInfo extends React.Component {
               {this.state.commentString}
             </Text>
           </TouchableOpacity>
+          <Text style={styles.time}>{this.state.date}</Text>
         </View>
       );
     } else {
@@ -118,6 +128,7 @@ class PostInfo extends React.Component {
             {this.props.reactCount} Reactions
           </Text>
           <CommentSample memeId={this.props.memeId} />
+          <Text style={styles.time}>{this.state.date}</Text>
         </View>
       );
     }
@@ -159,4 +170,10 @@ const styles = StyleSheet.create({
     marginLeft: '2.5%',
     //color: '#383838'
   },
+  time: {
+    fontSize: 14,
+    fontFamily: 'AvenirNext-Regular',
+    marginLeft: '2.5%',
+    color: '#919191'
+  }
 });

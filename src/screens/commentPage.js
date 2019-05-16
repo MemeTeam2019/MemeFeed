@@ -6,6 +6,7 @@ import Tile from '../components/image/tile';
 import AddComment from '../components/image/addComment';
 import CommentList from '../components/image/commentList';
 
+
 /**
  * Display comments for a meme, along with the buttonBar and the meme itself.
  *
@@ -168,6 +169,7 @@ class CommentPage extends React.Component {
     const likedFrom = this.props.navigation.getParam('likedFrom', '');
     const postedBy = this.props.navigation.getParam('postedBy', '');
     const poster = this.props.navigation.getParam('poster', '');
+    const time = this.props.navigation.getParam('time');
     return (
       <KeyboardAvoidingView
         behavior='position'
@@ -187,6 +189,7 @@ class CommentPage extends React.Component {
             postedBy={postedBy}
             poster={poster}
             showAllComments={this.showAllComments}
+            time={time}
           />
           <CommentList
             memeId={this.state.memeId}

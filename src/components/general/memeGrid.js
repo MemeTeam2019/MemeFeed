@@ -37,6 +37,7 @@ class MemeGrid extends React.Component {
               likedFrom,
               postedBy,
               poster,
+              time,
             });
           }}
         >
