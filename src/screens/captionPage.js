@@ -116,7 +116,7 @@ class CaptionPage extends React.Component{
       return
     }
 
-    const storRef = firebase.storage().ref('meme_images').child(firebase.auth().currentUser.uid+Math.round(+new Date() / 1000));
+    const storRef = firebase.storage().ref('meme_images_TEST').child(firebase.auth().currentUser.uid+this.state.filename);
     storRef.putFile(this.state.imageuri);
 
     storRef.getDownloadURL().then(async (newurl) => {
@@ -158,8 +158,8 @@ class CaptionPage extends React.Component{
           } else {
             // image is okay to post
             // post in Memes and use the doc id it creates elsewhere
-            const memeCollection = firebase.firestore().collection('MemesTest').doc(firebase.auth().currentUser.uid+Math.round(+new Date() / 1000);
-            memeCollection.set({
+            const memeCollection = firebase.firestore().collection('MemesTest');
+            memeCollection.add({
               url: newurl,
               author: firebase.auth().currentUser.uid,
               sub: '',
