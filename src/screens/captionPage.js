@@ -8,7 +8,7 @@ import {
 	Button,
 	ScrollView
 } from 'react-native';
-
+import { NavigationEvents } from 'react-navigation';
 import firebase from 'react-native-firebase';
 import { TextInput } from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-picker';
@@ -59,6 +59,7 @@ class CaptionPage extends React.Component{
   // this gets the api key from the server
   componentDidMount() {
     console.log('mouning hnnng')
+    this.pickPhoto()
     this.props.navigation.setParams({ upload: this.handleUpload });
     this.props.navigation.setParams({ back: this.pickPhoto });
     this._isMounted = true;
@@ -218,18 +219,9 @@ class CaptionPage extends React.Component{
             // if safe for work, then after being posted this our users Reacts
             // navigate to their profile,
 
-
-
-            this.props.navigation.popToTop()
+            this.props.navigation.popToTop();
             this.props.navigation.navigate('Profile', {
               uid: firebase.auth().currentUser.uid,
-            });
-
-            this.componentWillUnmount()
-            this.setState({
-              isChosen: false,
-              caption: '',
-              imageuri: '',
             });
           }
       	} catch (error) {
@@ -247,6 +239,15 @@ class CaptionPage extends React.Component{
 			  behavior="position"
 				keyboardVerticalOffset={Dimensions.get('window').height * 0.12 }>
 				<View>
+          <NavigationEvents
+            onDidFocus={() => {
+              this.setState({
+                isChosen: false,
+                caption: '',
+                imageuri: '',
+              }, () => this.pickPhoto());
+            }}
+          />
 					<ScrollView
 					ref={(ref) => {
 						this.scrollView = ref;
@@ -264,6 +265,7 @@ class CaptionPage extends React.Component{
 								onChangeText = {(caption) => this.setState({caption: caption})}
 								autoCapitalize="none"
 								multiline
+                value={this.state.caption}
 							/>
 						</View>
 					</ScrollView>

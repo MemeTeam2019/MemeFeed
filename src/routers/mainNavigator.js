@@ -12,7 +12,6 @@ import HomeFeed from '../screens/homeFeed';
 import FriendProfile from '../screens/friendProfileScreen';
 import CommentPage from '../screens/commentPage';
 import FollowList from '../components/home/searchResultList';
-import ImageUpload from '../screens/imageUpload';
 import CaptionPage from '../screens/captionPage';
 
 import aboutInfo1 from '../screens/aboutInfo1';
@@ -104,15 +103,12 @@ const ProfileStack = createStackNavigator(
 
 const UploadStack = createStackNavigator(
   {
-    ImageUpload: {
-      screen: ImageUpload,
-    },
     CaptionPage: {
       screen: CaptionPage,
     }
   },
   {
-    initialRouteName: 'ImageUpload'
+    initialRouteName: 'CaptionPage'
   }
 );
 
@@ -160,6 +156,16 @@ const MainRouter = createBottomTabNavigator({
       tabBarIcon: ({ tintColor }) => (
         <Icon name='image' size={35} color={tintColor} />
       ),
+
+      tabBarOptions: {
+        showLabel: false,
+        showIcon: true,
+        activeTintColor: '#000000',
+        inactiveTintColor: '#D3D3D3',
+        style: {
+          height: '9%',
+        },
+      },
     },
   },
   Profile: {
