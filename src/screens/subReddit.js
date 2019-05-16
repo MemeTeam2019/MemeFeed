@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import {
   View,
   Text,
@@ -22,7 +22,7 @@ import MemeList from '../components/general/memeList';
  * -----
  * None
  */
-export default class Profile extends React.Component {
+class SubReddit extends React.Component {
   static navigationOptions = {
     header: null,
   };
@@ -34,10 +34,8 @@ export default class Profile extends React.Component {
     this._isMounted = false;
     this.ref = firebase
       .firestore()
-      .collection('ReactsTest')
-      .doc(firebase.auth().currentUser.uid)
-      .collection('Likes')
-      .orderBy('time', 'desc');
+      .collection('Memes')
+      .where('sub', '==', this.props.navigation.getParam('sub'));
 
     this.state = {
       username: '',
@@ -51,44 +49,22 @@ export default class Profile extends React.Component {
       updated: true,
       memes: [],
       oldestDoc: 0,
-      icon: ''
+      icon: '',
+      //sub: ''
     };
   }
 
+
+
   componentDidMount() {
     this._isMounted = true;
+    console.log('==========')
+    console.log(this.props.navigation.getParam('sub'))
     if (this._isMounted) {
-      const uid = firebase.auth().currentUser.uid;
-      // Get the profile icon
-      firebase
+      this.unsubscribe = firebase
         .firestore()
-        .collection('Users')
-        .doc(uid)
-        .get()
-        .then((docSnapshot) => {
-          if (docSnapshot.exists) {
-            const { icon } = docSnapshot.data();
-            this.setState({ icon })
-          } else {
-            //console.log("doesn't exist");
-          }
-        })
-        .catch((error) => {
-          //console.log(error);
-        });
-      this.userListener = firebase
-        .firestore()
-        .collection('Users')
-        .doc(uid)
-        .get()
-        .then((snapshot) => this.setState(snapshot.data()));
-      firebase
-        .firestore()
-        .collection('ReactsTest')
-        .doc(firebase.auth().currentUser.uid)
-        .collection('Likes')
-        .orderBy('time', 'desc')
-        .limit(15)
+        .collection('Memes')
+        .where('sub', '==', this.props.navigation.getParam('sub'))
         .get()
         .then(this.updateFeed);
     }
@@ -102,12 +78,8 @@ export default class Profile extends React.Component {
       const oldestDoc = this.state.oldestDoc;
       firebase
         .firestore()
-        .collection('Reacts')
-        .doc(firebase.auth().currentUser.uid)
-        .collection('Likes')
-        .orderBy('time', 'desc')
-        .limit(15)
-        .startAfter(oldestDoc)
+        .collection('Memes')
+        .where('sub', '==', this.props.navigation.getParam('sub'))
         .get()
         .then(this.updateFeed);
     }
@@ -115,27 +87,33 @@ export default class Profile extends React.Component {
 
   updateFeed = (querySnapshot) => {
     const newMemes = [];
-
     querySnapshot.docs.forEach((doc) => {
-      const { time, url, rank, likedFrom } = doc.data();
-      if (rank > 1) {
-        newMemes.push({
-          key: doc.id,
-          doc, // DocumentSnapshot
-          src: url,
-          time,
-          likedFrom,
-          // this is to ensure that if a user changes their reaction to a meme
-          // on their own page that the liked from source is still the same
-          postedBy: likedFrom,
-          poster: firebase.auth().currentUser.uid,
-        });
+      const { url, time, sub } = doc.data();
+      newMemes.push({
+        key: doc.id,
+        doc,
+        src: url,
+        time,
+        sub,
+        postedBy: sub,
+      });
+
+      const compareTime = (a, b) => {
+        if (a.time > b.time) return -1;
+        if (a.time < b.time) return 1;
+        return 0;
       }
+
+      newMemes.sort(compareTime)
+
     });
+
+
 
     Promise.all(newMemes).then((resolvedMemes) => {
       this.setState((prevState) => {
-        const mergedMemes = prevState.memes.concat(resolvedMemes);
+        var mergedMemes = prevState.memes.concat(resolvedMemes);
+
         return {
           memes: mergedMemes,
           updated: true,
@@ -145,22 +123,9 @@ export default class Profile extends React.Component {
     });
   };
 
-  getUserInfo = () => {
-    const uid = firebase.auth().currentUser.uid;
-    firebase
-      .firestore()
-      .collection('Users')
-      .doc(uid)
-      .get()
-      .then((snapshot) => {
-        const data = snapshot.data();
-        this.setState(Object.assign(data, { uid }));
-      });
-  };
+  //comment sample line 53 (sorting the meme list)
 
-  showActionSheet = () => {
-    this.ActionSheet.show();
-  };
+
 
   onGridViewPressedP = () => {
     this.setState({ selectGridButtonP: true });
@@ -172,17 +137,7 @@ export default class Profile extends React.Component {
     this.setState({ selectListButtonP: true });
   };
 
-  logout = () => {
-    firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        this.props.navigation.navigate('Auth');
-      })
-      .catch((err) => {
-        //console.log(err);
-      });
-  };
+
 
   renderItem(item, itemSize, itemPaddingHorizontal) {
     return (
@@ -210,80 +165,9 @@ export default class Profile extends React.Component {
     return <Tile memeId={item.key} imageUrl={item.src} />;
   };
 
-  render() {
-    const optionArray = ['About', 'Privacy Policy', 'Log Out', 'Cancel'];
 
-    if (this.state.memes.length === 0) {
-      return (
-        <View style={styles.containerStyle}>
-          <View style={styles.navBar1}>
-            <View style={styles.leftContainer1}>
-              <Text style={[styles.text, { textAlign: 'left' }]}>{}</Text>
-            </View>
-            <Text style={styles.textSty4}>{this.state.username}</Text>
-            <View style={styles.rightContainer1}>
-              <View style={styles.rightIcon1} />
-              <TouchableOpacity onPress={this.showActionSheet}>
-                <Image
-                  source={require('../images/setting.png')}
-                  style={{ width: 60, height: 30 }}
-                />
-              </TouchableOpacity>
-              <ActionSheet
-                ref={(o) => {
-                  this.ActionSheet = o;
-                }}
-                title='User Settings'
-                options={optionArray}
-                cancelButtonIndex={3}
-                destructiveIndex={0}
-                onPress={(index) => {
-                  //console.log(index);
-                  if (optionArray[index] == 'Log Out') {
-                    this.logout();
-                  } else if (optionArray[index] == 'About') {
-                    this.props.navigation.push('InfoStack');
-                  } else if (optionArray[index] == 'Privacy Policy') {
-                    this.props.navigation.push('Privacy');
-                  }
-                }}
-              />
-            </View>
-          </View>
-          {/* Profile Pic, Follwers, Follwing Block */}
-          <View style={styles.navBar2}>
-            <View style={styles.leftContainer2}>
-              <Image
-                source={{ uri: this.state.icon }}
-                style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
-              />
-            </View>
-            <Text style={styles.textSty}>
-              {this.state.followingCnt} {'\n'}{' '}
-              <Text style={styles.textSty3}>Following</Text>
-            </Text>
-            <View style={styles.rightContainer2}>
-              <Text style={styles.textSty}>
-                {this.state.followersCnt} {'\n'}{' '}
-                <Text style={styles.textSty3}>Followers</Text>{' '}
-              </Text>
-            </View>
-          </View>
-          {/*DISPLAY NAME*/}
-          <View style={styles.profilePic}>
-            <Text style={styles.textSty2}>{this.state.name}</Text>
-            <Text> </Text>
-            <Text> </Text>
-          </View>
-          <View style={styles.containerStyle2}>
-            <Image
-              source={require('../components/misc/noLikes.png')}
-              style={styles.tile}
-            />
-          </View>
-        </View>
-      );
-    }
+render() {
+    const optionArray = ['About', 'Privacy Policy', 'Log Out', 'Cancel'];
     // Photo List/Full View of images
     return (
       <React.Fragment>
@@ -292,82 +176,15 @@ export default class Profile extends React.Component {
             <View style={styles.leftContainer1}>
               <Text style={[styles.text, { textAlign: 'left' }]}>{}</Text>
             </View>
-            <Text style={styles.textSty4}>{this.state.username}</Text>
+            <Text style={styles.textSty4}> r/{this.props.navigation.getParam('sub')}</Text>
             <View style={styles.rightContainer1}>
               <View style={styles.rightIcon1} />
-              <TouchableOpacity onPress={this.showActionSheet}>
-                <Image
-                  source={require('../images/setting.png')}
-                  style={{ width: 60, height: 30 }}
-                />
-              </TouchableOpacity>
-              <ActionSheet
-                ref={(o) => (this.ActionSheet = o)}
-                title={'User Settings'}
-                options={optionArray}
-                cancelButtonIndex={3}
-                destructiveIndex={0}
-                onPress={(index) => {
-                  if (optionArray[index] == 'Log Out') {
-                    this.logout();
-                  } else if (optionArray[index] == 'About') {
-                    this.props.navigation.push('InfoStack');
-                  } else if (optionArray[index] == 'Privacy Policy') {
-                    this.props.navigation.push('Privacy');
-                  }
-                }}
-              />
             </View>
           </View>
         </View>
         <ScrollView>
           <View style={styles.containerStyle}>
             {/* Profile Pic, Follwers, Follwing Block */}
-            <View style={styles.navBar2}>
-              {/* Profile Picture */}
-              <View style={styles.leftContainer2}>
-                <Image
-                  source={{ uri: this.state.icon }}
-                  style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
-                />
-              </View>
-
-              <TouchableOpacity
-                onPress={() => {
-                  this.props.navigation.navigate('FollowList', {
-                    arrayOfUids: this.state.followingLst,
-                    title: 'Following',
-                  });
-                }}
-              >
-                <Text style={styles.textSty}>
-                  {this.state.followingLst.length} {'\n'}
-                  <Text style={styles.textSty3}>Following</Text>
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.rightContainer2}
-                onPress={() => {
-                  this.props.navigation.navigate('FollowList', {
-                    arrayOfUids: this.state.followersLst,
-                    title: 'Followers',
-                  });
-                }}
-              >
-                <View>
-                  <Text style={styles.textSty}>
-                    {this.state.followersLst.length} {'\n'}{' '}
-                    <Text style={styles.textSty3}>Followers</Text>{' '}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-
-            {/*DISPLAY NAME*/}
-            <View style={styles.profilePic}>
-              <Text style={styles.textSty2}>{this.state.name}</Text>
-            </View>
             {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
             <View style={styles.navBut}>
               <TouchableOpacity onPress={() => this.onListViewPressedP()}>
@@ -465,7 +282,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     backgroundColor: 'white',
     paddingRight: 1,
-    color: 'black',
     paddingLeft: 1,
     paddingHorizontal: 10,
     backgroundColor: 'white',
@@ -477,7 +293,6 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     backgroundColor: 'white',
     paddingRight: 3,
-    color: 'black',
     paddingHorizontal: 10,
   },
   textSty3: {
@@ -487,7 +302,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingRight: 2,
     paddingLeft: 2,
-    color: 'black',
     paddingHorizontal: 10,
   },
   textSty4: {
@@ -496,7 +310,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingRight: 3,
     paddingHorizontal: 10,
-    color: 'black',
     fontWeight: 'bold',
   },
   textSty5: {
@@ -507,30 +320,19 @@ const styles = StyleSheet.create({
     paddingRight: 2,
     paddingLeft: 2,
     paddingHorizontal: 10,
-    //borderColor: '#778899',
+    borderColor: '#778899',
     color: '#778899',
-    //borderWidth: 1,
-    //borderRadius: 5,
+    borderWidth: 1,
+    borderRadius: 5,
   },
-  profilePic: {
-    backgroundColor: 'white',
-    elevation: 3,
-    paddingHorizontal: 20,
-    paddingRight: 3,
-    paddingTop: 10, //50
-    flexDirection: 'row',
-    alignItems: 'center',
-    fontSize: 360,
-    fontFamily: 'AvenirNext-Regular',
-    textAlign: 'center',
-    backgroundColor: 'white',
-  },
+
   textshadow: {
     fontSize: 40,
     color: '#FFFFFF',
     fontFamily: 'Times New Roman',
     paddingLeft: 30,
     paddingRight: 30,
+    backgroundColor: 'white',
     textShadowColor: '#585858',
     textShadowOffset: { width: 5, height: 5 },
     textShadowRadius: 20,
@@ -541,12 +343,13 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '98%',
     resizeMode: 'contain',
+    backgroundColor: 'white',
   },
   modelStyle: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,1)',
+    backgroundColor: 'white',
   },
   closeButtonStyle: {
     width: 25,
@@ -554,6 +357,7 @@ const styles = StyleSheet.create({
     top: 9,
     right: 9,
     position: 'absolute',
+    backgroundColor: 'white',
   },
   navBar1: {
     height: 95,
@@ -586,22 +390,25 @@ const styles = StyleSheet.create({
   followBut: {
     fontSize: 17,
     fontFamily: 'AvenirNext-Regular',
-    //borderColor: '#A4A4A4',
+    borderColor: '#A4A4A4',
     color: '#5B5B5B',
     justifyContent: 'center',
+    backgroundColor: 'white',
   },
   followBut2: {
-    //borderWidth: 0.6,
+    borderWidth: 0.6,
     width: '25%',
-    //borderRadius: 3.5,
+    borderRadius: 3.5,
     marginLeft: 25,
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 10,
+   backgroundColor: 'white',
   },
 
   navBar2: {
     height: 100,
+    backgroundColor: 'white',
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -632,12 +439,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 10,
     alignItems: 'center',
+        backgroundColor: 'white',
   },
   containerStyle2: {
     flex: 2,
-    backgroundColor: '#ffffff',
+    backgroundColor: 'white',
     alignItems: 'center',
     paddingLeft: 5,
     paddingRight: 5,
   },
 });
+
+export default SubReddit;

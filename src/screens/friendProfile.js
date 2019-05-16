@@ -63,13 +63,13 @@ class FriendProfileScreen extends React.Component {
           if (docSnapshot.exists) {
             const { icon } = docSnapshot.data();
             this.state.iconURL = icon;
-            console.log(this.state.iconURL);
+            //console.log(this.state.iconURL);
           } else {
-            console.log("doesn't exist");
+            //console.log("doesn't exist");
           }
         })
         .catch((error) => {
-          console.log(error);
+          //console.log(error);
         });
 
       const myUserRef = firebase
@@ -86,7 +86,7 @@ class FriendProfileScreen extends React.Component {
         .then((snapshot) => {
           const data = snapshot.data();
           const followingLst = data.followingLst || [];
-          console.log(snapshot);
+          //console.log(snapshot);
           const isFollowing = followingLst.indexOf(theirUid) > -1;
           this.setState(
             Object.assign({
@@ -96,7 +96,7 @@ class FriendProfileScreen extends React.Component {
           );
         })
         .catch((err) => {
-          console.log(err);
+          //console.log(err);
         });
       theirUserRef.get().then((snapshot) => this.setState(snapshot.data()));
     }
@@ -144,7 +144,7 @@ class FriendProfileScreen extends React.Component {
       return theirSnapshot.data().followersLst || [];
     });
 
-    console.log('Before: ' + followingLst);
+    //console.log('Before: ' + followingLst);
 
     // Add myUid to theirFollowersLst and theirUid to myFollowingLst
     const inFollowingLst = followingLst.indexOf(theirUid) > -1;
@@ -158,7 +158,7 @@ class FriendProfileScreen extends React.Component {
       if (inFollowersLst) followersLst.splice(followersLst.indexOf(myUid), 1);
     }
 
-    console.log('After: ' + followingLst);
+    //console.log('After: ' + followingLst);
 
     theirUserRef.update({
       followersLst: followersLst,

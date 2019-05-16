@@ -9,6 +9,9 @@ import {
   ImageBackground,
   Image,
   Dimensions,
+  Platform,
+  TouchableOpacity,
+  Text
 } from 'react-native';
 import firebase from 'react-native-firebase';
 
@@ -19,6 +22,7 @@ class LoginScreen extends React.Component {
 
   componentDidMount() {
     this.setState({
+      email: '',
       password: '',
     });
   }
@@ -26,6 +30,14 @@ class LoginScreen extends React.Component {
   handleLogin = () => {
     const email = this.state.email;
     const password = this.state.password;
+
+    if (email === '' || password === '') {
+      Alert.alert('Error', 'Enter Email and Password', [
+        { text: 'OK' },
+      ]);
+      return;
+    }
+
 
     firebase
       .auth()
@@ -74,7 +86,7 @@ class LoginScreen extends React.Component {
         style={styles.background}
       >
         <KeyboardAvoidingView
-          behavior='padding'
+          behavior={Platform.OS === 'android' ? null : 'padding'}
           style={styles.container}
           keyboardVerticalOffset={0}
         >
@@ -92,16 +104,14 @@ class LoginScreen extends React.Component {
               secureTextEntry
               onChangeText={(password) => this.setState({ password })}
             />
-            <Button
-              title='Log In'
-              color='#fff'
-              onPress={() => this.handleLogin()}
-            />
-            <Button
-              title='Sign Up'
-              color='#fff'
-              onPress={() => this.props.navigation.push('Signup')}
-            />
+            <TouchableOpacity onPress={() => this.handleLogin()}
+                              style={styles.button} >
+              <Text style={styles.button}>Log In </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.props.navigation.push('Signup')}
+                              style={styles.button} >
+              <Text style={styles.button}>Sign Up </Text>
+            </TouchableOpacity>
           </ScrollView>
         </KeyboardAvoidingView>
       </ImageBackground>
@@ -152,6 +162,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     margin: '5%',
   },
+  button: {
+    backgroundColor: 'transparent',
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center',
+    fontSize: 20,
+    color: '#fff',
+    marginBottom: 3
+  }
 });
 
 export default LoginScreen;

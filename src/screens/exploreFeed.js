@@ -95,7 +95,7 @@ class ExploreFeed extends React.Component {
     Promise.all(newMemes).then((resolvedMemes) => {
       this.setState((prevState) => {
         const mergedMemes = prevState.memes.concat(resolvedMemes);
-        console.log(mergedMemes);
+        //console.log(mergedMemes);
         return {
           memes: mergedMemes,
           updated: true,
