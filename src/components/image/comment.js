@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
     marginLeft: '2.5%',
     marginRight: '2.5%',
     paddingTop: 10,
+
   },
   userText: {
     fontWeight: 'bold',
