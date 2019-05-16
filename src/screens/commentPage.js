@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView, KeyboardAvoidingView, Dimensions,
-FlatList, StyleSheet, View, Button, TextInput, Keyboard, Modal, Text, TouchableHighlight } from 'react-native';
+FlatList, StyleSheet, View, Button, TextInput, Keyboard, Modal, Text, TouchableHighlight, Platform } from 'react-native';
 import firebase from 'react-native-firebase';
 
 import Tile from '../components/image/tile';
@@ -73,7 +73,7 @@ class CommentPage extends React.Component {
         }
       })
       .catch((err) => {
-        console.log('Error getting document', err);
+        //console.log('Error getting document', err);
       });
   }
 
@@ -102,7 +102,7 @@ class CommentPage extends React.Component {
     const newComments = [];
     querySnapshot.docs.forEach((doc) => {
       const { text, uid, time } = doc.data();
-      console.log(text, uid, time);
+      //console.log(text, uid, time);
       const userRef = firebase
         .firestore()
         .collection('Users')
@@ -123,7 +123,7 @@ class CommentPage extends React.Component {
             };
           })
           .catch((error) => {
-            console.log(error);
+            //console.log(error);
           })
       );
     });
@@ -131,7 +131,7 @@ class CommentPage extends React.Component {
       resolvedComments.reverse();
       this.setState((prevState) => {
         const mergedComments = resolvedComments.concat(prevState.comments);
-        console.log(mergedComments);
+        //console.log(mergedComments);
         return {
           comments: mergedComments,
           commentsLoaded: mergedComments.length,
@@ -148,7 +148,7 @@ class CommentPage extends React.Component {
   handleNewComment = (commentRef) => {
     commentRef.get().then((commentDoc) => {
       const { text, uid, time } = commentDoc.data();
-      console.log(text, uid, time);
+      //console.log(text, uid, time);
       firebase
         .firestore()
         .collection('Users')
@@ -164,7 +164,7 @@ class CommentPage extends React.Component {
             time,
             username,
           };
-          console.log(newComment);
+          //console.log(newComment);
           this.setState((prevState) => {
             return {
               comments: [...prevState.comments, newComment],
@@ -403,8 +403,8 @@ class CommentPage extends React.Component {
       }
 
       <KeyboardAvoidingView
-        behavior='position'
-        keyboardVerticalOffset={Dimensions.get('window').height * 0.1 }
+        behavior={Platform.OS === 'android' ? null : 'position'}
+        keyboardVerticalOffset={Dimensions.get('window').height * 0.1}
       >
       { !this.state.modalVisible &&
         <ScrollView
