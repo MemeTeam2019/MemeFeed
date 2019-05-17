@@ -61,7 +61,7 @@ class ImageUpload extends React.Component {
         this.props.navigation.push("CaptionPage", {
           imageuri: this.state.imageuri,
           filename: this.state.filename
-          upload: this.})
+          });
 
       }
     });
