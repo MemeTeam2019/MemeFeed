@@ -157,7 +157,7 @@ class CaptionPage extends React.Component{
           } else {
             // image is okay to post
             // post in Memes and use the doc id it creates elsewhere
-            const memeCollection = firebase.firestore().collection('MemesTest').doc(firebase.auth().currentUser.uid+Math.round(+new Date() / 1000);
+            const memeCollection = firebase.firestore().collection('MemesTest').doc(firebase.auth().currentUser.uid + Math.round(+new Date() / 1000));
             memeCollection.set({
               url: newurl,
               author: firebase.auth().currentUser.uid,
@@ -165,7 +165,7 @@ class CaptionPage extends React.Component{
               time: Math.round(+new Date() / 1000),
               score: 0,
               caption: this.state.caption,
-              reacts: 0
+              reacts: 0,
             })
             .then(function(meme) {
                 console.log("Document written with ID: ", meme.id);
