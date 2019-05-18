@@ -7,7 +7,7 @@ import ActionSheet from 'react-native-actionsheet';
 
 import firebase from 'react-native-firebase';
 
-class postedByUser extends React.Component {
+class PostedByUser extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -97,7 +97,7 @@ class postedByUser extends React.Component {
   }
 }
 
-export default withNavigation(postedByUser);
+export default withNavigation(PostedByUser);
 
 const styles = StyleSheet.create({
   container: {
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     backgroundColor: 'white',
-    
+
   },
   leftContainer1: {
     flex: 1,
