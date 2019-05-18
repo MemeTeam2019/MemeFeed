@@ -85,14 +85,14 @@ class FriendProfile extends React.Component {
           if(docSnapshot.exists) {
             const { icon } = docSnapshot.data();
               this.state.iconURL = icon
-            console.log(this.state.iconURL)
+            //console.log(this.state.iconURL)
           }
           else{
-            console.log("doesn't exist")
+            //console.log("doesn't exist")
           }
         })
         .catch((error) => {
-          console.log(error);
+          //console.log(error);
         });
 
       myUserRef
@@ -112,7 +112,7 @@ class FriendProfile extends React.Component {
           }
         })
         .catch((err) => {
-          console.log(err);
+          //console.log(err);
         });
     }
   }
@@ -397,131 +397,218 @@ class FriendProfile extends React.Component {
   };
 
   render() {
-    const uid = this.props.navigation.getParam('uid');
-    const followingState = this.state.isFollowing;
-    if (!this.state.userExists) {
+      const uid = this.props.navigation.getParam('uid');
+      const followingState = this.state.isFollowing;
+      if (!this.state.userExists) {
+        return (
+          <View style={styles.containerStyle}>
+            <Text style={{ color: '#ffffff', fontSize: 24 }}>
+              Oops, this user doesn't exist. Sorry about that.
+            </Text>
+          </View>
+        );
+      }
+      if (uid === firebase.auth().currentUser.uid) {
+        return <Profile />;
+      }
+
+      if (this.state.memes.length === 0) {
+        return (
+
+          <View style={styles.containerStyle}>
+            <View style={styles.navBar}>
+              <Text style={styles.textSty4}>{this.state.username}</Text>
+            </View>
+              {/* Profile Pic, Follwers, Follwing Block */}
+              <View style={styles.navBar2}>
+                <View style={styles.leftContainer2}>
+                  <Image
+                    source={{uri: this.state.iconURL}}
+                    style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
+                  />
+                </View>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.push('FollowList', {
+                      arrayOfUids: this.state.followingLst,
+                      title: 'Following',
+                    });
+                  }}
+                >
+                  <Text style={styles.textSty}>
+                    {' '}
+                    {this.state.followingCnt} {'\n'}{' '}
+                    <Text style={styles.textSty3}>Following</Text>
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.rightContainer2}
+                  onPress={() => {
+                    this.props.navigation.push('FollowList', {
+                      arrayOfUids: this.state.followersLst,
+                      title: 'Followers',
+                    });
+                  }}
+                >
+                  <View>
+                    <Text style={styles.textSty}>
+                      {this.state.followersCnt} {'\n'}{' '}
+                      <Text style={styles.textSty3}>Followers</Text>{' '}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+              {/* DISPLAY NAME */}
+              <View style={styles.navBar1}>
+                <View style={styles.leftContainer1}>
+                  <Text style={[styles.textSty2, { textAlign: 'left' }]}>
+                    {<Text style={styles.textSty2}>{this.state.name}</Text>}
+                  </Text>
+                </View>
+
+                <View style={styles.rightContainer1}>
+                  <TouchableOpacity
+                    onPress={() => this.updateFollowing(followingState)}
+                  >
+                    <Text style={styles.followBut}>
+                      {' '}
+                      {this.state.buttonText}{' '}
+                      <Image
+                        source={require('../images/follower2.png')}
+                        style={{ width: 17, height: 17 }}
+                      />
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              {/* DIFFERENT VIEW TYPE FEED BUTTONS */}
+              <View style={styles.containerStyle2}>
+                <Image
+                  source={require('../components/misc/noFriendLikes.png')}
+                  style={styles.tile}
+                />
+              </View>
+          </View>
+
+
+        );
+      }
       return (
         <View style={styles.containerStyle}>
-          <Text style={{ color: '#ffffff', fontSize: 24 }}>
-            Oops, this user doesn't exist. Sorry about that.
-          </Text>
+          <View style={styles.navBar}>
+            <Text style={styles.textSty4}>{this.state.username}</Text>
+          </View>
+          <ScrollView>
+            {/* Profile Pic, Follwers, Follwing Block */}
+            <View style={styles.navBar2}>
+              <View style={styles.leftContainer2}>
+                <Image
+                  source={{uri: this.state.iconURL}}
+                  style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
+                />
+              </View>
+
+              <TouchableOpacity
+                onPress={() => {
+                  this.props.navigation.push('FollowList', {
+                    arrayOfUids: this.state.followingLst,
+                    title: 'Following',
+                  });
+                }}
+              >
+                <Text style={styles.textSty}>
+                  {' '}
+                  {this.state.followingCnt} {'\n'}{' '}
+                  <Text style={styles.textSty3}>Following</Text>
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.rightContainer2}
+                onPress={() => {
+                  this.props.navigation.push('FollowList', {
+                    arrayOfUids: this.state.followersLst,
+                    title: 'Followers',
+                  });
+                }}
+              >
+                <View>
+                  <Text style={styles.textSty}>
+                    {this.state.followersCnt} {'\n'}{' '}
+                    <Text style={styles.textSty3}>Followers</Text>{' '}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            {/* DISPLAY NAME */}
+            <View style={styles.navBar1}>
+              <View style={styles.leftContainer1}>
+                <Text style={[styles.textSty2, { textAlign: 'left' }]}>
+                  {<Text style={styles.textSty2}>{this.state.name}</Text>}
+                </Text>
+              </View>
+
+              <View style={styles.rightContainer1}>
+                <TouchableOpacity
+                  onPress={() => this.updateFollowing(followingState)}
+                >
+                  <Text style={styles.followBut}>
+                    {' '}
+                    {this.state.buttonText}{' '}
+                    <Image
+                      source={require('../images/follower2.png')}
+                      style={{ width: 17, height: 17 }}
+                    />
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            {/* DIFFERENT VIEW TYPE FEED BUTTONS */}
+            <View style={styles.navBut}>
+              <TouchableOpacity onPress={() => this.onListViewPressedP()}>
+                <Image
+                  source={require('../images/fullFeedF.png')}
+                  style={{
+                    opacity: this.state.selectListButtonP ? 1 : 0.3,
+                    width: 100,
+                    height: 50,
+                  }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.onGridViewPressedP()}>
+                <Image
+                  source={require('../images/gridFeedF.png')}
+                  style={{
+                    opacity: this.state.selectGridButtonP ? 1 : 0.3,
+                    width: 100,
+                    height: 50,
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
+            {this.state.selectListButtonP ? (
+              <MemeList
+                loadMemes={this.fetchMemes}
+                memes={this.state.memes}
+              />
+            ) : (
+              <MemeGrid
+                loadMemes={this.fetchMemes}
+                memes={this.state.memes}
+              />
+            )}
+          </ScrollView>
         </View>
       );
     }
-    if (uid === firebase.auth().currentUser.uid) {
-      return <Profile />;
-    }
-
-    return (
-      <View style={styles.containerStyle}>
-        <View style={styles.navBar}>
-          <Text style={styles.textSty4}>{this.state.username}</Text>
-        </View>
-        <ScrollView>
-          {/* Profile Pic, Follwers, Follwing Block */}
-          <View style={styles.navBar2}>
-            <View style={styles.leftContainer2}>
-              <Image
-                source={{uri: this.state.iconURL}}
-                style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
-              />
-            </View>
-
-            <TouchableOpacity
-              onPress={() => {
-                this.props.navigation.push('FollowList', {
-                  arrayOfUids: this.state.followingLst,
-                  title: 'Following',
-                });
-              }}
-            >
-              <Text style={styles.textSty}>
-                {' '}
-                {this.state.followingCnt} {'\n'}{' '}
-                <Text style={styles.textSty3}>Following</Text>
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.rightContainer2}
-              onPress={() => {
-                this.props.navigation.push('FollowList', {
-                  arrayOfUids: this.state.followersLst,
-                  title: 'Followers',
-                });
-              }}
-            >
-              <View>
-                <Text style={styles.textSty}>
-                  {this.state.followersCnt} {'\n'}{' '}
-                  <Text style={styles.textSty3}>Followers</Text>{' '}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          {/* DISPLAY NAME */}
-          <View style={styles.navBar1}>
-            <View style={styles.leftContainer1}>
-              <Text style={[styles.textSty2, { textAlign: 'left' }]}>
-                {<Text style={styles.textSty2}>{this.state.name}</Text>}
-              </Text>
-            </View>
-
-            <View style={styles.rightContainer1}>
-              <TouchableOpacity
-                onPress={() => this.updateFollowing(followingState)}
-              >
-                <Text style={styles.followBut}>
-                  {' '}
-                  {this.state.buttonText}{' '}
-                  <Image
-                    source={require('../images/follower2.png')}
-                    style={{ width: 17, height: 17 }}
-                  />
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          {/* DIFFERENT VIEW TYPE FEED BUTTONS */}
-          <View style={styles.navBut}>
-            <TouchableOpacity onPress={() => this.onListViewPressedP()}>
-              <Image
-                source={require('../images/fullFeedF.png')}
-                style={{
-                  opacity: this.state.selectListButtonP ? 1 : 0.3,
-                  width: 100,
-                  height: 50,
-                }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.onGridViewPressedP()}>
-              <Image
-                source={require('../images/gridFeedF.png')}
-                style={{
-                  opacity: this.state.selectGridButtonP ? 1 : 0.3,
-                  width: 100,
-                  height: 50,
-                }}
-              />
-            </TouchableOpacity>
-          </View>
-          {this.state.selectListButtonP ? (
-            <MemeList
-              loadMemes={this.fetchMemes}
-              memes={this.state.memes}
-            />
-          ) : (
-            <MemeGrid
-              loadMemes={this.fetchMemes}
-              memes={this.state.memes}
-            />
-          )}
-        </ScrollView>
-      </View>
-    );
   }
-}
+
+
+
 
 export default withNavigation(FriendProfile);
 
@@ -590,7 +677,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: 'white',
     marginRight: '9%',
-    marginLeft: '9%'
+    marginLeft: '9%',
+    color: 'black'
   },
   textSty2: {
     fontSize: 20,
@@ -598,6 +686,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingRight: 3,
     paddingHorizontal: 10,
+    color: 'black'
   },
   textSty3: {
     fontSize: 15,
@@ -607,6 +696,7 @@ const styles = StyleSheet.create({
     paddingRight: 2,
     paddingLeft: 2,
     paddingHorizontal: 10,
+    color: 'black'
   },
   textSty4: {
     fontSize: 20,
@@ -615,6 +705,7 @@ const styles = StyleSheet.create({
     paddingRight: 3,
     paddingHorizontal: 10,
     fontWeight: 'bold',
+    color: 'black'
   },
   textSty5: {
     fontSize: 20,
@@ -741,4 +832,19 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     backgroundColor: 'white',
   },
+  tile: {
+  width: 300,
+  height: 300,
+  justifyContent: 'center',
+  paddingHorizontal: 20,
+  paddingTop: 10,
+  alignItems: 'center',
+},
+containerStyle2: {
+  flex: 2,
+  backgroundColor: '#ffffff',
+  alignItems: 'center',
+  paddingLeft: 5,
+  paddingRight: 5,
+},
 });

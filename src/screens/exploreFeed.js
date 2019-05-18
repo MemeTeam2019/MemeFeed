@@ -95,7 +95,7 @@ class ExploreFeed extends React.Component {
     Promise.all(newMemes).then((resolvedMemes) => {
       this.setState((prevState) => {
         const mergedMemes = prevState.memes.concat(resolvedMemes);
-        console.log(mergedMemes);
+        //console.log(mergedMemes);
         return {
           memes: mergedMemes,
           updated: true,
@@ -110,6 +110,7 @@ class ExploreFeed extends React.Component {
    */
   updateSearch = async (searchTerm = '') => {
     // Set search term state immediately to update SearchBar contents
+    console.log(searchTerm)
     this.setState({ searchTerm });
 
     const usersRef = firebase.firestore().collection('Users');

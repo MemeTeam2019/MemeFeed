@@ -12,12 +12,16 @@ import HomeFeed from '../screens/homeFeed';
 import FriendProfile from '../screens/friendProfileScreen';
 import CommentPage from '../screens/commentPage';
 import FollowList from '../components/home/searchResultList';
+
 import CaptionPage from '../screens/captionPage';
+import SubReddit from '../screens/subReddit';
+
 
 import aboutInfo1 from '../screens/aboutInfo1';
 import aboutInfo2 from '../screens/aboutInfo2';
 import aboutInfo3 from '../screens/aboutInfo3';
 import PrivacyPolicyScreen from '../screens/privacyScreen';
+import Subreddit from '../screens/subReddit';
 
 const InfoStack = createStackNavigator({
 
@@ -43,6 +47,9 @@ const ExploreStack = createStackNavigator(
     Comment: {
       screen: CommentPage,
     },
+    SubReddit: {
+      screen: SubReddit,
+    }
   },
   {
     initialRouteName: 'Explore',
@@ -66,6 +73,9 @@ const HomeStack = createStackNavigator(
     FollowList: {
       screen: FollowList,
     },
+    SubReddit: {
+      screen: SubReddit,
+    }
   },
   {
     initialRouteName: 'Friend',
@@ -95,6 +105,9 @@ const ProfileStack = createStackNavigator(
     Privacy: {
       screen: PrivacyPolicyScreen,
     },
+    SubReddit: {
+      screen: SubReddit,
+    }
   },
   {
     initialRouteName: 'Profile',

@@ -1,6 +1,6 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet, Button } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Button, Platform } from 'react-native';
 
 class PrivacyPolicyScreen extends React.PureComponent {
   static navigationOptions = {
@@ -43,12 +43,10 @@ class PrivacyPolicyScreen extends React.PureComponent {
             contact us at:{' '}
             <Text style={styles.email}>memefeedaye@gmail.com</Text>
           </Text>
-          <Button
-            title='Back'
-            color='#000'
-            style={{ paddingTop: 30, marginBottom: '30' }}
-            onPress={() => this.props.navigation.pop()}
-          />
+          <TouchableOpacity onPress={() => this.props.navigation.pop()}
+                  style={styles.button}>
+              <Text style={styles.button}> Back </Text>
+          </TouchableOpacity>
         </ScrollView>
       </View>
     );
@@ -63,12 +61,14 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
     paddingTop: '15%',
+    color: 'black',
   },
   body: {
     fontSize: 14,
     fontFamily: 'AvenirNext-Regular',
     paddingVertical: '7.5%',
     paddingHorizontal: '6%',
+    color: 'black',
   },
   email: {
     textDecorationLine: 'underline',
@@ -85,4 +85,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: '5%',
   },
+  button: {
+    backgroundColor: 'transparent',
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center',
+    fontSize: 20,
+    color: 'black',
+    marginBottom: 10,
+    paddingTop: 20,
+  }
 });
