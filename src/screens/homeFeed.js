@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image, TouchableOpacity, View, Modal, Text, StyleSheet, ScrollView } from 'react-native';
 import firebase from 'react-native-firebase';
-
+import { withNavigation } from 'react-navigation';
 import MemeGrid from '../components/general/memeGrid';
 import MemeList from '../components/general/memeList';
 import SuggestUser from '../components/home/suggestUser'
@@ -182,6 +182,7 @@ class HomeFeed extends React.Component {
                 <TouchableOpacity>
                   <Text style={styles.suggestText}> Zac </Text>
                 </TouchableOpacity>
+                <SuggestUser/>
               </View>
 
             </View>

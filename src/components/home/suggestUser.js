@@ -15,9 +15,50 @@ import firebase from 'react-native-firebase';
  *                   e.g. userSnapshot.data(). Refer to the Firebase Users
  *                   collection for the expected object properties.
  */
+
 class SuggestUser extends React.PureComponent {
+
+
+
+  componentDidMount() {
+    this._isMounted = true;
+
+    const ref = firebase
+      .firestore()
+      .collection('Users')
+      .doc(this.props.uid);
+
+    ref
+      .get()
+      .then((docSnapshot) => {
+        if (docSnapshot.exists) {
+          const data = docSnapshot.data();
+          if (data && this._isMounted) {
+            this.setState({ username: data.username });
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  goToUser() {
+    // If going to our own profile
+    if (this.props.uid === firebase.auth().currentUser.uid) {
+      this.props.navigation.push('Profile', {
+        uid: this.props.uid,
+      });
+    } else {
+      this.props.navigation.push('FriendProfile', {
+        uid: this.props.uid,
+      });
+    }
+  }
+
+
   render() {
-    const uid = '3khrPuSqO4XhPKWuz2gSoNFGgdA2'
+    //const uid = '3khrPuSqO4XhPKWuz2gSoNFGgdA2'
     if (!uid) return null;
     return (
       <React.Fragment>
@@ -33,7 +74,8 @@ class SuggestUser extends React.PureComponent {
       </React.Fragment>
     );
   }
-}
+};
+
 
 const styles = StyleSheet.create({
   resultContainer: {
