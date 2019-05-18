@@ -157,31 +157,7 @@ class HomeFeed extends React.Component {
               <View style={styles.suggestText}>
                 <Text style={styles.suggestText}> Follow the creators of Meme Feed! </Text>
               </View>
-              <View style={styles.suggestText}>
-                <TouchableOpacity>
-                  <Text style={styles.suggestText}> Mia </Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.suggestText}>
-                <TouchableOpacity>
-                  <Text style={styles.suggestText}> Jon </Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.suggestText}>
-                <TouchableOpacity>
-                  <Text style={styles.suggestText}> Siddhi </Text>
-                </TouchableOpacity>
-                <SuggestUser/>
-              </View>
-              <View style={styles.suggestText}>
-                <TouchableOpacity>
-                  <Text style={styles.suggestText}> Emma </Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.suggestText}>
-                <TouchableOpacity>
-                  <Text style={styles.suggestText}> Zac </Text>
-                </TouchableOpacity>
+              <View>
                 <SuggestUser/>
               </View>
 
