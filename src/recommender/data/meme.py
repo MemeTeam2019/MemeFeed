@@ -29,6 +29,10 @@ class Meme:
         vector = self.vectorize()
         db.collection('Memes').document(self.meme_id).update({ 'vector': vector })
 
+    def similarity(self, other):
+        def
+
+
     def update(self):
         pass
 
