@@ -67,6 +67,8 @@ class PostInfo extends React.Component {
               fontFamily: 'AvenirNext-Regular',
               paddingTop: 3,
               marginLeft: '2.5%',
+              color: 'black',
+              marginBottom: 3
             }}
           >
             {this.props.reactCount} Reactions
@@ -113,7 +115,7 @@ class PostInfo extends React.Component {
               />
             </TouchableOpacity> */}
           <Text
-            style={{ fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%' }}
+            style={{ fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%', color: 'black' }}
           >
             {this.props.reactCount} Reactions
           </Text>

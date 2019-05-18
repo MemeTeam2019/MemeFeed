@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, TouchableOpacity, View } from 'react-native';
 import firebase from 'react-native-firebase';
 
 
@@ -68,7 +68,9 @@ class Username2 extends React.Component {
   render() {
     return (
       <TouchableOpacity onPress={() => this.goToUser()}>
-        <Text style={styles.text}>{this.state.username}</Text>
+
+          <Text style={styles.touchSpace}>{this.state.username}</Text>
+
       </TouchableOpacity>
     );
   }
@@ -79,8 +81,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'AvenirNext-Bold',
     marginLeft: '2.5%',
-    color: '#919191'
+    color: '#919191',
+    backgroundColor: 'red',
   },
+  touchSpace: {
+    padding: 5,
+    fontSize: 16,
+    fontFamily: 'AvenirNext-Bold',
+    marginLeft: '2.5%',
+    color: '#919191',
+    backgroundColor: 'transparent',
+    textAlignVertical: 'top'
+  }
 });
 
 export default Username2;
