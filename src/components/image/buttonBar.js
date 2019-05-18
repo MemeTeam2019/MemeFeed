@@ -78,6 +78,7 @@ class ButtonBar extends React.Component {
     const user = firebase.auth().currentUser;
     const memeId = this.props.memeId;
     const date = Math.round(+new Date() / 1000);
+    if(oldReact===null){
     const noteRef =firebase
       .firestore()
       .collection('NotificationsTest')
@@ -89,6 +90,7 @@ class ButtonBar extends React.Component {
                   memeId: memeId,
                   viewed: false
                   });
+  }
 
     // Update the Reacts collection for current uid
     const reactRef = firebase
