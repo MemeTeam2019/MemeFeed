@@ -47,7 +47,6 @@ class ExploreFeed extends React.Component {
       .collection('Memes')
       .orderBy('time', 'desc')
       .limit(15)
-      .where('numFlags', '<', 10)
       .get()
       .then(this.updateFeed);
   }

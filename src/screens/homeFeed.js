@@ -65,10 +65,9 @@ class HomeFeed extends React.Component {
   };
 
   updateFeed = (querySnapshot) => {
-    const newMemes = [];
     querySnapshot.docs.forEach((doc) => {
       const { time, url, posReacts, likedFrom, likers } = doc.data();
-      console.log(doc.data());
+      const newMemes = [];
       if (posReacts > 0) {
         const recentLikedFrom = likedFrom[likedFrom.length - 1];
         const recentLiker = likers[likers.length - 1];
@@ -81,18 +80,15 @@ class HomeFeed extends React.Component {
           postedBy: recentLiker,
           poster: recentLiker,
         });
+        this.setState((prevState) => {
+          const mergedMemes = prevState.memes.concat(newMemes);
+          return {
+            memes: mergedMemes,
+            updated: true,
+            oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+          };
+        });
       }
-    });
-
-    Promise.all(newMemes).then((resolvedMemes) => {
-      this.setState((prevState) => {
-        const mergedMemes = prevState.memes.concat(resolvedMemes);
-        return {
-          memes: mergedMemes,
-          updated: true,
-          oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
-        };
-      });
     });
   };
 
