@@ -234,7 +234,7 @@ class FriendProfile extends React.Component {
 
     // send follow notification to user
     if (nowFollowing) {
-      firebase
+      const theirNoteRef = firebase
         .firestore()
         .collection('NotificationsTest')
         .doc(theirUid)
