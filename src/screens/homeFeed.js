@@ -1,9 +1,18 @@
 import React from 'react';
-import { Image, TouchableOpacity, View, StyleSheet } from 'react-native';
+import {
+  Image,
+  TouchableOpacity,
+  View,
+  Modal,
+  Text,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
 import firebase from 'react-native-firebase';
 
 import MemeGrid from '../components/general/memeGrid';
 import MemeList from '../components/general/memeList';
+import SuggestUser from '../components/home/suggestUser';
 
 class HomeFeed extends React.Component {
   static navigationOptions = {
@@ -134,18 +143,59 @@ class HomeFeed extends React.Component {
   render() {
     if (this.state.memes.length === 0) {
       return (
-        <View style={styles.containerStyle}>
-          <View style={styles.navBar}>
-            <Image
-              source={require('../images/banner3.png')}
-              style={{ width: 250, height: 50 }}
-            />
-          </View>
-          <View style={styles.containerStyle2}>
-            <Image
-              source={require('../components/misc/emptyFriendTile.png')}
-              style={styles.tile}
-            />
+        <View style={styles.container}>
+          <View style={styles.containerStyle}>
+            <View style={styles.navBar}>
+              <Image
+                source={require('../images/banner3.png')}
+                style={{ width: 250, height: 50 }}
+              />
+            </View>
+            <ScrollView>
+              <View style={styles.containerStyle2}>
+                <Image
+                  source={require('../components/misc/emptyFriendTile.png')}
+                  style={styles.tile}
+                />
+                <View style={styles.suggestText}>
+                  <Text style={styles.suggestText}>
+                    {' '}
+                    Looking for people to follow?{' '}
+                  </Text>
+                </View>
+                <View style={styles.suggestText}>
+                  <Text style={styles.suggestText}>
+                    {' '}
+                    Follow the creators of Meme Feed!{' '}
+                  </Text>
+                </View>
+                <View style={styles.suggestText}>
+                  <TouchableOpacity>
+                    <Text style={styles.suggestText}> Mia </Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.suggestText}>
+                  <TouchableOpacity>
+                    <Text style={styles.suggestText}> Jon </Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.suggestText}>
+                  <TouchableOpacity>
+                    <Text style={styles.suggestText}> Siddhi </Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.suggestText}>
+                  <TouchableOpacity>
+                    <Text style={styles.suggestText}> Emma </Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.suggestText}>
+                  <TouchableOpacity>
+                    <Text style={styles.suggestText}> Zac </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </ScrollView>
           </View>
         </View>
       );
@@ -193,6 +243,10 @@ class HomeFeed extends React.Component {
 export default HomeFeed;
 
 const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    flex: 1,
+  },
   containerStyle: {
     justifyContent: 'center',
     flex: 1,
@@ -252,5 +306,12 @@ const styles = StyleSheet.create({
     paddingRight: 5,
     borderBottomWidth: 0.5,
     borderColor: '#D6D6D6',
+  },
+  suggestText: {
+    fontSize: 17,
+    fontFamily: 'AvenirNext-Regular',
+    color: 'black',
+    justifyContent: 'center',
+    marginTop: 2,
   },
 });

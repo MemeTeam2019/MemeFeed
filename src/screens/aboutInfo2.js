@@ -7,6 +7,7 @@ import {
   ImageBackground,
   Image,
   Text,
+  TouchableOpacity,
   Dimensions,
 } from 'react-native';
 
@@ -51,11 +52,10 @@ export default class LoginScreen extends React.Component {
 
 
         <View style={styles.nextBut}>
-          <Button
-            title="Done"
-            color='#000'
-            onPress={() => this.props.navigation.push('Profile')}
-          />
+          <TouchableOpacity onPress={() => this.props.navigation.push('Profile')}
+                  style={styles.button}>
+              <Text style={styles.button}> Done </Text>
+          </TouchableOpacity>
         </View>
       </ImageBackground>
       </ScrollView>
@@ -149,4 +149,15 @@ const styles = StyleSheet.create({
     // paddingTop: 10,
     alignItems: 'center',
   },
+  button: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center',
+    fontSize: 20,
+    color: 'black',
+    marginBottom: 10,
+    paddingTop: 20,
+    justifyContent: 'flex-end',
+  }
 });

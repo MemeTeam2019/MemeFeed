@@ -49,9 +49,9 @@ class LikedFromReddit extends React.Component {
       });
   }
 
-  navigateToFriendProfile = () => {
-    this.props.navigation.navigate('FriendProfile', {
-      uid: this.props.poster,
+  goToSubreddit = () => {
+    this.props.navigation.push('SubReddit', {
+      sub: this.props.sub,
     });
   };
 
@@ -96,39 +96,40 @@ class LikedFromReddit extends React.Component {
               style={styles.likedFromImg}
               source={require('../repostIcon.png')}
             />
-            <Text
-              style={{
-                fontSize: 12,
-                fontWeight: 'bold',
-                fontStyle: 'italic',
-                color: '#919191',
-                width: 800,
-              }}
-            >
-              {' '}
-              'r/{this.props.sub}'
-            </Text>
+            <TouchableOpacity onPress={() => this.goToSubreddit()}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                  fontStyle: 'italic',
+                  color: '#919191',
+                  width: 800,
+                }}
+              >
+                ' r/{this.props.sub}'
+              </Text>
+            </TouchableOpacity>
           </View>
-        </View>
 
-        <View style={styles.rightContainer1}>
-          <View style={styles.rightIcon1} />
-          <TouchableOpacity onPress={this.showActionSheet}>
-            <Text style={styles.report}>...</Text>
-          </TouchableOpacity>
-          <ActionSheet
-            ref={(o) => {
-              this.ActionSheet = o;
-            }}
-            options={optionArray}
-            cancelButtonIndex={1}
-            destructiveIndex={0}
-            onPress={(index) => {
-              if (optionArray[index] === 'Inappropriate/Irrelevant') {
-                this.flagMeme();
-              }
-            }}
-          />
+          <View style={styles.rightContainer1}>
+            <View style={styles.rightIcon1} />
+            <TouchableOpacity onPress={this.showActionSheet}>
+              <Text style={styles.report}>...</Text>
+            </TouchableOpacity>
+            <ActionSheet
+              ref={(o) => {
+                this.ActionSheet = o;
+              }}
+              options={optionArray}
+              cancelButtonIndex={1}
+              destructiveIndex={0}
+              onPress={(index) => {
+                if (optionArray[index] === 'Inappropriate/Irrelevant') {
+                  this.flagMeme();
+                }
+              }}
+            />
+          </View>
         </View>
       </View>
     );
@@ -155,7 +156,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
     borderBottomWidth: 0.5,
     borderColor: '#D6D6D6',
-    //borderTopWidth: .5,
     paddingTop: 7,
   },
   text: {
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   },
   navBar1: {
     height: 95,
-    paddingTop: 50, //50
+    paddingTop: 50,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',

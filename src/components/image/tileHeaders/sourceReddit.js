@@ -4,7 +4,13 @@ import { withNavigation } from 'react-navigation';
 import ActionSheet from 'react-native-actionsheet';
 import firebase from 'react-native-firebase';
 
-class SourceReddit extends React.PureComponent {
+class SourceReddit extends React.Component {
+  goToSubreddit = () => {
+    this.props.navigation.push('SubReddit', {
+      sub: this.props.sub,
+    });
+  };
+
   showActionSheet = () => {
     this.ActionSheet.show();
   };
@@ -88,7 +94,7 @@ const styles = StyleSheet.create({
   },
   navBar1: {
     height: 95,
-    paddingTop: 50, //50
+    paddingTop: 50,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
