@@ -69,11 +69,6 @@ class LikedFromReddit extends React.Component {
     // if just from reddit (a.k.a. on the explore page)
     console.log(this.props.sub)
     return (
-
-
-
-
-
       <View style={styles.navBar1}>
       <View style={styles.leftContainer1}>
         <View style={styles.container}>

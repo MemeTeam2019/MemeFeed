@@ -4,7 +4,9 @@ import firebase from 'react-native-firebase';
 import { withNavigation } from 'react-navigation';
 import MemeGrid from '../components/general/memeGrid';
 import MemeList from '../components/general/memeList';
-import SuggestUser from '../components/home/suggestUser'
+import SuggestUser from '../components/home/suggestUser';
+import Username from '../components/image/username';
+import SearchResult from '../components/home/searchResult'
 
 class HomeFeed extends React.Component {
   static navigationOptions = {
@@ -43,6 +45,7 @@ class HomeFeed extends React.Component {
         .get()
         .then(this.updateFeed);
     }
+
   }
 
   fetchMemes = () => {
@@ -63,6 +66,7 @@ class HomeFeed extends React.Component {
         .then(this.updateFeed);
     }
   };
+
 
   updateFeed = (querySnapshot) => {
     const newMemes = [];
@@ -138,14 +142,14 @@ class HomeFeed extends React.Component {
     if (this.state.memes.length === 0) {
       return (
         <View style={styles.container}>
-          <View style={styles.containerStyle}>
+          <View style={styles.containerStyle3}>
             <View style={styles.navBar}>
               <Image
                 source={require('../images/banner3.png')}
                 style={{ width: 250, height: 50 }}
               />
             </View>
-            <ScrollView>
+
             <View style={styles.containerStyle2}>
               <Image
                 source={require('../components/misc/emptyFriendTile.png')}
@@ -157,12 +161,41 @@ class HomeFeed extends React.Component {
               <View style={styles.suggestText}>
                 <Text style={styles.suggestText}> Follow the creators of Meme Feed! </Text>
               </View>
+              <ScrollView ref={(ref) => {
+                this.scrollView = ref;
+              }}
+              >
               <View>
-                <SuggestUser/>
-              </View>
 
+                <SuggestUser icon={'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon888.png?alt=media&token=05558df6-bd5b-4da1-9cce-435a419347a0'}
+                             name={'Mia Altieri'}
+                             username={'Me-uh'}
+                             uid= {'WuTqG2y7GWN7KCmgRbLiyddMqax1'}/>
+
+                <SuggestUser icon={'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon888.png?alt=media&token=05558df6-bd5b-4da1-9cce-435a419347a0'}
+                             name={'Jon Chong'}
+                             username={'dabid'}
+                             uid= {'kuPNgqTDnhRHvswbecGI7ApZ9GW2'}/>
+
+                <SuggestUser icon={'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon111.png?alt=media&token=05558df6-bd5b-4da1-9cce-435a419347a0'}
+                             name={'Siddhi Panchal'}
+                             username={'siddhiiiii'}
+                             uid= {'3khrPuSqO4XhPKWuz2gSoNFGgdA2'}/>
+
+                <SuggestUser icon={'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon888.png?alt=media&token=05558df6-bd5b-4da1-9cce-435a419347a0'}
+                             name={'Emma Pedersen'}
+                             username={'erpeders'}
+                             uid= {'g9Nat9KDVMStAHjNOQNfPLVU9Sk1'}/>
+
+                <SuggestUser icon={'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon555.png?alt=media&token=05558df6-bd5b-4da1-9cce-435a419347a0'}
+                             name={'Zac Plante'}
+                             username={'jesuisouef'}
+                             uid= {'MhPMJTBeB1UC1PAlnnN6YhDVcOi2'}/>
+
+              </View>
+       </ScrollView>
             </View>
-            </ScrollView>
+
           </View>
         </View>
       );
@@ -220,6 +253,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,1)',
     borderBottomWidth: .5,
     borderColor: '#D6D6D6',
+  },
+  containerStyle3: {
+    justifyContent: 'center',
+    flex: 1,
+    //backgroundColor: 'rgba(255,255,255,1)',
+    //borderBottomWidth: .5,
+    //borderColor: '#D6D6D6',
   },
   modelStyle: {
     flex: 1,
