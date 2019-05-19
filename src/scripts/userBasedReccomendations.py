@@ -40,8 +40,7 @@ def similarity (a, b):
 def findSimilarUsers (allUsers, thisUser):
     similarUsers = {}
     for user in allUsers:
-        similarity = similarity(user.vectorize(), thisUser.vectorize()):
-
+        similarity = similarity(user.vectorize(), thisUser.vectorize()): # TODO: figure out how to get this
         # more similar than not
         if similarity > .5:
             similarUsers[user.uid] = similarity
@@ -49,34 +48,60 @@ def findSimilarUsers (allUsers, thisUser):
     return similarUsers
 
 # Find the memes these users have reacted to that you haven’t
+# For each meme we are given the average, and its overall weight, its weight
+# marks the popularity of the meme
 def findUnseenMemes (similarUsers, currentMemes):
     similarMemes = {}
     for user in similarUsers:
-        for meme in user.memes:
+        for meme in user.memes: # TODO: figure out how to get this
             # if user hasn't seen the meme yet
             if meme not in currentMemes:
                 if meme not in similarMemes:
                     similarMemes[meme] = (0,0,0)
 
-                # TODO: FIND A BETTER WAY TO CALCULATE THIS WEIGHT
-                memeWeight = similarMemes[meme][0] + (meme.rank*similarUsers[user])
-                ranking = similarMemes[meme][1] + meme.rank
+                memeWeight = similarMemes[meme][0]
+                if meme.rank > 1: # TODO: figure out how to get this
+                    memeWeight =+ (meme.rank*similarUsers[user]) # TODO: figure out how to get this
+                ranking = similarMemes[meme][1] + meme.rank # TODO: figure out how to get this
                 view = similarMemes[meme][2] + 1
-                similarMemes[meme] = memeWeight
+                similarMemes[meme] = (memeWeight, ranking, view)
 
     return similarMemes
 
 # Find the similarity between unseenMemes and the memes we have liked
-# and create a final list of memes to recommend to the user
+# and create a final list of memes to recommend to the user this list has the
+# id of the meme along with the average rank, and its popularity score with other
+# users
 def findSimilarMemes (unseenMemes, currentMemes):
+    similarMemesToRecommend = {}
     for myMeme in currentMemes:
-        for similarMeme in unseenMemes:
+        for similarMeme, similarMemeData in unseenMemes:
+            similarity = standard_similarity(myMeme.vector, similarMeme.vector) # TODO: figure out how to get this
+            # if two memes are similar
+            if similarity > .5:
+                theirRank = similarMemeData[1] / similarMemeData[1]
+                myRank = myMeme.rank # TODO: figure out how to get this
 
+                if similarMeme not in similarMemesToRecommend:
+                    similarMemesToRecommend[similarMeme] = (0,0,0)
+
+                rankAndWeight = similarMemesToRecommend[similarMeme]
+
+                if theirRank > 1 and myRank > 1:
+                    avgRank = ((theirRank+myRank)/2 + rankAndWeight[0])/2
+                    rankAndWeight = (avgRank,)
+                elif theirRank < 2 and myRank < 2: # TODO: figure out how to get this
+                    pass
+                elif theirRank > 1 and myRank < 2: # TODO: figure out how to get this
+                    pass
+                else # theirRank < 2 and myRank > 1: # TODO: figure out how to get this
+                    pass
 
     return {}
 
 # take the unseen memes and similar memes and put them together into our final
 # set of recommendations
+# these are ordered by their overall popularity with other users
 def consolidateMemes (unseenMemes, similarMemes):
     return {}
 
