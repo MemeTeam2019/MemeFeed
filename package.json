@@ -9,7 +9,7 @@
   "dependencies": {
     "prettier": "^1.16.4",
     "react": "^16.8.6",
-    "react-native": "^0.59.6",
+    "react-native": "^0.59.8",
     "react-native-actionsheet": "^2.4.2",
     "react-native-android-image-polyfill": "^1.0.0",
     "react-native-auto-height-image": "^1.0.5",
@@ -25,7 +25,8 @@
     "react-native-vector-icons": "^6.4.1",
     "react-native-zhb-actionsheet": "^1.2.0",
     "react-navigation": "^3.2.1",
-    "save": "^2.3.3"
+    "save": "^2.3.3",
+    "uuid-v4": "^0.1.0"
   },
   "devDependencies": {
     "acorn": "^6.1.1",
