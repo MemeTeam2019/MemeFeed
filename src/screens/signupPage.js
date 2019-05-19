@@ -10,6 +10,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   Dimensions,
+  Platform,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import { CheckBox } from 'react-native-elements';
@@ -79,6 +80,12 @@ class SignupScreen extends React.Component {
       Alert.alert("Passwords don't match", '', [{ text: 'OK' }]);
       return;
     }
+    if (email === '' || password === '' || name === '' || username === '') {
+      Alert.alert('Error', 'Enter in all information', [
+        { text: 'OK' },
+      ]);
+      return;
+    }
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
@@ -111,7 +118,7 @@ class SignupScreen extends React.Component {
         style={styles.background}
       >
         <KeyboardAvoidingView
-          behavior='padding'
+          behavior={Platform.OS === 'android' ? null : 'padding'}
           style={styles.container}
           keyboardVerticalOffset={0}
         >
@@ -119,7 +126,7 @@ class SignupScreen extends React.Component {
             contentContainerStyle={{
               flex: 1,
               justifyContent: 'center',
-              marginTop: '25%',
+              // marginTop: '25%',
             }}
           >
             <Text style={styles.title}>Sign Up</Text>
@@ -185,13 +192,11 @@ class SignupScreen extends React.Component {
               </Text>
             </TouchableOpacity>
 
-            <Button
-              title='Submit'
-              style={styles.submit}
-              color='#fff'
-              disabled={!this.state.checked}
-              onPress={() => this.handleSubmit()}
-            />
+            <TouchableOpacity onPress={() => this.handleSubmit()}
+                              style={styles.button}
+                              disabled={!this.state.checked}>
+              <Text style={styles.button}>Submit </Text>
+            </TouchableOpacity>
           </ScrollView>
         </KeyboardAvoidingView>
       </ImageBackground>
@@ -255,4 +260,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  button: {
+    backgroundColor: 'transparent',
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center',
+    fontSize: 20,
+    color: '#fff',
+    marginBottom: 3
+  }
 });

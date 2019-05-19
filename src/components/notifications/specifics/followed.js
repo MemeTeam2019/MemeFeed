@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import {Text, StyleSheet, View, Image, TouchableOpacity} from 'react-native';
-import { withNavigation } from 'react-navigation';
-import Username from '../username';
+import Username from '../../image/username';
 import ActionSheet from 'react-native-actionsheet';
 
 import firebase from 'react-native-firebase';
 
-class LikedFromReddit extends React.Component {
+class Followed extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,7 +15,7 @@ class LikedFromReddit extends React.Component {
   }
 
   componentDidMount() {
-    const uid = this.props.poster;
+    const uid = this.props.uid;
     const userRef = firebase.firestore().collection("Users").doc(uid);
     //get the profile icon
     firebase
@@ -44,34 +43,9 @@ class LikedFromReddit extends React.Component {
     })
     .catch(err => console.log(err));
   }
-  //
-  // navigateToFriendProfile() {
-  //   this.props.navigation.navigate("FriendProfile", {
-  //     uid: this.props.poster
-  //   });
-  // }
-
-  goToSubreddit() {
-    console.log(this.props.sub)
-    this.props.navigation.push('SubReddit', {
-      sub: this.props.sub
-    });
-  }
-
-  showActionSheet = () => {
-    this.ActionSheet.show();
-  };
 
   render() {
-    var optionArray = ['Inappropriate/Irrelevant', 'Cancel'];
-    // if just from reddit (a.k.a. on the explore page)
-    console.log(this.props.sub)
     return (
-
-
-
-
-
       <View style={styles.navBar1}>
       <View style={styles.leftContainer1}>
         <View style={styles.container}>
@@ -79,35 +53,11 @@ class LikedFromReddit extends React.Component {
             style={styles.userImg}
             source={{uri: this.state.iconURL}}
           />
-          <Username uid={this.props.poster} navigation={this.props.navigation} />
-          <Image
-            style={styles.likedFromImg}
-            source={require('../repostIcon.png')}
-          />
-          <TouchableOpacity onPress={() => this.goToSubreddit()}>
-            <Text style={{fontSize: 12, fontWeight: 'bold', fontStyle: 'italic', color: '#919191', width: 800}}> 'r/{this.props.sub}'</Text>
-          </TouchableOpacity>
+          <Username uid={this.props.uid} navigation={this.props.navigation} />
+          <Text style={{fontSize: 12, fontWeight: 'bold', fontStyle: 'italic', color: '#919191', width: 800}}> followed you </Text>
         </View>
         </View>
 
-
-        <View style={styles.rightContainer1}>
-          <View style={styles.rightIcon1} />
-          <TouchableOpacity onPress={this.showActionSheet}>
-            <Text style={styles.report}> . . . </Text>
-          </TouchableOpacity>
-          <ActionSheet
-            ref={(o) => (this.ActionSheet = o)}
-            options={optionArray}
-            cancelButtonIndex={1}
-            destructiveIndex={0}
-            onPress={(index) => {
-              if (optionArray[index] == 'Inappropriate/Irrelevant') {
-
-              }
-            }}
-          />
-        </View>
       </View>
 
 
@@ -121,13 +71,13 @@ class LikedFromReddit extends React.Component {
   }
 }
 
-export default withNavigation(LikedFromReddit);
+export default Followed;
 
 const styles = StyleSheet.create({
    container: {
     flexDirection: 'row',
     backgroundColor: 'transparent',
-    width: '85%',
+    width: '100%',
     height: 30,
     paddingHorizontal: 10,
     alignItems: 'center',
@@ -166,11 +116,13 @@ const styles = StyleSheet.create({
       justifyContent: 'flex-end'
   },
   navBar1: {
-    height: 95,
-    paddingTop: 50, //50
+    height: 70,
+    paddingTop: 10, //50
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
+    borderBottomColor: '#bbb',
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   leftContainer1: {
     flex: 1,

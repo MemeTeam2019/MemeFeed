@@ -6,7 +6,6 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  RefreshControl,
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import firebase from 'react-native-firebase';
@@ -30,6 +29,7 @@ class FriendProfile extends React.Component {
   constructor(props) {
     super(props);
     this._isMounted = false;
+    this.fetchMemes = this.fetchMemes.bind(this);
     this.state = {
       username: '',
       name: '',
@@ -44,7 +44,6 @@ class FriendProfile extends React.Component {
       isFollowing: false,
       userExists: false,
       iconURL: '',
-      refreshing: false,
     };
   }
 
@@ -53,7 +52,7 @@ class FriendProfile extends React.Component {
     if (this._isMounted) {
       firebase
         .firestore()
-        .collection('Reacts')
+        .collection('ReactsTest')
         .doc(this.props.navigation.getParam('uid'))
         .collection('Likes')
         .orderBy('time', 'desc')
@@ -85,14 +84,13 @@ class FriendProfile extends React.Component {
         .then((docSnapshot) => {
           if (docSnapshot.exists) {
             const { icon } = docSnapshot.data();
-            this.state.iconURL = icon;
-            console.log(this.state.iconURL);
+            this.setState({ iconURL: icon });
           } else {
             console.log("doesn't exist");
           }
         })
         .catch((error) => {
-          console.log(error);
+          //console.log(error);
         });
 
       myUserRef
@@ -112,61 +110,14 @@ class FriendProfile extends React.Component {
           }
         })
         .catch((err) => {
-          console.log(err);
+          //console.log(err);
         });
     }
   }
 
-  refreshProfile = () => {
-    this.setState(
-      { memes: [], followingLst: [], followersLst: [], refreshing: true },
-      () => {
-        firebase
-          .firestore()
-          .collection('Reacts')
-          .doc(this.props.navigation.getParam('uid'))
-          .collection('Likes')
-          .orderBy('time', 'desc')
-          .limit(15)
-          .get()
-          .then(this.updateFeed);
-
-        const myUid = firebase.auth().currentUser.uid;
-        const theirUid = this.props.navigation.getParam('uid');
-        const myUserRef = firebase
-          .firestore()
-          .collection('Users')
-          .doc(myUid);
-        const theirUserRef = firebase
-          .firestore()
-          .collection('Users')
-          .doc(theirUid);
-
-        theirUserRef.get().then((snapshot) => {
-          this.setState(snapshot.data());
-        });
-        myUserRef
-          .get()
-          .then((snapshot) => {
-            if (snapshot.exists) {
-              const data = snapshot.data();
-              const followingLst = data.followingLst || [];
-              const isFollowing = followingLst.indexOf(theirUid) > -1;
-              this.setState({
-                isFollowing,
-                buttonText: isFollowing ? 'Unfollow' : 'Follow',
-                userExists: true,
-              });
-            } else {
-              this.setState({ userExists: false });
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    );
-  };
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
 
   fetchMemes = () => {
     // garentees not uploading duplicate memes by checking if memes have finished
@@ -176,7 +127,7 @@ class FriendProfile extends React.Component {
       const oldestDoc = this.state.oldestDoc;
       firebase
         .firestore()
-        .collection('Reacts')
+        .collection('ReactsTest')
         .doc(this.props.navigation.getParam('uid'))
         .collection('Likes')
         .orderBy('time', 'desc')
@@ -211,7 +162,6 @@ class FriendProfile extends React.Component {
           memes: mergedMemes,
           updated: true,
           oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
-          refreshing: false,
         };
       });
     });
@@ -282,9 +232,24 @@ class FriendProfile extends React.Component {
       followersCnt: followersLst.length,
     });
 
+    // send follow notification to user
+    if (nowFollowing) {
+      const theirNoteRef = firebase
+        .firestore()
+        .collection('NotificationsTest')
+        .doc(theirUid)
+        .collection('Notes')
+        .add({
+          type: 'follow',
+          uid: myUid,
+          time: Math.round(+new Date() / 1000),
+          memeId: '',
+          viewed: false,
+        });
+    }
     const theirLikes = firebase
       .firestore()
-      .collection('Reacts')
+      .collection('ReactsTest')
       .doc(theirUid)
       .collection('Likes')
       .orderBy('time', 'desc') // most recent
@@ -296,22 +261,23 @@ class FriendProfile extends React.Component {
       theirLikes.get().then((snapshot) => {
         snapshot.forEach((doc) => {
           const { time, likedFrom, url, rank } = doc.data();
-          // only add memes they have liked
+          // Only add memes they have liked
           if (rank > 1) {
             const memeId = doc.id;
             const userLikedTime = time;
             const feedRef = firebase
               .firestore()
-              .collection('Feeds')
+              .collection('FeedsTest')
               .doc(myUid)
               .collection('Likes')
               .doc(memeId);
 
-            feedRef.get().then(async (feedDocument) => {
+            feedRef.get().then(async (feedDoc) => {
               // if this meme is already in this persons feed
-              if (feedDocument.exists) {
-                const { posReacts, recentLikedTime } = feedDocument.data();
+              if (feedDoc.exists) {
+                const { posReacts, time } = feedDoc.data();
                 const newPosReacts = posReacts + 1;
+                const recentLikedTime = time;
 
                 // if the person we just followed has liked this meme more recently
                 if (recentLikedTime < userLikedTime) {
@@ -334,7 +300,7 @@ class FriendProfile extends React.Component {
                 // only make it exist if its a positive react
                 firebase
                   .firestore()
-                  .collection('Feeds')
+                  .collection('FeedsTest')
                   .doc(myUid)
                   .collection('Likes')
                   .doc(memeId)
@@ -360,15 +326,15 @@ class FriendProfile extends React.Component {
             const memeId = doc.id;
             const feedRef = firebase
               .firestore()
-              .collection('Feeds')
+              .collection('FeedsTest')
               .doc(myUid)
               .collection('Likes')
               .doc(memeId);
 
-            feedRef.get().then(async (feedDocument) => {
+            feedRef.get().then(async (feedDoc) => {
               // if this meme is already in this persons feed
-              if (feedDocument.exists) {
-                const { posReacts, time } = feedDocument.data();
+              if (feedDoc.exists) {
+                const { posReacts, time } = feedDoc.data();
                 const newPosReacts = posReacts - 1;
                 let newTime = time;
                 if (newPosReacts < 1) {
@@ -422,7 +388,6 @@ class FriendProfile extends React.Component {
   render() {
     const uid = this.props.navigation.getParam('uid');
     const followingState = this.state.isFollowing;
-
     if (!this.state.userExists) {
       return (
         <View style={styles.containerStyle}>
@@ -433,22 +398,96 @@ class FriendProfile extends React.Component {
       );
     }
     if (uid === firebase.auth().currentUser.uid) {
-      this.props.navigation.navigate('Profile');
+      return <Profile />;
     }
 
+    if (this.state.memes.length === 0) {
+      return (
+        <View style={styles.containerStyle}>
+          <View style={styles.navBar}>
+            <Text style={styles.textSty4}>{this.state.username}</Text>
+          </View>
+          {/* Profile Pic, Follwers, Follwing Block */}
+          <View style={styles.navBar2}>
+            <View style={styles.leftContainer2}>
+              <Image
+                source={{ uri: this.state.iconURL }}
+                style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
+              />
+            </View>
+
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.push('FollowList', {
+                  arrayOfUids: this.state.followingLst,
+                  title: 'Following',
+                });
+              }}
+            >
+              <Text style={styles.textSty}>
+                {' '}
+                {this.state.followingCnt} {'\n'}{' '}
+                <Text style={styles.textSty3}>Following</Text>
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.rightContainer2}
+              onPress={() => {
+                this.props.navigation.push('FollowList', {
+                  arrayOfUids: this.state.followersLst,
+                  title: 'Followers',
+                });
+              }}
+            >
+              <View>
+                <Text style={styles.textSty}>
+                  {this.state.followersCnt} {'\n'}{' '}
+                  <Text style={styles.textSty3}>Followers</Text>{' '}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          {/* DISPLAY NAME */}
+          <View style={styles.navBar1}>
+            <View style={styles.leftContainer1}>
+              <Text style={[styles.textSty2, { textAlign: 'left' }]}>
+                {<Text style={styles.textSty2}>{this.state.name}</Text>}
+              </Text>
+            </View>
+
+            <View style={styles.rightContainer1}>
+              <TouchableOpacity
+                onPress={() => this.updateFollowing(followingState)}
+              >
+                <Text style={styles.followBut}>
+                  {' '}
+                  {this.state.buttonText}{' '}
+                  <Image
+                    source={require('../images/follower2.png')}
+                    style={{ width: 17, height: 17 }}
+                  />
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          {/* DIFFERENT VIEW TYPE FEED BUTTONS */}
+          <View style={styles.containerStyle2}>
+            <Image
+              source={require('../components/misc/noFriendLikes.png')}
+              style={styles.tile}
+            />
+          </View>
+        </View>
+      );
+    }
     return (
       <View style={styles.containerStyle}>
         <View style={styles.navBar}>
           <Text style={styles.textSty4}>{this.state.username}</Text>
         </View>
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this.refreshProfile}
-            />
-          }
-        >
+        <ScrollView>
           {/* Profile Pic, Follwers, Follwing Block */}
           <View style={styles.navBar2}>
             <View style={styles.leftContainer2}>
@@ -613,9 +652,9 @@ const styles = StyleSheet.create({
     paddingRight: 1,
     paddingLeft: 1,
     paddingHorizontal: 10,
-    backgroundColor: 'white',
     marginRight: '9%',
     marginLeft: '9%',
+    color: 'black',
   },
   textSty2: {
     fontSize: 20,
@@ -623,6 +662,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingRight: 3,
     paddingHorizontal: 10,
+    color: 'black',
   },
   textSty3: {
     fontSize: 15,
@@ -632,6 +672,7 @@ const styles = StyleSheet.create({
     paddingRight: 2,
     paddingLeft: 2,
     paddingHorizontal: 10,
+    color: 'black',
   },
   textSty4: {
     fontSize: 20,
@@ -640,6 +681,7 @@ const styles = StyleSheet.create({
     paddingRight: 3,
     paddingHorizontal: 10,
     fontWeight: 'bold',
+    color: 'black',
   },
   textSty5: {
     fontSize: 20,
@@ -745,7 +787,6 @@ const styles = StyleSheet.create({
   },
   leftContainer2: {
     flex: 1,
-    //flexDirection: 'row',
     paddingRight: 2,
     paddingLeft: '3%',
     paddingHorizontal: '5%',
@@ -754,10 +795,7 @@ const styles = StyleSheet.create({
   rightContainer2: {
     flex: 1,
     flexDirection: 'row',
-    //justifyContent: 'flex-end',
     alignItems: 'center',
-    //paddingLeft: 1,
-    //paddingHorizontal: 25,
     backgroundColor: 'white',
   },
   rightIcon2: {
@@ -765,5 +803,20 @@ const styles = StyleSheet.create({
     width: 10,
     resizeMode: 'contain',
     backgroundColor: 'white',
+  },
+  tile: {
+    width: 300,
+    height: 300,
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    alignItems: 'center',
+  },
+  containerStyle2: {
+    flex: 2,
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    paddingLeft: 5,
+    paddingRight: 5,
   },
 });

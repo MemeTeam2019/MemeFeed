@@ -42,7 +42,7 @@
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>this permission stems from a library we use and will never be called anyway. If you see this, deny access.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSMainNibFile</key>
 	<string>LaunchScreen</string>
 	<key>NSMainNibFile~ipad</key>
