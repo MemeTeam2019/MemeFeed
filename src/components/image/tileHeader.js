@@ -49,7 +49,7 @@ class TileHeader extends React.Component {
     console.log(this.props.poster)
     // if meme is just from a sub reddit
     if (this.props.sub){
-        return <SourceReddit sub={this.props.sub} />;
+        return <SourceReddit sub={this.props.sub} isSubRedditPg={this.props.isSubRedditPg}/>;
     }
     // meme posted by a user
     else if (!(this.props.likedFrom)) {
@@ -61,6 +61,7 @@ class TileHeader extends React.Component {
         <LikedFromReddit
           poster={this.props.poster}
           sub={this.props.likedFrom}
+          isSubRedditPg={this.props.isSubRedditPg}
         />
       );
     }

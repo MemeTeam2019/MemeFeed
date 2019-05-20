@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, FlatList } from 'react-native';
+import { StyleSheet, FlatList, RefreshControl } from 'react-native';
 
 import Tile from '../image/tile';
 
@@ -14,11 +14,7 @@ import Tile from '../image/tile';
 class MemeList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      imageuri: '',
-      isLoading: true,
-      memes: [],
-    };
+    this.renderTile = this.renderTile.bind(this);
   }
 
   renderTile = ({ item }) => {
@@ -31,6 +27,7 @@ class MemeList extends React.Component {
         likedFrom={item.likedFrom}
         postedBy={item.postedBy}
         poster={item.poster}
+        isSubRedditPg={this.props.isSubRedditPg}
       />
     );
   };
@@ -40,11 +37,17 @@ class MemeList extends React.Component {
       <FlatList
         style={styles.containerStyle}
         data={this.props.memes}
-        renderItem={this.renderTile.bind(this)}
+        renderItem={this.renderTile}
         onEndReached={() => {
           // only load memes if previous ones finished loading
           this.props.loadMemes();
         }}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.props.refreshing}
+            onRefresh={this.props.onRefresh}
+          />
+        }
       />
     );
   }
