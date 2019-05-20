@@ -1,14 +1,14 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Timestamp } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import firebase from 'react-native-firebase';
-
-import CommentSample from './commentSample';
 import { withNavigation } from 'react-navigation';
 import moment from 'moment';
 
+import CommentSample from './commentSample';
+
 class PostInfo extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.unsubscribe = null;
     this.state = {
       commentCount: 0,
@@ -18,7 +18,6 @@ class PostInfo extends React.Component {
   }
 
   componentDidMount() {
-    this.dateConverter();
     this.unsubscribe = firebase
       .firestore()
       .collection(`Comments/${this.props.memeId}/Info`)
@@ -29,13 +28,13 @@ class PostInfo extends React.Component {
 
   // function for extracting Firebase responses to the state
   onCollectionUpdate = () => {
-    var countRef = firebase
+    const countRef = firebase
       .firestore()
       .collection('Comments/' + this.props.memeId + '/Info')
       .doc('CommentInfo');
     countRef
       .get()
-      .then(doc => {
+      .then((doc) => {
         if (doc.exists) {
           const { count } = doc.data();
           this.setState({
@@ -44,12 +43,12 @@ class PostInfo extends React.Component {
           });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('Error getting document', err);
       });
   };
 
-  handleCommentClick() {
+  handleCommentClick = () => {
     this.props.navigation.navigate('Comment', {
       memeId: this.props.memeId,
       uri: this.props.imageUrl,
@@ -58,12 +57,13 @@ class PostInfo extends React.Component {
       postedBy: this.props.postedBy,
       poster: this.props.poster,
     });
-  }
-  //posted time -- converts epoch date to an actual date
+  };
+
+  // Posted time -- converts epoch date to an actual date
   dateConverter = () => {
-    date = new Date(parseInt(this.props.time) * 1000);
-    this.setState({date: moment(date.toString()).fromNow()})
-  }
+    const date = new Date(parseInt(this.props.time, 10) * 1000);
+    this.setState({ date: moment(date.toString()).fromNow() });
+  };
 
   render() {
     if (this.props.showAllComments) {
@@ -82,8 +82,7 @@ class PostInfo extends React.Component {
           <Text style={styles.time}>{this.state.date}</Text>
         </View>
       );
-    }
-    else if (this.state.commentCount > 2) {
+    } else if (this.state.commentCount > 2) {
       return (
         <View style={styles.postInfo}>
           <Text
@@ -113,15 +112,6 @@ class PostInfo extends React.Component {
     } else {
       return (
         <View style={styles.postInfo}>
-          {/* <TouchableOpacity
-              onPress={() => {
-                this.handleCommentClick();
-              }}>
-              <Image
-                style={styles.commentButtonStyle}
-                source={require('../../images/Tile/chatLogo2.png')}
-              />
-            </TouchableOpacity> */}
           <Text
             style={{ fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%' }}
           >
@@ -174,6 +164,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'AvenirNext-Regular',
     marginLeft: '2.5%',
-    color: '#919191'
-  }
+    color: '#919191',
+  },
 });
