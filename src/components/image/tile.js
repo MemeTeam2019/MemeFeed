@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { withNavigation } from 'react-navigation';
 import firebase from 'react-native-firebase';
 
 import ButtonBar from './buttonBar';
@@ -39,12 +40,14 @@ class Tile extends React.Component {
   }
 
   render() {
+    console.log(this.props.isSubRedditPg);
     return (
       <View style={styles.container}>
         <TileHeader
           sub={this.props.sub}
           likedFrom={this.props.likedFrom}
-          poster={this.props.poster}xp
+          poster={this.props.poster}
+          isSubRedditPg={this.props.isSubRedditPg}
         />
         <Photo imageUrl={this.props.imageUrl} />
         <View
@@ -101,4 +104,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Tile;
+export default withNavigation(Tile);

@@ -62,16 +62,13 @@ class LikedFromReddit extends React.Component {
     this.ActionSheet.show();
   };
 
+
+
   render() {
     var optionArray = ['Inappropriate/Irrelevant', 'Cancel'];
     // if just from reddit (a.k.a. on the explore page)
     console.log(this.props.sub)
     return (
-
-
-
-
-
       <View style={styles.navBar1}>
       <View style={styles.leftContainer1}>
         <View style={styles.container}>
@@ -84,8 +81,9 @@ class LikedFromReddit extends React.Component {
             style={styles.likedFromImg}
             source={require('../repostIcon.png')}
           />
-          <TouchableOpacity onPress={() => this.goToSubreddit()}>
-            <Text style={{fontSize: 12, fontWeight: 'bold', fontStyle: 'italic', color: '#919191', width: 800}}> 'r/{this.props.sub}'</Text>
+          <TouchableOpacity onPress={() => this.goToSubreddit()}
+            hitSlop={hitSlop}>
+            <Text style={styles.touchSpace}> 'r/{this.props.sub}'</Text>
           </TouchableOpacity>
         </View>
         </View>
@@ -120,6 +118,8 @@ class LikedFromReddit extends React.Component {
     );
   }
 }
+
+const hitSlop = { top: 15, bottom: 15, left: 15, right: 15 };
 
 export default withNavigation(LikedFromReddit);
 
@@ -200,6 +200,18 @@ const styles = StyleSheet.create({
     color: '#919191',
     backgroundColor: 'white',
     marginLeft: 2
+  },
+  touchSpace: {
+    padding: 5,
+    fontSize: 15,
+    fontFamily: 'AvenirNext-Bold',
+    fontStyle: 'italic',
+    color: '#919191',
+    backgroundColor: 'transparent',
+    textAlignVertical: 'top',
+    width: 900,
+    marginRight: 2,
+    paddingLeft: 5
   }
 
 });

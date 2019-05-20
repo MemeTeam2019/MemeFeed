@@ -14,10 +14,12 @@ class SourceReddit extends React.Component {
   }
 
   goToSubreddit() {
-    console.log(this.props.sub)
-    this.props.navigation.push('SubReddit', {
-      sub: this.props.sub
-    });
+    console.log(this.props.isSubRedditPg);
+    if (!this.props.isSubRedditPg) {
+      this.props.navigation.push('SubReddit', {
+        sub: this.props.sub
+      });
+    }
   }
 
   showActionSheet = () => {
@@ -31,9 +33,10 @@ class SourceReddit extends React.Component {
               <View style={styles.navBar1}>
                 <View style={styles.leftContainer1}>
                 <View style={styles.container}>
-                    <Text style={{fontSize: 15, color: 'black'}}>sourced from </Text>
-                    <TouchableOpacity onPress={() => this.goToSubreddit()}>
-                      <Text style={{fontSize: 15, fontWeight: 'bold', fontStyle: 'italic', color: '#919191', width: 900, marginRight: 2}}> 'r/{this.props.sub}'</Text>
+                    <Text style={{fontSize: 15}}>sourced from </Text>
+                    <TouchableOpacity onPress={() => this.goToSubreddit()}
+                      hitSlop={hitSlop}>
+                      <Text style={styles.touchSpace}> 'r/{this.props.sub}'</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
@@ -58,6 +61,7 @@ class SourceReddit extends React.Component {
     );
   }
 }
+const hitSlop = { top: 15, bottom: 15, left: 15, right: 15 };
 
 export default withNavigation(SourceReddit);
 
@@ -106,5 +110,17 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     color: '#919191',
     backgroundColor: 'white'
+  },
+  touchSpace: {
+    padding: 5,
+    fontSize: 15,
+    fontFamily: 'AvenirNext-Bold',
+    fontStyle: 'italic',
+    color: '#919191',
+    backgroundColor: 'transparent',
+    textAlignVertical: 'top',
+    width: 900,
+    marginRight: 2,
+    paddingLeft: 5
   }
 });
