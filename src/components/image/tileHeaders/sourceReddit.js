@@ -12,15 +12,6 @@ class SourceReddit extends React.Component {
     }
   }
 
-  goToSubreddit() {
-    console.log(this.props.isSubRedditPg);
-    if (!this.props.isSubRedditPg) {
-      this.props.navigation.push('SubReddit', {
-        sub: this.props.sub
-      });
-    }
-  }
-
   showActionSheet = () => {
     this.ActionSheet.show();
   };
@@ -81,6 +72,15 @@ class SourceReddit extends React.Component {
         console.log(err);
       });
   };
+
+  goToSubreddit = () => {
+    // Make sure we aren't already on a subreddit page
+    if (!this.props.isSubRedditPg) {
+      this.props.navigation.push('SubReddit', {
+        sub: this.props.sub,
+      });
+    }
+  }
 
   render() {
     const optionArray = ['Inappropriate/Irrelevant', 'Cancel'];

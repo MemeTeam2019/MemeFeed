@@ -44,11 +44,15 @@ class TileHeader extends React.Component {
   }
 
   render() {
-    console.log(this.props.likedFrom);
-    console.log(this.props.isSubRedditPg);
     // if meme is just from a sub reddit
     if (this.props.sub) {
-      return <SourceReddit sub={this.props.sub} isSubRedditPg={this.props.isSubRedditPg}/>;
+      return (
+        <SourceReddit
+          sub={this.props.sub}
+          isSubRedditPg={this.props.isSubRedditPg}
+          memeId={this.props.memeId}
+        />
+      );
     }
     // if meme liked from reddit
     if (this.state.username === '') {
