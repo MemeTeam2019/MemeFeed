@@ -12,13 +12,13 @@ import HomeFeed from '../screens/homeFeed';
 import FriendProfile from '../screens/friendProfileScreen';
 import CommentPage from '../screens/commentPage';
 import FollowList from '../components/home/searchResultList';
+import CaptionPage from '../screens/captionPage';
 import NotePage from '../screens/notePage';
 import SubReddit from '../screens/subReddit';
 import aboutInfo1 from '../screens/aboutInfo1';
 import aboutInfo2 from '../screens/aboutInfo2';
 import aboutInfo3 from '../screens/aboutInfo3';
 import PrivacyPolicyScreen from '../screens/privacyScreen';
-import Subreddit from '../screens/subReddit';
 
 const InfoStack = createStackNavigator({
   aboutInfo1,
@@ -133,7 +133,19 @@ const NoteStack = createStackNavigator(
 
 );
 
+const UploadStack = createStackNavigator(
+  {
+    CaptionPage: {
+      screen: CaptionPage,
+    }
+  },
+  {
+    initialRouteName: 'CaptionPage'
+  }
+);
+
 const MainRouter = createBottomTabNavigator({
+
   Home: {
     screen: HomeStack,
     navigationOptions: {
@@ -169,6 +181,26 @@ const MainRouter = createBottomTabNavigator({
       },
     },
   },
+
+  Upload:{
+    screen: UploadStack,
+    navigationOptions: {
+      showLabel: false,
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name='image' size={35} color={tintColor} />
+      ),
+
+      tabBarOptions: {
+        showLabel: false,
+        showIcon: true,
+        activeTintColor: '#000000',
+        inactiveTintColor: '#D3D3D3',
+        style: {
+          height: '9%',
+        },
+      },
+    },
+  },
   Note: {
     screen: NoteStack,
     navigationOptions: {
@@ -176,6 +208,7 @@ const MainRouter = createBottomTabNavigator({
       tabBarIcon: ({ tintColor }) => (
         <Icon name='notifications' size={28} color={tintColor} />
       ),
+
       tabBarOptions: {
         showLabel: false,
         showIcon: true,

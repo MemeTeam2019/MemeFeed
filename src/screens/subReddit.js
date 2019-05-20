@@ -211,9 +211,9 @@ render() {
           </View>
 
           {this.state.selectListButtonP ? (
-            <MemeList loadMemes={this.fetchMemes} memes={this.state.memes} />
+            <MemeList loadMemes={this.fetchMemes} memes={this.state.memes} isSubRedditPg={true}/>
           ) : (
-            <MemeGrid loadMemes={this.fetchMemes} memes={this.state.memes} />
+            <MemeGrid loadMemes={this.fetchMemes} memes={this.state.memes} isSubRedditPg={true}/>
           )}
         </ScrollView>
       </React.Fragment>
