@@ -45,15 +45,15 @@ class TileHeader extends React.Component {
   }
 
   render() {
-    console.log(this.props.likedFrom)
-    console.log(this.props.poster)
     // if meme is just from a sub reddit
-    if (this.props.sub){
-        return <SourceReddit sub={this.props.sub} isSubRedditPg={this.props.isSubRedditPg}/>;
-    }
-    // meme posted by a user
-    else if (!(this.props.likedFrom)) {
-        return <PostedByUser poster={this.props.poster}/>;
+    if (this.props.sub) {
+      return (
+        <SourceReddit
+          sub={this.props.sub}
+          isSubRedditPg={this.props.isSubRedditPg}
+          memeId={this.props.memeId}
+        />
+      );
     }
     // if meme liked from reddit
     else if (this.state.username === '') {
@@ -61,19 +61,19 @@ class TileHeader extends React.Component {
         <LikedFromReddit
           poster={this.props.poster}
           sub={this.props.likedFrom}
+          memeId={this.props.memeId}
           isSubRedditPg={this.props.isSubRedditPg}
         />
       );
     }
-    else {
-      // if meme liked from user
-      return (
-        <LikedFromUser
-          poster={this.props.poster}
-          likedFrom={this.props.likedFrom}
-        />
-      );
-    }
+    // if meme liked from user
+    return (
+      <LikedFromUser
+        poster={this.props.poster}
+        likedFrom={this.props.likedFrom}
+        memeId={this.props.memeId}
+      />
+    );
   }
 }
 

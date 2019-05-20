@@ -47,6 +47,7 @@ class Tile extends React.Component {
           sub={this.props.sub}
           likedFrom={this.props.likedFrom}
           poster={this.props.poster}
+          memeId={this.props.memeId}
           isSubRedditPg={this.props.isSubRedditPg}
         />
         <Photo imageUrl={this.props.imageUrl} />

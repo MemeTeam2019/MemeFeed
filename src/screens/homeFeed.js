@@ -12,18 +12,17 @@ import { withNavigation } from 'react-navigation';
 import MemeGrid from '../components/general/memeGrid';
 import MemeList from '../components/general/memeList';
 import SuggestUser from '../components/home/suggestUser';
-import Username from '../components/image/username';
-import SearchResult from '../components/home/searchResult'
 
 class HomeFeed extends React.Component {
   static navigationOptions = {
     header: null,
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this._isMounted = false;
     this.unsubscribe = null;
+    this.fetchMemes = this.fetchMemes.bind(this);
     this.ref = firebase
       .firestore()
       .collection('FeedsTest')
@@ -77,9 +76,9 @@ class HomeFeed extends React.Component {
 
 
   updateFeed = (querySnapshot) => {
-    const newMemes = [];
     querySnapshot.docs.forEach((doc) => {
       const { time, url, posReacts, likedFrom, likers } = doc.data();
+      const newMemes = [];
       if (posReacts > 0) {
         const recentLikedFrom = likedFrom[likedFrom.length - 1];
         const recentLiker = likers[likers.length - 1];
@@ -91,6 +90,14 @@ class HomeFeed extends React.Component {
           likedFrom: recentLikedFrom,
           postedBy: recentLiker,
           poster: recentLiker,
+        });
+        this.setState((prevState) => {
+          const mergedMemes = prevState.memes.concat(newMemes);
+          return {
+            memes: mergedMemes,
+            updated: true,
+            oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+          };
         });
       }
     });
@@ -174,20 +181,16 @@ class HomeFeed extends React.Component {
             </View>
 
             <View style={styles.containerStyle2}>
+            <ScrollView ref={(ref) => {
+              this.scrollView = ref;
+            }}
+            >
               <Image
-                source={require('../components/misc/emptyFriendTile.png')}
+                source={require('../components/misc/suggest.png')}
                 style={styles.tile}
               />
-              <View style={styles.suggestText}>
-                <Text style={styles.suggestText}> Looking for people to follow? </Text>
-              </View>
-              <View style={styles.suggestText}>
-                <Text style={styles.suggestText}> Follow the creators of Meme Feed! </Text>
-              </View>
-              <ScrollView ref={(ref) => {
-                this.scrollView = ref;
-              }}
-              >
+              
+
               <View>
 
                 <SuggestUser icon={'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon888.png?alt=media&token=05558df6-bd5b-4da1-9cce-435a419347a0'}
@@ -216,7 +219,7 @@ class HomeFeed extends React.Component {
                              uid= {'MhPMJTBeB1UC1PAlnnN6YhDVcOi2'}/>
 
               </View>
-       </ScrollView>
+          </ScrollView>
             </View>
 
           </View>
@@ -313,7 +316,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 50, //50
+    paddingTop: 50,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -352,6 +355,8 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     color: 'black',
     justifyContent: 'center',
+    textAlign: 'center',
     marginTop: 2,
+    marginBottom: 5
   },
 });
