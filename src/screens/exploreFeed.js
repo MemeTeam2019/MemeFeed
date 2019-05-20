@@ -30,9 +30,11 @@ class ExploreFeed extends React.Component {
 
   constructor(props) {
     super(props);
+    this.fetchMemes = this.fetchMemes.bind(this);
     this._isMounted = false;
     this.unsubscribe = null;
     this.refreshMemes = this.refreshMemes.bind(this);
+
     this.state = {
       updated: true,
       inGridView: true,
@@ -90,9 +92,9 @@ class ExploreFeed extends React.Component {
     }
   };
 
-  updateFeed = (querySnapshot) => {
+  updateFeed = (memesSnapshot) => {
     const newMemes = [];
-    querySnapshot.docs.forEach((doc) => {
+    memesSnapshot.docs.forEach((doc) => {
       const { url, time, sub } = doc.data();
       newMemes.push({
         key: doc.id,
@@ -111,16 +113,14 @@ class ExploreFeed extends React.Component {
         return {
           memes: mergedMemes,
           updated: true,
-          oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+          oldestDoc: memesSnapshot.docs[memesSnapshot.docs.length - 1],
           refreshing: false,
         };
       });
     });
   };
 
-  /**
-   * Pulls all users whose username starts with the searchTerm
-   */
+
   updateSearch = async (searchTerm = '') => {
     // Set search term state immediately to update SearchBar contents
     console.log(searchTerm)

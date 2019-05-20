@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
-import {Text, StyleSheet, View, Image, TouchableOpacity} from 'react-native';
+import React from 'react';
+import { Text, StyleSheet, View, TouchableOpacity, Alert } from 'react-native';
 import { withNavigation } from 'react-navigation';
-import Username from '../username';
 import ActionSheet from 'react-native-actionsheet';
 import firebase from 'react-native-firebase';
 
@@ -13,55 +12,124 @@ class SourceReddit extends React.Component {
     }
   }
 
-  goToSubreddit() {
-    console.log(this.props.isSubRedditPg);
-    if (!this.props.isSubRedditPg) {
-      this.props.navigation.push('SubReddit', {
-        sub: this.props.sub
-      });
-    }
-  }
-
   showActionSheet = () => {
     this.ActionSheet.show();
   };
 
+  flagMeme = () => {
+    const uid = firebase.auth().currentUser.uid;
+    const memeId = this.props.memeId;
+    const memeRef = firebase.firestore().doc(`MemesTest/${memeId}`);
+    const feedRef = firebase.firestore().doc(`FeedsTest/${uid}/Likes/${memeId}`);
+    const reactsRef = firebase.firestore().doc(`ReactsTest/${uid}/Likes/${memeId}`);
+
+    console.log(memeId);
+
+    memeRef
+      .get()
+      .then((docSnapshot) => {
+        if (docSnapshot.exists) {
+          const { numFlags } = docSnapshot.data();
+          memeRef.update({ numFlags: numFlags + 1 || 1 });
+        }
+      })
+      .catch((err) => {
+        Alert.alert(
+          'Oops!',
+          'Something went wrong when flagging this image. Please contact us at memefeedaye@gmail.com',
+          { text: 'Ok' }
+        );
+        console.log(err);
+      });
+    feedRef
+      .get()
+      .then((docSnapshot) => {
+        if (docSnapshot.exists) {
+          const { prevNumFlags } = docSnapshot.data();
+          feedRef.update({ numFlags: prevNumFlags + 1 || 1 });
+        }
+      })
+      .catch((err) => {
+        Alert.alert(
+          'Oops!',
+          'Something went wrong when flagging this image. Please contact us at memefeedaye@gmail.com',
+          { text: 'Ok' }
+        );
+        console.log(err);
+      });
+    reactsRef
+      .get()
+      .then((docSnapshot) => {
+        if (docSnapshot.exists) {
+          const { prevNumFlags } = docSnapshot.data();
+          reactsRef.update({ numFlags: prevNumFlags + 1 || 1 });
+        }
+      })
+      .catch((err) => {
+        Alert.alert(
+          'Oops!',
+          'Something went wrong when flagging this image. Please contact us at memefeedaye@gmail.com',
+          { text: 'Ok' }
+        );
+        console.log(err);
+      });
+  };
+
+  goToSubreddit = () => {
+    // Make sure we aren't already on a subreddit page
+    if (!this.props.isSubRedditPg) {
+      this.props.navigation.push('SubReddit', {
+        sub: this.props.sub,
+      });
+    }
+  }
+
   render() {
-        var optionArray = ['Inappropriate/Irrelevant', 'Cancel'];
+    const optionArray = ['Inappropriate/Irrelevant', 'Cancel'];
     // if just from reddit (a.k.a. on the explore page)
     return (
-              <View style={styles.navBar1}>
-                <View style={styles.leftContainer1}>
-                <View style={styles.container}>
-                    <Text style={{fontSize: 15}}>sourced from </Text>
-                    <TouchableOpacity onPress={() => this.goToSubreddit()}
-                      hitSlop={hitSlop}>
-                      <Text style={styles.touchSpace}> 'r/{this.props.sub}'</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-                <View style={styles.rightContainer1}>
-                  <View style={styles.rightIcon1} />
-                    <TouchableOpacity onPress={this.showActionSheet}>
-                      <Text style={styles.report}> . . . </Text>
-                    </TouchableOpacity>
-                    <ActionSheet
-                      ref={(o) => (this.ActionSheet = o)}
-                      options={optionArray}
-                      cancelButtonIndex={1}
-                      destructiveIndex={0}
-                      onPress={(index) => {
-                        if (optionArray[index] == 'Inappropriate/Irrelevant') {
-
-                        }
-                      }}
-                    />
-                </View>
-              </View>
+      <View style={styles.navBar1}>
+        <View style={styles.leftContainer1}>
+          <View style={styles.container}>
+            <Text style={{ fontSize: 15 }}>sourced from </Text>
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: 'bold',
+                fontStyle: 'italic',
+                color: '#919191',
+                width: 900,
+                marginRight: 2,
+              }}
+            >
+              {' '}
+              'r/{this.props.sub}'
+            </Text>
+          </View>
+        </View>
+        <View style={styles.rightContainer1}>
+          <View style={styles.rightIcon1} />
+          <TouchableOpacity onPress={this.showActionSheet}>
+            <Text style={styles.report}>...</Text>
+          </TouchableOpacity>
+          <ActionSheet
+            ref={(o) => {
+              this.ActionSheet = o;
+            }}
+            options={optionArray}
+            cancelButtonIndex={1}
+            destructiveIndex={0}
+            onPress={(index) => {
+              if (optionArray[index] === 'Inappropriate/Irrelevant') {
+                this.flagMeme();
+              }
+            }}
+          />
+        </View>
+      </View>
     );
   }
 }
-const hitSlop = { top: 15, bottom: 15, left: 15, right: 15 };
 
 export default withNavigation(SourceReddit);
 
@@ -77,7 +145,7 @@ const styles = StyleSheet.create({
   },
   navBar1: {
     height: 95,
-    paddingTop: 50, //50
+    paddingTop: 50,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -96,7 +164,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     backgroundColor: 'transparent',
-    marginRight: 10
+    marginRight: 10,
   },
   rightIcon1: {
     height: 10,

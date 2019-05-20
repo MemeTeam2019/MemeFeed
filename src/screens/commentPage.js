@@ -406,6 +406,7 @@ class CommentPage extends React.Component {
     const likedFrom = this.props.navigation.getParam('likedFrom', '');
     const postedBy = this.props.navigation.getParam('postedBy', '');
     const poster = this.props.navigation.getParam('poster', '');
+
     return (
       <View>
 

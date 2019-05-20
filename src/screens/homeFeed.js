@@ -12,18 +12,17 @@ import { withNavigation } from 'react-navigation';
 import MemeGrid from '../components/general/memeGrid';
 import MemeList from '../components/general/memeList';
 import SuggestUser from '../components/home/suggestUser';
-import Username from '../components/image/username';
-import SearchResult from '../components/home/searchResult'
 
 class HomeFeed extends React.Component {
   static navigationOptions = {
     header: null,
   };
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this._isMounted = false;
     this.unsubscribe = null;
+    this.fetchMemes = this.fetchMemes.bind(this);
     this.ref = firebase
       .firestore()
       .collection('FeedsTest')
@@ -77,9 +76,9 @@ class HomeFeed extends React.Component {
 
 
   updateFeed = (querySnapshot) => {
-    const newMemes = [];
     querySnapshot.docs.forEach((doc) => {
       const { time, url, posReacts, likedFrom, likers } = doc.data();
+      const newMemes = [];
       if (posReacts > 0) {
         const recentLikedFrom = likedFrom[likedFrom.length - 1];
         const recentLiker = likers[likers.length - 1];
@@ -91,6 +90,14 @@ class HomeFeed extends React.Component {
           likedFrom: recentLikedFrom,
           postedBy: recentLiker,
           poster: recentLiker,
+        });
+        this.setState((prevState) => {
+          const mergedMemes = prevState.memes.concat(newMemes);
+          return {
+            memes: mergedMemes,
+            updated: true,
+            oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+          };
         });
       }
     });
@@ -309,7 +316,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 50, //50
+    paddingTop: 50,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
