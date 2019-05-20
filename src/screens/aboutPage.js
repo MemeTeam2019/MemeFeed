@@ -1,5 +1,11 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, Button, ImageBackground, Text } from 'react-native';
+import { StyleSheet,
+         ScrollView,
+         View,
+         Button,
+         ImageBackground,
+         Text,
+         TouchableOpacity } from 'react-native';
 
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -38,11 +44,10 @@ export default class LoginScreen extends React.Component {
         </View>
 
         <View style={styles.nextBut}>
-          <Button
-            title="Next"
-            color='#000'
-            onPress={() => this.props.navigation.push('About2')}
-          />
+          <TouchableOpacity onPress={() => this.props.navigation.push('About2')}
+                  style={styles.button}>
+            <Text style={styles.button}> Next </Text>
+          </TouchableOpacity>
         </View>
       </ImageBackground>
       </ScrollView>
@@ -60,25 +65,21 @@ const styles = StyleSheet.create({
     paddingRight: 3,
     paddingLeft: 3,
     paddingTop: 5, //50
-    //flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 36,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
-    //backgroundColor: 'blue',
     marginTop: '25%',
-    //marginBottom: '2%'
   },
   title: {
     fontSize: 35,
     fontFamily: 'AvenirNext-Regular',
-    //color: '#9F02FF',
+    color: 'black',
     paddingHorizontal: '5%',
     marginBottom: '0.5%',
     textAlign: 'center',
     height: 50,
-    //backgroundColor: 'red',
     shadowColor: 'black',
     shadowOffset: { width: 0, height: 0.5 },
     shadowOpacity: 0.5,
@@ -87,32 +88,27 @@ const styles = StyleSheet.create({
   aboutText2: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
-    //color: '#9F02FF',
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,
     paddingTop: 20, //50
     paddingLeft: 5,
-    //backgroundColor: 'blue',
     marginLeft: '3%',
     marginRight: '3%',
-    //height: '50%'
     justifyContent: 'center',
-    textAlign: 'center'
+    textAlign: 'center',
+    color: 'black'
   },
   aboutText: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
-    //color: '#9F02FF',
+    color: 'black',
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,
-    //paddingTop: 1, //50
     paddingLeft: 5,
-    //backgroundColor: 'blue',
     marginLeft: '3%',
     marginRight: '3%',
-    //height: '50%'
   },
   input: {
     height: '12%',
@@ -136,5 +132,16 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     // marginBottom: '20%',
+  },
+  button: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center',
+    fontSize: 20,
+    color: 'black',
+    marginBottom: 10,
+    paddingTop: 20,
+    justifyContent: 'flex-end',
   }
 });

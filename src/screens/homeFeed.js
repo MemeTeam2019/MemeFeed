@@ -1,5 +1,12 @@
 import React from 'react';
-import { Image, TouchableOpacity, View, Modal, Text, StyleSheet, ScrollView } from 'react-native';
+import {
+  Image,
+  TouchableOpacity,
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
 import firebase from 'react-native-firebase';
 import { withNavigation } from 'react-navigation';
 import MemeGrid from '../components/general/memeGrid';
@@ -25,10 +32,11 @@ class HomeFeed extends React.Component {
       .orderBy('time', 'desc');
     this.state = {
       updated: true,
-      oldestDoc: 0,
+      oldestDoc: null,
       memes: [],
       inGridView: false,
       inFullView: true,
+      refreshing: false,
     };
   }
 
@@ -94,8 +102,23 @@ class HomeFeed extends React.Component {
           memes: mergedMemes,
           updated: true,
           oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+          refreshing: false,
         };
       });
+    });
+  };
+
+  refreshMemes = () => {
+    this.setState({ memes: [], refreshing: true, oldestDoc: null }, () => {
+      firebase
+        .firestore()
+        .collection('Feeds')
+        .doc(firebase.auth().currentUser.uid)
+        .collection('Likes')
+        .orderBy('time', 'desc')
+        .limit(15)
+        .get()
+        .then(this.updateFeed);
     });
   };
 
@@ -231,9 +254,19 @@ class HomeFeed extends React.Component {
           </TouchableOpacity>
         </View>
         {this.state.inGridView ? (
-          <MemeGrid loadMemes={this.fetchMemes} memes={this.state.memes} />
+          <MemeGrid
+            loadMemes={this.fetchMemes}
+            memes={this.state.memes}
+            refreshing={this.state.refreshing}
+            onRefresh={this.refreshMemes}
+          />
         ) : (
-          <MemeList loadMemes={this.fetchMemes} memes={this.state.memes} />
+          <MemeList
+            loadMemes={this.fetchMemes}
+            memes={this.state.memes}
+            refreshing={this.state.refreshing}
+            onRefresh={this.refreshMemes}
+          />
         )}
       </View>
     );
@@ -243,7 +276,7 @@ class HomeFeed extends React.Component {
 export default HomeFeed;
 
 const styles = StyleSheet.create({
-  container:{
+  container: {
     justifyContent: 'center',
     flex: 1,
   },
@@ -251,7 +284,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
     backgroundColor: 'rgba(255,255,255,1)',
-    borderBottomWidth: .5,
+    borderBottomWidth: 0.5,
     borderColor: '#D6D6D6',
   },
   containerStyle3: {
@@ -294,7 +327,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    borderBottomWidth: .5,
+    borderBottomWidth: 0.5,
     borderColor: '#D6D6D6',
   },
   tile: {
@@ -311,7 +344,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 5,
     paddingRight: 5,
-    borderBottomWidth: .5,
+    borderBottomWidth: 0.5,
     borderColor: '#D6D6D6',
   },
   suggestText: {
@@ -320,5 +353,5 @@ const styles = StyleSheet.create({
     color: 'black',
     justifyContent: 'center',
     marginTop: 2,
-  }
+  },
 });

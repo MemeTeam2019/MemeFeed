@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, Button, ImageBackground, Text } from 'react-native';
+import { StyleSheet, ScrollView, View, Button, ImageBackground, Text, TouchableOpacity } from 'react-native';
 
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -36,11 +36,10 @@ export default class LoginScreen extends React.Component {
         </View>
 
         <View style={styles.nextBut}>
-          <Button
-            title='Next'
-            color='#000'
-            onPress={() => this.props.navigation.push('aboutInfo2')}
-          />
+          <TouchableOpacity onPress={() => this.props.navigation.push('aboutInfo2')}
+                            style={styles.button}>
+              <Text style={styles.button}> Next </Text>
+          </TouchableOpacity>
         </View>
       </ImageBackground>
       </ScrollView>
@@ -127,4 +126,13 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
+  button: {
+    backgroundColor: 'transparent',
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center',
+    fontSize: 20,
+    color: 'black',
+    marginBottom: 10,
+    paddingTop: 20,
+  }
 });

@@ -44,8 +44,10 @@ const styles = StyleSheet.create({
   },
   userText: {
     fontWeight: 'bold',
+    color: 'black'
   },
   commentStyle: {
     fontWeight: 'normal',
+    color: 'black'
   },
 });
