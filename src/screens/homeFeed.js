@@ -174,6 +174,10 @@ class HomeFeed extends React.Component {
             </View>
 
             <View style={styles.containerStyle2}>
+            <ScrollView ref={(ref) => {
+              this.scrollView = ref;
+            }}
+            >
               <Image
                 source={require('../components/misc/emptyFriendTile.png')}
                 style={styles.tile}
@@ -184,10 +188,7 @@ class HomeFeed extends React.Component {
               <View style={styles.suggestText}>
                 <Text style={styles.suggestText}> Follow the creators of Meme Feed! </Text>
               </View>
-              <ScrollView ref={(ref) => {
-                this.scrollView = ref;
-              }}
-              >
+
               <View>
 
                 <SuggestUser icon={'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon888.png?alt=media&token=05558df6-bd5b-4da1-9cce-435a419347a0'}
@@ -216,7 +217,7 @@ class HomeFeed extends React.Component {
                              uid= {'MhPMJTBeB1UC1PAlnnN6YhDVcOi2'}/>
 
               </View>
-       </ScrollView>
+          </ScrollView>
             </View>
 
           </View>
@@ -352,6 +353,8 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     color: 'black',
     justifyContent: 'center',
+    textAlign: 'center',
     marginTop: 2,
+    marginBottom: 5
   },
 });
