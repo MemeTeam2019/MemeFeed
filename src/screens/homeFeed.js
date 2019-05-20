@@ -179,15 +179,10 @@ class HomeFeed extends React.Component {
             }}
             >
               <Image
-                source={require('../components/misc/emptyFriendTile.png')}
+                source={require('../components/misc/suggest.png')}
                 style={styles.tile}
               />
-              <View style={styles.suggestText}>
-                <Text style={styles.suggestText}> Looking for people to follow? </Text>
-              </View>
-              <View style={styles.suggestText}>
-                <Text style={styles.suggestText}> Follow the creators of Meme Feed! </Text>
-              </View>
+              
 
               <View>
 
