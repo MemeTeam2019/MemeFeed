@@ -108,6 +108,10 @@ class User:
         for meme in memes:
             self.memes[meme.id] = meme.to_dict()
 
+    # Calculate the average rank this user has given
+    def average_ranking(self):
+        pass
+
     def recent_subreddits(self):
         pass
 
@@ -117,3 +121,4 @@ for user in users:
     print(u.vectorize())
     print(u.memes)
     break
+
