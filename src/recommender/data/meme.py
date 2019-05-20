@@ -43,4 +43,3 @@ for doc in docs:
     meme.store_in_firebase()
     break
 
-
