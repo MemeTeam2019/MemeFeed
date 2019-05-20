@@ -79,4 +79,3 @@ class ItemBasedRecommendation:
 
 if __name__ == '__main__':
     rec = ItemBasedRecommendation()
-
