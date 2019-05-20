@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import {
   Image,
   TouchableOpacity,
@@ -31,6 +31,10 @@ class ExploreFeed extends React.Component {
   constructor(props) {
     super(props);
     this.fetchMemes = this.fetchMemes.bind(this);
+    this._isMounted = false;
+    this.unsubscribe = null;
+    this.refreshMemes = this.refreshMemes.bind(this);
+
     this.state = {
       updated: true,
       inGridView: true,
@@ -38,18 +42,38 @@ class ExploreFeed extends React.Component {
       memes: [],
       searchResults: [],
       searchTerm: '',
+      refreshing: false,
+      oldestDoc: null,
     };
   }
 
   componentDidMount() {
-    firebase
-      .firestore()
-      .collection('Memes')
-      .orderBy('time', 'desc')
-      .limit(15)
-      .get()
-      .then(this.updateFeed);
+    this._isMounted = true;
+    if (this._isMounted) {
+      firebase
+        .firestore()
+        .collection('Memes')
+        .orderBy('time', 'desc')
+        .limit(15)
+        .get()
+        .then(this.updateFeed);
+    }
   }
+
+  /**
+   * Reset oldestDoc and start pulling from the latest memes in Memes collection
+   */
+  refreshMemes = () => {
+    this.setState({ memes: [], oldestDoc: null, refreshing: true }, () => {
+      firebase
+        .firestore()
+        .collection('Memes')
+        .orderBy('time', 'desc')
+        .limit(15)
+        .get()
+        .then(this.updateFeed);
+    });
+  };
 
   fetchMemes = () => {
     // garentees not uploading duplicate memes by checking if memes have finished
@@ -90,14 +114,13 @@ class ExploreFeed extends React.Component {
           memes: mergedMemes,
           updated: true,
           oldestDoc: memesSnapshot.docs[memesSnapshot.docs.length - 1],
+          refreshing: false,
         };
       });
     });
   };
 
-  /**
-   * Pulls all users whose username starts with the searchTerm
-   */
+
   updateSearch = async (searchTerm = '') => {
     // Set search term state immediately to update SearchBar contents
     console.log(searchTerm)
@@ -114,8 +137,8 @@ class ExploreFeed extends React.Component {
     }
 
     usernameMatches = await usersRef
-      .where('searchableUsername', '>=', lowerSearchTerm)
-      .where('searchableUsername', '<', `${lowerSearchTerm}\uf8ff`)
+      .where('searchableusername', '>=', lowerSearchTerm)
+      .where('searchableusername', '<', `${lowerSearchTerm}\uf8ff`)
       .get()
       .then((snapshot) => snapshot.docs)
       .catch((err) => console.log(err));
@@ -246,9 +269,19 @@ class ExploreFeed extends React.Component {
         </View>
         {/* List View */}
         {this.state.inFullView ? (
-          <MemeList loadMemes={this.fetchMemes} memes={this.state.memes} />
+          <MemeList
+            loadMemes={this.fetchMemes}
+            memes={this.state.memes}
+            refreshing={this.state.refreshing}
+            onRefresh={this.refreshMemes}
+          />
         ) : (
-          <MemeGrid loadMemes={this.fetchMemes} memes={this.state.memes} />
+          <MemeGrid
+            loadMemes={this.fetchMemes}
+            memes={this.state.memes}
+            refreshing={this.state.refreshing}
+            onRefresh={this.refreshMemes}
+          />
         )}
       </View>
     );

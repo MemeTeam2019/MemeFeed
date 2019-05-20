@@ -26,12 +26,51 @@ class SourceReddit extends React.Component {
   };
 
   flagMeme = () => {
-    const memeRef = firebase.firestore().doc(`Memes/${this.props.memeId}`);
+    const uid = firebase.auth().currentUser.uid;
+    const memeId = this.props.memeId;
+    const memeRef = firebase.firestore().doc(`Memes/${memeId}`);
+    const feedRef = firebase.firestore().doc(`Feeds/${uid}/Likes/${memeId}`);
+    const reactsRef = firebase.firestore().doc(`Reacts/${uid}/Likes/${memeId}`);
+
     memeRef
       .get()
       .then((docSnapshot) => {
-        const { numFlags } = docSnapshot.data();
-        memeRef.update({ numFlags: numFlags + 1 });
+        if (docSnapshot.exists) {
+          const { numFlags } = docSnapshot.data();
+          memeRef.update({ numFlags: numFlags + 1 || 1 });
+        }
+      })
+      .catch((err) => {
+        Alert.alert(
+          'Oops!',
+          'Something went wrong when flagging this image. Please contact us at memefeedaye@gmail.com',
+          { text: 'Ok' }
+        );
+        console.log(err);
+      });
+    feedRef
+      .get()
+      .then((docSnapshot) => {
+        if (docSnapshot.exists) {
+          const { prevNumFlags } = docSnapshot.data();
+          feedRef.update({ numFlags: prevNumFlags + 1 || 1 });
+        }
+      })
+      .catch((err) => {
+        Alert.alert(
+          'Oops!',
+          'Something went wrong when flagging this image. Please contact us at memefeedaye@gmail.com',
+          { text: 'Ok' }
+        );
+        console.log(err);
+      });
+    reactsRef
+      .get()
+      .then((docSnapshot) => {
+        if (docSnapshot.exists) {
+          const { prevNumFlags } = docSnapshot.data();
+          reactsRef.update({ numFlags: prevNumFlags + 1 || 1 });
+        }
       })
       .catch((err) => {
         Alert.alert(
