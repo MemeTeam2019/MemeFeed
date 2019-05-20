@@ -5,11 +5,21 @@ import ActionSheet from 'react-native-actionsheet';
 import firebase from 'react-native-firebase';
 
 class SourceReddit extends React.Component {
-  goToSubreddit = () => {
-    this.props.navigation.push('SubReddit', {
-      sub: this.props.sub,
-    });
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: ""
+    }
+  }
+
+  goToSubreddit() {
+    console.log(this.props.isSubRedditPg);
+    if (!this.props.isSubRedditPg) {
+      this.props.navigation.push('SubReddit', {
+        sub: this.props.sub
+      });
+    }
+  }
 
   showActionSheet = () => {
     this.ActionSheet.show();
@@ -79,6 +89,7 @@ class SourceReddit extends React.Component {
     );
   }
 }
+const hitSlop = { top: 15, bottom: 15, left: 15, right: 15 };
 
 export default withNavigation(SourceReddit);
 
@@ -126,6 +137,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 5,
     color: '#919191',
-    backgroundColor: 'white',
+    backgroundColor: 'white'
   },
+  touchSpace: {
+    padding: 5,
+    fontSize: 15,
+    fontFamily: 'AvenirNext-Bold',
+    fontStyle: 'italic',
+    color: '#919191',
+    backgroundColor: 'transparent',
+    textAlignVertical: 'top',
+    width: 900,
+    marginRight: 2,
+    paddingLeft: 5
+  }
 });

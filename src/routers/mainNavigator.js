@@ -21,7 +21,6 @@ import PrivacyPolicyScreen from '../screens/privacyScreen';
 import Subreddit from '../screens/subReddit';
 
 const InfoStack = createStackNavigator({
-
   aboutInfo1,
   aboutInfo2,
   aboutInfo3,

@@ -454,6 +454,7 @@ class CommentPage extends React.Component {
               postedBy={postedBy}
               poster={poster}
               showAllComments={this.showAllComments}
+              isSubRedditPg={this.props.navigation.getParam('isSubRedditPg')}
             />
             <CommentList
               memeId={this.state.memeId}
@@ -504,8 +505,7 @@ class CommentPage extends React.Component {
               });
             }}
             style={[styles.input, { height: Math.max(35, this.state.height) }]}
-            value={this.state.text}
-          />
+            value={this.state.text}/>
 
           <Button
             onPress={this._onPressButton}

@@ -136,6 +136,8 @@ class LikedFromReddit extends React.Component {
   }
 }
 
+const hitSlop = { top: 15, bottom: 15, left: 15, right: 15 };
+
 export default withNavigation(LikedFromReddit);
 
 const styles = StyleSheet.create({
@@ -213,6 +215,19 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     color: '#919191',
     backgroundColor: 'white',
-    marginLeft: 2,
+    marginLeft: 2
   },
+  touchSpace: {
+    padding: 5,
+    fontSize: 15,
+    fontFamily: 'AvenirNext-Bold',
+    fontStyle: 'italic',
+    color: '#919191',
+    backgroundColor: 'transparent',
+    textAlignVertical: 'top',
+    width: 900,
+    marginRight: 2,
+    paddingLeft: 5
+  }
+
 });

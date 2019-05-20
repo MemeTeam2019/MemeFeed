@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, FlatList } from 'react-native';
+import { StyleSheet, FlatList, RefreshControl } from 'react-native';
 
 import Tile from '../image/tile';
 
@@ -28,6 +28,7 @@ class MemeList extends React.PureComponent {
         likedFrom={item.likedFrom}
         postedBy={item.postedBy}
         poster={item.poster}
+        isSubRedditPg={this.props.isSubRedditPg}
       />
     );
   };
@@ -42,6 +43,12 @@ class MemeList extends React.PureComponent {
           // Load new memes once end of list is reached
           this.props.loadMemes();
         }}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.props.refreshing}
+            onRefresh={this.props.onRefresh}
+          />
+        }
       />
     );
   }

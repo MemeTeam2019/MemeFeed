@@ -15,10 +15,9 @@ import firebase from 'react-native-firebase';
  *                   e.g. userSnapshot.data(). Refer to the Firebase Users
  *                   collection for the expected object properties.
  */
-class SuggestUser extends React.PureComponent {
+class SearchResult extends React.PureComponent {
   render() {
-    const uid = '3khrPuSqO4XhPKWuz2gSoNFGgdA2'
-    if (!uid) return null;
+    const { navigation, icon, name, username, uid } = this.props;
     return (
       <React.Fragment>
         <TouchableOpacity
@@ -26,8 +25,11 @@ class SuggestUser extends React.PureComponent {
           style={styles.resultContainer}
         >
           <View>
-            <Text style={styles.primaryText}>Siddhi</Text>
-
+            <Image style={styles.profilePic} source={{ uri: this.props.icon }} />
+          </View>
+          <View>
+            <Text style={styles.primaryText}>{this.props.username}</Text>
+            <Text style={styles.secondaryText}>{this.props.name}</Text>
           </View>
         </TouchableOpacity>
       </React.Fragment>
@@ -39,10 +41,11 @@ const styles = StyleSheet.create({
   resultContainer: {
     flex: 1,
     flexDirection: 'row',
-    borderBottomColor: '#bbb',
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    //borderBottomColor: '#bbb',
+    //borderBottomWidth: StyleSheet.hairlineWidth,
     marginHorizontal: '5%',
-    paddingVertical: '2.5%',
+    marginTop: 10,
+    marginBottom: 10,
   },
   primaryText: {
     color: '#000',
@@ -60,4 +63,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withNavigation(SuggestUser);
+export default withNavigation(SearchResult);
