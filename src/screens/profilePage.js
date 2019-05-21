@@ -51,7 +51,7 @@ export default class Profile extends React.Component {
       updated: true,
       memes: [],
       oldestDoc: 0,
-      icon: ''
+      icon: '',
     };
   }
 
@@ -68,9 +68,7 @@ export default class Profile extends React.Component {
         .then((docSnapshot) => {
           if (docSnapshot.exists) {
             const { icon } = docSnapshot.data();
-            this.setState({ icon })
-          } else {
-            //console.log("doesn't exist");
+            this.setState({ icon });
           }
         })
         .catch((error) => {
@@ -238,12 +236,11 @@ export default class Profile extends React.Component {
                 cancelButtonIndex={3}
                 destructiveIndex={0}
                 onPress={(index) => {
-                  //console.log(index);
-                  if (optionArray[index] == 'Log Out') {
+                  if (optionArray[index] === 'Log Out') {
                     this.logout();
-                  } else if (optionArray[index] == 'About') {
+                  } else if (optionArray[index] === 'About') {
                     this.props.navigation.push('InfoStack');
-                  } else if (optionArray[index] == 'Privacy Policy') {
+                  } else if (optionArray[index] === 'Privacy Policy') {
                     this.props.navigation.push('Privacy');
                   }
                 }}
@@ -440,14 +437,13 @@ const styles = StyleSheet.create({
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 50, //50
+    paddingTop: 50,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 360,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
-    backgroundColor: 'white',
   },
   navBut: {
     height: 50,
@@ -468,7 +464,6 @@ const styles = StyleSheet.create({
     color: 'black',
     paddingLeft: 1,
     paddingHorizontal: 10,
-    backgroundColor: 'white',
     marginRight: '9%',
     marginLeft: '9%',
   },
@@ -507,23 +502,19 @@ const styles = StyleSheet.create({
     paddingRight: 2,
     paddingLeft: 2,
     paddingHorizontal: 10,
-    //borderColor: '#778899',
     color: '#778899',
-    //borderWidth: 1,
-    //borderRadius: 5,
   },
   profilePic: {
     backgroundColor: 'white',
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 10, //50
+    paddingTop: 10,
     flexDirection: 'row',
     alignItems: 'center',
     fontSize: 360,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
-    backgroundColor: 'white',
   },
   textshadow: {
     fontSize: 40,
@@ -557,7 +548,7 @@ const styles = StyleSheet.create({
   },
   navBar1: {
     height: 95,
-    paddingTop: 50, //50
+    paddingTop: 50,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -586,14 +577,11 @@ const styles = StyleSheet.create({
   followBut: {
     fontSize: 17,
     fontFamily: 'AvenirNext-Regular',
-    //borderColor: '#A4A4A4',
     color: '#5B5B5B',
     justifyContent: 'center',
   },
   followBut2: {
-    //borderWidth: 0.6,
     width: '25%',
-    //borderRadius: 3.5,
     marginLeft: 25,
     flexDirection: 'row',
     justifyContent: 'center',

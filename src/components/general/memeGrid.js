@@ -1,5 +1,11 @@
 import React from 'react';
-import { Image, TouchableOpacity, View, StyleSheet } from 'react-native';
+import {
+  Image,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  RefreshControl,
+} from 'react-native';
 import { withNavigation } from 'react-navigation';
 import Grid from 'react-native-grid-component';
 
@@ -68,13 +74,13 @@ class MemeGrid extends React.Component {
         renderPlaceholder={this._renderPlaceholder}
         data={this.props.memes}
         itemsPerRow={3}
-        onEndReached={() => {
-          console.log('on end reached');
-          console.log('===========\n\n\n\nloading more memes\n===============');
-          // Call parent function
-          this.props.loadMemes();
-          console.log(this.props.memes);
-        }}
+        onEndReached={this.props.loadMemes}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.props.refreshing}
+            onRefresh={this.props.onRefresh}
+          />
+        }
       />
     );
   }

@@ -184,6 +184,8 @@ class CommentPage extends React.Component {
 
 
   _onPressButton = () => {
+    // send notification
+    this.sendTagNotifications()
       const user = firebase.auth().currentUser;
       const date = Math.round(+new Date() / 1000);
       const memeId = this.state.memeId;
@@ -359,16 +361,45 @@ class CommentPage extends React.Component {
       console.log(this.state.usernamesTagged)
     }
 
-    sendTagNotifications = () => {
-      for (var i = 0; i < this.state.usersTagging.length; i++) {
-        username = this.state.usersTagging[i]
-        // verfiy that we are still tagging the people added to the list
-        if ((this.state.text).indexOf(username) > -1) {
-          console.log('tagging ',username)
-          // send notification to this.state.peopleToTag[i])
-        }
-      }
-    }
+
+
+  sendTagNotifications = () => {
+   for (var i = 0; i < this.state.peopleToTag.length; i++) {
+     username = this.state.usernamesTagged[i];
+     // verfiy that we are still tagging the people added to the list
+     if ((this.state.text).indexOf(username) > -1) {
+       console.log('tagging ',username);
+       // send notification to this.state.peopleToTag[i])
+           const uid = firebase.auth().currentUser.uid;
+           const time = Math.round(+new Date() / 1000);
+           const memeId = this.state.memeId;
+           const viewed = false;
+           const noteRef = firebase
+             .firestore()
+             .collection("NotificationsTest")
+             .doc(this.state.peopleToTag[i])
+             .collection("Notes");
+           noteRef.add({type: 'tag',
+                         uid: uid,
+                         time: time,
+                         memeId: memeId,
+                         viewed: viewed});
+
+     }
+   }
+ }
+
+
+
+      // for (var i = 0; i < this.state.usersTagging.length; i++) {
+      //   username = this.state.usersTagging[i]
+      //   // verfiy that we are still tagging the people added to the list
+      //   if ((this.state.text).indexOf(username) > -1) {
+      //     console.log('tagging ',username)
+      //     // send notification to this.state.peopleToTag[i])
+      //   }
+      // }
+    // }
 
   render() {
     const sub = this.props.navigation.getParam('sub', '');
