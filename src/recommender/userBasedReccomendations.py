@@ -3,11 +3,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 vectorizer = TfidfVectorizer()
 
 
-def standard_similarity (a, b):
-    return 0
 
-
-def cosine_sim (text1, text2):
+def cosineSim (text1, text2):
     tfidf = vectorizer.fit_transform([text1, text2])
     return ((tfidf * tfidf.T).A)[0,1]
 
@@ -16,22 +13,22 @@ def similarity (a, b):
     # compute similarity between top 3 subreddits
     ATopThree = " ".join(a[0:3])
     BTopThree = " ".join(b[0:3])
-    topThreeSimilarity = cosine_sim(ATopThree, BTopThree)
+    topThreeSimilarity = cosineSim(ATopThree, BTopThree)
 
     # compute similarity between bottom 3 subreddits
     ABottomThree = " ".join(a[3:6])
     BBottomThree = " ".join(b[3:6])
-    bottomThreeSimilarity = cosine_sim(ABottomThree, BBottomThree)
+    bottomThreeSimilarity = cosineSim(ABottomThree, BBottomThree)
 
     # compute similarity between  most recent subreddits
     ARecentThree = " ".join(a[6:9])
     BRecentThree = " ".join(b[6:9])
-    recentThreeSimilarity = cosine_sim(ARecentThree, BRecentThree)
+    recentThreeSimilarity = cosineSim(ARecentThree, BRecentThree)
 
     # compute similarity between most popular subreddits
     APopularThree = " ".join(a[9:12])
     BPopularThree = " ".join(b[9:12])
-    popularThreeSimilarity = cosine_sim(ARecentThree, BRecentThree)
+    popularThreeSimilarity = cosineSim(ARecentThree, BRecentThree)
 
     averageSimilarity = (topThreeSimilarity + bottomThreeSimilarity + recentThreeSimilarity + popularThreeSimilarity)/4
     return averageSimilarity
@@ -41,8 +38,8 @@ def findSimilarUsers (allUsers, thisUser):
     similarUsers = {}
     for user in allUsers:
         similarity = similarity(user.vectorize(), thisUser.vectorize()): # TODO: figure out how to get this
-        # more similar than not
-        if similarity > .5:
+
+        if similarity > .25:
             similarUsers[user.uid] = similarity
 
     return similarUsers
@@ -54,6 +51,8 @@ def findUnseenMemes (similarUsers, currentMemes, thisUser):
     unseenMemes = {}
     recommenededMemes = {}
     averageUserRanking = thisUser.averageRank # TODO: figure out how to get this
+
+    # find all the memes this user has not seen
     for user, similarity in similarUsers:
         averageRank = user.averageRank # TODO: figure out how to get this
         for meme in user.memes: # TODO: figure out how to get this
@@ -69,21 +68,18 @@ def findUnseenMemes (similarUsers, currentMemes, thisUser):
 
     # after seeing how similar users felt about these memes we adjust their
     # feelings to this current user
-    for meme in unseenMemes:
-        recommenedMemes[meme] =
+    for meme, fraction in unseenMemes:
+        similarUsersNetFeelings = fraction[0]/fraction[1]
+        recommenedMemes[meme] = averageUserRanking + similarUsersNetFeelings
 
     return recommenedMemes
-
-
 
 
 # this acts as our main function that gets called by the main recommendation Pipeline
 def recommendMemesByUser(thisUser, otherUsers, memes):
     similarUsers = findSimilarUsers(otherUsers, thisUser)
-    unseenMemes = findUnseenMemes(similarUsers, myMemes)
-    similarMemes = findSimilarMemes(unseenMemes, myMemes)
-    finalRecommendations = consolidateMemes(unseenMemes, similarMemes)
-    return finalRecommendations
+    recommenededMemes = findUnseenMemes(similarUsers, myMemes)
+    return recommenededMemes
 
 
 

@@ -15,6 +15,7 @@ class User:
             self.top_1_user = ''
             self.top_2_user = ''
             self.top_3_user = ''
+            self.avg_rank = 0
 
             self.rank_subreddits()
             self.rank_users()
@@ -110,7 +111,21 @@ class User:
 
     # Calculate the average rank this user has given
     def average_ranking(self):
-        pass
+        sum_of_ranks = 0
+        number_of_ranks = 0
+        reacts = db \
+            .collection('Reacts') \
+            .document(self.uid) \
+            .collection('Likes') \
+            .stream()
+        for react in reacts:
+            react_data = react.to_dict()
+            rank = react_data['rank']
+            sum_of_ranks += rank
+            number_of_ranks += 1
+
+        self.avg_rank = sum_of_ranks/number_of_ranks
+
 
     def recent_subreddits(self):
         pass
@@ -118,7 +133,8 @@ class User:
 users = db.collection('Users').stream()
 for user in users:
     u = User(user.id, user.to_dict())
-    print(u.vectorize())
-    print(u.memes)
+    # print(u.vectorize())
+    # print(u.memes)
+    u.average_ranking()
+    print(u.avg_rank)
     break
-
