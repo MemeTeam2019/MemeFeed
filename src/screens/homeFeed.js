@@ -21,12 +21,6 @@ class HomeFeed extends React.Component {
     this._isMounted = false;
     this.unsubscribe = null;
     this.fetchMemes = this.fetchMemes.bind(this);
-    this.ref = firebase
-      .firestore()
-      .collection('FeedsTest')
-      .doc(firebase.auth().currentUser.uid)
-      .collection('Likes')
-      .orderBy('time', 'desc');
     this.state = {
       updated: true,
       oldestDoc: null,
@@ -38,18 +32,15 @@ class HomeFeed extends React.Component {
   }
 
   componentDidMount() {
-    this._isMounted = true;
-    if (this._isMounted) {
-      firebase
-        .firestore()
-        .collection('FeedsTest')
-        .doc(firebase.auth().currentUser.uid)
-        .collection('Likes')
-        .orderBy('time', 'desc')
-        .limit(15)
-        .get()
-        .then(this.updateFeed);
-    }
+    firebase
+      .firestore()
+      .collection('FeedsTest')
+      .doc(firebase.auth().currentUser.uid)
+      .collection('Likes')
+      .orderBy('time', 'desc')
+      .limit(15)
+      .get()
+      .then(this.updateFeed);
   }
 
   fetchMemes = () => {
@@ -105,7 +96,7 @@ class HomeFeed extends React.Component {
     this.setState({ memes: [], refreshing: true, oldestDoc: null }, () => {
       firebase
         .firestore()
-        .collection('Feeds')
+        .collection('FeedsTest')
         .doc(firebase.auth().currentUser.uid)
         .collection('Likes')
         .orderBy('time', 'desc')

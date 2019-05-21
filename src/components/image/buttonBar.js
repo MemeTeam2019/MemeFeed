@@ -46,22 +46,18 @@ class ButtonBar extends React.Component {
   componentDidMount() {
     const user = firebase.auth().currentUser;
     const memeId = this.props.memeId;
-    const ref = firebase
+    firebase
       .firestore()
       .collection('ReactsTest')
       .doc(user.uid)
       .collection('Likes')
-      .doc(memeId);
-
-    ref
+      .doc(memeId)
       .get()
       .then((docSnapshot) => {
         if (docSnapshot.exists) {
-          let data = docSnapshot.data();
-          if (data) {
-            let rank = data.rank;
-            this.setState({ selectedButton: rank === -1 ? null : rank });
-          }
+          const data = docSnapshot.data();
+          const rank = data.rank;
+          this.setState({ selectedButton: rank === -1 ? null : rank });
         }
       })
       .catch((error) => {
@@ -88,7 +84,7 @@ class ButtonBar extends React.Component {
         type: 'like',
         uid: user.uid,
         time: date,
-        memeId: memeId,
+        memeId,
         viewed: false,
       });
     }
