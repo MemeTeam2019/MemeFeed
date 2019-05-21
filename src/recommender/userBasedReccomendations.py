@@ -1,7 +1,13 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
+from scipy import stats
 
-vectorizer = TfidfVectorizer()
+vectorizer = TfidfVectorizer(tokenizer=normalize)
 
+
+def pearsonCorrellation (A,B):
+
+    (r,p) = stats.pearsonr
+    return r
 
 
 def cosineSim (text1, text2):
