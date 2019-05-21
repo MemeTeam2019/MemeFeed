@@ -94,15 +94,6 @@ export default class Profile extends React.Component {
   refreshMemes = () => {
     this.setState({ memes: [], refreshing: true, oldestDoc: null }, () => {
       this.componentDidMount();
-      // firebase
-      //   .firestore()
-      //   .collection('ReactsTest')
-      //   .doc(firebase.auth().currentUser.uid)
-      //   .collection('Likes')
-      //   .orderBy('time', 'desc')
-      //   .limit(10)
-      //   .get()
-      //   .then(this.componentDidMount);
     });
   };
 
@@ -114,7 +105,7 @@ export default class Profile extends React.Component {
       const oldestDoc = this.state.oldestDoc;
       firebase
         .firestore()
-        .collection('Reacts')
+        .collection('ReactsTest')
         .doc(firebase.auth().currentUser.uid)
         .collection('Likes')
         .orderBy('time', 'desc')
@@ -127,7 +118,7 @@ export default class Profile extends React.Component {
 
   updateFeed = (querySnapshot) => {
     querySnapshot.docs.forEach((doc) => {
-      const { time, url, rank, likedFrom } = doc.data();
+      const { time, url, rank, likedFrom, caption } = doc.data();
       if (rank > 1) {
         const newMemes = [];
         newMemes.push({
@@ -140,6 +131,7 @@ export default class Profile extends React.Component {
           // on their own page that the liked from source is still the same
           postedBy: likedFrom,
           poster: firebase.auth().currentUser.uid,
+          caption,
         });
         this.setState((prevState) => {
           const mergedMemes = prevState.memes.concat(newMemes);
@@ -191,32 +183,6 @@ export default class Profile extends React.Component {
       .catch((err) => {
         //console.log(err);
       });
-  };
-
-  renderItem(item, itemSize, itemPaddingHorizontal) {
-    return (
-      <TouchableOpacity
-        key={item.id}
-        style={{
-          width: itemSize,
-          height: itemSize,
-          paddingHorizontal: itemPaddingHorizontal,
-        }}
-        onPress={() => {
-          this.ShowModalFunction(true, item.src);
-        }}
-      >
-        <Image
-          resizeMode='cover'
-          style={{ flex: 1 }}
-          source={{ uri: item.src }}
-        />
-      </TouchableOpacity>
-    );
-  }
-
-  renderTile = ({ item }) => {
-    return <Tile memeId={item.key} imageUrl={item.src} />;
   };
 
   render() {

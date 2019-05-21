@@ -95,7 +95,7 @@ class ExploreFeed extends React.Component {
   updateFeed = (memesSnapshot) => {
     const newMemes = [];
     memesSnapshot.docs.forEach((doc) => {
-      const { url, time, sub } = doc.data();
+      const { url, time, sub, caption } = doc.data();
       newMemes.push({
         key: doc.id,
         doc,
@@ -103,6 +103,7 @@ class ExploreFeed extends React.Component {
         time,
         sub,
         postedBy: sub,
+        caption,
       });
     });
 

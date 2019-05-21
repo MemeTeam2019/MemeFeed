@@ -384,7 +384,7 @@ class FriendProfile extends React.Component {
   onCollectionUpdate = (querySnapshot) => {
     const memes = [];
     querySnapshot.forEach((doc) => {
-      const { time, url, rank, likedFrom } = doc.data();
+      const { time, url, rank, likedFrom, caption } = doc.data();
       if (rank > 1)
         memes.push({
           key: doc.id,
@@ -394,6 +394,7 @@ class FriendProfile extends React.Component {
           likedFrom,
           postedBy: this.props.navigation.getParam('uid'),
           poster: this.props.navigation.getParam('uid'),
+          caption,
         });
       this.setState({ memes });
     });

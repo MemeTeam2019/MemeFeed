@@ -9,9 +9,6 @@ import {
   Button,
   TextInput,
   Keyboard,
-  Modal,
-  Text,
-  TouchableHighlight,
   Platform,
 } from 'react-native';
 import firebase from 'react-native-firebase';
