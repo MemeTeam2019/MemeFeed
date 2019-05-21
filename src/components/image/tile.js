@@ -24,7 +24,7 @@ class Tile extends React.Component {
     const memeid = this.props.memeId;
     const ref = firebase
       .firestore()
-      .collection('Memes')
+      .collection('MemesTest')
       .doc(memeid);
     ref.get().then((docSnapshot) => {
       const data = docSnapshot.data();
@@ -76,6 +76,7 @@ class Tile extends React.Component {
               memeId={this.props.memeId}
               postedBy={this.props.postedBy}
               updateReacts={this.updateReactCount}
+              caption={this.props.caption}
             />
           </View>
         </View>
