@@ -42,7 +42,7 @@ class ExploreFeed extends React.Component {
       memes: [],
       searchResults: [],
       searchTerm: '',
-      refreshing: false,
+      refreshing: true,
       oldestDoc: null,
     };
   }
