@@ -1,42 +1,57 @@
-from sklearn.feature_extraction.text import TfidfVectorizer
-from scipy import stats
 
-vectorizer = TfidfVectorizer(tokenizer=normalize)
+# similarityTopAndBottom computes two users similarity
+def generalSimilarity(a, b):
+    similarity = 0
+    weight = {0:3, 1:2, 2:1}
+    for idxA, item in enumerate(a):
+        if item in b:
+            idxB = b.index(item)
+            sum = weight[idxB] + weight[idxA]
+            sum = sum + 1if idxA == idxB else sum
+            similarity += sum
+
+    return similarity/15
 
 
-def pearsonCorrellation (A,B):
+# similarityTopAndBottom computes two users similarity based on their top and
+# bottom subreddits
+def similarityTopAndBottom(a, b):
+    similarity = 0
+    # associated weight for each index
+    weight = {0:3, 1:2, 2:1, 3:3, 4:2, 5:1]
+    for idxA, item in enumerate(a):
+        if item in b:
+            idxB = b.index(item)
+            sum = weight[idxB] + weight[idxA]
+            # reward if they had the exact same rank
+            sum = sum+1 if idxA == idxB else sum
+            if idxA > 2 and idxB > 2:
+                similarity += sum
+            elif idxA < 3 and idxB < 3:
+                similarity += sum
+            else:
+                similarity -= sum
 
-    (r,p) = stats.pearsonr
-    return r
-
-
-def cosineSim (text1, text2):
-    tfidf = vectorizer.fit_transform([text1, text2])
-    return ((tfidf * tfidf.T).A)[0,1]
+    return similarity/30
 
 # we define our own cosine similarity function since the vectors contain strings
 def similarity (a, b):
     # compute similarity between top 3 subreddits
-    ATopThree = " ".join(a[0:3])
-    BTopThree = " ".join(b[0:3])
-    topThreeSimilarity = cosineSim(ATopThree, BTopThree)
-
-    # compute similarity between bottom 3 subreddits
-    ABottomThree = " ".join(a[3:6])
-    BBottomThree = " ".join(b[3:6])
-    bottomThreeSimilarity = cosineSim(ABottomThree, BBottomThree)
+    ARankings = " ".join(a[0:6])
+    BRankings = " ".join(b[0:6])
+    similarityRankings = similarityTopAndBottom(ATopThree, BTopThree)
 
     # compute similarity between  most recent subreddits
     ARecentThree = " ".join(a[6:9])
     BRecentThree = " ".join(b[6:9])
-    recentThreeSimilarity = cosineSim(ARecentThree, BRecentThree)
+    recentThreeSimilarity = generalSimilarity(ARecentThree, BRecentThree)
 
     # compute similarity between most popular subreddits
     APopularThree = " ".join(a[9:12])
     BPopularThree = " ".join(b[9:12])
-    popularThreeSimilarity = cosineSim(ARecentThree, BRecentThree)
+    popularThreeSimilarity = generalSimilarity(ARecentThree, BRecentThree)
 
-    averageSimilarity = (topThreeSimilarity + bottomThreeSimilarity + recentThreeSimilarity + popularThreeSimilarity)/4
+    averageSimilarity = (similarityRankings + recentThreeSimilarity + popularThreeSimilarity)/3
     return averageSimilarity
 
 # Find users most similar to you (similar_users = {} key: uid, value: similarity)
@@ -45,7 +60,7 @@ def findSimilarUsers (allUsers, thisUser):
     for user in allUsers:
         similarity = similarity(user.vectorize(), thisUser.vectorize()): # TODO: figure out how to get this
 
-        if similarity > .25:
+        if similarity > 0:
             similarUsers[user.uid] = similarity
 
     return similarUsers
