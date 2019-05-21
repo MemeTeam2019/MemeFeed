@@ -161,7 +161,6 @@ class CommentPage extends React.Component {
   handleNewComment = (commentRef) => {
     commentRef.get().then((commentDoc) => {
       const { text, uid, time } = commentDoc.data();
-      //console.log(text, uid, time);
       firebase
         .firestore()
         .collection('Users')
@@ -177,7 +176,6 @@ class CommentPage extends React.Component {
             time,
             username,
           };
-          //console.log(newComment);
           this.setState((prevState) => {
             return {
               comments: [...prevState.comments, newComment],
@@ -228,42 +226,22 @@ class CommentPage extends React.Component {
         console.log('Error getting document', err);
       });
 
-    const ref = firebase.firestore().collection(`CommentsTest/${memeId}/Text`);
-
-    ref
-      .get()
-      .then((doc) => {
-        if (!doc.exists) {
-          // Add necessary infrastruction
-          firebase
-            .firestore()
-            .collection('CommentsTest')
-            .doc(memeId);
-          firebase
-            .firestore()
-            .collection('CommentsTest')
-            .doc(memeId)
-            .collection('Text');
-        }
-
-        // Add this comment to the proper folder
-        firebase
-          .firestore()
-          .collection(`CommentsTest/${memeId}/Text`)
-          .add({
-            uid: user.uid,
-            text: this.state.text.trim(),
-            time: date,
-          })
-          .then((commentRef) => {
-            this.setState({
-              text: '',
-            });
-            console.log(this.props);
-            this.handleNewComment(commentRef);
-            console.log('Added document with ID: ', commentRef.id);
-          });
-        console.log('Document data:', doc.data());
+    // Add this comment to the proper folder
+    firebase
+      .firestore()
+      .collection(`CommentsTest/${memeId}/Text`)
+      .add({
+        uid: user.uid,
+        text: this.state.text.trim(),
+        time: date,
+      })
+      .then((commentRef) => {
+        this.setState({
+          text: '',
+        });
+        console.log(this.props);
+        this.handleNewComment(commentRef);
+        console.log('Added document with ID: ', commentRef.id);
       })
       .catch((err) => {
         console.log('Error getting document', err);
@@ -281,7 +259,7 @@ class CommentPage extends React.Component {
     this.setState({ searchTerm });
     const myUid = firebase.auth().currentUser.uid;
 
-    const countRef = firebase
+    firebase
       .firestore()
       .collection('Users')
       .doc(myUid)
@@ -390,10 +368,10 @@ class CommentPage extends React.Component {
           .collection('Notes');
         noteRef.add({
           type: 'tag',
-          uid: uid,
-          time: time,
-          memeId: memeId,
-          viewed: viewed,
+          uid,
+          time,
+          memeId,
+          viewed,
         });
       }
     }
@@ -478,6 +456,67 @@ class CommentPage extends React.Component {
               </View>
             </ScrollView>
           )}
+
+          {/* please forgive me this is the add comment button stuff all right here*/}
+          <View
+            style={[
+              styles.container,
+              { height: Math.max(35, this.state.height) + 10 },
+            ]}
+          >
+            <TextInput
+              {...this.props}
+              multiline
+              placeholder='Add a comment...'
+              autoCapitalize='none'
+              onChangeText={(text) => {
+                // have a bool called if trying to tag
+                if (this.state.tryingToTag) {
+                  if (text.length - 1 < this.state.mostRecentAt) {
+                    this.state.tryingToTag = false;
+                    this.setModalVisible(!this.state.modalVisible);
+                  } else {
+                    this.setModalVisible(true);
+                  }
+                  this.state.searchTerm = text.substring(
+                    this.state.mostRecentAt + 1,
+                    text.length
+                  );
+                  this.updateSearch(this.state.searchTerm);
+                }
+
+                if (text[text.length - 1] === '@') {
+                  this.setState({
+                    mostRecentAt: text.length - 1,
+                    tryingToTag: true,
+                  });
+                }
+
+                this.setState({ text });
+              }}
+              onContentSizeChange={(event) => {
+                this.setState({
+                  height: Math.min(120, event.nativeEvent.contentSize.height),
+                });
+              }}
+              style={[
+                styles.input,
+                { height: Math.max(35, this.state.height) },
+              ]}
+              value={this.state.text}
+            />
+
+            <Button
+              onPress={this._onPressButton}
+              style={[
+                styles.postButton,
+                { height: Math.max(35, this.state.height) },
+              ]}
+              disabled={!this.state.text.trim()}
+              title='Post'
+              color='#000'
+            />
+          </View>
 
           {/* please forgive me this is the add comment button stuff all right here*/}
           <View
