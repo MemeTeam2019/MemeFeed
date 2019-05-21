@@ -13,7 +13,7 @@ import firebase from 'react-native-firebase';
 
 import Username from '../username';
 
-class postedByUser extends React.Component {
+class PostedByUser extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -118,7 +118,7 @@ class postedByUser extends React.Component {
   }
 }
 
-export default withNavigation(postedByUser);
+export default withNavigation(PostedByUser);
 
 const styles = StyleSheet.create({
   container: {
