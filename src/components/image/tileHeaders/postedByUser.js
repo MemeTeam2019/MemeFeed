@@ -18,7 +18,7 @@ class PostedByUser extends React.Component {
     super(props);
     this.state = {
       iconURL:
-        'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon555.png?alt=media&token=48fb9bf8-4efb-490c-a178-13a9efb2289c',
+        '',
     };
   }
 
