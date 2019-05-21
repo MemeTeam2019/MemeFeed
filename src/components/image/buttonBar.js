@@ -46,22 +46,18 @@ class ButtonBar extends React.Component {
   componentDidMount() {
     const user = firebase.auth().currentUser;
     const memeId = this.props.memeId;
-    const ref = firebase
+    firebase
       .firestore()
-      .collection('Reacts')
+      .collection('ReactsTest')
       .doc(user.uid)
       .collection('Likes')
-      .doc(memeId);
-
-    ref
+      .doc(memeId)
       .get()
       .then((docSnapshot) => {
         if (docSnapshot.exists) {
-          let data = docSnapshot.data();
-          if (data) {
-            let rank = data.rank;
-            this.setState({ selectedButton: rank === -1 ? null : rank });
-          }
+          const data = docSnapshot.data();
+          const rank = data.rank;
+          this.setState({ selectedButton: rank === -1 ? null : rank });
         }
       })
       .catch((error) => {
@@ -96,7 +92,7 @@ class ButtonBar extends React.Component {
     // Update the Reacts collection for current uid
     const reactRef = firebase
       .firestore()
-      .collection('Reacts')
+      .collection('ReactsTest')
       .doc(user.uid)
       .collection('Likes')
       .doc(memeId);
@@ -236,7 +232,7 @@ class ButtonBar extends React.Component {
           let friendUid = followersLst[i];
           firebase
             .firestore()
-            .collection('Feeds')
+            .collection('FeedsTest')
             .doc(friendUid)
             .collection('Likes')
             .doc(memeId)
@@ -254,7 +250,7 @@ class ButtonBar extends React.Component {
                 ) {
                   firebase
                     .firestore()
-                    .collection('Feeds')
+                    .collection('FeedsTest')
                     .doc(friendUid)
                     .collection('Likes')
                     .doc(memeId)
@@ -268,6 +264,7 @@ class ButtonBar extends React.Component {
                       likedFrom: firebase.firestore.FieldValue.arrayUnion(
                         this.props.postedBy
                       ),
+                      caption: this.props.caption,
                     });
                 }
 
@@ -281,7 +278,7 @@ class ButtonBar extends React.Component {
                   }
                   firebase
                     .firestore()
-                    .collection('Feeds')
+                    .collection('FeedsTest')
                     .doc(friendUid)
                     .collection('Likes')
                     .doc(memeId)
@@ -295,54 +292,31 @@ class ButtonBar extends React.Component {
                       likedFrom: firebase.firestore.FieldValue.arrayRemove(
                         this.props.postedBy
                       ),
+                      caption: this.props.caption,
                     });
                 }
               } else {
                 // doc doesn't exist
                 // only make it exist if its a positive react
-                if (newReact > 1) {
-                  firebase
-                    .firestore()
-                    .collection('Feeds')
-                    .doc(friendUid)
-                    .collection('Likes')
-                    .doc(memeId)
-                    .set({
-                      posReacts: 1,
-                      time: date,
-                      url: this.props.imageUrl,
-                      // add this user as someone that liked this meme
-                      likers: [firebase.auth().currentUser.uid],
-                      likedFrom: [this.props.postedBy],
-                    });
-                }
+                firebase
+                  .firestore()
+                  .collection('FeedsTest')
+                  .doc(friendUid)
+                  .collection('Likes')
+                  .doc(memeId)
+                  .set({
+                    posReacts: 1,
+                    time: date,
+                    url: this.props.imageUrl,
+                    // add this user as someone that liked this meme
+                    likers: [firebase.auth().currentUser.uid],
+                    likedFrom: [this.props.postedBy],
+                    caption: this.props.caption,
+                  });
               }
             });
         }
       });
-  };
-
-  handleCommentClick() {
-    this.props.navigation.navigate('Comment', {
-      memeId: this.props.memeId,
-      uri: this.props.imageUrl,
-    });
-  }
-
-  _renderItem = (data) => {
-    <TouchableOpacity
-      style={{
-        width: 25,
-        height: 25,
-      }}
-      onPress={this._onPressButton}
-    >
-      <Image
-        resizeMode='cover'
-        style={{ flex: 1 }}
-        source={{ uri: this.emojiRank[data] }}
-      />
-    </TouchableOpacity>;
   };
 
   _renderPlaceholder = (i) => <View style={styles.item} key={i} />;
