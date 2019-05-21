@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  RefreshControl,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import ActionSheet from 'react-native-actionsheet';
@@ -50,47 +51,60 @@ export default class Profile extends React.Component {
       selectListButtonP: false,
       updated: true,
       memes: [],
-      oldestDoc: 0,
+      oldestDoc: null,
       icon: '',
+      refreshing: true,
     };
   }
 
   componentDidMount() {
-    this._isMounted = true;
-    if (this._isMounted) {
-      const uid = firebase.auth().currentUser.uid;
-      // Get the profile icon
-      firebase
-        .firestore()
-        .collection('Users')
-        .doc(uid)
-        .get()
-        .then((docSnapshot) => {
-          if (docSnapshot.exists) {
-            const { icon } = docSnapshot.data();
-            this.setState({ icon });
-          }
-        })
-        .catch((error) => {
-          //console.log(error);
-        });
-      this.userListener = firebase
-        .firestore()
-        .collection('Users')
-        .doc(uid)
-        .get()
-        .then((snapshot) => this.setState(snapshot.data()));
-      firebase
-        .firestore()
-        .collection('Reacts')
-        .doc(firebase.auth().currentUser.uid)
-        .collection('Likes')
-        .orderBy('time', 'desc')
-        .limit(15)
-        .get()
-        .then(this.updateFeed);
-    }
+    const uid = firebase.auth().currentUser.uid;
+    // Get the profile icon
+    firebase
+      .firestore()
+      .collection('Users')
+      .doc(uid)
+      .get()
+      .then((docSnapshot) => {
+        if (docSnapshot.exists) {
+          const { icon } = docSnapshot.data();
+          this.setState({ icon });
+        }
+      })
+      .catch((error) => {
+        //console.log(error);
+      });
+    firebase
+      .firestore()
+      .collection('Users')
+      .doc(uid)
+      .get()
+      .then((snapshot) => this.setState(snapshot.data()));
+    firebase
+      .firestore()
+      .collection('ReactsTest')
+      .doc(firebase.auth().currentUser.uid)
+      .collection('Likes')
+      .orderBy('time', 'desc')
+      .limit(15)
+      .get()
+      .then(this.updateFeed);
   }
+
+  refreshMemes = () => {
+    this.setState({ memes: [], refreshing: true, oldestDoc: null }, () => {
+      this.componentDidMount();
+      // firebase
+      //   .firestore()
+      //   .collection('ReactsTest')
+      //   .doc(firebase.auth().currentUser.uid)
+      //   .collection('Likes')
+      //   .orderBy('time', 'desc')
+      //   .limit(10)
+      //   .get()
+      //   .then(this.componentDidMount);
+    });
+  };
 
   fetchMemes = () => {
     // garentees not uploading duplicate memes by checking if memes have finished
@@ -112,11 +126,10 @@ export default class Profile extends React.Component {
   };
 
   updateFeed = (querySnapshot) => {
-    const newMemes = [];
-
     querySnapshot.docs.forEach((doc) => {
       const { time, url, rank, likedFrom } = doc.data();
       if (rank > 1) {
+        const newMemes = [];
         newMemes.push({
           key: doc.id,
           doc, // DocumentSnapshot
@@ -128,18 +141,16 @@ export default class Profile extends React.Component {
           postedBy: likedFrom,
           poster: firebase.auth().currentUser.uid,
         });
+        this.setState((prevState) => {
+          const mergedMemes = prevState.memes.concat(newMemes);
+          return {
+            memes: mergedMemes,
+            updated: true,
+            oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+            refreshing: false,
+          };
+        });
       }
-    });
-
-    Promise.all(newMemes).then((resolvedMemes) => {
-      this.setState((prevState) => {
-        const mergedMemes = prevState.memes.concat(resolvedMemes);
-        return {
-          memes: mergedMemes,
-          updated: true,
-          oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
-        };
-      });
     });
   };
 
@@ -211,7 +222,7 @@ export default class Profile extends React.Component {
   render() {
     const optionArray = ['About', 'Privacy Policy', 'Log Out', 'Cancel'];
 
-    if (this.state.memes.length === 0) {
+    if (this.state.memes.length === 0 && !this.state.refreshing) {
       return (
         <View style={styles.containerStyle}>
           <View style={styles.navBar1}>
@@ -317,7 +328,14 @@ export default class Profile extends React.Component {
             </View>
           </View>
         </View>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              onRefresh={this.refreshMemes}
+              refreshing={this.state.refreshing}
+            />
+          }
+        >
           <View style={styles.containerStyle}>
             {/* Profile Pic, Follwers, Follwing Block */}
             <View style={styles.navBar2}>
