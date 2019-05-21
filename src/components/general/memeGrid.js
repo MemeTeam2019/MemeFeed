@@ -27,7 +27,16 @@ class MemeGrid extends React.Component {
     if (!data || !data.src) {
       return this._renderPlaceholder(i);
     }
-    const { src, key, sub, likedFrom, postedBy, poster, numFlags } = data;
+    const {
+      src,
+      key,
+      sub,
+      likedFrom,
+      postedBy,
+      poster,
+      numFlags,
+      caption,
+    } = data;
     if (numFlags >= 10 || src === '') return null;
     return (
       <View style={[styles.item]} key={i}>
@@ -44,6 +53,7 @@ class MemeGrid extends React.Component {
               postedBy,
               poster,
               isSubRedditPg: this.props.isSubRedditPg,
+              caption,
             });
           }}
         >

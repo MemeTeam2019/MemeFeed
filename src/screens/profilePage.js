@@ -115,7 +115,7 @@ export default class Profile extends React.Component {
     const newMemes = [];
 
     querySnapshot.docs.forEach((doc) => {
-      const { time, url, rank, likedFrom } = doc.data();
+      const { time, url, rank, likedFrom, caption } = doc.data();
       if (rank > 1) {
         newMemes.push({
           key: doc.id,
@@ -127,6 +127,7 @@ export default class Profile extends React.Component {
           // on their own page that the liked from source is still the same
           postedBy: likedFrom,
           poster: firebase.auth().currentUser.uid,
+          caption,
         });
       }
     });

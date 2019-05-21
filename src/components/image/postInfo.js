@@ -32,7 +32,7 @@ class PostInfo extends React.Component {
       .doc('CommentInfo');
     countRef
       .get()
-      .then(doc => {
+      .then((doc) => {
         if (doc.exists) {
           const { count } = doc.data();
           this.setState({
@@ -41,21 +41,22 @@ class PostInfo extends React.Component {
           });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('Error getting document', err);
       });
   };
 
-  handleCommentClick() {
-    this.props.navigation.navigate('Comment', {
+  handleCommentClick = () => {
+    this.props.navigation.push('Comment', {
       memeId: this.props.memeId,
       uri: this.props.imageUrl,
       sub: this.props.sub,
       likedFrom: this.props.likedFrom,
       postedBy: this.props.postedBy,
       poster: this.props.poster,
+      caption: this.props.caption,
     });
-  }
+  };
 
   render() {
     if (this.props.showAllComments) {
@@ -68,15 +69,18 @@ class PostInfo extends React.Component {
               paddingTop: 3,
               marginLeft: '2.5%',
               color: 'black',
-              marginBottom: 3
+              marginBottom: 3,
             }}
           >
             {this.props.reactCount} Reactions
           </Text>
+          <View style={styles.caption}>
+            <Text style={styles.captionText}>{this.props.caption}</Text>
+          </View>
         </View>
       );
     }
-    else if (this.state.commentCount > 2) {
+    if (this.state.commentCount > 2) {
       return (
         <View style={styles.postInfo}>
           <Text
@@ -89,6 +93,9 @@ class PostInfo extends React.Component {
           >
             {this.props.reactCount} Reactions
           </Text>
+          <View style={styles.caption}>
+            <Text style={styles.captionText}>{this.props.caption}</Text>
+          </View>
           <CommentSample memeId={this.props.memeId} />
 
           <TouchableOpacity
@@ -102,30 +109,25 @@ class PostInfo extends React.Component {
           </TouchableOpacity>
         </View>
       );
-    } else {
-      return (
-        <View style={styles.postInfo}>
-          {/* <TouchableOpacity
-              onPress={() => {
-                this.handleCommentClick();
-              }}>
-              <Image
-                style={styles.commentButtonStyle}
-                source={require('../../images/Tile/chatLogo2.png')}
-              />
-            </TouchableOpacity> */}
-          <Text
-            style={{ fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%', color: 'black' }}
-          >
-            {this.props.reactCount} Reactions
-          </Text>
-          <View style={styles.caption}>
-            <Text style={styles.captionText}>{this.props.caption}</Text>
-          </View>
-          <CommentSample memeId={this.props.memeId} />
-        </View>
-      );
     }
+    return (
+      <View style={styles.postInfo}>
+        <Text
+          style={{
+            fontWeight: 'bold',
+            paddingTop: 3,
+            marginLeft: '2.5%',
+            color: 'black',
+          }}
+        >
+          {this.props.reactCount} Reactions
+        </Text>
+        <View style={styles.caption}>
+          <Text style={styles.captionText}>{this.props.caption}</Text>
+        </View>
+        <CommentSample memeId={this.props.memeId} />
+      </View>
+    );
   }
 }
 
@@ -162,14 +164,13 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Bold',
     paddingTop: 10,
     marginLeft: '2.5%',
-    //color: '#383838'
   },
   caption: {
     marginLeft: '2.5%',
-    paddingTop: 10
+    paddingTop: 5,
   },
   captionText: {
     fontFamily: 'AvenirNext-Regular',
-    fontSize: 16
-  }
+    fontSize: 16,
+  },
 });

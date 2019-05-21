@@ -24,13 +24,15 @@ class Tile extends React.Component {
     const memeid = this.props.memeId;
     const ref = firebase
       .firestore()
-      .collection('Memes')
+      .collection('MemesTest')
       .doc(memeid);
     ref.get().then((docSnapshot) => {
-      const data = docSnapshot.data();
-      const reactCount = data.reactCount || 0;
-      if (this._isMounted) {
-        this.setState({ reactCount });
+      if (docSnapshot.exists) {
+        const data = docSnapshot.data();
+        const reactCount = data.reactCount || 0;
+        if (this._isMounted) {
+          this.setState({ reactCount });
+        }
       }
     });
   }
@@ -40,7 +42,7 @@ class Tile extends React.Component {
   }
 
   render() {
-    console.log(this.props.isSubRedditPg);
+    console.log(this.props.caption);
     return (
       <View style={styles.container}>
         <TileHeader
@@ -67,6 +69,7 @@ class Tile extends React.Component {
               likedFrom={this.props.likedFrom}
               postedBy={this.props.postedBy}
               poster={this.props.poster}
+              caption={this.props.caption}
             />
           </View>
           <View>
@@ -75,6 +78,7 @@ class Tile extends React.Component {
               memeId={this.props.memeId}
               postedBy={this.props.postedBy}
               updateReacts={this.updateReactCount}
+              caption={this.props.caption}
             />
           </View>
         </View>
@@ -87,6 +91,7 @@ class Tile extends React.Component {
           postedBy={this.props.postedBy}
           poster={this.props.poster}
           showAllComments={this.props.showAllComments}
+          caption={this.props.caption}
         />
       </View>
     );
@@ -98,7 +103,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    marginBottom: 5
+    marginBottom: 5,
   },
   buttonbar: {
     flexDirection: 'row',

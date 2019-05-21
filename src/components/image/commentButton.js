@@ -4,7 +4,8 @@ import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 import { withNavigation } from 'react-navigation';
 
 class CommentButton extends React.Component {
-  handleCommentClick() {
+  handleCommentClick = () => {
+    console.log(this.props.caption);
     this.props.navigation.navigate('Comment', {
       memeId: this.props.memeId,
       uri: this.props.imageUrl,
@@ -12,8 +13,9 @@ class CommentButton extends React.Component {
       likedFrom: this.props.likedFrom,
       postedBy: this.props.postedBy,
       poster: this.props.poster,
+      caption: this.props.caption,
     });
-  }
+  };
 
   render() {
     return (
