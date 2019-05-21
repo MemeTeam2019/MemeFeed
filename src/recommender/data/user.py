@@ -1,5 +1,7 @@
 from db import db
 from collections import Counter
+import time
+
 
 class User:
     def __init__(self, uid, data):
@@ -32,7 +34,10 @@ class User:
             .collection('Likes') \
             .stream()
         for react in reacts:
-            meme_data = db.collection('Memes').document(react.id).get().to_dict()
+            meme_data = db.collection('Memes') \
+                    .document(react.id) \
+                    .get() \
+                    .to_dict()
             react_data = react.to_dict()
             rank = react_data.get('rank')
             likedFrom = meme_data['sub']
@@ -41,7 +46,8 @@ class User:
                     react_data['likedFrom'] = 0
                 if rank >= 2:
                     subreddit_counter[likedFrom] += rank
-                else:
+            :wq
+        else:
                     subreddit_counter[likedFrom] += rank - 4
 
         # this is fucking disgusting
@@ -79,7 +85,8 @@ class User:
                     user_counter[likedFrom] += rank
                 else:
                     user_counter[likedFrom] += rank - 4
-            except:
+            except Exception as e:
+                raise e
                 continue
 
         top_users = user_counter.most_common(len(user_counter))
@@ -100,8 +107,18 @@ class User:
             self.bottom_3_subreddit,
             self.top_1_user,
             self.top_2_user,
-            self.top_3_user
-        ]
+            self.top_3_user,
+            int(time.time())]
+
+    def to_dict(self):
+        return {
+            'top1Subreddit': self.top_1_subreddt,
+            'top2Subreddit': self.top_2_subreddit,
+            'top3Subreddit': self.top_3_subreddit,
+            'bottom1Subreddit': self.bottom1Subreddit,
+            'bottom2Subreddit': self.bottom2Subreddit,
+
+            }
 
     def get_reacts(self):
         memes = db.collection(f'Reacts/{self.uid}/Likes').stream()
@@ -110,6 +127,7 @@ class User:
 
     def recent_subreddits(self):
         pass
+
 
 users = db.collection('Users').stream()
 for user in users:
