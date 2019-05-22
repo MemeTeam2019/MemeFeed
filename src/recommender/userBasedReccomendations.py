@@ -103,41 +103,5 @@ def recommendMemesByUser(thisUser, otherUsers, memes):
     return recommenededMemes
 
 
-
-
-    # # Find the similarity between unseenMemes and the memes we have liked
-    # # and create a final list of memes to recommend to the user this list has the
-    # # id of the meme along with the average rank, and its popularity score with other
-    # # users
-    # def findSimilarMemes (unseenMemes, currentMemes):
-    #     similarMemesToRecommend = {}
-    #     for myMeme in currentMemes:
-    #         for similarMeme, similarMemeData in unseenMemes:
-    #             similarity = standard_similarity(myMeme.vector, similarMeme.vector) # TODO: figure out how to get this
-    #             # if two memes are similar
-    #             if similarity > .5:
-    #                 theirRank = similarMemeData[1] / similarMemeData[1]
-    #                 myRank = myMeme.rank # TODO: figure out how to get this
-    #
-    #                 if similarMeme not in similarMemesToRecommend:
-    #                     similarMemesToRecommend[similarMeme] = (0,0,0)
-    #
-    #                 rankAndWeight = similarMemesToRecommend[similarMeme]
-    #
-    #                 if theirRank > 1 and myRank > 1:
-    #                     avgRank = ((theirRank+myRank)/2 + rankAndWeight[0])/2
-    #                     rankAndWeight = (avgRank,)
-    #                 elif theirRank < 2 and myRank < 2: # TODO: figure out how to get this
-    #                     pass
-    #                 elif theirRank > 1 and myRank < 2: # TODO: figure out how to get this
-    #                     pass
-    #                 else # theirRank < 2 and myRank > 1: # TODO: figure out how to get this
-    #                     pass
-    #
-    #     return {}
-    #
-    # # take the unseen memes and similar memes and put them together into our final
-    # # set of recommendations
-    # # these are ordered by their overall popularity with other users
-    # def consolidateMemes (unseenMemes, similarMemes):
-    #     return {}
+def generateRecommendationsByUser(users, userReactions):
+    pass
