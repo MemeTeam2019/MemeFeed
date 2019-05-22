@@ -1,4 +1,3 @@
-from typing import list, dict
 from data import db
 
 firestore = db.db
@@ -6,10 +5,15 @@ firestore = db.db
 
 class ItemBasedRecommendation:
     def __init__(self, memes):
-        # Maps each meme_id to the uid of users who have reacted positively
-        self.uids: list = self.get_uids()
-        self.meme_ids: list = self.get_meme_ids()
-        self.rank_matrix: dict = self.build_matrix()
+        '''Maps each meme_id to the uid of users who have reacted positively
+        In addition, memes will be a list of Meme objects (see data/meme.py)
+        used to weigh a meme more/less depending on the metric. For example,
+        if a meme is popular, we probably want to recommend that meme more than
+        a meme which is unpopular.
+        '''
+        self.uids = self.get_uids()
+        self.meme_ids = self.get_meme_ids()
+        self.rank_matrix = self.build_matrix()
         self.memes = memes
 
     # Fetch all uids from the Users collection
@@ -40,17 +44,19 @@ class ItemBasedRecommendation:
                     matrix[meme_id][uid] = like_data['rank'] + 1
         return matrix
 
-    # All vectors need to have
-    def complete_vector(self):
-        for _, rank_dict in self.rank_matrix:
-            for meme_id in self.meme_ids:
-                if meme_id not in rank_dict:
-                    rank_dict[meme_id] = 0
+    # All item vectors need to have all user id's in order to generate the
+    # comparison between two items. This function will add uid's which have not
+    # yet ranked that particular meme with a value of 0
+    def complete_vectors(self):
+        for _, rank_dict in self.rank_matrix.items():
+            for uid in self.uids:
+                if uid not in rank_dict:
+                    rank_dict[uid] = 0
 
     # Return the list representation of ranks for the given item
-    def vectorize(self, meme_id: str) -> list:
+    def vectorize(self, meme_id):
         vector = []
-        for _, rank in sorted(self.rank_matrix[meme_id]):
+        for _, rank in sorted(self.rank_matrix[meme_id].items()):
             vector.append(rank)
         return vector
 
@@ -61,7 +67,7 @@ class ItemBasedRecommendation:
             reacts[react.id] = react.to_dict()
         return reacts
 
-    # Calculate the average ranking of the given meme
+    # Calculate the average ranking of the given meme_id
     def average_rank_of(self, meme_id):
         rankings = self.rank_matrix[meme_id]
         total = 0
@@ -77,6 +83,14 @@ class ItemBasedRecommendation:
     def similarity(self, i, j):
         pass
 
+    def pretty_print_matrix(self):
+        check = []
+        for meme_id, rank_dict in self.rank_matrix.items():
+            check.append(sorted(rank_dict))
+            # print(f'( {meme_id} ) -> {rank_vector}')
+        print(all(check))
 
 if __name__ == '__main__':
-    rec = ItemBasedRecommendation()
+    rec = ItemBasedRecommendation(1)
+    rec.complete_vectors()
+    rec.pretty_print_matrix()
