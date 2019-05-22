@@ -1,4 +1,5 @@
-from db import db
+import sys
+from .db import db
 from collections import Counter
 
 class User:
@@ -20,6 +21,7 @@ class User:
             self.rank_subreddits()
             self.rank_users()
             self.get_reacts()
+            self.average_ranking()
         except Exception as e:
             print('Failed to instantiate object for user ' + uid)
             print(e)
@@ -124,17 +126,15 @@ class User:
             sum_of_ranks += rank
             number_of_ranks += 1
 
-        self.avg_rank = sum_of_ranks/number_of_ranks
-
+        self.avg_rank = sum_of_ranks/number_of_ranks if number_of_ranks  != 0 else 0
 
     def recent_subreddits(self):
         pass
 
-users = db.collection('Users').stream()
-for user in users:
-    u = User(user.id, user.to_dict())
-    # print(u.vectorize())
-    # print(u.memes)
-    u.average_ranking()
-    print(u.avg_rank)
-    break
+# users = db.collection('Users').stream()
+# for user in users:
+#     u = User(user.id, user.to_dict())
+#     print(u.vectorize())
+#     print(u.memes)
+#     u.average_ranking()
+#     print(u.avg_rank)

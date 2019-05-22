@@ -18,8 +18,11 @@ def generalSimilarity(a, b):
 def similarityTopAndBottom(a, b):
     similarity = 0
     # associated weight for each index
-    weight = {0:3, 1:2, 2:1, 3:3, 4:2, 5:1]
+    weight = {0:3, 1:2, 2:1, 3:3, 4:2, 5:1}
     for idxA, item in enumerate(a):
+        # if the user doesn't have something here ignore it
+        if item == '':
+            continue
         if item in b:
             idxB = b.index(item)
             sum = weight[idxB] + weight[idxA]
@@ -30,6 +33,9 @@ def similarityTopAndBottom(a, b):
             elif idxA < 3 and idxB < 3:
                 similarity += sum
             else:
+                # if they are the exact oposite of each other add an extra 1 in
+                # order to penalize it
+                sum = sum+1 if weight[idxA] == weight[idxB] else sum
                 similarity -= sum
 
     return similarity/30
@@ -41,67 +47,64 @@ def similarity (a, b):
     BRankings = " ".join(b[0:6])
     similarityRankings = similarityTopAndBottom(ATopThree, BTopThree)
 
-    # compute similarity between  most recent subreddits
+    # compute similarity between  most popularUsers
     ARecentThree = " ".join(a[6:9])
     BRecentThree = " ".join(b[6:9])
-    recentThreeSimilarity = generalSimilarity(ARecentThree, BRecentThree)
+    popularUsers = generalSimilarity(ARecentThree, BRecentThree)
 
-    # compute similarity between most popular subreddits
-    APopularThree = " ".join(a[9:12])
-    BPopularThree = " ".join(b[9:12])
-    popularThreeSimilarity = generalSimilarity(ARecentThree, BRecentThree)
-
-    averageSimilarity = (similarityRankings + recentThreeSimilarity + popularThreeSimilarity)/3
+    averageSimilarity = (similarityRankings*(2/3) + popularUsers*(1/3))
     return averageSimilarity
 
 # Find users most similar to you (similar_users = {} key: uid, value: similarity)
-def findSimilarUsers (allUsers, thisUser):
+def findSimilarUsers (userVectors, thisUser):
     similarUsers = {}
-    for user in allUsers:
-        similarity = similarity(user.vectorize(), thisUser.vectorize()): # TODO: figure out how to get this
-
-        if similarity > 0:
-            similarUsers[user.uid] = similarity
+    thisVector = userVectors[thisUser]
+    for user, vector in userVectors.items():
+        similarity = similarity(vector, thisVector)
+        similarUsers[user] = similarity
 
     return similarUsers
 
 # Find the memes these users have reacted to that you haven’t
 # For each meme we are given the average, and its overall weight, its weight
 # marks the popularity of the meme
-def findUnseenMemes (similarUsers, currentMemes, thisUser):
+def findUnseenMemes(similarUsers, userReactions, userAverageReactions, thisUser):
     unseenMemes = {}
     recommenededMemes = {}
-    averageUserRanking = thisUser.averageRank # TODO: figure out how to get this
+    averageUserRanking = userAverageReactions[thisUser]
+    alreadySeen = userReactions[thisUser]
 
     # find all the memes this user has not seen
     for user, similarity in similarUsers:
-        averageRank = user.averageRank # TODO: figure out how to get this
-        for meme in user.memes: # TODO: figure out how to get this
+        averageRank = userAverageReactions[user]
+        for meme in userReactions[user]:
             # if user hasn't seen the meme yet
-            if meme not in currentMemes:
+            if meme not in alreadySeen:
                 if meme not in similarMemes:
                     unseenMemes[meme] = (0,0,0)
 
-                userRank = meme.rank # TODO FIGURE OUT HOW TO GET THIS
-
+                userRank = userReactions[user][meme]
                 unseenMemes[meme][0] += (userRank-averageRank)*similarity
                 unseenMemes[meme][1] += abs(similarity)
 
     # after seeing how similar users felt about these memes we adjust their
     # feelings to this current user
-    for meme, fraction in unseenMemes:
+    for meme, fraction in unseenMemes.items():
         similarUsersNetFeelings = fraction[0]/fraction[1]
         recommenedMemes[meme] = averageUserRanking + similarUsersNetFeelings
 
     return recommenedMemes
 
 
-# this acts as our main function that gets called by the main recommendation Pipeline
-def recommendMemesByUser(thisUser, otherUsers, memes):
-    similarUsers = findSimilarUsers(otherUsers, thisUser)
-    recommenededMemes = findUnseenMemes(similarUsers, myMemes)
+# recommendMemesByUser generates the recommendations for a single user
+def recommendMemesByUser(user, userVectors, userReactions, userAverageReactions):
+    similarUsers = findSimilarUsers(userVecotrs, user)
+    recommenededMemes = findUnseenMemes(similarUsers, userReactions, userAverageReactions, user)
     return recommenededMemes
 
-
-def generateRecommendationsByUser(users, userReactions):
-    pass
+# generateRecommendationsByUser is treated as the main function and is called
+# by the recommender pipeline in order to generate results
+def generateRecommendationsByUser(userVectors, userReactions, userAverageReactions):
+    for user in userVectors:
+        memeRecommendations = recommendMemesByUser(user, userVectors, userReactions, userAverageReactions)
+        print(memeRecommendations)
