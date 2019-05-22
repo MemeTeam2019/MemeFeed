@@ -5,11 +5,12 @@ firestore = db.db
 
 
 class ItemBasedRecommendation:
-    def __init__(self):
+    def __init__(self, memes):
         # Maps each meme_id to the uid of users who have reacted positively
         self.uids: list = self.get_uids()
         self.meme_ids: list = self.get_meme_ids()
         self.rank_matrix: dict = self.build_matrix()
+        self.memes = memes
 
     # Fetch all uids from the Users collection
     def get_uids(self):

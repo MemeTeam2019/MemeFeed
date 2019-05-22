@@ -72,16 +72,13 @@ class User:
             rank = react_data['rank']
             likedFrom = react_data['likedFrom']
             user_ref = db.collection('Users').document(likedFrom)
-            try:
-                user_ref.get()
+            if likedFrom not in subreddits:
                 if likedFrom not in user_counter:
                     react_data['likedFrom'] = 0
                 if rank >= 2:
                     user_counter[likedFrom] += rank
                 else:
                     user_counter[likedFrom] += rank - 4
-            except:
-                continue
 
         top_users = user_counter.most_common(len(user_counter))
         if len(top_users) >= 1:
@@ -126,15 +123,76 @@ class User:
 
         self.avg_rank = sum_of_ranks/number_of_ranks
 
-
     def recent_subreddits(self):
         pass
+
+
+subreddits = set(['wholesomememes',
+                 'BikiniBottomTwitter',
+                 'OneProtectRestAttack',
+                 'ProgrammerHumor',
+                 'raimimemes',
+                 'ScottishPeopleTwitter',
+                 'starterpacks',
+                 'trippinthroughtime',
+                 'me_irl',
+                 'dank memes',
+                 'AdviceAnimals',
+                 'nukedmemes',
+                 'DeepFriedMemes',
+                 'dank_memes',
+                 'dankchrisitanmemes',
+                 'OverwatchMemes',
+                 '2meirl4meirl',
+                 'Tinder',
+                 'rickandmorty',
+                 'IncrediblesMemes',
+                 'wholesomememes',
+                 'AnimalMemes',
+                  'Insanepeoplefacebook',
+                  'kermitmemes',
+                  'csmemes',
+                  'TrashAndKpop',
+                  'HarryPotterMemes',
+                  'DisneyMemes',
+                  'MildlyVandalized',
+                  'WTF',
+                  'toosoon',
+                  'marvelmemes',
+                  'starwarsmemes',
+                  'tvmemes',
+                  'anime_irl',
+                  'SoftwareGore',
+                  'Crappydesign',
+                  'Bikememes',
+                  'Hmmm',
+                  'Vaxxhappened',
+                  'GymMemes',
+                  'veganmemes',
+                  'Sciencememes',
+                  'Shrek',
+                  'Brogres',
+                  'MedMeme',
+                  'MLMemes',
+                  'NUMTOT',
+                  'Terriblefacebookmemes',
+                  'Shittyfacebookmemes',
+                  'FacebookCringe',
+                  'Tumblr',
+                  'Bestoftwitter',
+                  'BlackPeopleTwitter',
+                 'WhitePeopleTwitter',
+                 'Drugmemes',
+                 'Indianpeoplefacebook',
+                 'Doggomemes',
+                 'nathanwpyle',
+                 'Threateningtoilets',
+                 'Physicsmemes',
+                 'Engineeringmemes',
+                 'gaywashedmemes'])
+
 
 users = db.collection('Users').stream()
 for user in users:
     u = User(user.id, user.to_dict())
-    # print(u.vectorize())
-    # print(u.memes)
-    u.average_ranking()
-    print(u.avg_rank)
     break
