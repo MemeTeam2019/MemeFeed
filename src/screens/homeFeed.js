@@ -3,12 +3,10 @@ import {
   Image,
   TouchableOpacity,
   View,
-  Text,
   StyleSheet,
   ScrollView,
 } from 'react-native';
 import firebase from 'react-native-firebase';
-import { withNavigation } from 'react-navigation';
 import MemeGrid from '../components/general/memeGrid';
 import MemeList from '../components/general/memeList';
 import SuggestUser from '../components/home/suggestUser';
@@ -25,7 +23,7 @@ class HomeFeed extends React.Component {
     this.fetchMemes = this.fetchMemes.bind(this);
     this.ref = firebase
       .firestore()
-      .collection('FeedsTest')
+      .collection('Feeds')
       .doc(firebase.auth().currentUser.uid)
       .collection('Likes')
       .orderBy('time', 'desc');
@@ -44,7 +42,7 @@ class HomeFeed extends React.Component {
     if (this._isMounted) {
       firebase
         .firestore()
-        .collection('FeedsTest')
+        .collection('Feeds')
         .doc(firebase.auth().currentUser.uid)
         .collection('Likes')
         .orderBy('time', 'desc')
@@ -63,7 +61,7 @@ class HomeFeed extends React.Component {
       const oldestDoc = this.state.oldestDoc;
       firebase
         .firestore()
-        .collection('FeedsTest')
+        .collection('Feeds')
         .doc(firebase.auth().currentUser.uid)
         .collection('Likes')
         .orderBy('time', 'desc')
@@ -100,18 +98,6 @@ class HomeFeed extends React.Component {
           };
         });
       }
-    });
-
-    Promise.all(newMemes).then((resolvedMemes) => {
-      this.setState((prevState) => {
-        const mergedMemes = prevState.memes.concat(resolvedMemes);
-        return {
-          memes: mergedMemes,
-          updated: true,
-          oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
-          refreshing: false,
-        };
-      });
     });
   };
 
@@ -293,9 +279,6 @@ const styles = StyleSheet.create({
   containerStyle3: {
     justifyContent: 'center',
     flex: 1,
-    //backgroundColor: 'rgba(255,255,255,1)',
-    //borderBottomWidth: .5,
-    //borderColor: '#D6D6D6',
   },
   modelStyle: {
     flex: 1,
@@ -357,6 +340,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     textAlign: 'center',
     marginTop: 2,
-    marginBottom: 5
+    marginBottom: 5,
   },
 });
