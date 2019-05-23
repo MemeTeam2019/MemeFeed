@@ -16,7 +16,7 @@ class CommentSample extends React.Component {
   componentDidMount() {
     this.unsubscribe = firebase
       .firestore()
-      .collection(`Comments/${this.props.memeId}/Text`)
+      .collection(`CommentsTest/${this.props.memeId}/Text`)
       .orderBy('time', 'desc')
       .limit(2) // we choose decsending to get most recent
       .get()
@@ -55,7 +55,7 @@ class CommentSample extends React.Component {
               if (a.time < b.time) return -1;
               if (a.time > b.time) return 1;
               return 0;
-            }
+            };
 
             this.setState({
               comments: comments.sort(compareTime),
@@ -68,18 +68,15 @@ class CommentSample extends React.Component {
     });
   };
 
-  // componentWillUnmount() {
-  //   this.unsubscribe = null
-  //   this.setState({
-  //     comments: []
-  //   });
-
-  // }
-
-  //Single comment
-  renderComment({ item }) {
+  // Single comment
+  renderComment = ({ item }) => {
     return (
-      <Comment username={item.username} content={item.content} uid={item.key} />
+      <Comment
+        username={item.username}
+        content={item.content}
+        uid={item.key}
+        key={item.key}
+      />
     );
   }
 

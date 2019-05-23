@@ -21,36 +21,26 @@ class HomeFeed extends React.Component {
     this._isMounted = false;
     this.unsubscribe = null;
     this.fetchMemes = this.fetchMemes.bind(this);
-    this.ref = firebase
-      .firestore()
-      .collection('Feeds')
-      .doc(firebase.auth().currentUser.uid)
-      .collection('Likes')
-      .orderBy('time', 'desc');
     this.state = {
       updated: true,
       oldestDoc: null,
       memes: [],
       inGridView: false,
       inFullView: true,
-      refreshing: false,
+      refreshing: true,
     };
   }
 
   componentDidMount() {
-    this._isMounted = true;
-    if (this._isMounted) {
-      firebase
-        .firestore()
-        .collection('Feeds')
-        .doc(firebase.auth().currentUser.uid)
-        .collection('Likes')
-        .orderBy('time', 'desc')
-        .limit(15)
-        .get()
-        .then(this.updateFeed);
-    }
-
+    firebase
+      .firestore()
+      .collection('FeedsTest')
+      .doc(firebase.auth().currentUser.uid)
+      .collection('Likes')
+      .orderBy('time', 'desc')
+      .limit(15)
+      .get()
+      .then(this.updateFeed);
   }
 
   fetchMemes = () => {
@@ -72,10 +62,9 @@ class HomeFeed extends React.Component {
     }
   };
 
-
   updateFeed = (querySnapshot) => {
     querySnapshot.docs.forEach((doc) => {
-      const { time, url, posReacts, likedFrom, likers } = doc.data();
+      const { time, url, posReacts, likedFrom, likers, caption } = doc.data();
       const newMemes = [];
       if (posReacts > 0) {
         const recentLikedFrom = likedFrom[likedFrom.length - 1];
@@ -88,6 +77,7 @@ class HomeFeed extends React.Component {
           likedFrom: recentLikedFrom,
           postedBy: recentLiker,
           poster: recentLiker,
+          caption,
         });
         this.setState((prevState) => {
           const mergedMemes = prevState.memes.concat(newMemes);
@@ -95,6 +85,7 @@ class HomeFeed extends React.Component {
             memes: mergedMemes,
             updated: true,
             oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+            refreshing: false,
           };
         });
       }
@@ -105,7 +96,7 @@ class HomeFeed extends React.Component {
     this.setState({ memes: [], refreshing: true, oldestDoc: null }, () => {
       firebase
         .firestore()
-        .collection('Feeds')
+        .collection('FeedsTest')
         .doc(firebase.auth().currentUser.uid)
         .collection('Likes')
         .orderBy('time', 'desc')
@@ -155,7 +146,7 @@ class HomeFeed extends React.Component {
   }
 
   render() {
-    if (this.state.memes.length === 0) {
+    if (this.state.memes.length === 0 && !this.state.refreshing) {
       return (
         <View style={styles.container}>
           <View style={styles.containerStyle3}>
@@ -167,47 +158,64 @@ class HomeFeed extends React.Component {
             </View>
 
             <View style={styles.containerStyle2}>
-            <ScrollView ref={(ref) => {
-              this.scrollView = ref;
-            }}
-            >
-              <Image
-                source={require('../components/misc/suggest.png')}
-                style={styles.tile}
-              />
-              
+              <ScrollView
+                ref={(ref) => {
+                  this.scrollView = ref;
+                }}
+              >
+                <Image
+                  source={require('../components/misc/suggest.png')}
+                  style={styles.tile}
+                />
 
-              <View>
+                <View>
+                  <SuggestUser
+                    icon={
+                      'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon888.png?alt=media&token=05558df6-bd5b-4da1-9cce-435a419347a0'
+                    }
+                    name={'Mia Altieri'}
+                    username={'Me-uh'}
+                    uid={'WuTqG2y7GWN7KCmgRbLiyddMqax1'}
+                  />
 
-                <SuggestUser icon={'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon888.png?alt=media&token=05558df6-bd5b-4da1-9cce-435a419347a0'}
-                             name={'Mia Altieri'}
-                             username={'Me-uh'}
-                             uid= {'WuTqG2y7GWN7KCmgRbLiyddMqax1'}/>
+                  <SuggestUser
+                    icon={
+                      'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon888.png?alt=media&token=05558df6-bd5b-4da1-9cce-435a419347a0'
+                    }
+                    name={'Jon Chong'}
+                    username={'dabid'}
+                    uid={'kuPNgqTDnhRHvswbecGI7ApZ9GW2'}
+                  />
 
-                <SuggestUser icon={'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon888.png?alt=media&token=05558df6-bd5b-4da1-9cce-435a419347a0'}
-                             name={'Jon Chong'}
-                             username={'dabid'}
-                             uid= {'kuPNgqTDnhRHvswbecGI7ApZ9GW2'}/>
+                  <SuggestUser
+                    icon={
+                      'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon111.png?alt=media&token=05558df6-bd5b-4da1-9cce-435a419347a0'
+                    }
+                    name={'Siddhi Panchal'}
+                    username={'siddhiiiii'}
+                    uid={'3khrPuSqO4XhPKWuz2gSoNFGgdA2'}
+                  />
 
-                <SuggestUser icon={'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon111.png?alt=media&token=05558df6-bd5b-4da1-9cce-435a419347a0'}
-                             name={'Siddhi Panchal'}
-                             username={'siddhiiiii'}
-                             uid= {'3khrPuSqO4XhPKWuz2gSoNFGgdA2'}/>
+                  <SuggestUser
+                    icon={
+                      'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon888.png?alt=media&token=05558df6-bd5b-4da1-9cce-435a419347a0'
+                    }
+                    name={'Emma Pedersen'}
+                    username={'erpeders'}
+                    uid={'g9Nat9KDVMStAHjNOQNfPLVU9Sk1'}
+                  />
 
-                <SuggestUser icon={'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon888.png?alt=media&token=05558df6-bd5b-4da1-9cce-435a419347a0'}
-                             name={'Emma Pedersen'}
-                             username={'erpeders'}
-                             uid= {'g9Nat9KDVMStAHjNOQNfPLVU9Sk1'}/>
-
-                <SuggestUser icon={'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon555.png?alt=media&token=05558df6-bd5b-4da1-9cce-435a419347a0'}
-                             name={'Zac Plante'}
-                             username={'jesuisouef'}
-                             uid= {'MhPMJTBeB1UC1PAlnnN6YhDVcOi2'}/>
-
-              </View>
-          </ScrollView>
+                  <SuggestUser
+                    icon={
+                      'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon555.png?alt=media&token=05558df6-bd5b-4da1-9cce-435a419347a0'
+                    }
+                    name={'Zac Plante'}
+                    username={'jesuisouef'}
+                    uid={'MhPMJTBeB1UC1PAlnnN6YhDVcOi2'}
+                  />
+                </View>
+              </ScrollView>
             </View>
-
           </View>
         </View>
       );

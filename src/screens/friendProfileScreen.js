@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  RefreshControl
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import firebase from 'react-native-firebase';
@@ -44,6 +45,7 @@ class FriendProfile extends React.Component {
       isFollowing: false,
       userExists: false,
       iconURL: '',
+      refreshing: false,
     };
   }
 
@@ -139,9 +141,9 @@ class FriendProfile extends React.Component {
   };
 
   updateFeed = (querySnapshot) => {
-    const newMemes = [];
     querySnapshot.docs.forEach((doc) => {
       const { time, url, rank, likedFrom } = doc.data();
+      const newMemes = [];
       if (rank > 1) {
         newMemes.push({
           key: doc.id,
@@ -152,18 +154,30 @@ class FriendProfile extends React.Component {
           postedBy: this.props.navigation.getParam('uid'),
           poster: this.props.navigation.getParam('uid'),
         });
+        this.setState((prevState) => {
+          const mergedMemes = prevState.memes.concat(newMemes);
+          return {
+            memes: mergedMemes,
+            updated: true,
+            oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+            refreshing: false,
+          };
+        });
       }
     });
+  };
 
-    Promise.all(newMemes).then((resolvedMemes) => {
-      this.setState((prevState) => {
-        const mergedMemes = prevState.memes.concat(resolvedMemes);
-        return {
-          memes: mergedMemes,
-          updated: true,
-          oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
-        };
-      });
+  refreshMemes = () => {
+    this.setState({ memes: [], refreshing: true, oldestDoc: null }, () => {
+      firebase
+        .firestore()
+        .collection('ReactsTest')
+        .doc(this.props.navigation.getParam('uid', ''))
+        .collection('Likes')
+        .orderBy('time', 'desc')
+        .limit(10)
+        .get()
+        .then(this.updateFeed);
     });
   };
 
@@ -370,7 +384,7 @@ class FriendProfile extends React.Component {
   onCollectionUpdate = (querySnapshot) => {
     const memes = [];
     querySnapshot.forEach((doc) => {
-      const { time, url, rank, likedFrom } = doc.data();
+      const { time, url, rank, likedFrom, caption } = doc.data();
       if (rank > 1)
         memes.push({
           key: doc.id,
@@ -380,6 +394,7 @@ class FriendProfile extends React.Component {
           likedFrom,
           postedBy: this.props.navigation.getParam('uid'),
           poster: this.props.navigation.getParam('uid'),
+          caption,
         });
       this.setState({ memes });
     });
@@ -487,7 +502,14 @@ class FriendProfile extends React.Component {
         <View style={styles.navBar}>
           <Text style={styles.textSty4}>{this.state.username}</Text>
         </View>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              onRefresh={this.refreshMemes}
+              refreshing={this.state.refreshing}
+            />
+          }
+        >
           {/* Profile Pic, Follwers, Follwing Block */}
           <View style={styles.navBar2}>
             <View style={styles.leftContainer2}>

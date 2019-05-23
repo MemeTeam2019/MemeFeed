@@ -46,22 +46,18 @@ class ButtonBar extends React.Component {
   componentDidMount() {
     const user = firebase.auth().currentUser;
     const memeId = this.props.memeId;
-    const ref = firebase
+    firebase
       .firestore()
       .collection('Reacts')
       .doc(user.uid)
       .collection('Likes')
-      .doc(memeId);
-
-    ref
+      .doc(memeId)
       .get()
       .then((docSnapshot) => {
         if (docSnapshot.exists) {
-          let data = docSnapshot.data();
-          if (data) {
-            let rank = data.rank;
-            this.setState({ selectedButton: rank === -1 ? null : rank });
-          }
+          const data = docSnapshot.data();
+          const rank = data.rank;
+          this.setState({ selectedButton: rank === -1 ? null : rank });
         }
       })
       .catch((error) => {
@@ -78,19 +74,20 @@ class ButtonBar extends React.Component {
     const user = firebase.auth().currentUser;
     const memeId = this.props.memeId;
     const date = Math.round(+new Date() / 1000);
-    if(oldReact===null){
-    const noteRef =firebase
-      .firestore()
-      .collection('Notifications')
-      .doc(this.props.postedBy)
-      .collection('Notes');
-    noteRef.add({type: 'like',
-                  uid: user.uid, 
-                  time: date,
-                  memeId: memeId,
-                  viewed: false
-                  });
-  }
+    if (oldReact === null) {
+      const noteRef = firebase
+        .firestore()
+        .collection('Notifications')
+        .doc(this.props.postedBy)
+        .collection('Notes');
+      noteRef.add({
+        type: 'like',
+        uid: user.uid,
+        time: date,
+        memeId: memeId,
+        viewed: false,
+      });
+    }
 
     // Update the Reacts collection for current uid
     const reactRef = firebase
@@ -101,112 +98,113 @@ class ButtonBar extends React.Component {
       .doc(memeId);
     const memeRef = firebase
       .firestore()
-      .collection('Memes')
+      .collection('MemesTest')
       .doc(memeId);
 
     reactRef.get().then((likesSnapshot) => {
       const data = likesSnapshot.data();
       const hasReacted = likesSnapshot.exists && data.rank !== -1;
-      console.log(this.props.postedBy);
+
       reactRef.set({
         rank: oldReact === newReact ? -1 : newReact,
         time: date,
         url: this.props.imageUrl,
         likedFrom: this.props.postedBy,
+        caption: this.props.caption,
       });
       memeRef
         .get()
         .then(async (memeSnapshot) => {
-          const memeData = memeSnapshot.data();
-          let newReactCount = 0;
-          console.log(hasReacted);
-          if (!hasReacted) {
-            newReactCount = memeData.reactCount + 1 || 1;
-          } else if (hasReacted && oldReact === newReact) {
-            newReactCount = memeData.reactCount - 1;
-          } else {
-            newReactCount = memeData.reactCount;
-          }
-
-          let positiveWeight = memeData.positiveWeight || 0;
-          let negativeWeight = memeData.negativeWeight || 0;
-
-          if (newReact > 1) {
-            positiveWeight = positiveWeight + newReact + 1;
-          } else {
-            negativeWeight = negativeWeight + newReact + 1;
-          }
-
-          if (oldReact != null) {
-            if (oldReact > 1) {
-              positiveWeight = positiveWeight - oldReact - 1;
+          if (memeSnapshot.exists) {
+            const memeData = memeSnapshot.data();
+            let newReactCount = 0;
+            if (!hasReacted) {
+              newReactCount = memeData.reactCount + 1 || 1;
+            } else if (hasReacted && oldReact === newReact) {
+              newReactCount = memeData.reactCount - 1;
             } else {
-              negativeWeight = negativeWeight - oldReact - 1;
+              newReactCount = memeData.reactCount;
             }
-          }
 
-          if (oldReact === newReact) {
+            let positiveWeight = memeData.positiveWeight || 0;
+            let negativeWeight = memeData.negativeWeight || 0;
+
             if (newReact > 1) {
-              positiveWeight = positiveWeight - oldReact - 1;
+              positiveWeight = positiveWeight + newReact + 1;
             } else {
-              negativeWeight = negativeWeight - oldReact - 1;
+              negativeWeight = negativeWeight + newReact + 1;
             }
-          }
 
-          memeRef.update({
-            positiveWeight: positiveWeight,
-            negativeWeight: negativeWeight,
-            reactCount: newReactCount,
-            lastReacted: date,
-          });
-
-          const subredditRef = firebase
-            .firestore()
-            .collection('SubredditVectors')
-            .doc(memeData.sub);
-          subredditRef.get().then((snapshot) => {
-            if (!snapshot.exists) {
-              subredditRef.set({
-                positiveWeight: newReact > 1 ? newReact : 0,
-                negativeWeight: newReact < 2 ? newReact : 0,
-                lastReacted: date,
-              });
-            } else {
-              const subredditData = snapshot.data();
-              let posWeight = subredditData.positiveWeight;
-              let negWeight = subredditData.negativeWeight;
-
-              if (newReact > 1) {
-                posWeight = posWeight + newReact + 1;
+            if (oldReact != null) {
+              if (oldReact > 1) {
+                positiveWeight = positiveWeight - oldReact - 1;
               } else {
-                negWeight = negWeight + newReact + 1;
+                negativeWeight = negativeWeight - oldReact - 1;
               }
-
-              if (oldReact != null) {
-                if (oldReact > 1) {
-                  posWeight = posWeight - oldReact - 1;
-                } else {
-                  negWeight = negWeight - oldReact - 1;
-                }
-              }
-
-              if (oldReact === newReact) {
-                if (newReact > 1) {
-                  posWeight = posWeight - oldReact - 1;
-                } else {
-                  negWeight = negWeight - oldReact - 1;
-                }
-              }
-
-              subredditRef.update({
-                positiveWeight: posWeight,
-                negativeWeight: negWeight,
-                lastReacted: date,
-              });
             }
-          });
 
-          this.props.updateReacts(newReactCount);
+            if (oldReact === newReact) {
+              if (newReact > 1) {
+                positiveWeight = positiveWeight - oldReact - 1;
+              } else {
+                negativeWeight = negativeWeight - oldReact - 1;
+              }
+            }
+
+            this.props.updateReacts(newReactCount);
+            memeRef.update({
+              positiveWeight,
+              negativeWeight,
+              reactCount: newReactCount,
+              lastReacted: date,
+            });
+
+            const subredditRef = firebase
+              .firestore()
+              .collection('SubredditVectors')
+              .doc(memeData.sub);
+            subredditRef.get().then((snapshot) => {
+              if (!snapshot.exists) {
+                subredditRef.set({
+                  positiveWeight: newReact > 1 ? newReact : 0,
+                  negativeWeight: newReact < 2 ? newReact : 0,
+                  lastReacted: date,
+                });
+              } else {
+                const subredditData = snapshot.data();
+                let posWeight = subredditData.positiveWeight;
+                let negWeight = subredditData.negativeWeight;
+
+                if (newReact > 1) {
+                  posWeight = posWeight + newReact + 1;
+                } else {
+                  negWeight = negWeight + newReact + 1;
+                }
+
+                if (oldReact != null) {
+                  if (oldReact > 1) {
+                    posWeight = posWeight - oldReact - 1;
+                  } else {
+                    negWeight = negWeight - oldReact - 1;
+                  }
+                }
+
+                if (oldReact === newReact) {
+                  if (newReact > 1) {
+                    posWeight = posWeight - oldReact - 1;
+                  } else {
+                    negWeight = negWeight - oldReact - 1;
+                  }
+                }
+
+                subredditRef.update({
+                  positiveWeight: posWeight,
+                  negativeWeight: negWeight,
+                  lastReacted: date,
+                });
+              }
+            });
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -220,7 +218,7 @@ class ButtonBar extends React.Component {
     // grab this users follower list
     // go through each follower,and get that f_uid
     // add to the collection Feeds/f_uid and add that react
-    this.unsubscribe = firebase
+    firebase
       .firestore()
       .collection('Users')
       .doc(firebase.auth().currentUser.uid)
@@ -245,11 +243,11 @@ class ButtonBar extends React.Component {
                 // originally did not like the meme but now does
                 // or first time liking the meme and ranking it highly
                 // then add to the total number of positive votes
+                const newPosReacts = posReacts + 1;
                 if (
                   (oldReact < 2 && newReact > 1 && oldReact != newReact) ||
                   (oldReact === null && newReact > 1)
                 ) {
-                  const newPosReacts = posReacts + 1;
                   firebase
                     .firestore()
                     .collection('Feeds')
