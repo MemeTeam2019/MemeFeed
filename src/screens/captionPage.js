@@ -159,7 +159,7 @@ class CaptionPage extends React.Component{
            } else {
              // image is okay to post
              // post in Memes and use the doc id it creates elsewhere
-             const memeCollection = firebase.firestore().collection('MemesTest').doc(docId);
+             const memeCollection = firebase.firestore().collection('Memes').doc(docId);
              memeCollection.set({
                url: newurl,
                author: firebase.auth().currentUser.uid,
@@ -175,7 +175,7 @@ class CaptionPage extends React.Component{
              // post in this users reacts
              const userReactsRef = firebase
                .firestore()
-               .collection('ReactsTest')
+               .collection('Reacts')
                .doc(firebase.auth().currentUser.uid)
                .collection('Likes')
                .doc(docId).set({
@@ -200,7 +200,7 @@ class CaptionPage extends React.Component{
                      let friendUid = followersLst[i];
                      firebase
                        .firestore()
-                       .collection('FeedsTest')
+                       .collection('Feeds')
                        .doc(friendUid)
                        .collection('Likes')
                        .doc(docId)

@@ -52,7 +52,7 @@ class FriendProfile extends React.Component {
     if (this._isMounted) {
       firebase
         .firestore()
-        .collection('ReactsTest')
+        .collection('Reacts')
         .doc(this.props.navigation.getParam('uid'))
         .collection('Likes')
         .orderBy('time', 'desc')
@@ -127,7 +127,7 @@ class FriendProfile extends React.Component {
       const oldestDoc = this.state.oldestDoc;
       firebase
         .firestore()
-        .collection('ReactsTest')
+        .collection('Reacts')
         .doc(this.props.navigation.getParam('uid'))
         .collection('Likes')
         .orderBy('time', 'desc')
@@ -234,9 +234,9 @@ class FriendProfile extends React.Component {
 
     // send follow notification to user
     if (nowFollowing) {
-      const theirNoteRef = firebase
+      firebase
         .firestore()
-        .collection('NotificationsTest')
+        .collection('Notifications')
         .doc(theirUid)
         .collection('Notes')
         .add({
@@ -249,7 +249,7 @@ class FriendProfile extends React.Component {
     }
     const theirLikes = firebase
       .firestore()
-      .collection('ReactsTest')
+      .collection('Reacts')
       .doc(theirUid)
       .collection('Likes')
       .orderBy('time', 'desc') // most recent
@@ -267,7 +267,7 @@ class FriendProfile extends React.Component {
             const userLikedTime = time;
             const feedRef = firebase
               .firestore()
-              .collection('FeedsTest')
+              .collection('Feeds')
               .doc(myUid)
               .collection('Likes')
               .doc(memeId);
@@ -300,7 +300,7 @@ class FriendProfile extends React.Component {
                 // only make it exist if its a positive react
                 firebase
                   .firestore()
-                  .collection('FeedsTest')
+                  .collection('Feeds')
                   .doc(myUid)
                   .collection('Likes')
                   .doc(memeId)
@@ -326,7 +326,7 @@ class FriendProfile extends React.Component {
             const memeId = doc.id;
             const feedRef = firebase
               .firestore()
-              .collection('FeedsTest')
+              .collection('Feeds')
               .doc(myUid)
               .collection('Likes')
               .doc(memeId);

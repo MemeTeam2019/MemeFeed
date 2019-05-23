@@ -34,7 +34,7 @@ export default class Profile extends React.Component {
     this._isMounted = false;
     this.ref = firebase
       .firestore()
-      .collection('ReactsTest')
+      .collection('Reacts')
       .doc(firebase.auth().currentUser.uid)
       .collection('Likes')
       .orderBy('time', 'desc');
@@ -82,7 +82,7 @@ export default class Profile extends React.Component {
         .then((snapshot) => this.setState(snapshot.data()));
       firebase
         .firestore()
-        .collection('ReactsTest')
+        .collection('Reacts')
         .doc(firebase.auth().currentUser.uid)
         .collection('Likes')
         .orderBy('time', 'desc')

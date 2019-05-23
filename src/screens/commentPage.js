@@ -52,7 +52,7 @@ class CommentPage extends React.Component {
     // Grab total # of comments
     const countRef = firebase
       .firestore()
-      .collection(`CommentsTest/${this.state.memeId}/Info`)
+      .collection(`Comments/${this.state.memeId}/Info`)
       .doc('CommentInfo');
     countRef
       .get()
@@ -65,7 +65,7 @@ class CommentPage extends React.Component {
 
           firebase
             .firestore()
-            .collection(`CommentsTest/${this.state.memeId}/Text`)
+            .collection(`Comments/${this.state.memeId}/Text`)
             .orderBy('time', 'desc') // we choose decsending to get most recent
             .limit(Math.min(this.state.commentCount, 5))
             .get()
@@ -86,7 +86,7 @@ class CommentPage extends React.Component {
     if (oldestDoc) {
       firebase
         .firestore()
-        .collection(`CommentsTest/${this.state.memeId}/Text`)
+        .collection(`Comments/${this.state.memeId}/Text`)
         .orderBy('time', 'desc')
         .limit(5)
         .startAfter(oldestDoc)
@@ -192,7 +192,7 @@ class CommentPage extends React.Component {
 
       const countRef = firebase
         .firestore()
-        .collection(`CommentsTest/${memeId}/Info`)
+        .collection(`Comments/${memeId}/Info`)
         .doc('CommentInfo');
       countRef
         .get()
@@ -218,7 +218,7 @@ class CommentPage extends React.Component {
           console.log('Error getting document', err);
         });
 
-      const ref = firebase.firestore().collection(`CommentsTest/${memeId}/Text`);
+      const ref = firebase.firestore().collection(`Comments/${memeId}/Text`);
 
       ref
         .get()
@@ -227,11 +227,11 @@ class CommentPage extends React.Component {
             // Add necessary infrastruction
             firebase
               .firestore()
-              .collection('CommentsTest')
+              .collection('Comments')
               .doc(memeId);
             firebase
               .firestore()
-              .collection('CommentsTest')
+              .collection('Comments')
               .doc(memeId)
               .collection('Text');
           }
@@ -239,7 +239,7 @@ class CommentPage extends React.Component {
           // Add this comment to the proper folder
           firebase
             .firestore()
-            .collection(`CommentsTest/${memeId}/Text`)
+            .collection(`Comments/${memeId}/Text`)
             .add({
               uid: user.uid,
               text: this.state.text.trim(),
@@ -377,7 +377,7 @@ class CommentPage extends React.Component {
            const viewed = false;
            const noteRef = firebase
              .firestore()
-             .collection("NotificationsTest")
+             .collection("Notifications")
              .doc(this.state.peopleToTag[i])
              .collection("Notes");
            noteRef.add({type: 'tag',
