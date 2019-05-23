@@ -57,6 +57,11 @@ export default class EditProfilePic extends React.Component {
           <Image source={require('../images/userIcons/icon888.png')}
                  style={{ justifyContent: 'center', width: 180, height: 180, borderRadius: 180 / 2 }} />
         </View>
+        <View>
+          <TouchableOpacity>
+          <Text style={styles.button}> Choose another profile picture </Text>
+          </TouchableOpacity>
+        </View>
       </ImageBackground>
     );
   }
@@ -92,58 +97,19 @@ const styles = StyleSheet.create({
     shadowRadius: 0.4,
     color: 'black'
   },
-  aboutText: {
+  button: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
-    //color: '#9F02FF',
-    paddingHorizontal: '3%',
-    marginBottom: '3%',
-    paddingRight: 5,
-    paddingTop: 5, //50
-    paddingLeft: 5,
+    paddingHorizontal: '5%',
+    marginBottom: '1%',
+    textAlign: 'center',
+    height: 20,
+    color: 'black'
   },
   background: {
     flex: 1,
     height: '100%',
     width: '100%',
-  },
-  navBar: {
-    height: 60,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    //backgroundColor: 'blue',
-    marginTop: '7%',
-    marginBottom: '7%',
-  },
-  leftContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    //backgroundColor: 'green',
-    marginLeft: 20,
-    marginRight: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  middleContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    //backgroundColor: 'yellow',
-    marginLeft: 15,
-    marginRight: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  rightContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    //backgroundColor: 'red',
-    marginLeft: 15,
-    marginRight: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   nextBut: {
     flex: 1,
@@ -151,15 +117,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: '2%',
   },
-  button: {
-    flex: 1,
-    backgroundColor: 'transparent',
-    fontFamily: 'AvenirNext-Regular',
-    textAlign: 'center',
-    fontSize: 20,
-    color: 'black',
-    marginBottom: 10,
-    paddingTop: 20,
-    justifyContent: 'flex-end',
-  }
 });
