@@ -5,7 +5,6 @@ import AutoHeightImage from 'react-native-auto-height-image';
 
 class Photo extends React.PureComponent {
   render() {
-    console.log(this.props.imageUrl);
     return (
       <View style={styles.modelStyle}>
         <AutoHeightImage

@@ -31,8 +31,6 @@ class ExploreFeed extends React.Component {
   constructor(props) {
     super(props);
     this.fetchMemes = this.fetchMemes.bind(this);
-    this._isMounted = false;
-    this.unsubscribe = null;
     this.refreshMemes = this.refreshMemes.bind(this);
 
     this.state = {
@@ -48,20 +46,18 @@ class ExploreFeed extends React.Component {
   }
 
   componentDidMount() {
-    this._isMounted = true;
-    if (this._isMounted) {
-      firebase
-        .firestore()
-        .collection('Memes')
-        .orderBy('time', 'desc')
-        .limit(15)
-        .get()
-        .then(this.updateFeed);
-    }
+    firebase
+      .firestore()
+      .collection('Memes')
+      .orderBy('time', 'desc')
+      .limit(15)
+      .get()
+      .then(this.updateFeed);
   }
 
   /**
-   * Reset oldestDoc and start pulling from the latest memes in Memes collection
+   * Clears all memes and the oldest doc, then pulls the newest 15 memes from
+   * collection `Memes`.
    */
   refreshMemes = () => {
     this.setState({ memes: [], oldestDoc: null, refreshing: true }, () => {
@@ -92,6 +88,14 @@ class ExploreFeed extends React.Component {
     }
   };
 
+  /**
+   * Updates this.state.memes by concatenating the already-loaded memes with the
+   * next fifteen newest memes, then setting state.
+   *
+   * @param {QuerySnapshot} memesSnapshot: Firebase query of the `Memes` collection
+   * @returns {null}
+   */
+
   updateFeed = (memesSnapshot) => {
     const newMemes = [];
     memesSnapshot.docs.forEach((doc) => {
@@ -102,67 +106,63 @@ class ExploreFeed extends React.Component {
         src: url,
         time,
         sub,
-        postedBy: sub,
         caption,
       });
     });
 
-    Promise.all(newMemes).then((resolvedMemes) => {
-      this.setState((prevState) => {
-        const mergedMemes = prevState.memes.concat(resolvedMemes);
-        //console.log(mergedMemes);
-        return {
-          memes: mergedMemes,
-          updated: true,
-          oldestDoc: memesSnapshot.docs[memesSnapshot.docs.length - 1],
-          refreshing: false,
-        };
-      });
+    this.setState((prevState) => {
+      const mergedMemes = [...prevState.memes, ...newMemes];
+      return {
+        memes: mergedMemes,
+        updated: true,
+        oldestDoc: mergedMemes[mergedMemes.length - 1],
+        refreshing: false,
+      };
     });
   };
 
-
-  updateSearch = async (searchTerm = '') => {
+  updateSearch = (searchTerm = '') => {
     // Set search term state immediately to update SearchBar contents
-    console.log(searchTerm)
-    this.setState({ searchTerm });
+    this.setState({ searchTerm }, async () => {
+      const usersRef = firebase.firestore().collection('Users');
+      const lowerSearchTerm = searchTerm.toLowerCase();
+      let usernameMatches = [];
+      let nameMatches = [];
 
-    const usersRef = firebase.firestore().collection('Users');
-    const lowerSearchTerm = searchTerm.toLowerCase();
-    let usernameMatches = [];
-    let nameMatches = [];
-
-    if (!searchTerm) {
-      this.setState({ searchResults: [] });
-      return;
-    }
-
-    usernameMatches = await usersRef
-      .where('searchableusername', '>=', lowerSearchTerm)
-      .where('searchableusername', '<', `${lowerSearchTerm}\uf8ff`)
-      .get()
-      .then((snapshot) => snapshot.docs)
-      .catch((err) => console.log(err));
-
-    nameMatches = await usersRef
-      .where('searchableName', '>=', lowerSearchTerm)
-      .where('searchableName', '<', `${lowerSearchTerm}\uf8ff`)
-      .get()
-      .then((snapshot) => snapshot.docs)
-      .catch((err) => console.log(err));
-
-    // Ensure there are no duplicates and your own profile doesn't show up
-    const combined = [...usernameMatches, ...nameMatches];
-    const searchResults = [];
-    const map = new Map();
-    const myUid = firebase.auth().currentUser.uid;
-    combined.forEach((snapshot) => {
-      if (!map.has(snapshot.ref.id) && myUid !== snapshot.ref.id) {
-        map.set(snapshot.ref.id);
-        searchResults.push(snapshot);
+      if (!searchTerm) {
+        this.setState({ searchResults: [] });
+        return;
       }
+
+      // Get array of docs for which searchableUsername starts with searchTerm
+      usernameMatches = await usersRef
+        .where('searchableusername', '>=', lowerSearchTerm)
+        .where('searchableusername', '<', `${lowerSearchTerm}\uf8ff`)
+        .get()
+        .then((snapshot) => snapshot.docs)
+        .catch((err) => console.log(err));
+
+      // Get array of docs for which searchableName starts with searchTerm
+      nameMatches = await usersRef
+        .where('searchableName', '>=', lowerSearchTerm)
+        .where('searchableName', '<', `${lowerSearchTerm}\uf8ff`)
+        .get()
+        .then((snapshot) => snapshot.docs)
+        .catch((err) => console.log(err));
+
+      // Ensure there are no duplicates and your own profile doesn't show up
+      const combined = [...usernameMatches, ...nameMatches];
+      const searchResults = [];
+      const map = new Map();
+      const myUid = firebase.auth().currentUser.uid;
+      combined.forEach((snapshot) => {
+        if (!map.has(snapshot.ref.id) && myUid !== snapshot.ref.id) {
+          map.set(snapshot.ref.id);
+          searchResults.push(snapshot);
+        }
+      });
+      this.setState({ searchResults: searchResults.sort() });
     });
-    this.setState({ searchResults: searchResults.sort() });
   };
 
   // When grid button is pressed, show grid view

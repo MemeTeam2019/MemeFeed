@@ -171,7 +171,7 @@ class FriendProfile extends React.Component {
     this.setState({ memes: [], refreshing: true, oldestDoc: null }, () => {
       firebase
         .firestore()
-        .collection('ReactsTest')
+        .collection('Reacts')
         .doc(this.props.navigation.getParam('uid', ''))
         .collection('Likes')
         .orderBy('time', 'desc')

@@ -98,7 +98,7 @@ class ButtonBar extends React.Component {
       .doc(memeId);
     const memeRef = firebase
       .firestore()
-      .collection('MemesTest')
+      .collection('Memes')
       .doc(memeId);
 
     reactRef.get().then((likesSnapshot) => {
@@ -264,6 +264,7 @@ class ButtonBar extends React.Component {
                       likedFrom: firebase.firestore.FieldValue.arrayUnion(
                         this.props.postedBy
                       ),
+                      caption: this.props.caption,
                     });
                 }
 
@@ -291,27 +292,27 @@ class ButtonBar extends React.Component {
                       likedFrom: firebase.firestore.FieldValue.arrayRemove(
                         this.props.postedBy
                       ),
+                      caption: this.props.caption,
                     });
                 }
               } else {
                 // doc doesn't exist
                 // only make it exist if its a positive react
-                if (newReact > 1) {
-                  firebase
-                    .firestore()
-                    .collection('Feeds')
-                    .doc(friendUid)
-                    .collection('Likes')
-                    .doc(memeId)
-                    .set({
-                      posReacts: 1,
-                      time: date,
-                      url: this.props.imageUrl,
-                      // add this user as someone that liked this meme
-                      likers: [firebase.auth().currentUser.uid],
-                      likedFrom: [this.props.postedBy],
-                    });
-                }
+                firebase
+                  .firestore()
+                  .collection('Feeds')
+                  .doc(friendUid)
+                  .collection('Likes')
+                  .doc(memeId)
+                  .set({
+                    posReacts: 1,
+                    time: date,
+                    url: this.props.imageUrl,
+                    // add this user as someone that liked this meme
+                    likers: [firebase.auth().currentUser.uid],
+                    likedFrom: [this.props.postedBy],
+                    caption: this.props.caption,
+                  });
               }
             });
         }

@@ -34,7 +34,7 @@ class HomeFeed extends React.Component {
   componentDidMount() {
     firebase
       .firestore()
-      .collection('FeedsTest')
+      .collection('Feeds')
       .doc(firebase.auth().currentUser.uid)
       .collection('Likes')
       .orderBy('time', 'desc')
@@ -63,9 +63,9 @@ class HomeFeed extends React.Component {
   };
 
   updateFeed = (querySnapshot) => {
+    const newMemes = [];
     querySnapshot.docs.forEach((doc) => {
       const { time, url, posReacts, likedFrom, likers, caption } = doc.data();
-      const newMemes = [];
       if (posReacts > 0) {
         const recentLikedFrom = likedFrom[likedFrom.length - 1];
         const recentLiker = likers[likers.length - 1];
@@ -79,16 +79,16 @@ class HomeFeed extends React.Component {
           poster: recentLiker,
           caption,
         });
-        this.setState((prevState) => {
-          const mergedMemes = prevState.memes.concat(newMemes);
-          return {
-            memes: mergedMemes,
-            updated: true,
-            oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
-            refreshing: false,
-          };
-        });
       }
+    });
+    this.setState((prevState) => {
+      const mergedMemes = prevState.memes.concat(newMemes);
+      return {
+        memes: mergedMemes,
+        updated: true,
+        oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+        refreshing: false,
+      };
     });
   };
 
@@ -96,7 +96,7 @@ class HomeFeed extends React.Component {
     this.setState({ memes: [], refreshing: true, oldestDoc: null }, () => {
       firebase
         .firestore()
-        .collection('FeedsTest')
+        .collection('Feeds')
         .doc(firebase.auth().currentUser.uid)
         .collection('Likes')
         .orderBy('time', 'desc')
