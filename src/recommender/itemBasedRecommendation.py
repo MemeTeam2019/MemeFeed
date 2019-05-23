@@ -1,10 +1,12 @@
 from data import db
+import numpy as np
+import math
 
 firestore = db.db
 
 
 class ItemBasedRecommendation:
-    def __init__(self, memes):
+    def __init__(self, memes=[]):
         '''Maps each meme_id to the uid of users who have reacted positively
         In addition, memes will be a list of Meme objects (see data/meme.py)
         used to weigh a meme more/less depending on the metric. For example,
@@ -53,42 +55,47 @@ class ItemBasedRecommendation:
                 if uid not in rank_dict:
                     rank_dict[uid] = 0
 
-    # Return the list representation of ranks for the given item
+    # Return the rank vector of the given meme_id.
+    # NOTE: the vector will be a numpy array
     def vectorize(self, meme_id):
         vector = []
         for _, rank in sorted(self.rank_matrix[meme_id].items()):
             vector.append(rank)
-        return vector
+        return np.array(vector)
 
     # Fetch all the reacts for the given uid
-    def get_target_uid_reacts(self, uid):
+    def get_user(self, uid):
         reacts = {}
         for react in firestore.collection(f'Reacts/{uid}/Likes').stream():
             reacts[react.id] = react.to_dict()
         return reacts
 
     # Calculate the average ranking of the given meme_id
-    def average_rank_of(self, meme_id):
-        rankings = self.rank_matrix[meme_id]
-        total = 0
-        for _, rank in rankings:
-            total += rank
-        return total / len(rankings)
+    def average_item_rank_of(self, meme_id):
+        rank_dict = self.rank_matrix[meme_id]
+        total = sum(rank for _, rank in rank_dict.items())
+        return total / len(rank_dict)
 
     # Calculate the average rank a user has given
-    def average_user_ranking(self, uid):
-        pass
+    def average_user_rank_of(self, uid):
+        total = 0
+        number_of_documents = 0
+        for like in db.collection(f'Reacts/{uid}/Likes').stream():
+            total += like['rank']
+            number_of_documents += 1
+        return total / number_of_documents
 
-    # Calculate the similarity between memes, i and j
-    def similarity(self, i, j):
-        pass
+    # Output the cosine similarity of vectors i and j
+    # sim(i, j) = cos(i, j) = (i \dot j) / (norm(i) * norm(j))
+    # i and j should be numpy arrays
+    def cosine_similarity(self, i, j):
+        return i.dot(j) / (np.sqrt(i.dot(i)) * np.sqrt(j.dot(j)))
 
+    # Prints all item_ids and their associated rank vector
     def pretty_print_matrix(self):
-        check = []
-        for meme_id, rank_dict in self.rank_matrix.items():
-            check.append(sorted(rank_dict))
-            # print(f'( {meme_id} ) -> {rank_vector}')
-        print(all(check))
+        for meme_id, _ in self.rank_matrix.items():
+            print(f'uid: {meme_id} -> {self.vectorize(meme_id)}')
+
 
 if __name__ == '__main__':
     rec = ItemBasedRecommendation(1)
