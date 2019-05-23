@@ -70,7 +70,7 @@ function print(url,author,sub,time,score,filename,caption){
 }
 
 function sendToFirebase(filename,url,author,sub,time,score,caption){
-  var dbRef = admin.firestore().collection('Memes').doc(filename.substring(0,filename.indexOf('.')));
+  var dbRef = admin.firestore().collection('MemesTest').doc(filename.substring(0,filename.indexOf('.')));
   var s=storage.bucket('gs://memefeed-6b0e1.appspot.com');
   var sfile = s.file("meme_images/"+filename);
   console.log(path.resolve(filename));

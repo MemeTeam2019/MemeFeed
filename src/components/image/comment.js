@@ -19,13 +19,11 @@ class Comment extends React.Component {
     return (
       <View style={styles.container}>
         <TouchableOpacity onPress={() => this.handleUsernameClick()}>
-          <Text style={styles.userText}>
-            {this.props.username}
-            <TouchableWithoutFeedback>
-              <Text style={styles.commentStyle}> {this.props.content} </Text>
-            </TouchableWithoutFeedback>
-          </Text>
+          <Text style={styles.userText}>{this.props.username}</Text>
         </TouchableOpacity>
+        <TouchableWithoutFeedback>
+          <Text style={styles.commentStyle}>{this.props.content}</Text>
+        </TouchableWithoutFeedback>
       </View>
     );
   }
@@ -38,16 +36,15 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     fontSize: 16,
     flexDirection: 'row',
-    marginLeft: '2.5%',
-    marginRight: '2.5%',
     paddingTop: 10,
   },
   userText: {
     fontWeight: 'bold',
-    color: 'black'
+    color: 'black',
+    marginRight: 5,
   },
   commentStyle: {
     fontWeight: 'normal',
-    color: 'black'
+    color: 'black',
   },
 });

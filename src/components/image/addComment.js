@@ -77,11 +77,11 @@ class AddComment extends React.Component {
           // Add necessary infrastruction
           firebase
             .firestore()
-            .collection('Comments')
+            .collection('CommentsTest')
             .doc(memeId);
           firebase
             .firestore()
-            .collection('Comments')
+            .collection('CommentsTest')
             .doc(memeId)
             .collection('Text');
         }

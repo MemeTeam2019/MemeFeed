@@ -20,45 +20,35 @@ class CommentSample extends React.Component {
       .orderBy('time', 'desc')
       .limit(2) // we choose decsending to get most recent
       .get()
-      .then(this.onCollectionUpdate);
+      .then(this.updateComments);
   }
 
-  // function for extracting Firebase responses to the state
-  onCollectionUpdate = (querySnapshot) => {
+  /**
+   * Extract information for each comment into this.state.comments
+   *
+   * @param {QuerySnapshot} commentsSnapshot: from `Comments/{uid}/Text`
+   * @returns {null}
+   */
+  updateComments = (commentsSnapshot) => {
     const comments = [];
-
-    querySnapshot.forEach((doc) => {
+    commentsSnapshot.forEach((doc) => {
       const { text, uid, time } = doc.data();
-      console.log('\n\n\n~~~~~~~~~~~' + text + ' ' + time + ' ' + '\n\n\n');
-
       firebase
         .firestore()
         .collection('Users')
         .doc(uid)
         .get()
-        .then((doc) => {
+        .then((userDoc) => {
           if (!doc.exists) {
             console.log(`No such user ${uid} exist!`);
           } else {
-            const { username } = doc.data();
+            const { username } = userDoc.data();
             comments.push({
-              key: doc.id,
-              doc, // DocumentSnapshot
+              key: userDoc.id,
+              userDoc, // DocumentSnapshot
               content: text,
               time,
               username,
-            });
-
-            // resort comments since nested asynchronous function
-            const compareTime = (a, b) => {
-              console.log('sorting comments bb');
-              if (a.time < b.time) return -1;
-              if (a.time > b.time) return 1;
-              return 0;
-            };
-
-            this.setState({
-              comments: comments.sort(compareTime),
             });
           }
         })
@@ -66,27 +56,33 @@ class CommentSample extends React.Component {
           console.log('Error getting document', err);
         });
     });
+    this.setState({ comments });
   };
 
-  // Single comment
-  renderComment = ({ item }) => {
+  /**
+   * Renders a single comment item wrapped in a <View> tag.
+   *
+   * @param {Object} item: Element of this.state.comments, obtained from updateComments
+   * @returns {JSXElement} Comment component wrapped in a <View>
+   */
+  renderComment = (item) => {
     return (
-      <Comment
-        username={item.username}
-        content={item.content}
-        uid={item.key}
-        key={item.key}
-      />
+      <View key={item.key}>
+        <Comment
+          username={item.username}
+          content={item.content}
+          uid={item.key}
+          key={item.key}
+        />
+      </View>
     );
-  }
+  };
 
   render() {
+    const { comments } = this.state;
     return (
       <View style={styles.containerStyle}>
-        <FlatList
-          data={this.state.comments}
-          renderItem={this.renderComment.bind(this)}
-        />
+        {comments.map((comment) => this.renderComment(comment))}
       </View>
     );
   }

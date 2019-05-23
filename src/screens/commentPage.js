@@ -83,7 +83,7 @@ class CommentPage extends React.Component {
         }
       })
       .catch((err) => {
-        //console.log('Error getting document', err);
+        console.log('Error getting document', err);
       });
   }
 
@@ -112,7 +112,6 @@ class CommentPage extends React.Component {
     const newComments = [];
     querySnapshot.docs.forEach((doc) => {
       const { text, uid, time } = doc.data();
-      //console.log(text, uid, time);
       const userRef = firebase
         .firestore()
         .collection('Users')
@@ -133,7 +132,7 @@ class CommentPage extends React.Component {
             };
           })
           .catch((error) => {
-            //console.log(error);
+            console.log(error);
           })
       );
     });
@@ -141,7 +140,6 @@ class CommentPage extends React.Component {
       resolvedComments.reverse();
       this.setState((prevState) => {
         const mergedComments = resolvedComments.concat(prevState.comments);
-        //console.log(mergedComments);
         return {
           comments: mergedComments,
           commentsLoaded: mergedComments.length,
@@ -158,7 +156,6 @@ class CommentPage extends React.Component {
   handleNewComment = (commentRef) => {
     commentRef.get().then((commentDoc) => {
       const { text, uid, time } = commentDoc.data();
-      //console.log(text, uid, time);
       firebase
         .firestore()
         .collection('Users')
@@ -174,7 +171,6 @@ class CommentPage extends React.Component {
             time,
             username,
           };
-          //console.log(newComment);
           this.setState((prevState) => {
             return {
               comments: [...prevState.comments, newComment],
@@ -199,7 +195,7 @@ class CommentPage extends React.Component {
 
     const countRef = firebase
       .firestore()
-      .collection(`CommentsTest/${memeId}/Info`)
+      .collection(`Comments/${memeId}/Info`)
       .doc('CommentInfo');
     countRef
       .get()
@@ -272,61 +268,46 @@ class CommentPage extends React.Component {
    * Pulls all users whose username starts with the searchTerm
    */
   updateSearch = async (searchTerm = '') => {
-    console.log('updating search');
-    console.log(searchTerm);
     // Set search term state immediately to update SearchBar contents
     this.setState({ searchTerm });
     const myUid = firebase.auth().currentUser.uid;
 
-    const countRef = firebase
-      .firestore()
-      .collection('Users')
-      .doc(myUid)
+    const usersRef = firebase.firestore().collection('Users');
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    let usernameMatches = [];
+    let nameMatches = [];
+
+    if (!searchTerm) {
+      this.setState({ searchResults: [] });
+      return;
+    }
+
+    usernameMatches = await usersRef
+      .where('searchableUsername', '>=', lowerSearchTerm)
+      .where('searchableUsername', '<', `${lowerSearchTerm}\uf8ff`)
       .get()
-      .then(async (doc) => {
-        const { followersLst } = doc.data();
-        const usersRef = firebase.firestore().collection('Users');
-        const lowerSearchTerm = searchTerm.toLowerCase();
-        let usernameMatches = [];
-        let nameMatches = [];
+      .then((snapshot) => snapshot.docs)
+      .catch((err) => console.log(err));
 
-        if (!searchTerm) {
-          this.setState({ searchResults: [] });
-          return;
-        }
+    nameMatches = await usersRef
+      .where('searchableName', '>=', lowerSearchTerm)
+      .where('searchableName', '<', `${lowerSearchTerm}\uf8ff`)
+      .get()
+      .then((snapshot) => snapshot.docs)
+      .catch((err) => console.log(err));
 
-        usernameMatches = await usersRef
-          .where('searchableUsername', '>=', lowerSearchTerm)
-          .where('searchableUsername', '<', `${lowerSearchTerm}\uf8ff`)
-          .get()
-          .then((snapshot) => snapshot.docs)
-          .catch((err) => console.log(err));
-
-        nameMatches = await usersRef
-          .where('searchableName', '>=', lowerSearchTerm)
-          .where('searchableName', '<', `${lowerSearchTerm}\uf8ff`)
-          .get()
-          .then((snapshot) => snapshot.docs)
-          .catch((err) => console.log(err));
-
-        // Ensure there are no duplicates and your own profile doesn't show up
-        const combined = [...usernameMatches, ...nameMatches];
-        const searchResults = [];
-        const map = new Map();
-        combined.forEach((snapshot) => {
-          // check if this person is following up
-          //if (followersLst.includes(snapshot.ref.id)) {
-          if (!map.has(snapshot.ref.id) && myUid !== snapshot.ref.id) {
-            map.set(snapshot.ref.id);
-            searchResults.push(snapshot);
-          }
-          //}
-        });
-        this.setState({ searchResults: searchResults.sort() });
-      })
-      .catch((err) => {
-        console.log('Error getting document', err);
-      });
+    // Ensure there are no duplicates and your own profile doesn't show up
+    const combined = [...usernameMatches, ...nameMatches];
+    const searchResults = [];
+    const set = new Set();
+    combined.forEach((snapshot) => {
+      // check if this person is following up
+      if (!set.has(snapshot.ref.id) && myUid !== snapshot.ref.id) {
+        set.set(snapshot.ref.id);
+        searchResults.push(snapshot);
+      }
+    });
+    this.setState({ searchResults: searchResults.sort() });
   };
 
   renderSearchResult = (userRef) => {
@@ -370,8 +351,8 @@ class CommentPage extends React.Component {
   };
 
   sendTagNotifications = () => {
-    for (var i = 0; i < this.state.peopleToTag.length; i++) {
-      username = this.state.usernamesTagged[i];
+    for (let i = 0; i < this.state.peopleToTag.length; ++i) {
+      const username = this.state.usernamesTagged[i];
       // verfiy that we are still tagging the people added to the list
       if (this.state.text.indexOf(username) > -1) {
         console.log('tagging ', username);
@@ -387,24 +368,14 @@ class CommentPage extends React.Component {
           .collection('Notes');
         noteRef.add({
           type: 'tag',
-          uid: uid,
-          time: time,
-          memeId: memeId,
-          viewed: viewed,
+          uid,
+          time,
+          memeId,
+          viewed,
         });
       }
     }
   };
-
-  // for (var i = 0; i < this.state.usersTagging.length; i++) {
-  //   username = this.state.usersTagging[i]
-  //   // verfiy that we are still tagging the people added to the list
-  //   if ((this.state.text).indexOf(username) > -1) {
-  //     console.log('tagging ',username)
-  //     // send notification to this.state.peopleToTag[i])
-  //   }
-  // }
-  // }
 
   render() {
     const sub = this.props.navigation.getParam('sub', '');

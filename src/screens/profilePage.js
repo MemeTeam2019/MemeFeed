@@ -117,10 +117,10 @@ export default class Profile extends React.Component {
   };
 
   updateFeed = (querySnapshot) => {
+    const newMemes = [];
     querySnapshot.docs.forEach((doc) => {
       const { time, url, rank, likedFrom, caption } = doc.data();
       if (rank > 1) {
-        const newMemes = [];
         newMemes.push({
           key: doc.id,
           doc, // DocumentSnapshot
@@ -133,16 +133,16 @@ export default class Profile extends React.Component {
           poster: firebase.auth().currentUser.uid,
           caption,
         });
-        this.setState((prevState) => {
-          const mergedMemes = prevState.memes.concat(newMemes);
-          return {
-            memes: mergedMemes,
-            updated: true,
-            oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
-            refreshing: false,
-          };
-        });
       }
+    });
+    this.setState((prevState) => {
+      const mergedMemes = prevState.memes.concat(newMemes);
+      return {
+        memes: mergedMemes,
+        updated: true,
+        oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+        refreshing: false,
+      };
     });
   };
 
