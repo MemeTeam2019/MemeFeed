@@ -9,9 +9,6 @@ import {
   Button,
   TextInput,
   Keyboard,
-  Modal,
-  Text,
-  TouchableHighlight,
   Platform,
 } from 'react-native';
 import firebase from 'react-native-firebase';
@@ -39,7 +36,6 @@ class CommentPage extends React.Component {
     this.showAllComments = 1;
     this.scrollView = null;
     this.fetchComments = this.fetchComments.bind(this);
-    this.handleNewComment = this.handleNewComment.bind(this);
     this._onPressButton = this._onPressButton.bind(this);
     this.tagPerson = this.tagPerson.bind(this);
     this.state = {
@@ -62,33 +58,63 @@ class CommentPage extends React.Component {
   }
 
   componentDidMount() {
-    // Grab total # of comments
-    const countRef = firebase
+    firebase
       .firestore()
-      .collection(`Comments/${this.state.memeId}/Info`)
-      .doc('CommentInfo');
-    countRef
+      .collection(`CommentsTest/${this.state.memeId}/Text`)
+      .orderBy('time', 'desc')
+      .limit(5)
       .get()
-      .then((doc) => {
-        if (doc.exists) {
-          const { count } = doc.data();
-          this.setState({
-            commentCount: count,
-          });
-
-          firebase
-            .firestore()
-            .collection(`Comments/${this.state.memeId}/Text`)
-            .orderBy('time', 'desc') // we choose decsending to get most recent
-            .limit(Math.min(this.state.commentCount, 5))
-            .get()
-            .then((querySnapshot) => this.updateComments(querySnapshot));
-        }
-      })
-      .catch((err) => {
-        //console.log('Error getting document', err);
-      });
+      .then(this.updateComments);
   }
+
+  setModalVisible(visible) {
+    this.setState({ modalVisible: visible });
+  }
+
+  /**
+   * Extract data from firebase QuerySnapshot to this.state.comments
+   */
+  updateComments = (commentsSnapshot) => {
+    console.log(commentsSnapshot.docs);
+    const newComments = [];
+    commentsSnapshot.docs.forEach((doc) => {
+      const { text, uid, time } = doc.data();
+      firebase
+        .firestore()
+        .collection('Users')
+        .doc(uid)
+        .get()
+        .then((userDoc) => {
+          if (!doc.exists) {
+            console.log(`No such user ${uid} exist!`);
+          } else {
+            const { username } = userDoc.data();
+            newComments.push({
+              key: doc.id,
+              uid,
+              userDoc, // DocumentSnapshot
+              content: text,
+              time,
+              username,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log('Error getting document', err);
+        });
+    });
+    this.setState((prevState) => {
+      const { comments } = prevState;
+      console.log(newComments);
+      const mergedComments = newComments.concat(comments);
+      console.log(mergedComments);
+      return {
+        comments: mergedComments,
+        commentsLoaded: mergedComments.length,
+        oldestDoc: mergedComments[0],
+      };
+    });
+  };
 
   /**
    * Fetch the next latest comments based on the oldest comment
@@ -99,7 +125,7 @@ class CommentPage extends React.Component {
     if (oldestDoc) {
       firebase
         .firestore()
-        .collection(`Comments/${this.state.memeId}/Text`)
+        .collection(`CommentsTest/${this.state.memeId}/Text`)
         .orderBy('time', 'desc')
         .limit(5)
         .startAfter(oldestDoc)
@@ -107,87 +133,6 @@ class CommentPage extends React.Component {
         .then(this.updateComments);
     }
   };
-
-  /**
-   * Extract data from firebase QuerySnapshot to this.state.comments
-   */
-  updateComments = (querySnapshot) => {
-    const newComments = [];
-    querySnapshot.docs.forEach((doc) => {
-      const { text, uid, time } = doc.data();
-      const userRef = firebase
-        .firestore()
-        .collection('Users')
-        .doc(uid);
-
-      newComments.push(
-        userRef
-          .get()
-          .then((user) => {
-            const { username } = user.data();
-            return {
-              key: doc.id,
-              uid: user.id,
-              doc: user,
-              content: text,
-              time,
-              username,
-            };
-          })
-          .catch((error) => {
-            //console.log(error);
-          })
-      );
-    });
-    Promise.all(newComments).then((resolvedComments) => {
-      resolvedComments.reverse();
-      this.setState((prevState) => {
-        const mergedComments = resolvedComments.concat(prevState.comments);
-        return {
-          comments: mergedComments,
-          commentsLoaded: mergedComments.length,
-          oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
-        };
-      });
-    });
-  };
-
-  /**
-   * When a user posts a new comment, render it in the CommentList
-   * to give visual feedback
-   */
-  handleNewComment = (commentRef) => {
-    commentRef.get().then((commentDoc) => {
-      const { text, uid, time } = commentDoc.data();
-      firebase
-        .firestore()
-        .collection('Users')
-        .doc(uid)
-        .get()
-        .then((userDoc) => {
-          const { username } = userDoc.data();
-          const newComment = {
-            key: commentDoc.id,
-            uid,
-            doc: userDoc,
-            content: text,
-            time,
-            username,
-          };
-          this.setState((prevState) => {
-            return {
-              comments: [...prevState.comments, newComment],
-              commentsLoaded: prevState.commentsLoaded + 1,
-              commentCount: prevState.commentCount + 1,
-            };
-          });
-        });
-    });
-  };
-
-  setModalVisible(visible) {
-    this.setState({ modalVisible: visible });
-  }
 
   _onPressButton = () => {
     // send notification
@@ -198,7 +143,7 @@ class CommentPage extends React.Component {
 
     const countRef = firebase
       .firestore()
-      .collection(`Comments/${memeId}/Info`)
+      .collection(`CommentsTest/${memeId}/Info`)
       .doc('CommentInfo');
     countRef
       .get()
@@ -227,19 +172,33 @@ class CommentPage extends React.Component {
     // Add this comment to the proper folder
     firebase
       .firestore()
-      .collection(`Comments/${memeId}/Text`)
+      .collection(`CommentsTest/${memeId}/Text`)
       .add({
         uid: user.uid,
         text: this.state.text.trim(),
         time: date,
       })
-      .then((commentRef) => {
-        this.setState({
-          text: '',
+      .then(() => {
+        this.setState((prevState) => {
+          prevState.comments.push({
+            uid: user.uid,
+            text: prevState.text.trim(),
+            time: date,
+          });
+          return {
+            comments: [
+              ...prevState.comments,
+              {
+                uid: user.uid,
+                text: prevState.text.trim(),
+                time: date,
+              },
+            ],
+            commentsLoaded: prevState.commentsLoaded + 1,
+            commentCount: prevState.commentCount + 1,
+            text: '',
+          };
         });
-        console.log(this.props);
-        this.handleNewComment(commentRef);
-        console.log('Added document with ID: ', commentRef.id);
       })
       .catch((err) => {
         console.log('Error getting document', err);
@@ -251,61 +210,36 @@ class CommentPage extends React.Component {
    * Pulls all users whose username starts with the searchTerm
    */
   updateSearch = async (searchTerm = '') => {
-    console.log('updating search');
-    console.log(searchTerm);
     // Set search term state immediately to update SearchBar contents
     this.setState({ searchTerm });
-    const myUid = firebase.auth().currentUser.uid;
 
-    firebase
-      .firestore()
-      .collection('Users')
-      .doc(myUid)
+    const usersRef = firebase.firestore().collection('Users');
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    let usernameMatches = [];
+    let nameMatches = [];
+
+    if (!searchTerm) {
+      this.setState({ searchResults: [] });
+      return;
+    }
+
+    usernameMatches = await usersRef
+      .where('searchableUsername', '>=', lowerSearchTerm)
+      .where('searchableUsername', '<', `${lowerSearchTerm}\uf8ff`)
       .get()
-      .then(async (doc) => {
-        const { followersLst } = doc.data();
-        const usersRef = firebase.firestore().collection('Users');
-        const lowerSearchTerm = searchTerm.toLowerCase();
-        let usernameMatches = [];
-        let nameMatches = [];
+      .then((snapshot) => snapshot.docs)
+      .catch((err) => console.log(err));
 
-        if (!searchTerm) {
-          this.setState({ searchResults: [] });
-          return;
-        }
+    nameMatches = await usersRef
+      .where('searchableName', '>=', lowerSearchTerm)
+      .where('searchableName', '<', `${lowerSearchTerm}\uf8ff`)
+      .get()
+      .then((snapshot) => snapshot.docs)
+      .catch((err) => console.log(err));
 
-        usernameMatches = await usersRef
-          .where('searchableUsername', '>=', lowerSearchTerm)
-          .where('searchableUsername', '<', `${lowerSearchTerm}\uf8ff`)
-          .get()
-          .then((snapshot) => snapshot.docs)
-          .catch((err) => console.log(err));
-
-        nameMatches = await usersRef
-          .where('searchableName', '>=', lowerSearchTerm)
-          .where('searchableName', '<', `${lowerSearchTerm}\uf8ff`)
-          .get()
-          .then((snapshot) => snapshot.docs)
-          .catch((err) => console.log(err));
-
-        // Ensure there are no duplicates and your own profile doesn't show up
-        const combined = [...usernameMatches, ...nameMatches];
-        const searchResults = [];
-        const map = new Map();
-        combined.forEach((snapshot) => {
-          // check if this person is following up
-          //if (followersLst.includes(snapshot.ref.id)) {
-          if (!map.has(snapshot.ref.id) && myUid !== snapshot.ref.id) {
-            map.set(snapshot.ref.id);
-            searchResults.push(snapshot);
-          }
-          //}
-        });
-        this.setState({ searchResults: searchResults.sort() });
-      })
-      .catch((err) => {
-        console.log('Error getting document', err);
-      });
+    // Ensure there are no duplicates
+    const combined = new Set(usernameMatches, nameMatches);
+    this.setState({ searchResults: Array.from(combined).sort() });
   };
 
   renderSearchResult = (userRef) => {
@@ -349,8 +283,7 @@ class CommentPage extends React.Component {
   };
 
   sendTagNotifications = () => {
-    for (var i = 0; i < this.state.peopleToTag.length; i++) {
-      username = this.state.usernamesTagged[i];
+    this.state.usernamesTagged.forEach((username, i) => {
       // verfiy that we are still tagging the people added to the list
       if (this.state.text.indexOf(username) > -1) {
         console.log('tagging ', username);
@@ -359,31 +292,21 @@ class CommentPage extends React.Component {
         const time = Math.round(+new Date() / 1000);
         const memeId = this.state.memeId;
         const viewed = false;
-        const noteRef = firebase
+        firebase
           .firestore()
-          .collection('Notifications')
+          .collection('NotificationsTest')
           .doc(this.state.peopleToTag[i])
-          .collection('Notes');
-        noteRef.add({
-          type: 'tag',
-          uid,
-          time,
-          memeId,
-          viewed,
-        });
+          .collection('Notes')
+          .add({
+            type: 'tag',
+            uid,
+            time,
+            memeId,
+            viewed,
+          });
       }
-    }
+    }, this);
   };
-
-  // for (var i = 0; i < this.state.usersTagging.length; i++) {
-  //   username = this.state.usersTagging[i]
-  //   // verfiy that we are still tagging the people added to the list
-  //   if ((this.state.text).indexOf(username) > -1) {
-  //     console.log('tagging ',username)
-  //     // send notification to this.state.peopleToTag[i])
-  //   }
-  // }
-  // }
 
   render() {
     const sub = this.props.navigation.getParam('sub', '');
@@ -391,8 +314,6 @@ class CommentPage extends React.Component {
     const postedBy = this.props.navigation.getParam('postedBy', '');
     const poster = this.props.navigation.getParam('poster', '');
     const caption = this.props.navigation.getParam('caption', '');
-
-    console.log(caption);
 
     return (
       <View>
@@ -455,7 +376,7 @@ class CommentPage extends React.Component {
             </ScrollView>
           )}
 
-          {/* please forgive me this is the add comment button stuff all right here*/}
+          {/* please forgive me this is the add comment button stuff all right here */}
           <View
             style={[
               styles.container,
@@ -516,7 +437,7 @@ class CommentPage extends React.Component {
             />
           </View>
 
-          {/* please forgive me this is the add comment button stuff all right here*/}
+          {/* please forgive me this is the add comment button stuff all right here */}
           <View
             style={[
               styles.container,

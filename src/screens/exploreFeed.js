@@ -57,7 +57,7 @@ class ExploreFeed extends React.Component {
 
   /**
    * Clears all memes and the oldest doc, then pulls the newest 15 memes from
-   * collection `Memes`.
+   * collection `MemesTest`.
    */
   refreshMemes = () => {
     this.setState({ memes: [], oldestDoc: null, refreshing: true }, () => {
@@ -92,7 +92,7 @@ class ExploreFeed extends React.Component {
    * Updates this.state.memes by concatenating the already-loaded memes with the
    * next fifteen newest memes, then setting state.
    *
-   * @param {QuerySnapshot} memesSnapshot: Firebase query of the `Memes` collection
+   * @param {QuerySnapshot} memesSnapshot: Firebase query of the `MemesTest` collection
    * @returns {null}
    */
 

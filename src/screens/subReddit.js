@@ -75,7 +75,6 @@ class SubReddit extends React.Component {
     // updating
     if (this.state.updated) {
       this.state.updated = false;
-      const oldestDoc = this.state.oldestDoc;
       firebase
         .firestore()
         .collection('Memes')

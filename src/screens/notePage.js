@@ -46,7 +46,7 @@ class NotePage extends React.Component {
     if (this._isMounted) {
       this.unsubscribe = firebase
         .firestore()
-        .collection('Notifications')
+        .collection('NotificationsTest')
         .doc(firebase.auth().currentUser.uid)
         .collection('Notes')
         .orderBy('time', 'desc')
@@ -65,7 +65,7 @@ class NotePage extends React.Component {
       const oldestDoc = this.state.oldestDoc;
       firebase
         .firestore()
-        .collection('Notifications')
+        .collection('NotificationsTest')
         .doc(firebase.auth().currentUser.uid)
         .collection('Notes')
         .orderBy('time', 'desc')

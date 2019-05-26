@@ -48,7 +48,7 @@ class ButtonBar extends React.Component {
     const memeId = this.props.memeId;
     firebase
       .firestore()
-      .collection('Reacts')
+      .collection('ReactsTest')
       .doc(user.uid)
       .collection('Likes')
       .doc(memeId)
@@ -77,7 +77,7 @@ class ButtonBar extends React.Component {
     if (oldReact === null) {
       const noteRef = firebase
         .firestore()
-        .collection('Notifications')
+        .collection('NotificationsTest')
         .doc(this.props.postedBy)
         .collection('Notes');
       noteRef.add({
@@ -92,7 +92,7 @@ class ButtonBar extends React.Component {
     // Update the Reacts collection for current uid
     const reactRef = firebase
       .firestore()
-      .collection('Reacts')
+      .collection('ReactsTest')
       .doc(user.uid)
       .collection('Likes')
       .doc(memeId);
@@ -232,7 +232,7 @@ class ButtonBar extends React.Component {
           let friendUid = followersLst[i];
           firebase
             .firestore()
-            .collection('Feeds')
+            .collection('FeedsTest')
             .doc(friendUid)
             .collection('Likes')
             .doc(memeId)
@@ -250,7 +250,7 @@ class ButtonBar extends React.Component {
                 ) {
                   firebase
                     .firestore()
-                    .collection('Feeds')
+                    .collection('FeedsTest')
                     .doc(friendUid)
                     .collection('Likes')
                     .doc(memeId)
@@ -278,7 +278,7 @@ class ButtonBar extends React.Component {
                   }
                   firebase
                     .firestore()
-                    .collection('Feeds')
+                    .collection('FeedsTest')
                     .doc(friendUid)
                     .collection('Likes')
                     .doc(memeId)
@@ -300,7 +300,7 @@ class ButtonBar extends React.Component {
                 // only make it exist if its a positive react
                 firebase
                   .firestore()
-                  .collection('Feeds')
+                  .collection('FeedsTest')
                   .doc(friendUid)
                   .collection('Likes')
                   .doc(memeId)

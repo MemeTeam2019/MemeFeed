@@ -34,7 +34,7 @@ class HomeFeed extends React.Component {
   componentDidMount() {
     firebase
       .firestore()
-      .collection('Feeds')
+      .collection('FeedsTest')
       .doc(firebase.auth().currentUser.uid)
       .collection('Likes')
       .orderBy('time', 'desc')
@@ -51,7 +51,7 @@ class HomeFeed extends React.Component {
       const oldestDoc = this.state.oldestDoc;
       firebase
         .firestore()
-        .collection('Feeds')
+        .collection('FeedsTest')
         .doc(firebase.auth().currentUser.uid)
         .collection('Likes')
         .orderBy('time', 'desc')
@@ -96,7 +96,7 @@ class HomeFeed extends React.Component {
     this.setState({ memes: [], refreshing: true, oldestDoc: null }, () => {
       firebase
         .firestore()
-        .collection('Feeds')
+        .collection('FeedsTest')
         .doc(firebase.auth().currentUser.uid)
         .collection('Likes')
         .orderBy('time', 'desc')
