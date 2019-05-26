@@ -52,7 +52,6 @@ class SignupScreen extends React.Component {
             followersLst: [],
             followingLst: [],
           });
-          return uid;
         }
       })
       .then(() => this.props.navigation.push('Icon'))
