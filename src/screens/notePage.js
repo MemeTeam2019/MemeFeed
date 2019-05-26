@@ -1,11 +1,5 @@
 import * as React from 'react';
-import {
-  Image,
-  TouchableOpacity,
-  View,
-  StyleSheet,
-  FlatList,
-} from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import firebase from 'react-native-firebase';
 
 import NoteList from '../components/notifications/noteList';
@@ -27,33 +21,22 @@ class NotePage extends React.Component {
 
   constructor(props) {
     super(props);
-    this._isMounted = false;
-    this.unsubscribe = null;
     this.state = {
       updated: true,
       notes: [],
     };
   }
 
-  componentWillUnmount() {
-    this._isMounted = false;
-    this.unsubscribe = null;
-  }
-
   componentDidMount() {
-    console.log('comp did moutn')
-    this._isMounted = true;
-    if (this._isMounted) {
-      this.unsubscribe = firebase
-        .firestore()
-        .collection('NotificationsTest')
-        .doc(firebase.auth().currentUser.uid)
-        .collection('Notes')
-        .orderBy('time', 'desc')
-        .limit(15)
-        .get()
-        .then(this.updateList);
-    }
+    this.unsubscribe = firebase
+      .firestore()
+      .collection('NotificationsTest')
+      .doc(firebase.auth().currentUser.uid)
+      .collection('Notes')
+      .orderBy('time', 'desc')
+      .limit(15)
+      .get()
+      .then(this.updateList);
   }
 
   fetchNotes = () => {
@@ -80,7 +63,7 @@ class NotePage extends React.Component {
     console.log(querySnapshot);
     const newNotes = [];
     querySnapshot.docs.forEach((doc) => {
-      const { type,time,uid,memeId,viewed} = doc.data();
+      const { type, time, uid, memeId, viewed } = doc.data();
       console.log(doc.data);
       newNotes.push({
         type,
@@ -93,7 +76,7 @@ class NotePage extends React.Component {
     });
 
     Promise.all(newNotes).then((resolvedNotes) => {
-      console.log(resolvedNotes)
+      console.log(resolvedNotes);
       this.setState((prevState) => {
         const mergedNotes = prevState.notes.concat(resolvedNotes);
         return {
@@ -105,13 +88,11 @@ class NotePage extends React.Component {
     });
   };
 
-
   render() {
     return (
       <View style={styles.containerStyle}>
         {/* List View */}
         <NoteList loadNotes={this.fetchNotes} notes={this.state.notes} />
-      
       </View>
     );
   }
@@ -164,7 +145,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    borderBottomWidth: .5,
+    borderBottomWidth: 0.5,
     borderColor: '#D6D6D6',
   },
 });

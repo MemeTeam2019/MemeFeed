@@ -8,7 +8,6 @@ import {
   ScrollView,
 } from 'react-native';
 import firebase from 'react-native-firebase';
-import ActionSheet from 'react-native-actionsheet';
 
 import Tile from '../components/image/tile';
 import MemeGrid from '../components/general/memeGrid';
