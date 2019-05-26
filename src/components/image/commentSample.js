@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import firebase from 'react-native-firebase';
 
 import Comment from './comment';
@@ -16,7 +16,7 @@ class CommentSample extends React.Component {
   componentDidMount() {
     this.unsubscribe = firebase
       .firestore()
-      .collection(`Comments/${this.props.memeId}/Text`)
+      .collection(`CommentsTest/${this.props.memeId}/Text`)
       .orderBy('time', 'desc')
       .limit(2) // we choose decsending to get most recent
       .get()
@@ -26,7 +26,7 @@ class CommentSample extends React.Component {
   /**
    * Extract information for each comment into this.state.comments
    *
-   * @param {QuerySnapshot} commentsSnapshot: from `Comments/{uid}/Text`
+   * @param {QuerySnapshot} commentsSnapshot: from `CommentsTest/{uid}/Text`
    * @returns {null}
    */
   updateComments = (commentsSnapshot) => {
@@ -44,7 +44,8 @@ class CommentSample extends React.Component {
           } else {
             const { username } = userDoc.data();
             comments.push({
-              key: userDoc.id,
+              key: doc.id,
+              uid,
               userDoc, // DocumentSnapshot
               content: text,
               time,
@@ -69,10 +70,10 @@ class CommentSample extends React.Component {
     return (
       <View key={item.key}>
         <Comment
+          key={item.key}
+          uid={item.uid}
           username={item.username}
           content={item.content}
-          uid={item.key}
-          key={item.key}
         />
       </View>
     );

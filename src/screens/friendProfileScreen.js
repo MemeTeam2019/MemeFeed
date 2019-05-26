@@ -289,9 +289,9 @@ class FriendProfile extends React.Component {
             feedRef.get().then(async (feedDoc) => {
               // if this meme is already in this persons feed
               if (feedDoc.exists) {
-                const { posReacts, time } = feedDoc.data();
+                const { posReacts, feedTime } = feedDoc.data();
                 const newPosReacts = posReacts + 1;
-                const recentLikedTime = time;
+                const recentLikedTime = feedTime;
 
                 // if the person we just followed has liked this meme more recently
                 if (recentLikedTime < userLikedTime) {

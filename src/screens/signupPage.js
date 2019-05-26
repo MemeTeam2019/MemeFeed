@@ -4,7 +4,6 @@ import {
   ScrollView,
   Text,
   KeyboardAvoidingView,
-  Button,
   TextInput,
   Alert,
   ImageBackground,
@@ -15,13 +14,6 @@ import {
 import firebase from 'react-native-firebase';
 import { CheckBox } from 'react-native-elements';
 
-/**
- * Handles signing up for new accounts.
- *
- * Props
- * -----
- * None
- */
 class SignupScreen extends React.Component {
   static navigationOptions = {
     header: null,
@@ -81,9 +73,7 @@ class SignupScreen extends React.Component {
       return;
     }
     if (email === '' || password === '' || name === '' || username === '') {
-      Alert.alert('Error', 'Enter in all information', [
-        { text: 'OK' },
-      ]);
+      Alert.alert('Error', 'Enter in all information', [{ text: 'OK' }]);
       return;
     }
     firebase
@@ -192,9 +182,11 @@ class SignupScreen extends React.Component {
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => this.handleSubmit()}
-                              style={styles.button}
-                              disabled={!this.state.checked}>
+            <TouchableOpacity
+              onPress={() => this.handleSubmit()}
+              style={styles.button}
+              disabled={!this.state.checked}
+            >
               <Text style={styles.button}>Submit </Text>
             </TouchableOpacity>
           </ScrollView>
@@ -266,6 +258,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     color: '#fff',
-    marginBottom: 3
-  }
+    marginBottom: 3,
+  },
 });

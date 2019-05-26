@@ -1,31 +1,37 @@
 import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-// import ButtonBar from './buttonBar';
 import Comment from './comment';
 
-class CommentList extends React.PureComponent {
-  // Render a single comment item, making sure to wrap it in a <View>
+class CommentList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.renderComment = this.renderComment.bind(this);
+  }
+
+  /**
+   * Renders a single comment item wrapped in a <View> tag.
+   *
+   * @param {Object} item: Element of this.state.comments, obtained from updateComments
+   * @returns {JSXElement} Comment component wrapped in a <View>
+   */
   renderComment = (item) => {
-    if (item) {
-      return (
-        <View key={item.key}>
-          <Comment
-            key={item.key}
-            username={item.username}
-            content={item.content}
-            uid={item.uid}
-          />
-        </View>
-      );
-    }
-    return null;
+    return (
+      <View key={item.key}>
+        <Comment
+          key={item.key}
+          uid={item.uid}
+          username={item.username}
+          content={item.content}
+        />
+      </View>
+    );
   };
 
   render() {
     const { comments } = this.props;
     return (
-      <View style={styles.container}>
+      <View key={this.props.comments} style={{ marginHorizontal: '2.5%' }}>
         {/* Only render "Load more" if there are more comments to load */}
         {this.props.commentsLoaded < this.props.commentCount && (
           <TouchableOpacity
@@ -49,10 +55,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flex: 1,
     backgroundColor: 'rgba(255,255,255,1)',
-    marginTop: '5%',
-    marginBottom: '10%',
     marginHorizontal: '2.5%',
-    height: '100%',
   },
   loadMoreText: {
     fontSize: 15,
