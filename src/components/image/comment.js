@@ -4,9 +4,9 @@ import {
   View,
   Text,
   TouchableOpacity,
-  TouchableWithoutFeedback,
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
+import firebase from 'react-native-firebase'; 
 
 class Comment extends React.Component {
   handleUsernameClick() {
@@ -15,17 +15,62 @@ class Comment extends React.Component {
     });
   }
 
+  parseTags = (content) => {
+    const usernameToId = {}
+    const words = content.split(' ')
+    words.forEach(word => {
+      if(word[0] == '@'){
+        const username = word.substr(1);
+        firebase
+        .firestore()
+        .collection('Users')
+        .where('username', '==', username)
+        .get()
+        .then((querySnapshot) => {
+          const userDoc = querySnapshot.docs[0];
+          usernameToId[username] = userDoc.id;
+        });
+      }
+    })
+    const textChildren = []
+    let currStr = ''
+    words.forEach(word => {
+      if(word[0] == '@'){
+        textChildren.push(<Text style={styles.commentStyle}>{currStr}</Text>)
+        textChildren.push(
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.navigate('FriendProfile', {
+                uid: usernameToId[word.substr(1)]
+              });
+            }}>
+              <Text style={{fontWeight: 'bold'}}>
+                {word + ' '}
+              </Text>
+          </TouchableOpacity>
+        );
+        currStr = ''
+      } else {
+        currStr += word + ' '
+      }
+    })
+    if (currStr !== '') textChildren.push(<Text style={styles.commentStyle}>{currStr}</Text>);
+    return (
+      <View  style={styles.container}>
+      <TouchableOpacity onPress={() => this.handleUsernameClick()}>
+        <Text style={styles.userText}>
+          {this.props.username + '  '}
+        </Text>
+      </TouchableOpacity>
+      {textChildren}
+      </View>      
+    );
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <TouchableOpacity onPress={() => this.handleUsernameClick()}>
-          <Text style={styles.userText}>
-            {this.props.username}
-            <TouchableWithoutFeedback>
-              <Text style={styles.commentStyle}> {this.props.content} </Text>
-            </TouchableWithoutFeedback>
-          </Text>
-        </TouchableOpacity>
+      <View>
+        {this.parseTags(this.props.content)}
       </View>
     );
   }
@@ -48,6 +93,6 @@ const styles = StyleSheet.create({
   },
   commentStyle: {
     fontWeight: 'normal',
-    color: 'black'
+    color: 'black',
   },
 });
