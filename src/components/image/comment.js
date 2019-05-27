@@ -18,9 +18,9 @@ class Comment extends React.Component {
   parseTags = (content) => {
     const usernameToId = {}
     const words = content.split(' ')
-    words.forEach(word => {
+    const usernamesTagged = this.props.usernamesTagged;
+    usernamesTagged.forEach(username => {
       if(word[0] == '@'){
-        const username = word.substr(1);
         firebase
         .firestore()
         .collection('Users')
@@ -34,8 +34,11 @@ class Comment extends React.Component {
     })
     const textChildren = []
     let currStr = ''
+    let taggedIndex = 0;
     words.forEach(word => {
       if(word[0] == '@'){
+        const user = usernamesTagged[taggedIndex] || "ya_boi_jon";
+        const textAfterIndex = user.length + 1;
         textChildren.push(<Text style={styles.commentStyle}>{currStr}</Text>)
         textChildren.push(
           <TouchableOpacity
@@ -45,10 +48,14 @@ class Comment extends React.Component {
               });
             }}>
               <Text style={{fontWeight: 'bold'}}>
-                {word + ' '}
+                {word.substr(0, textAfterIndex)}
               </Text>
           </TouchableOpacity>
         );
+        <Text style={styles.commentStyle}>
+          {word.substr(textAfterIndex)}
+        </Text>
+        taggedIndex += 1;
         currStr = ''
       } else {
         currStr += word + ' '

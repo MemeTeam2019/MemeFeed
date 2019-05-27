@@ -28,7 +28,7 @@ class CommentSample extends React.Component {
     const comments = [];
 
     querySnapshot.forEach((doc) => {
-      const { text, uid, time } = doc.data();
+      const { text, uid, time, usernamesTagged } = doc.data();
       console.log('\n\n\n~~~~~~~~~~~' + text + ' ' + time + ' ' + '\n\n\n');
 
       firebase
@@ -47,6 +47,7 @@ class CommentSample extends React.Component {
               content: text,
               time,
               username,
+              usernamesTagged: usernamesTagged || [],
             });
 
             // resort comments since nested asynchronous function
@@ -79,7 +80,7 @@ class CommentSample extends React.Component {
   //Single comment
   renderComment({ item }) {
     return (
-      <Comment username={item.username} content={item.content} uid={item.key} />
+      <Comment username={item.username} content={item.content} uid={item.key} usernamesTagged={item.usernamesTagged}/>
     );
   }
 

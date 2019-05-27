@@ -101,8 +101,7 @@ class CommentPage extends React.Component {
   updateComments = (querySnapshot) => {
     const newComments = [];
     querySnapshot.docs.forEach((doc) => {
-      const { text, uid, time } = doc.data();
-      //console.log(text, uid, time);
+      const { text, uid, time, usernamesTagged } = doc.data();
       const userRef = firebase
         .firestore()
         .collection('Users')
@@ -120,6 +119,7 @@ class CommentPage extends React.Component {
               content: text,
               time,
               username,
+              usernamesTagged: usernamesTagged || [],
             };
           })
           .catch((error) => {
@@ -244,6 +244,7 @@ class CommentPage extends React.Component {
               uid: user.uid,
               text: this.state.text.trim(),
               time: date,
+              usernamesTagged: this.state.usernamesTagged,
             })
             .then((commentRef) => {
               this.setState({

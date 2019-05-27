@@ -25,6 +25,7 @@ class CommentList extends React.Component {
         username={item.username}
         content={item.content}
         uid={item.uid}
+        usernamesTagged={item.usernamesTagged || []}
       />
     );
   };

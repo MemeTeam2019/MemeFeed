@@ -16,7 +16,7 @@ class AddComment extends React.Component {
       searchTerm: '',
       peopleToTag: [],
       usernamesTagged: [],
-      mostRecentAt: -1
+      mostRecentAt: -1,
     };
   }
 
