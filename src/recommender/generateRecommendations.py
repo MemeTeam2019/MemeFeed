@@ -3,6 +3,7 @@ from data.db import db
 from data.meme import Meme
 from data.user import User
 from userBasedReccomendations import generateRecommendationsByUser
+import pprint
 
 
 
@@ -15,7 +16,6 @@ def updateUserVectors():
     userAverageReactions = {}
     users = db.collection('Users').stream()
     for user in users:
-        print(user.id)
         u = User(user.id, user.to_dict())
         memes = {}
         for id, meme in u.get_reacts().items():
@@ -33,7 +33,6 @@ def updateMemeVectors():
     memeVectors = {}
     docs = db.collection('Memes').stream()
     for doc in docs:
-        print(doc.id)
         meme = Meme(doc.id, doc.to_dict())
         memeVectors[doc.id] = meme.vectorize()
 
@@ -45,47 +44,26 @@ def updateMemeVectors():
 def updateSubredditVectors():
     pass
 
-# STEP 2 ---------------------------------------------- get other necessary data
-# getUserReactions returns a hashmap of user's reactions by userId where key: uid and
-# value: hashmap where key: memeId and value: rank
-def getUserReactions():
-    userReactions = {}
-    userAverageReactions = {}
-    users = db.collection('Users').stream()
-    for user in users:
-        u = User(user.id, user.to_dict())
-        memes = {}
-        for id, meme in u.get_reacts().items():
-            memes[id] =  meme['rank']
-
-        userReactions[user.id] = memes
-        userAverageReactions[user.id] = u.average_ranking()
-        print(user.id, userAverageReactions[user.id], userReactions[user.id])
-
-    return (userReactions, userAverageReactions)
-
-
-# STEP 3 ----------------------------------------------------- consolidate votes
+# STEP 2 ----------------------------------------------------- consolidate votes
 def consolidateRecommendations(userVotes, itemVotes, subredditsVotes):
     pass
 
 def main():
     # update vectors
     (userVectors , userReactions, userAverageReactions) = updateUserVectors()
-    # memeVectors = updateMemeVectors()
+    #s memeVectors = updateMemeVectors()
     # subredditVectors = updateSubredditVectors()
-    # (userReactions, userAverageReactions) = getUserReactions()
-    print(userReactions, userAverageReactions)
 
     # get recommendations
     userVotes = generateRecommendationsByUser(userVectors, userReactions, userAverageReactions)
+    pprint.pprint(userVotes)
     # itemVotes = ''
     # subredditsVotes = ''
     #
     # # vote on recommendations
     # orderedRecommendations = consolidateRecommendations(userVotes, itemVotes, subredditsVotes)
 
-    # return (orderedRecommendations)
+    # return orderedRecommendations
 
 
 if __name__ == "__main__":

@@ -1,5 +1,3 @@
-import pprint
-
 # similarityTopAndBottom computes two users similarity
 def generalSimilarity(a, b):
     similarity = 0
@@ -108,12 +106,14 @@ def findUnseenMemes(similarUsers, userReactions, userAverageReactions, thisUser)
 def recommendMemesByUser(user, userVectors, userReactions, userAverageReactions):
     similarUsers = findSimilarUsers (userVectors, user)
     recommenededMemes = findUnseenMemes(similarUsers, userReactions, userAverageReactions, user)
-    print ('RECOMMENDING:')
-    pprint.pprint(recommenededMemes)
     return recommenededMemes
 
 # generateRecommendationsByUser is treated as the main function and is called
 # by the recommender pipeline in order to generate results
 def generateRecommendationsByUser(userVectors, userReactions, userAverageReactions):
+    memeRecommendations = {}
     for user in userVectors:
-        memeRecommendations = recommendMemesByUser(user, userVectors, userReactions, userAverageReactions)
+        memeRecommendations[user] = recommendMemesByUser(user, userVectors, userReactions, userAverageReactions)
+        print(user)
+        
+    return memeRecommendations
