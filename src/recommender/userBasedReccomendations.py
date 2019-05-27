@@ -1,3 +1,4 @@
+import pprint
 
 # similarityTopAndBottom computes two users similarity
 def generalSimilarity(a, b):
@@ -43,13 +44,13 @@ def similarityTopAndBottom(a, b):
 # we define our own cosine similarity function since the vectors contain strings
 def similarity (a, b):
     # compute similarity between top 3 subreddits
-    ARankings = " ".join(a[0:6])
-    BRankings = " ".join(b[0:6])
-    similarityRankings = similarityTopAndBottom(ATopThree, BTopThree)
+    ARankings = a[0:6]
+    BRankings = b[0:6]
+    similarityRankings = similarityTopAndBottom(ARankings, BRankings)
 
     # compute similarity between  most popularUsers
-    ARecentThree = " ".join(a[6:9])
-    BRecentThree = " ".join(b[6:9])
+    ARecentThree = a[6:9]
+    BRecentThree = b[6:9]
     popularUsers = generalSimilarity(ARecentThree, BRecentThree)
 
     averageSimilarity = (similarityRankings*(2/3) + popularUsers*(1/3))
@@ -60,8 +61,8 @@ def findSimilarUsers (userVectors, thisUser):
     similarUsers = {}
     thisVector = userVectors[thisUser]
     for user, vector in userVectors.items():
-        similarity = similarity(vector, thisVector)
-        similarUsers[user] = similarity
+        sim = similarity(vector, thisVector)
+        similarUsers[user] = sim
 
     return similarUsers
 
@@ -71,35 +72,44 @@ def findSimilarUsers (userVectors, thisUser):
 def findUnseenMemes(similarUsers, userReactions, userAverageReactions, thisUser):
     unseenMemes = {}
     recommenededMemes = {}
-    averageUserRanking = userAverageReactions[thisUser]
+    averageUserRanking = userAverageReactions[thisUser]+1
     alreadySeen = userReactions[thisUser]
 
     # find all the memes this user has not seen
-    for user, similarity in similarUsers:
-        averageRank = userAverageReactions[user]
-        for meme in userReactions[user]:
-            # if user hasn't seen the meme yet
-            if meme not in alreadySeen:
-                if meme not in similarMemes:
-                    unseenMemes[meme] = (0,0,0)
+    for user, similarity in similarUsers.items():
+        averageRank = userAverageReactions[user] + 1
+        if userReactions[user] != None:
+            for meme in userReactions[user]:
+                # if user hasn't seen the meme yet
+                if meme not in alreadySeen:
+                    if meme not in unseenMemes:
+                        unseenMemes[meme] = {}
+                        unseenMemes[meme]['userFeelings'] = 0
+                        unseenMemes[meme]['similaritySum'] = 0
 
-                userRank = userReactions[user][meme]
-                unseenMemes[meme][0] += (userRank-averageRank)*similarity
-                unseenMemes[meme][1] += abs(similarity)
+                    userRank = userReactions[user][meme]+1
+                    unseenMemes[meme]['userFeelings'] += (userRank-averageRank)*similarity
+                    unseenMemes[meme]['similaritySum'] += abs(similarity)
 
     # after seeing how similar users felt about these memes we adjust their
     # feelings to this current user
     for meme, fraction in unseenMemes.items():
-        similarUsersNetFeelings = fraction[0]/fraction[1]
-        recommenedMemes[meme] = averageUserRanking + similarUsersNetFeelings
+        if fraction['similaritySum'] != 0:
+            similarUsersNetFeelings = fraction['userFeelings']/fraction['similaritySum']
+            suggestedRank = averageUserRanking + similarUsersNetFeelings - 1
+            suggestedRank = 4 if suggestedRank > 4 else suggestedRank
+            suggestedRank = 0 if suggestedRank < 0 else suggestedRank
+            recommenededMemes[meme] = suggestedRank
 
-    return recommenedMemes
+    return recommenededMemes
 
 
 # recommendMemesByUser generates the recommendations for a single user
 def recommendMemesByUser(user, userVectors, userReactions, userAverageReactions):
-    similarUsers = findSimilarUsers(userVecotrs, user)
+    similarUsers = findSimilarUsers (userVectors, user)
     recommenededMemes = findUnseenMemes(similarUsers, userReactions, userAverageReactions, user)
+    print ('RECOMMENDING:')
+    pprint.pprint(recommenededMemes)
     return recommenededMemes
 
 # generateRecommendationsByUser is treated as the main function and is called
@@ -107,4 +117,3 @@ def recommendMemesByUser(user, userVectors, userReactions, userAverageReactions)
 def generateRecommendationsByUser(userVectors, userReactions, userAverageReactions):
     for user in userVectors:
         memeRecommendations = recommendMemesByUser(user, userVectors, userReactions, userAverageReactions)
-        print(memeRecommendations)

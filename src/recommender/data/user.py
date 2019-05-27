@@ -38,14 +38,15 @@ class User:
             meme_data = db.collection('Memes').document(react.id).get().to_dict()
             react_data = react.to_dict()
             rank = react_data.get('rank')
-            likedFrom = meme_data['sub']
-            if likedFrom != '':
-                if likedFrom not in subreddit_counter:
-                    react_data['likedFrom'] = 0
-                if rank >= 2:
-                    subreddit_counter[likedFrom] += rank
-                else:
-                    subreddit_counter[likedFrom] += rank - 4
+            if meme_data != None:
+                likedFrom = meme_data['sub']
+                if likedFrom != '':
+                    if likedFrom not in subreddit_counter:
+                        react_data['likedFrom'] = 0
+                    if rank >= 2:
+                        subreddit_counter[likedFrom] += rank
+                    else:
+                        subreddit_counter[likedFrom] += rank - 4
 
         # this is fucking disgusting
         top_subreddits = subreddit_counter.most_common(len(subreddit_counter))
@@ -111,6 +112,8 @@ class User:
         for meme in memes:
             self.memes[meme.id] = meme.to_dict()
 
+        return self.memes
+
     # Calculate the average rank this user has given
     def average_ranking(self):
         sum_of_ranks = 0
@@ -127,6 +130,8 @@ class User:
             number_of_ranks += 1
 
         self.avg_rank = sum_of_ranks/number_of_ranks if number_of_ranks  != 0 else 0
+
+        return self.avg_rank
 
     def recent_subreddits(self):
         pass

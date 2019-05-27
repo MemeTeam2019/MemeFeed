@@ -7,18 +7,25 @@ from userBasedReccomendations import generateRecommendationsByUser
 
 
 # STEP 1 ------------------------------------------------------- update vectors
-
 # updateUserVectors updates the user vectors and returns them as a hashmap
 # where key: uid and value: vector
 def updateUserVectors():
     userVectors = {}
+    userReactions = {}
+    userAverageReactions = {}
     users = db.collection('Users').stream()
     for user in users:
         print(user.id)
         u = User(user.id, user.to_dict())
+        memes = {}
+        for id, meme in u.get_reacts().items():
+            memes[id] =  meme['rank']
+
+        userReactions[user.id] = memes
+        userAverageReactions[user.id] = u.average_ranking()
         userVectors[user.id] = u.vectorize()
 
-    return userVecotrs
+    return (userVectors, userReactions, userAverageReactions)
 
 # updateMemeVectors updates the meme vectors and returns them as a hashmap
 # where key: meme-id and value: vector
@@ -43,11 +50,17 @@ def updateSubredditVectors():
 # value: hashmap where key: memeId and value: rank
 def getUserReactions():
     userReactions = {}
+    userAverageReactions = {}
     users = db.collection('Users').stream()
     for user in users:
         u = User(user.id, user.to_dict())
-        userReactions[user.id] = u.get_reacts()
-        userReactions[user.id] = u.average_ranking()
+        memes = {}
+        for id, meme in u.get_reacts().items():
+            memes[id] =  meme['rank']
+
+        userReactions[user.id] = memes
+        userAverageReactions[user.id] = u.average_ranking()
+        print(user.id, userAverageReactions[user.id], userReactions[user.id])
 
     return (userReactions, userAverageReactions)
 
@@ -58,14 +71,14 @@ def consolidateRecommendations(userVotes, itemVotes, subredditsVotes):
 
 def main():
     # update vectors
-    userVectors = updateUserVectors()
-    print(userVectors)
-    memeVectors = updateMemeVectors()
-    subredditVectors = updateSubredditVectors()
+    (userVectors , userReactions, userAverageReactions) = updateUserVectors()
+    # memeVectors = updateMemeVectors()
+    # subredditVectors = updateSubredditVectors()
     # (userReactions, userAverageReactions) = getUserReactions()
+    print(userReactions, userAverageReactions)
 
     # get recommendations
-    # userVotes = generateRecommendationsByUser(userVectors, userReactions, userAverageReactions)
+    userVotes = generateRecommendationsByUser(userVectors, userReactions, userAverageReactions)
     # itemVotes = ''
     # subredditsVotes = ''
     #
