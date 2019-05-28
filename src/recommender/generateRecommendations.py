@@ -4,6 +4,7 @@ from data.meme import Meme
 from data.user import User
 from userBasedReccomendations import generateRecommendationsByUser
 import pprint
+import time
 
 
 
@@ -45,7 +46,52 @@ def updateSubredditVectors():
     pass
 
 # STEP 2 ----------------------------------------------------- consolidate votes
+# consolidateRecommendations finds the final set of recommendations for each
+# user and then stores them in firebase
 def consolidateRecommendations(userVotes, itemVotes, subredditVotes):
+    # get final recommendations for each user
+    finalRecommendations = {}
+    currentTime = time.time()
+    for user in userVotes:
+        finalRecommendations[user] = consolidateRecommendationsByUser(user,
+            userVotes[user],
+            itemVotes[user],
+            subredditVotes[user])
+
+        # store each recommended meme in firebase
+        for meme in finalRecommendations[user]:
+            rec_ref = db.reference(f'Recommendations/{user}/Memes')
+            doc_ref = db.collection('Memes').document(meme)
+            memeDoc = doc_ref.get()
+            memeData = memeDoc.to_dict())
+            rank = round(finalRecommendations[user]['predictedRank'])
+            modifiedTime = time + rank + finalRecommendations[user]['confidence']
+
+            # if the recommendation hasn't already been made and the predicted
+            # rank is high
+            if rank >= 2 and not db.reference(f'Recommendations/{user}/Memes/{meme}').exists:
+                if memeData['sub'] != None :
+                    rec_ref.update({
+                        'time': modifiedTime,
+                        'url': memeData['url'],
+                        'sub': memeData['sub']
+                    })
+
+                else:
+                    rec_ref.update({
+                        'time': modifiedTime,
+                        'url': memeData['url'],
+                        'author': memeData['author']
+                    })
+
+
+    pprint.pprint(finalRecommendations)
+    # store recommendations on firebase
+
+
+# consolidateRecommendationsByUser creates the final set of recommendations for
+# a given user
+def consolidateRecommendationsByUser(user, userVotes, itemVotes, subredditVotes):
     finalRecommendations = {}
 
     uVotes = userVotes.keys()
@@ -67,7 +113,6 @@ def consolidateRecommendations(userVotes, itemVotes, subredditVotes):
     mVotes = (mVotes.difference(umVotes)).difference(msVotes)
     sVotes = (sVotes.difference(usVotes)).difference(msVotes)
 
-
     # look at memes we have the most data for
     for memeId in umsVotes:
         uRank = userVotes[memeId]
@@ -83,14 +128,9 @@ def consolidateRecommendations(userVotes, itemVotes, subredditVotes):
     finalRecommendations = voteUsingTwoGroups(umVotes, userVotes, itemVotes, finalRecommendations)
     finalRecommendations = voteUsingTwoGroups(usVotes, userVotes, subredditVotes, finalRecommendations)
     finalRecommendations = voteUsingTwoGroups(umVotes, itemVotes, subredditVotes, finalRecommendations)
-
-
-    # we are going to go thru all the suggested recommendations and put them in
-    # a hashmap
-
-    # the best ones we will give the highest time (to ensure they get shown first)
-    # best are the ones that all 3 decided the user would rank highly
-
+    finalRecommendations = voteUsingOneGroup(uVotes, userVotes, finalRecommendations)
+    finalRecommendations = voteUsingOneGroup(mVotes, itemVotes, finalRecommendations)
+    finalRecommendations = voteUsingOneGroup(sVotes, subredditVotes, finalRecommendations)
 
 
     return finalRecommendations
@@ -148,3 +188,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+class MemeData(object):
+    def __init__(self, url, sub):
+        self.url = url
+        self.sub = sub
