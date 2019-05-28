@@ -42,6 +42,7 @@ export default class EditProfilePic extends React.Component {
           if (docSnapshot.exists) {
             const { icon } = docSnapshot.data();
             this.setState({ icon });
+
           }
         })
         .catch((error) => {
@@ -98,10 +99,9 @@ export default class EditProfilePic extends React.Component {
 }
 
 
- setPicture = () => {
-
-
- }
+   setPicture = async () => {
+     this.props.navigation.push('Profile');
+   }
 
 
 
