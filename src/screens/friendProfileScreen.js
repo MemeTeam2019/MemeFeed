@@ -142,7 +142,7 @@ class FriendProfile extends React.Component {
 
   updateFeed = (querySnapshot) => {
     querySnapshot.docs.forEach((doc) => {
-      const { time, url, rank, likedFrom } = doc.data();
+      const { time, url, rank, likedFrom, caption } = doc.data();
       const newMemes = [];
       if (rank > 1) {
         newMemes.push({
@@ -151,6 +151,7 @@ class FriendProfile extends React.Component {
           src: url,
           time,
           likedFrom,
+          caption,
           postedBy: this.props.navigation.getParam('uid'),
           poster: this.props.navigation.getParam('uid'),
         });

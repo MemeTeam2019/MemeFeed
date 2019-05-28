@@ -145,5 +145,6 @@ const styles = StyleSheet.create({
   timestamp: {
     fontFamily: 'AvenirNext-Regular',
     fontWeight: '300',
+    color: '#919191',
   },
 });
