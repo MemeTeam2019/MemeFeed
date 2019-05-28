@@ -46,15 +46,6 @@ class ExploreFeed extends React.Component {
   }
 
   componentDidMount() {
-<<<<<<< HEAD
-    firebase
-      .firestore()
-      .collection('Memes')
-      .orderBy('time', 'desc')
-      .limit(15)
-      .get()
-      .then(this.updateFeed);
-=======
     this._isMounted = true;
     if (this._isMounted) {
       firebase
@@ -65,7 +56,6 @@ class ExploreFeed extends React.Component {
         .get()
         .then(this.updateFeed);
     }
->>>>>>> f843326... ree
   }
 
   /**

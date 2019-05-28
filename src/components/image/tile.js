@@ -25,25 +25,11 @@ class Tile extends React.Component {
       .firestore()
       .collection('MemesTest')
       .doc(memeid);
-<<<<<<< HEAD
-    ref
-      .get()
-      .then((docSnapshot) => {
-        if (docSnapshot.exists) {
-          const data = docSnapshot.data();
-          const reactCount = data.reactCount || 0;
-          const time = data.time || null;
-          this.setState({ reactCount, time });
-        }
-      })
-      .catch((err) => console.log(err));
-=======
     ref.get().then((docSnapshot) => {
       const data = docSnapshot.data();
       const reactCount = data.reactCount || 0;
       this.setState({ reactCount });
     });
->>>>>>> f843326... ree
   }
 
   updateReactCount(newReactCount) {
@@ -51,10 +37,6 @@ class Tile extends React.Component {
   }
 
   render() {
-<<<<<<< HEAD
-=======
-    console.log(this.props);
->>>>>>> f843326... ree
     return (
       <View style={styles.container}>
         <TileHeader
@@ -104,7 +86,7 @@ class Tile extends React.Component {
           poster={this.props.poster}
           showAllComments={this.props.showAllComments}
           caption={this.props.caption}
-          time={this.state.time}
+          time={this.props.time}
         />
       </View>
     );
