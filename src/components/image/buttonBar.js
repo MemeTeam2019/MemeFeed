@@ -104,14 +104,6 @@ class ButtonBar extends React.Component {
     reactRef.get().then((likesSnapshot) => {
       const data = likesSnapshot.data();
       const hasReacted = likesSnapshot.exists && data.rank !== -1;
-
-      reactRef.set({
-        rank: oldReact === newReact ? -1 : newReact,
-        time: date,
-        url: this.props.imageUrl,
-        likedFrom: this.props.postedBy,
-        caption: this.props.caption,
-      });
       memeRef
         .get()
         .then(async (memeSnapshot) => {
@@ -157,6 +149,15 @@ class ButtonBar extends React.Component {
               negativeWeight,
               reactCount: newReactCount,
               lastReacted: date,
+              caption: this.props.caption,
+            });
+            reactRef.set({
+              rank: oldReact === newReact ? -1 : newReact,
+              time: date,
+              url: this.props.imageUrl,
+              likedFrom: this.props.postedBy,
+              caption: this.props.caption,
+              reactCount: newReactCount,
             });
 
             const subredditRef = firebase
@@ -188,7 +189,6 @@ class ButtonBar extends React.Component {
                     negWeight = negWeight - oldReact - 1;
                   }
                 }
-
                 if (oldReact === newReact) {
                   if (newReact > 1) {
                     posWeight = posWeight - oldReact - 1;
@@ -196,7 +196,6 @@ class ButtonBar extends React.Component {
                     negWeight = negWeight - oldReact - 1;
                   }
                 }
-
                 subredditRef.update({
                   positiveWeight: posWeight,
                   negativeWeight: negWeight,
@@ -298,21 +297,22 @@ class ButtonBar extends React.Component {
               } else {
                 // doc doesn't exist
                 // only make it exist if its a positive react
-                firebase
-                  .firestore()
-                  .collection('FeedsTest')
-                  .doc(friendUid)
-                  .collection('Likes')
-                  .doc(memeId)
-                  .set({
-                    posReacts: 1,
-                    time: date,
-                    url: this.props.imageUrl,
-                    // add this user as someone that liked this meme
-                    likers: [firebase.auth().currentUser.uid],
-                    likedFrom: [this.props.postedBy],
-                    caption: this.props.caption,
-                  });
+                if (newReact > 1) {
+                  firebase
+                    .firestore()
+                    .collection('FeedsTest')
+                    .doc(friendUid)
+                    .collection('Likes')
+                    .doc(memeId)
+                    .set({
+                      posReacts: 1,
+                      time: date,
+                      url: this.props.imageUrl,
+                      // add this user as someone that liked this meme
+                      likers: [firebase.auth().currentUser.uid],
+                      likedFrom: [this.props.postedBy],
+                    });
+                }
               }
             });
         }

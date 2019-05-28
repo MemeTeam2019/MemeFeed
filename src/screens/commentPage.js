@@ -59,8 +59,15 @@ class CommentPage extends React.Component {
   componentDidMount() {
     firebase
       .firestore()
+      .doc(`Users/${firebase.auth().currentUser.uid}`)
+      .get()
+      .then((doc) => {
+        this.setState(doc.data());
+      });
+    firebase
+      .firestore()
       .collection(`CommentsTest/${this.state.memeId}/Text`)
-      .orderBy('time', 'desc')
+      .orderBy('time', 'asc')
       .limit(5)
       .get()
       .then(this.updateComments);
@@ -123,7 +130,7 @@ class CommentPage extends React.Component {
       firebase
         .firestore()
         .collection(`CommentsTest/${this.state.memeId}/Text`)
-        .orderBy('time', 'desc')
+        .orderBy('time', 'asc')
         .limit(5)
         .startAfter(oldestDoc)
         .get()
@@ -175,15 +182,17 @@ class CommentPage extends React.Component {
         text: this.state.text.trim(),
         time: date,
       })
-      .then(() => {
+      .then((newCommentDoc) => {
         this.setState((prevState) => {
           return {
             comments: [
               ...prevState.comments,
               {
-                uid: user.uid,
-                text: prevState.text.trim(),
+                key: newCommentDoc.id,
+                uid: firebase.auth().currentUser.uid,
+                content: prevState.text.trim(),
                 time: date,
+                username: prevState.username,
               },
             ],
             commentsLoaded: prevState.commentsLoaded + 1,

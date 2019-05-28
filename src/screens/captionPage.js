@@ -261,7 +261,8 @@ class CaptionPage extends React.Component {
 
             // if safe for work, then after being posted this our users Reacts
             // navigate to their profile,
-
+            
+            console.log('what');
             this.props.navigation.popToTop();
             this.props.navigation.navigate('Profile', {
               uid: firebase.auth().currentUser.uid,
