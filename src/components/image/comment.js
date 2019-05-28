@@ -20,31 +20,30 @@ class Comment extends React.Component {
     const words = content.split(' ')
     const usernamesTagged = this.props.usernamesTagged;
     usernamesTagged.forEach(username => {
-      if(word[0] == '@'){
-        firebase
-        .firestore()
-        .collection('Users')
-        .where('username', '==', username)
-        .get()
-        .then((querySnapshot) => {
-          const userDoc = querySnapshot.docs[0];
-          usernameToId[username] = userDoc.id;
-        });
-      }
+      firebase
+      .firestore()
+      .collection('Users')
+      .where('username', '==', username)
+      .get()
+      .then((querySnapshot) => {
+        const userDoc = querySnapshot.docs[0];
+        usernameToId[username] = userDoc.id;
+      });
     })
     const textChildren = []
     let currStr = ''
     let taggedIndex = 0;
     words.forEach(word => {
-      if(word[0] == '@'){
-        const user = usernamesTagged[taggedIndex] || "ya_boi_jon";
+      if(word[0] === '@'){
+        console.log(usernamesTagged)
+        const user = usernamesTagged[taggedIndex] || '';
         const textAfterIndex = user.length + 1;
         textChildren.push(<Text style={styles.commentStyle}>{currStr}</Text>)
         textChildren.push(
           <TouchableOpacity
             onPress={() => {
               this.props.navigation.navigate('FriendProfile', {
-                uid: usernameToId[word.substr(1)]
+                uid: usernameToId[user]
               });
             }}>
               <Text style={{fontWeight: 'bold'}}>
@@ -52,11 +51,13 @@ class Comment extends React.Component {
               </Text>
           </TouchableOpacity>
         );
-        <Text style={styles.commentStyle}>
-          {word.substr(textAfterIndex)}
-        </Text>
+        textChildren.push(
+          <Text style={styles.commentStyle}>
+            {word.substr(textAfterIndex) + ' '}
+          </Text>
+        );
         taggedIndex += 1;
-        currStr = ''
+        currStr = '';
       } else {
         currStr += word + ' '
       }

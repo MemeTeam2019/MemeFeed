@@ -84,6 +84,7 @@ class AddComment extends React.Component {
             uid: user.uid,
             text: this.state.text.trim(),
             time: date,
+            usernamesTagged: this.state.usernamesTagged,
           })
           .then((commentRef) => {
             this.setState({
