@@ -27,7 +27,6 @@ export default class EditProfilePic extends React.Component {
 
   }
 
-
   componentDidMount() {
     this._isMounted = true;
     if (this._isMounted) {
@@ -57,6 +56,7 @@ export default class EditProfilePic extends React.Component {
     }
   }
 
+  //open up the image picker, select image, and have it get updated in firebase
   chooseFile = () => {
     var options = {
       noData: true
@@ -66,9 +66,6 @@ export default class EditProfilePic extends React.Component {
 
       if(response.uri){
         this.setState({ icon: response.uri,
-                        //filename: response.filename,
-                        //isChosen: true,
-
         });
         firebase
           .firestore()
@@ -78,7 +75,6 @@ export default class EditProfilePic extends React.Component {
             icon: response.uri,
           });
       }
-
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -95,19 +91,12 @@ export default class EditProfilePic extends React.Component {
         });
       }
     });
+ }
 
-}
-
-
-   setPicture = async () => {
-     this.props.navigation.push('Profile');
-   }
-
-
-
-
-
-
+  //go back to profile with updated picture
+  setPicture = async () => {
+    this.props.navigation.push('Profile');
+  }
 
   render() {
     return (
@@ -118,19 +107,20 @@ export default class EditProfilePic extends React.Component {
         <View style={styles.container}>
           <Text style={styles.title}> Edit Profile Picture </Text>
         </View>
-        <View>
+        <View style={styles.picture}>
           <Image
             source={{ uri: this.state.icon }}
-            style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
+            style={{ width: 200, height: 200, borderRadius: 200 / 2, justifyContent: 'center', alignItems: 'center' }}
           />
         </View>
         <View>
           <TouchableOpacity onPress={this.chooseFile.bind(this)}>
-          <Text style={styles.button}> Change Profile Picture</Text>
+          <Text style={styles.textButton}> Change Profile Picture</Text>
           </TouchableOpacity>
         </View>
         <View>
-          <TouchableOpacity onPress={this.setPicture.bind(this)}>
+          <TouchableOpacity onPress={this.setPicture.bind(this)}
+                            style={styles.doneButton}>
           <Text style={styles.button}> Done </Text>
           </TouchableOpacity>
         </View>
@@ -157,7 +147,7 @@ const styles = StyleSheet.create({
     marginBottom: '3%',
   },
   title: {
-    fontSize: 35,
+    fontSize: 28,
     fontFamily: 'AvenirNext-Regular',
     paddingHorizontal: '5%',
     marginBottom: '1%',
@@ -169,6 +159,19 @@ const styles = StyleSheet.create({
     shadowRadius: 0.4,
     color: 'black'
   },
+  textButton: {
+    fontSize: 20,
+    fontFamily: 'AvenirNext-Regular',
+    paddingHorizontal: '5%',
+    marginBottom: '1%',
+    marginTop: 15,
+    textAlign: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    alignItems: 'center',
+    height: 70,
+    color: 'black'
+  },
   button: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
@@ -176,7 +179,11 @@ const styles = StyleSheet.create({
     marginBottom: '1%',
     textAlign: 'center',
     height: 20,
-    color: 'black'
+    color: 'black',
+    justifyContent: 'center',
+    alignItems: 'center',
+    //position: 'absolute', //Here is the trick
+    //bottom: 0, //Here is the trick
   },
   background: {
     flex: 1,
@@ -189,4 +196,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: '2%',
   },
+  picture: {
+    //width: 85,
+    //height: 85,
+    //borderRadius: 85 / 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+
+  },
+  doneButton: {
+    flex: 1,
+    justifyContent: 'center',
+    marginTop: 50,
+    marginBottom: 36,
+  }
 });
