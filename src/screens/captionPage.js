@@ -34,35 +34,44 @@ class CaptionPage extends React.Component {
 
   constructor(props) {
     super(props);
+    this._isMounted = false;
+    this.unsubscribe = null;
     this.state = {
       api_key: '',
+      filename: this.props.navigation.getParam('filename', ''),
       imageuri: this.props.navigation.getParam('imageuri', ''),
       caption: '',
     };
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+    this.unsubscribe = null;
+  }
+
   // this gets the api key from the server
   componentDidMount() {
+    console.log('mouning hnnng');
     this.pickPhoto();
     this.props.navigation.setParams({ upload: this.handleUpload });
     this.props.navigation.setParams({ back: this.pickPhoto });
-    firebase
-      .firestore()
-      .collection('Secrets')
-      .doc('key')
-      .get()
-      .then((doc) => {
-        const { api } = doc.data();
-        this.setState({ api_key: api });
-      })
-      .catch((err) => {
-        console.log('Error getting document', err);
-      });
+    this._isMounted = true;
+    if (this._isMounted) {
+      this.unsubscribe = firebase
+        .firestore()
+        .collection('Secrets')
+        .doc('key')
+        .get()
+        .then((doc) => {
+          const { api } = doc.data();
+          this.setState({ api_key: api });
+        })
+        .catch((err) => {
+          console.log('Error getting document', err);
+        });
+    }
   }
 
-  /**
-   * Launches the native photo picker for Android or iOS
-   */
   pickPhoto = () => {
     console.log('picking das photo');
     const options = {
@@ -72,6 +81,8 @@ class CaptionPage extends React.Component {
       if (response.uri) {
         this.setState({
           imageuri: response.uri,
+          filename: response.filename,
+          isChosen: true,
           caption: '',
         });
       }
@@ -80,15 +91,11 @@ class CaptionPage extends React.Component {
         this.props.navigation.navigate('Profile', {
           uid: firebase.auth().currentUser.uid,
         });
+        this.componentWillUnmount();
       }
     });
   };
 
-  /**
-   * Handle upload of the image to Firebase storage, as well as creating
-   * a document in the Memes collection. Also ensure that the image is
-   * appropriate before upload.
-   */
   handleUpload = async () => {
     console.log('UPLOADING HNNNG');
     if (!this.state.imageuri) {
@@ -111,7 +118,7 @@ class CaptionPage extends React.Component {
 
     storRef.getDownloadURL().then(async (newurl) => {
       try {
-        const body = JSON.stringify({
+        let body = JSON.stringify({
           requests: [
             {
               features: [{ type: 'SAFE_SEARCH_DETECTION', maxResults: 5 }],
@@ -123,23 +130,22 @@ class CaptionPage extends React.Component {
             },
           ],
         });
-        const response = await fetch(
-          `https://vision.googleapis.com/v1/images:annotate?key=${
-            this.state.api_key
-          }`,
+        let response = await fetch(
+          'https://vision.googleapis.com/v1/images:annotate?key=' +
+            this.state.api_key,
           {
             headers: {
               Accept: 'application/json',
               'Content-Type': 'application/json',
             },
             method: 'POST',
-            body,
+            body: body,
           }
         );
-        const responseJson = await response.json();
+        let responseJson = await response.json();
         console.log(responseJson);
-        console.log(responseJson.responses[0].safeSearchAnnotation.adult);
-        const isNSFW = responseJson.responses[0].safeSearchAnnotation.adult;
+        console.log(responseJson.responses[0]['safeSearchAnnotation']['adult']);
+        let isNSFW = responseJson.responses[0]['safeSearchAnnotation']['adult'];
         // if image is nsfw don't post
         if (isNSFW === 'VERY_LIKELY' || isNSFW === 'LIKELY') {
           Alert.alert(
@@ -147,127 +153,108 @@ class CaptionPage extends React.Component {
             'This image was flagged for showing NSFW content, which goes against our policy. If you think this was a mistake email us at: memefeedaye@gmail.com',
             [{ text: 'OK' }]
           );
-          let responseJson = await response.json();
-          console.log(responseJson);
-          console.log(
-            responseJson.responses[0]['safeSearchAnnotation']['adult']
-          );
-          let isNSFW =
-            responseJson.responses[0]['safeSearchAnnotation']['adult'];
-          // if image is nsfw don't post
-          if (isNSFW === 'VERY_LIKELY' || isNSFW === 'LIKELY') {
-            Alert.alert(
-              'Upload Error',
-              'This image was flagged for showing NSFW content, which goes against our policy. If you think this was a mistake email us at: memefeedaye@gmail.com',
-              [{ text: 'OK' }]
-            );
-          } else {
-            // image is okay to post
-            // post in Memes and use the doc id it creates elsewhere
-            const memeCollection = firebase
-              .firestore()
-              .collection('MemesTest')
-              .doc(docId);
-            memeCollection.set({
-              url: newurl,
-              author: firebase.auth().currentUser.uid,
-              sub: '',
+        } else {
+          // image is okay to post
+          // post in Memes and use the doc id it creates elsewhere
+          const memeCollection = firebase
+            .firestore()
+            .collection('MemesTest')
+            .doc(docId);
+          memeCollection.set({
+            url: newurl,
+            author: firebase.auth().currentUser.uid,
+            sub: '',
+            time: Math.round(+new Date() / 1000),
+            score: 0,
+            caption: this.state.caption,
+            reacts: 0,
+          });
+          // .then(function(meme) {
+          console.log('Document written with ID: ', docId);
+
+          // post in this users reacts
+          const userReactsRef = firebase
+            .firestore()
+            .collection('ReactsTest')
+            .doc(firebase.auth().currentUser.uid)
+            .collection('Likes')
+            .doc(docId)
+            .set({
+              rank: 4,
               time: Math.round(+new Date() / 1000),
-              score: 0,
-              caption: this.state.caption,
-              reacts: 0,
+              url: newurl,
+              likeFrom: firebase.auth().currentUser.uid,
             });
-            // .then(function(meme) {
-            console.log('Document written with ID: ', docId);
 
-            // post in this users reacts
-            const userReactsRef = firebase
-              .firestore()
-              .collection('ReactsTest')
-              .doc(firebase.auth().currentUser.uid)
-              .collection('Likes')
-              .doc(docId)
-              .set({
-                rank: 4,
-                time: Math.round(+new Date() / 1000),
-                url: newurl,
-                likeFrom: firebase.auth().currentUser.uid,
-              });
-
-            // put meme in their followers feeds
-            this.unsubscribe = firebase
-              .firestore()
-              .collection('Users')
-              .doc(firebase.auth().currentUser.uid)
-              .get()
-              .then(async (doc) => {
-                const { followersLst } = doc.data();
-                // go through the people are following us
-                let i;
-                for (i = 0; i < followersLst.length; ++i) {
-                  // grab friend uid
-                  const friendUid = followersLst[i];
-                  firebase
-                    .firestore()
-                    .collection('FeedsTest')
-                    .doc(friendUid)
-                    .collection('Likes')
-                    .doc(docId)
-                    .set({
-                      posReacts: 1,
-                      time: Math.round(+new Date() / 1000),
-                      url: newurl,
-                      caption: this.state.caption,
-                      // add this user as someone that liked this meme
-                      likers: [firebase.auth().currentUser.uid],
-                      likedFrom: [firebase.auth().currentUser.uid],
-                    });
-                }
-              });
-            // });
-
-            // put meme in their followers feeds
-            this.unsubscribe = firebase
-              .firestore()
-              .collection('Users')
-              .doc(firebase.auth().currentUser.uid)
-              .get()
-              .then(async (doc) => {
-                const { followersLst } = doc.data();
-                // go through the people are following us
-                for (let i = 0; i < followersLst.length; i += 1) {
-                  // grab friend uid
-                  const friendUid = followersLst[i];
-                  firebase
-                    .firestore()
-                    .collection('FeedsTest')
-                    .doc(friendUid)
-                    .collection('Likes')
-                    .doc(docId)
-                    .set({
-                      posReacts: 1,
-                      time: Math.round(+new Date() / 1000),
-                      url: newurl,
-                      caption: this.state.caption,
-                      // add this user as someone that liked this meme
-                      likers: [firebase.auth().currentUser.uid],
-                      likedFrom: [firebase.auth().currentUser.uid],
-                    });
-                }
-              });
-
-            // if safe for work, then after being posted this our users Reacts
-            // navigate to their profile,
-
-            // if safe for work, then after being posted this our users Reacts
-            // navigate to their profile,
-            
-            console.log('what');
-            this.props.navigation.popToTop();
-            this.props.navigation.navigate('Profile', {
-              uid: firebase.auth().currentUser.uid,
+          // put meme in their followers feeds
+          this.unsubscribe = firebase
+            .firestore()
+            .collection('Users')
+            .doc(firebase.auth().currentUser.uid)
+            .get()
+            .then(async (doc) => {
+              const { followersLst } = doc.data();
+              // go through the people are following us
+              let i;
+              for (i = 0; i < followersLst.length; ++i) {
+                // grab friend uid
+                const friendUid = followersLst[i];
+                firebase
+                  .firestore()
+                  .collection('FeedsTest')
+                  .doc(friendUid)
+                  .collection('Likes')
+                  .doc(docId)
+                  .set({
+                    posReacts: 1,
+                    time: Math.round(+new Date() / 1000),
+                    url: newurl,
+                    caption: this.state.caption,
+                    // add this user as someone that liked this meme
+                    likers: [firebase.auth().currentUser.uid],
+                    likedFrom: [firebase.auth().currentUser.uid],
+                  });
+              }
             });
-          }
+          // });
+
+          // put meme in their followers feeds
+          this.unsubscribe = firebase
+            .firestore()
+            .collection('Users')
+            .doc(firebase.auth().currentUser.uid)
+            .get()
+            .then(async (doc) => {
+              const { followersLst } = doc.data();
+              // go through the people are following us
+              for (let i = 0; i < followersLst.length; i += 1) {
+                // grab friend uid
+                const friendUid = followersLst[i];
+                firebase
+                  .firestore()
+                  .collection('FeedsTest')
+                  .doc(friendUid)
+                  .collection('Likes')
+                  .doc(docId)
+                  .set({
+                    posReacts: 1,
+                    time: Math.round(+new Date() / 1000),
+                    url: newurl,
+                    caption: this.state.caption,
+                    // add this user as someone that liked this meme
+                    likers: [firebase.auth().currentUser.uid],
+                    likedFrom: [firebase.auth().currentUser.uid],
+                  });
+              }
+            });
+
+          // if safe for work, then after being posted this our users Reacts
+          // navigate to their profile,
+
+          this.props.navigation.popToTop();
+          this.props.navigation.navigate('Profile', {
+            uid: firebase.auth().currentUser.uid,
+          });
         }
       } catch (error) {
         console.log(error);
@@ -276,6 +263,9 @@ class CaptionPage extends React.Component {
   };
 
   render() {
+    // if (this.state.isChosen === false){
+    //   this.pickPhoto()
+    // }
     return (
       <KeyboardAvoidingView
         behavior='position'
@@ -284,8 +274,13 @@ class CaptionPage extends React.Component {
         <View>
           <NavigationEvents
             onDidFocus={() => {
-              this.setState({ caption: '', imageuri: '' }, () =>
-                this.pickPhoto()
+              this.setState(
+                {
+                  isChosen: false,
+                  caption: '',
+                  imageuri: '',
+                },
+                () => this.pickPhoto()
               );
             }}
           />
@@ -303,7 +298,7 @@ class CaptionPage extends React.Component {
               <TextInput
                 style={styles.input}
                 placeholder='Enter a Caption'
-                onChangeText={(caption) => this.setState({ caption })}
+                onChangeText={(caption) => this.setState({ caption: caption })}
                 autoCapitalize='none'
                 multiline
                 value={this.state.caption}

@@ -54,7 +54,6 @@ class CommentSample extends React.Component {
 
             // resort comments since nested asynchronous function
             const compareTime = (a, b) => {
-              console.log('sorting comments bb');
               if (a.time < b.time) return -1;
               if (a.time > b.time) return 1;
               return 0;

@@ -43,7 +43,7 @@ class CommentPage extends React.Component {
       comments: [],
       commentCount: 0,
       commentsLoaded: 0,
-      oldestDoc: null,
+      newestDoc: null,
       height: 0,
       modalVisible: false,
       tryingToTag: false,
@@ -66,8 +66,13 @@ class CommentPage extends React.Component {
       });
     firebase
       .firestore()
+      .doc(`CommentsTest/${this.state.memeId}/Info/CommentInfo`)
+      .get()
+      .then((doc) => this.setState({ commentCount: doc.data().count }));
+    firebase
+      .firestore()
       .collection(`CommentsTest/${this.state.memeId}/Text`)
-      .orderBy('time', 'asc')
+      .orderBy('time', 'desc')
       .limit(5)
       .get()
       .then(this.updateComments);
@@ -109,12 +114,14 @@ class CommentPage extends React.Component {
     });
     Promise.all(newComments).then((fulfilledComments) => {
       this.setState((prevState) => {
-        const { comments } = prevState;
-        const mergedComments = fulfilledComments.concat(comments);
+        const mergedComments = [
+          ...fulfilledComments.reverse(),
+          ...prevState.comments,
+        ];
         return {
           comments: mergedComments,
           commentsLoaded: mergedComments.length,
-          oldestDoc: mergedComments[0],
+          newestDoc: commentsSnapshot.docs[commentsSnapshot.docs.length - 1],
         };
       });
     });
@@ -125,14 +132,14 @@ class CommentPage extends React.Component {
    * already fetched
    */
   fetchComments = () => {
-    const oldestDoc = this.state.oldestDoc;
-    if (oldestDoc) {
+    const newestDoc = this.state.newestDoc;
+    if (newestDoc) {
       firebase
         .firestore()
         .collection(`CommentsTest/${this.state.memeId}/Text`)
-        .orderBy('time', 'asc')
+        .orderBy('time', 'desc')
         .limit(5)
-        .startAfter(oldestDoc)
+        .startAfter(newestDoc)
         .get()
         .then(this.updateComments);
     }
