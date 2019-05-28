@@ -15,7 +15,7 @@ class ItemBasedRecommendation:
         self.uids = self.get_uids()
         self.meme_ids = self.get_meme_ids()
         self.rank_matrix = self.build_matrix()
-        self.groups = self.group_similar_items()
+        self.similar_memes = self.group_similar_items()
         self.all_reacts = self.get_all_reacts()
         self.memes = memes
 
@@ -37,7 +37,7 @@ class ItemBasedRecommendation:
     def get_user_reacts(self, uid):
         reacts = {}
         for react in firestore.collection(f'Reacts/{uid}/Likes').stream():
-            reacts[react.id] = react.to_dict()['rank']
+            reacts[react.id] = react.to_dict()['rank'] + 1
         for meme_id in self.meme_ids:
             if meme_id not in reacts:
                 reacts[meme_id] = 0
@@ -127,18 +127,12 @@ class ItemBasedRecommendation:
         try:
             return np.divide(i.dot(j), np.sqrt(i.dot(i)) * np.sqrt(j.dot(j)))
         except Exception:
-            return 0
+            return -1
 
     # Prints all item_ids and their associated rank vector
     def pretty_print_matrix(self):
         for meme_id, _ in self.rank_matrix.items():
             print(f'uid: {meme_id} -> {self.vectorize(meme_id)}')
-
-    # Calculate all memes which have a cosine similarity >= 0.5.
-    # Returns a list of tuples containing (meme_id, similarity) of the similar
-    # memes.
-    def memes_similar_to(self, meme_id):
-        return self.groups[meme_id]
 
     # Predicts the ranking of a user for a particular item using the weighted
     # sum. Computes the sum of ratings given by the user on the items similar
@@ -146,24 +140,38 @@ class ItemBasedRecommendation:
     # the two items.
     def predict_rank(self, uid, meme_id):
         # Memes which have a similarity rating >= 0.5 to meme_id
-        similar_memes = self.memes_similar_to(meme_id)
+        similar_memes = self.similar_memes[meme_id]
         # All the reacts associated with this uid
-        ranks = self.get_user_reacts(uid)
+        user_ranks = self.all_reacts[uid]
+        # Don't output if the user has already ranked the meme
+        if user_ranks[meme_id] == 0:
+            return -1
         numerator = denominator = 0
         for meme_id, similarity in similar_memes:
-            numerator += similarity * ranks[meme_id]
+            numerator += similarity * user_ranks[meme_id]
             denominator += similarity
         return np.divide(numerator, denominator)
 
 
 if __name__ == '__main__':
-    rec = ItemBasedRecommendation(1)
+    rec = ItemBasedRecommendation()
     uids = rec.uids
     meme_ids = rec.meme_ids
+    recommendations = {}
     for uid in uids:
         for meme_id in meme_ids:
             try:
-                predicted = rec.predict_rank(uid, meme_id)
-                print(predicted)
+                predicted = rec.predict_rank(uid, meme_id) - 1
+                if predicted >= 2:
+                    if uid in recommendations:
+                        recommendations[uid].append((meme_id, predicted))
+                    else:
+                        recommendations[uid] = [(meme_id, predicted)]
             except Exception:
                 continue
+    for uid, prediction in recommendations.items():
+        print(f'{uid} -> [')
+        for meme_id, rank in prediction:
+            print(' ' * (len(uid) + 7) + f'{rank:.5f} predicted for {meme_id}')
+        print(' ' * (len(uid) + 4) + ']')
+        print()
