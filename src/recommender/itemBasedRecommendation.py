@@ -1,6 +1,5 @@
 from data import db
 import numpy as np
-import math
 
 firestore = db.db
 
@@ -16,6 +15,8 @@ class ItemBasedRecommendation:
         self.uids = self.get_uids()
         self.meme_ids = self.get_meme_ids()
         self.rank_matrix = self.build_matrix()
+        self.groups = self.group_similar_items()
+        self.all_reacts = self.get_all_reacts()
         self.memes = memes
 
     # Fetch all uids from the Users collection
@@ -32,6 +33,22 @@ class ItemBasedRecommendation:
             meme_ids.append(meme.id)
         return meme_ids
 
+    # Fetch all the reacts for the given uid
+    def get_user_reacts(self, uid):
+        reacts = {}
+        for react in firestore.collection(f'Reacts/{uid}/Likes').stream():
+            reacts[react.id] = react.to_dict()['rank']
+        for meme_id in self.meme_ids:
+            if meme_id not in reacts:
+                reacts[meme_id] = 0
+        return reacts
+
+    def get_all_reacts(self):
+        all_reacts = {}
+        for uid in self.uids:
+            all_reacts[uid] = self.get_user_reacts(uid)
+        return all_reacts
+
     # Fetch all reacts from the Reacts collection, storing them as a
     # dictionary which maps meme_id -> { uid: rank }
     def build_matrix(self):
@@ -44,16 +61,11 @@ class ItemBasedRecommendation:
                     matrix[meme_id] = {uid: like_data['rank'] + 1}
                 else:
                     matrix[meme_id][uid] = like_data['rank'] + 1
-        return matrix
-
-    # All item vectors need to have all user id's in order to generate the
-    # comparison between two items. This function will add uid's which have not
-    # yet ranked that particular meme with a value of 0
-    def complete_vectors(self):
-        for _, rank_dict in self.rank_matrix.items():
+        for _, rank_dict in matrix.items():
             for uid in self.uids:
                 if uid not in rank_dict:
                     rank_dict[uid] = 0
+        return matrix
 
     # Return the rank vector of the given meme_id.
     # NOTE: the vector will be a numpy array
@@ -63,12 +75,35 @@ class ItemBasedRecommendation:
             vector.append(rank)
         return np.array(vector)
 
-    # Fetch all the reacts for the given uid
-    def get_user(self, uid):
-        reacts = {}
-        for react in firestore.collection(f'Reacts/{uid}/Likes').stream():
-            reacts[react.id] = react.to_dict()
-        return reacts
+    # Converts rank_matrix rank_dicts to numpy arrays
+    def vectorize_all(self):
+        item_vectors = {}
+        for item_id, rank_dict in self.rank_matrix.items():
+            item_vectors[item_id] = self.vectorize(item_id)
+        return item_vectors
+
+    # Use similarity ranking (in this case, cosine similarity) to group
+    # Similar memes together
+    def group_similar_items(self):
+        groups = {}
+        matrix = self.vectorize_all()
+        meme_ids = sorted(matrix)
+        # Compare every item to every other item
+        for i, id1 in enumerate(meme_ids):
+            vec1 = matrix[id1]
+            for id2 in meme_ids[i+1:]:
+                vec2 = matrix[id2]
+                similarity = self.cosine_similarity(vec1, vec2)
+                if similarity >= 0.5:
+                    if id1 not in groups:
+                        groups[id1] = [(id2, similarity)]
+                    else:
+                        groups[id1].append((id2, similarity))
+                    if id2 not in groups:
+                        groups[id2] = [(id1, similarity)]
+                    else:
+                        groups[id2].append((id1, similarity))
+        return groups
 
     # Calculate the average ranking of the given meme_id
     def average_item_rank_of(self, meme_id):
@@ -78,26 +113,57 @@ class ItemBasedRecommendation:
 
     # Calculate the average rank a user has given
     def average_user_rank_of(self, uid):
-        total = 0
+        total_rank = 0
         number_of_documents = 0
         for like in db.collection(f'Reacts/{uid}/Likes').stream():
-            total += like['rank']
+            total_rank += like['rank']
             number_of_documents += 1
-        return total / number_of_documents
+        return total_rank / number_of_documents
 
     # Output the cosine similarity of vectors i and j
-    # sim(i, j) = cos(i, j) = (i \dot j) / (norm(i) * norm(j))
+    # sim(i, j) = cos(i, j) = (i dot j) / (norm(i) * norm(j))
     # i and j should be numpy arrays
     def cosine_similarity(self, i, j):
-        return i.dot(j) / (np.sqrt(i.dot(i)) * np.sqrt(j.dot(j)))
+        try:
+            return np.divide(i.dot(j), np.sqrt(i.dot(i)) * np.sqrt(j.dot(j)))
+        except Exception:
+            return 0
 
     # Prints all item_ids and their associated rank vector
     def pretty_print_matrix(self):
         for meme_id, _ in self.rank_matrix.items():
             print(f'uid: {meme_id} -> {self.vectorize(meme_id)}')
 
+    # Calculate all memes which have a cosine similarity >= 0.5.
+    # Returns a list of tuples containing (meme_id, similarity) of the similar
+    # memes.
+    def memes_similar_to(self, meme_id):
+        return self.groups[meme_id]
+
+    # Predicts the ranking of a user for a particular item using the weighted
+    # sum. Computes the sum of ratings given by the user on the items similar
+    # to the item, with each rating being weighted by the similarity between
+    # the two items.
+    def predict_rank(self, uid, meme_id):
+        # Memes which have a similarity rating >= 0.5 to meme_id
+        similar_memes = self.memes_similar_to(meme_id)
+        # All the reacts associated with this uid
+        ranks = self.get_user_reacts(uid)
+        numerator = denominator = 0
+        for meme_id, similarity in similar_memes:
+            numerator += similarity * ranks[meme_id]
+            denominator += similarity
+        return np.divide(numerator, denominator)
+
 
 if __name__ == '__main__':
     rec = ItemBasedRecommendation(1)
-    rec.complete_vectors()
-    rec.pretty_print_matrix()
+    uids = rec.uids
+    meme_ids = rec.meme_ids
+    for uid in uids:
+        for meme_id in meme_ids:
+            try:
+                predicted = rec.predict_rank(uid, meme_id)
+                print(predicted)
+            except Exception:
+                continue
