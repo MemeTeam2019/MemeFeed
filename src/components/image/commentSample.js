@@ -51,6 +51,21 @@ class CommentSample extends React.Component {
               time,
               username,
             });
+<<<<<<< HEAD
+=======
+
+            // resort comments since nested asynchronous function
+            const compareTime = (a, b) => {
+              console.log('sorting comments bb');
+              if (a.time < b.time) return -1;
+              if (a.time > b.time) return 1;
+              return 0;
+            };
+
+            this.setState({
+              comments: comments.sort(compareTime),
+            });
+>>>>>>> f843326... ree
           }
         })
         .catch((err) => {
@@ -60,6 +75,7 @@ class CommentSample extends React.Component {
     this.setState({ comments });
   };
 
+<<<<<<< HEAD
   /**
    * Renders a single comment item wrapped in a <View> tag.
    *
@@ -76,6 +92,17 @@ class CommentSample extends React.Component {
           content={item.content}
         />
       </View>
+=======
+  // Single comment
+  renderComment = ({ item }) => {
+    return (
+      <Comment
+        username={item.username}
+        content={item.content}
+        uid={item.key}
+        key={item.key}
+      />
+>>>>>>> f843326... ree
     );
   };
 

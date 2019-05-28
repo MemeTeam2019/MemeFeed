@@ -33,7 +33,7 @@ class SubReddit extends React.Component {
     this._isMounted = false;
     this.ref = firebase
       .firestore()
-      .collection('Memes')
+      .collection('MemesTest')
       .where('sub', '==', this.props.navigation.getParam('sub'));
 
     this.state = {
@@ -62,7 +62,7 @@ class SubReddit extends React.Component {
     if (this._isMounted) {
       this.unsubscribe = firebase
         .firestore()
-        .collection('Memes')
+        .collection('MemesTest')
         .where('sub', '==', this.props.navigation.getParam('sub'))
         .get()
         .then(this.updateFeed);
@@ -76,7 +76,7 @@ class SubReddit extends React.Component {
       this.state.updated = false;
       firebase
         .firestore()
-        .collection('Memes')
+        .collection('MemesTest')
         .where('sub', '==', this.props.navigation.getParam('sub'))
         .get()
         .then(this.updateFeed);

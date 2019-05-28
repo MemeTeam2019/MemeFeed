@@ -147,6 +147,7 @@ class CaptionPage extends React.Component {
             'This image was flagged for showing NSFW content, which goes against our policy. If you think this was a mistake email us at: memefeedaye@gmail.com',
             [{ text: 'OK' }]
           );
+<<<<<<< HEAD
         } else {
           // image is okay to post
           // post in Memes and use the doc id it creates elsewhere
@@ -179,6 +180,77 @@ class CaptionPage extends React.Component {
               url: newurl,
               likeFrom: firebase.auth().currentUser.uid,
             });
+=======
+          let responseJson = await response.json();
+           console.log(responseJson)
+           console.log(responseJson.responses[0]['safeSearchAnnotation']['adult']);
+           let isNSFW = responseJson.responses[0]['safeSearchAnnotation']['adult'];
+           // if image is nsfw don't post
+           if(isNSFW === 'VERY_LIKELY' || isNSFW === 'LIKELY') {
+             Alert.alert('Upload Error', 'This image was flagged for showing NSFW content, which goes against our policy. If you think this was a mistake email us at: memefeedaye@gmail.com', [
+               { text: 'OK' },
+             ]);
+           } else {
+             // image is okay to post
+             // post in Memes and use the doc id it creates elsewhere
+             const memeCollection = firebase.firestore().collection('MemesTest').doc(docId);
+             memeCollection.set({
+               url: newurl,
+               author: firebase.auth().currentUser.uid,
+               sub: '',
+               time: Math.round(+new Date() / 1000),
+               score: 0,
+               caption: this.state.caption,
+               reacts: 0,
+             })
+             // .then(function(meme) {
+             console.log("Document written with ID: ", docId);
+
+             // post in this users reacts
+             const userReactsRef = firebase
+               .firestore()
+               .collection('ReactsTest')
+               .doc(firebase.auth().currentUser.uid)
+               .collection('Likes')
+               .doc(docId).set({
+                 rank: 4,
+                 time: Math.round(+new Date() / 1000),
+                 url: newurl,
+                 likeFrom: firebase.auth().currentUser.uid,
+               });
+
+               // put meme in their followers feeds
+               this.unsubscribe = firebase
+                 .firestore()
+                 .collection('Users')
+                 .doc(firebase.auth().currentUser.uid)
+                 .get()
+                 .then(async (doc) => {
+                   const { followersLst } = doc.data();
+                   // go through the people are following us
+                   var i;
+                   for (i = 0; i < followersLst.length; i++) {
+                     // grab friend uid
+                     let friendUid = followersLst[i];
+                     firebase
+                       .firestore()
+                       .collection('FeedsTest')
+                       .doc(friendUid)
+                       .collection('Likes')
+                       .doc(docId)
+                       .set({
+                         posReacts: 1,
+                         time: Math.round(+new Date() / 1000),
+                         url: newurl,
+                         caption: this.state.caption,
+                         // add this user as someone that liked this meme
+                         likers: [firebase.auth().currentUser.uid],
+                         likedFrom: [firebase.auth().currentUser.uid],
+                       });
+                   }
+               });
+             // });
+>>>>>>> f843326... ree
 
           // put meme in their followers feeds
           this.unsubscribe = firebase

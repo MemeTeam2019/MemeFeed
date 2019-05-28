@@ -46,6 +46,7 @@ class ExploreFeed extends React.Component {
   }
 
   componentDidMount() {
+<<<<<<< HEAD
     firebase
       .firestore()
       .collection('Memes')
@@ -53,6 +54,18 @@ class ExploreFeed extends React.Component {
       .limit(15)
       .get()
       .then(this.updateFeed);
+=======
+    this._isMounted = true;
+    if (this._isMounted) {
+      firebase
+        .firestore()
+        .collection('MemesTest')
+        .orderBy('time', 'desc')
+        .limit(15)
+        .get()
+        .then(this.updateFeed);
+    }
+>>>>>>> f843326... ree
   }
 
   /**
@@ -63,7 +76,7 @@ class ExploreFeed extends React.Component {
     this.setState({ memes: [], oldestDoc: null, refreshing: true }, () => {
       firebase
         .firestore()
-        .collection('Memes')
+        .collection('MemesTest')
         .orderBy('time', 'desc')
         .limit(15)
         .get()
@@ -79,7 +92,7 @@ class ExploreFeed extends React.Component {
       const oldestDoc = this.state.oldestDoc;
       firebase
         .firestore()
-        .collection('Memes')
+        .collection('MemesTest')
         .orderBy('time', 'desc')
         .limit(15)
         .startAfter(oldestDoc)
