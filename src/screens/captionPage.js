@@ -58,11 +58,7 @@ class CaptionPage extends React.Component{
 
   // this gets the api key from the server
   componentDidMount() {
-<<<<<<< HEAD
     //console.log('mouning hnnng')
-=======
-    console.log('mouning hnnng')
->>>>>>> sprint4_term2
     this.pickPhoto()
     this.props.navigation.setParams({ upload: this.handleUpload });
     this.props.navigation.setParams({ back: this.pickPhoto });
@@ -85,11 +81,7 @@ class CaptionPage extends React.Component{
 
 
   pickPhoto = () => {
-<<<<<<< HEAD
     //console.log('picking das photo')
-=======
-    console.log('picking das photo')
->>>>>>> sprint4_term2
     const options = {
       noData: true
     };
@@ -113,11 +105,7 @@ class CaptionPage extends React.Component{
 
 
 	handleUpload = async () => {
-<<<<<<< HEAD
     //console.log('UPLOADING HNNNG')
-=======
-    console.log('UPLOADING HNNNG')
->>>>>>> sprint4_term2
     if (!this.state.imageuri) {
       Alert.alert('Upload Failed', 'Please try again :(');
       return;
@@ -160,13 +148,8 @@ class CaptionPage extends React.Component{
             }
           );
           let responseJson = await response.json();
-<<<<<<< HEAD
            //console.log(responseJson)
            //console.log(responseJson.responses[0]['safeSearchAnnotation']['adult']);
-=======
-           console.log(responseJson)
-           console.log(responseJson.responses[0]['safeSearchAnnotation']['adult']);
->>>>>>> sprint4_term2
            let isNSFW = responseJson.responses[0]['safeSearchAnnotation']['adult'];
            // if image is nsfw don't post
            if(isNSFW === 'VERY_LIKELY' || isNSFW === 'LIKELY') {
@@ -187,11 +170,7 @@ class CaptionPage extends React.Component{
                reacts: 0,
              })
              // .then(function(meme) {
-<<<<<<< HEAD
-             //console.log("Document written with ID: ", docId);
-=======
              console.log("Document written with ID: ", docId);
->>>>>>> sprint4_term2
 
              // post in this users reacts
              const userReactsRef = firebase
