@@ -258,6 +258,7 @@ class CommentPage extends React.Component {
         .catch((err) => {
           console.log('Error getting document', err);
         });
+      this.setModalVisible(false);
       Keyboard.dismiss();
     };
 
@@ -406,6 +407,7 @@ class CommentPage extends React.Component {
     const likedFrom = this.props.navigation.getParam('likedFrom', '');
     const postedBy = this.props.navigation.getParam('postedBy', '');
     const poster = this.props.navigation.getParam('poster', '');
+
     return (
       <View>
 
@@ -453,6 +455,7 @@ class CommentPage extends React.Component {
               postedBy={postedBy}
               poster={poster}
               showAllComments={this.showAllComments}
+              isSubRedditPg={this.props.navigation.getParam('isSubRedditPg')}
             />
             <CommentList
               memeId={this.state.memeId}
@@ -464,8 +467,6 @@ class CommentPage extends React.Component {
           </View>
         </ScrollView>
         }
-
-
         {/* please forgive me this is the add comment button stuff all right here*/}
         <View
           style={[
@@ -503,8 +504,7 @@ class CommentPage extends React.Component {
               });
             }}
             style={[styles.input, { height: Math.max(35, this.state.height) }]}
-            value={this.state.text}
-          />
+            value={this.state.text}/>
 
           <Button
             onPress={this._onPressButton}

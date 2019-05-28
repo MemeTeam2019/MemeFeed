@@ -11,14 +11,15 @@ import Tile from '../image/tile';
  * memes: Array[Object]
  * loadMemes: function
  */
-class MemeList extends React.Component {
+class MemeList extends React.PureComponent {
   constructor(props) {
     super(props);
     this.renderTile = this.renderTile.bind(this);
   }
 
   renderTile = ({ item }) => {
-    if (!item || !item.src) return null;
+    if (!item || !item.src || item.numFlags >= 10 || item.src === '')
+      return null;
     return (
       <Tile
         memeId={item.key}
@@ -27,6 +28,7 @@ class MemeList extends React.Component {
         likedFrom={item.likedFrom}
         postedBy={item.postedBy}
         poster={item.poster}
+        isSubRedditPg={this.props.isSubRedditPg}
       />
     );
   };
@@ -38,7 +40,7 @@ class MemeList extends React.Component {
         data={this.props.memes}
         renderItem={this.renderTile}
         onEndReached={() => {
-          // only load memes if previous ones finished loading
+          // Load new memes once end of list is reached
           this.props.loadMemes();
         }}
         refreshControl={

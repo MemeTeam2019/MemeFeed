@@ -25,12 +25,12 @@ function deletefile(filename){
     if (err) throw err;
     // if no error, file has been deleted successfully
     console.log('File deleted! '+ filename);
-  }); 
+  });
 }
  function getJSON(sub){
 
   var ret;
-  
+
   var yourUrl="https://www.reddit.com/r/"+sub+".json";
 
   fetch(yourUrl).then(response => {
@@ -49,7 +49,7 @@ function deletefile(filename){
             var score = curlist.score;
             var caption =curlist.title;
             upload(url,author,sub,time,score,caption);
-          
+
         }
 
         }
@@ -86,9 +86,9 @@ function sendToFirebase(filename,url,author,sub,time,score,caption){
         }
       }))
     .on('finish',function() {console.log("all good! "+filename)});
-  
+
   var url = "https://firebasestorage.googleapis.com/v0/b/" + s.name + "/o/" + encodeURIComponent(sfile.name) + "?alt=media&token=" + uuid;
-   
+
   print(url,author,sub,time,score,filename,caption);
 
 
@@ -105,24 +105,24 @@ function sendToFirebase(filename,url,author,sub,time,score,caption){
   };
   console.log("push ok");
   dbRef.set(data);
-  
-    
-     
 
 
-  
 
 
-  
+
+
+
+
+
 
 }
 
 async function upload(url,author,sub,time,score,caption){
   var filename = url.substring(url.lastIndexOf('/')+1);
   sendToFirebase(filename,url,author,sub,time,score,caption);
-  
-  
-  
+
+
+
 
 }
 
