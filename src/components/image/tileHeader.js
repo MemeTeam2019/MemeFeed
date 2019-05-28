@@ -5,7 +5,8 @@ import firebase from 'react-native-firebase';
 import LikedFromReddit from './tileHeaders/likedFromReddit';
 import LikedFromUser from './tileHeaders/likedFromUser';
 import SourceReddit from './tileHeaders/sourceReddit';
-import PostedByUser from './tileHeaders/postedByUser';
+import PostedByUser from './tileHeaders/postedByUser'
+
 
 /**
  * Renders the meme poster or the subreddit from which a meme was pulled from.
@@ -45,11 +46,6 @@ class TileHeader extends React.Component {
   }
 
   render() {
-
-
-console.log(this.props.poster)
-
-
     // if meme is just from a sub reddit
     if (this.props.sub){
       return (

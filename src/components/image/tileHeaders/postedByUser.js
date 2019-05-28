@@ -10,7 +10,6 @@ import {
 import { withNavigation } from 'react-navigation';
 import ActionSheet from 'react-native-actionsheet';
 import firebase from 'react-native-firebase';
-
 import Username from '../username';
 
 class PostedByUser extends React.Component {
