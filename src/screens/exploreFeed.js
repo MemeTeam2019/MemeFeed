@@ -55,7 +55,7 @@ class ExploreFeed extends React.Component {
         .firestore()
         .collection('Memes')
         .orderBy('time', 'desc')
-        .limit(15)
+        .limit(7)
         .get()
         .then((memesSnap) => {
           firebase
@@ -64,7 +64,7 @@ class ExploreFeed extends React.Component {
           .doc(firebase.auth().currentUser.uid)
           .collection('Memes')
           .orderBy('time', 'desc')
-          .limit(15)
+          .limit(8)
           .get()
           .then((recsSnap) => this.updateFeed(memesSnap, recsSnap))
         });
