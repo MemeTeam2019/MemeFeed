@@ -16,12 +16,8 @@ def updateUserVectors():
     userReactions = {}
     userAverageReactions = {}
     users = db.collection('Users').stream()
-    i = 6
-    for user in users:
-        i -= 1
-        if i == 0:
-            break
 
+    for user in users:
         u = User(user.id, user.to_dict())
         memes = {}
         for id, meme in u.get_reacts().items():
@@ -76,20 +72,27 @@ def consolidateRecommendations(userVotes, itemVotes, subredditVotes):
                 doc_ref = db.collection('Memes').document(meme)
                 memeDoc = doc_ref.get()
                 memeData = memeDoc.to_dict()
-                if memeData['sub'] != None :
-                    rec_ref.set({
-                        'time': modifiedTime,
-                        'url': memeData['url'],
-                        'sub': memeData['sub']
-                    })
-
-                else:
+                if memeData == None:
+                    continue
+                try:
+                    if memeData['sub'] != None :
+                        rec_ref.set({
+                            'time': modifiedTime,
+                            'url': memeData['url'],
+                            'sub': memeData['sub']
+                        })
+                    else:
+                        rec_ref.set({
+                            'time': modifiedTime,
+                            'url': memeData['url'],
+                            'author': memeData['author']
+                        })
+                except: 
                     rec_ref.set({
                         'time': modifiedTime,
                         'url': memeData['url'],
                         'author': memeData['author']
                     })
-
 
 
 # consolidateRecommendationsByUser creates the final set of recommendations for
