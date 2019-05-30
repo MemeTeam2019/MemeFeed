@@ -111,10 +111,10 @@ class CaptionPage extends React.Component{
       return;
     }
 
-    if (this.state.caption === '') {
-      Alert.alert('Empty caption! Say something about your meme :)')
-      return
-    }
+    // if (this.state.caption === '') {
+    //   Alert.alert('Empty caption! Say something about your meme :)')
+    //   return
+    // }
 
     const docId = firebase.auth().currentUser.uid+Math.round(+new Date() / 1000)
      const storRef = firebase.storage().ref('meme_images_TEST').child(docId);
@@ -258,21 +258,25 @@ class CaptionPage extends React.Component{
 						this.scrollView = ref;
 					}}
 					>
-					  <View style={styles.conatiner}>
+          <View style={styles.conatiner}>
+
 						  <AutoHeightImage
 								style={styles.image}
 								source={{uri: this.state.imageuri}}
 								width={Dimensions.get("window").width}
 						  />
-							<TextInput
-								style = {styles.input}
-								placeholder="Enter a Caption"
-								onChangeText = {(caption) => this.setState({caption: caption})}
-								autoCapitalize="none"
-								multiline
-                value={this.state.caption}
-							/>
+          {
+						// 	<TextInput
+						// 		style = {styles.input}
+						// 		placeholder="Enter a Caption"
+						// 		onChangeText = {(caption) => this.setState({caption: caption})}
+						// 		autoCapitalize="none"
+						// 		multiline
+            //     value={this.state.caption}
+						// 	/>
+          }
 						</View>
+
 					</ScrollView>
 				</View>
 			</KeyboardAvoidingView>
