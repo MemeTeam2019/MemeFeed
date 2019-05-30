@@ -81,7 +81,8 @@ export default class EditProfilePic extends React.Component {
     var options = {
       noData: true
     };
-    ImagePicker.showImagePicker(options, async (response) => {
+
+    ImagePicker.launchImageLibrary(options, async (response) => {
       console.log('Response = ', response);
 
       if(response.uri){
@@ -194,14 +195,15 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0.5 },
     shadowOpacity: 0.5,
     shadowRadius: 0.4,
-    color: 'black'
+    color: 'black',
+    marginTop: 20
   },
   textButton: {
     fontSize: 20,
     fontFamily: 'AvenirNext-Regular',
     paddingHorizontal: '5%',
     marginBottom: '1%',
-    marginTop: 15,
+    marginTop: 25,
     textAlign: 'center',
     justifyContent: 'center',
     textAlign: 'center',
@@ -219,6 +221,7 @@ const styles = StyleSheet.create({
     color: 'black',
     justifyContent: 'center',
     alignItems: 'center',
+
     //position: 'absolute', //Here is the trick
     //bottom: 0, //Here is the trick
   },
@@ -244,7 +247,7 @@ const styles = StyleSheet.create({
   doneButton: {
     flex: 1,
     justifyContent: 'center',
-    marginTop: 50,
+    marginTop: 10,
     marginBottom: 36,
   }
 });
