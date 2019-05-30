@@ -7,6 +7,7 @@ import LikedFromUser from './tileHeaders/likedFromUser';
 import SourceReddit from './tileHeaders/sourceReddit';
 import PostedByUser from './tileHeaders/postedByUser'
 
+
 /**
  * Renders the meme poster or the subreddit from which a meme was pulled from.
  *
@@ -45,11 +46,15 @@ class TileHeader extends React.Component {
   }
 
   render() {
-    console.log(this.props.likedFrom)
-    console.log(this.props.poster)
     // if meme is just from a sub reddit
     if (this.props.sub){
-        return <SourceReddit sub={this.props.sub} isSubRedditPg={this.props.isSubRedditPg}/>;
+      return (
+        <SourceReddit
+          sub={this.props.sub}
+          isSubRedditPg={this.props.isSubRedditPg}
+          memeId={this.props.memeId}
+        />
+      );
     }
     // meme posted by a user
     else if (!(this.props.likedFrom)) {
@@ -61,6 +66,7 @@ class TileHeader extends React.Component {
         <LikedFromReddit
           poster={this.props.poster}
           sub={this.props.likedFrom}
+          memeId={this.props.memeId}
           isSubRedditPg={this.props.isSubRedditPg}
         />
       );
@@ -71,6 +77,7 @@ class TileHeader extends React.Component {
         <LikedFromUser
           poster={this.props.poster}
           likedFrom={this.props.likedFrom}
+          memeId={this.props.memeId}
         />
       );
     }

@@ -30,9 +30,11 @@ class ExploreFeed extends React.Component {
 
   constructor(props) {
     super(props);
+    this.fetchMemes = this.fetchMemes.bind(this);
     this._isMounted = false;
     this.unsubscribe = null;
     this.refreshMemes = this.refreshMemes.bind(this);
+
     this.state = {
       updated: true,
       inGridView: true,
@@ -50,7 +52,7 @@ class ExploreFeed extends React.Component {
     if (this._isMounted) {
       firebase
         .firestore()
-        .collection('Memes')
+        .collection('MemesTest')
         .orderBy('time', 'desc')
         .limit(15)
         .get()
@@ -65,7 +67,7 @@ class ExploreFeed extends React.Component {
     this.setState({ memes: [], oldestDoc: null, refreshing: true }, () => {
       firebase
         .firestore()
-        .collection('Memes')
+        .collection('MemesTest')
         .orderBy('time', 'desc')
         .limit(15)
         .get()
@@ -81,7 +83,7 @@ class ExploreFeed extends React.Component {
       const oldestDoc = this.state.oldestDoc;
       firebase
         .firestore()
-        .collection('Memes')
+        .collection('MemesTest')
         .orderBy('time', 'desc')
         .limit(15)
         .startAfter(oldestDoc)
@@ -90,18 +92,30 @@ class ExploreFeed extends React.Component {
     }
   };
 
-  updateFeed = (querySnapshot) => {
+  updateFeed = (memesSnapshot) => {
     const newMemes = [];
-    querySnapshot.docs.forEach((doc) => {
-      const { url, time, sub } = doc.data();
-      newMemes.push({
-        key: doc.id,
-        doc,
-        src: url,
-        time,
-        sub,
-        postedBy: sub,
-      });
+    memesSnapshot.docs.forEach((doc) => {
+      const { url, time, sub, author } = doc.data();
+      if (sub) {
+        console.log(sub)
+        newMemes.push({
+          key: doc.id,
+          doc,
+          src: url,
+          time,
+          sub,
+          postedBy: sub,
+        });
+      } else {
+        newMemes.push({
+          key: doc.id,
+          doc,
+          src: url,
+          time,
+          poster: author,
+          postedBy: author,
+        });
+      }
     });
 
     Promise.all(newMemes).then((resolvedMemes) => {
@@ -111,16 +125,14 @@ class ExploreFeed extends React.Component {
         return {
           memes: mergedMemes,
           updated: true,
-          oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+          oldestDoc: memesSnapshot.docs[memesSnapshot.docs.length - 1],
           refreshing: false,
         };
       });
     });
   };
 
-  /**
-   * Pulls all users whose username starts with the searchTerm
-   */
+
   updateSearch = async (searchTerm = '') => {
     // Set search term state immediately to update SearchBar contents
     console.log(searchTerm)
