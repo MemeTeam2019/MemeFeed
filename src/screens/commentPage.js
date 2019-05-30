@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, ScrollView, KeyboardAvoidingView, View } from 'react-native';
 import firebase from 'react-native-firebase';
 
 import Tile from '../components/image/tile';
@@ -180,7 +180,9 @@ class CommentPage extends React.Component {
           }}
           style={{ height: '100%' }}
         >
+        <View style={{ paddingBottom: '3%' }}>
           <Tile
+            style={styles.tileStyle}
             memeId={this.state.memeId}
             imageUrl={this.state.imageuri}
             sub={sub}
@@ -189,6 +191,7 @@ class CommentPage extends React.Component {
             poster={poster}
             showAllComments={this.showAllComments}
           />
+        </View>
           {/* <TileHeader
             sub={sub}
             likedFrom={likedFrom}
@@ -223,6 +226,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     alignItems: 'center',
+  },
+  tileStyle: {
+    paddingBottom: 100,
   },
   addComment: {
     position: 'absolute',

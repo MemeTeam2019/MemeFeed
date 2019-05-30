@@ -76,7 +76,7 @@ class PostInfo extends React.Component {
     }
     else if (this.state.commentCount > 2) {
       return (
-        <View style={styles.postInfo}>
+        <View style={styles.container}>
           <Text
             style={{
               fontWeight: 'bold',
@@ -102,7 +102,7 @@ class PostInfo extends React.Component {
       );
     } else {
       return (
-        <View style={styles.postInfo}>
+        <View style={styles.container}>
           {/* <TouchableOpacity
               onPress={() => {
                 this.handleCommentClick();
@@ -131,7 +131,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'AvenirNext-Regular',
     width: '100%',
-    height: 100,
   },
   modelStyle: {
     flex: 1,
