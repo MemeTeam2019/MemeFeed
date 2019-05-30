@@ -1,12 +1,7 @@
 import * as React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-} from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { withNavigation } from 'react-navigation';
-import firebase from 'react-native-firebase'; 
+import firebase from 'react-native-firebase';
 
 class Comment extends React.Component {
   handleUsernameClick() {
@@ -16,39 +11,39 @@ class Comment extends React.Component {
   }
 
   parseTags = (content) => {
-    const usernameToId = {}
-    const words = content.split(' ')
+    const usernameToId = {};
+    const words = content.split(' ');
     const usernamesTagged = this.props.usernamesTagged;
-    usernamesTagged.forEach(username => {
+    usernamesTagged.forEach((username) => {
       firebase
-      .firestore()
-      .collection('Users')
-      .where('username', '==', username)
-      .get()
-      .then((querySnapshot) => {
-        const userDoc = querySnapshot.docs[0];
-        usernameToId[username] = userDoc.id;
-      });
-    })
-    const textChildren = []
-    let currStr = ''
+        .firestore()
+        .collection('Users')
+        .where('username', '==', username)
+        .get()
+        .then((querySnapshot) => {
+          const userDoc = querySnapshot.docs[0];
+          usernameToId[username] = userDoc.id;
+        });
+    });
+    const textChildren = [];
+    let currStr = '';
     let taggedIndex = 0;
-    words.forEach(word => {
-      if(word[0] === '@'){
-        console.log(usernamesTagged)
+    words.forEach((word) => {
+      if (word[0] === '@') {
         const user = usernamesTagged[taggedIndex] || '';
         const textAfterIndex = user.length + 1;
-        textChildren.push(<Text style={styles.commentStyle}>{currStr}</Text>)
+        textChildren.push(<Text style={styles.commentStyle}>{currStr}</Text>);
         textChildren.push(
           <TouchableOpacity
             onPress={() => {
               this.props.navigation.navigate('FriendProfile', {
-                uid: usernameToId[user]
+                uid: usernameToId[user],
               });
-            }}>
-              <Text style={{fontWeight: 'bold'}}>
-                {word.substr(0, textAfterIndex)}
-              </Text>
+            }}
+          >
+            <Text style={{ fontWeight: 'bold' }}>
+              {word.substr(0, textAfterIndex)}
+            </Text>
           </TouchableOpacity>
         );
         textChildren.push(
@@ -59,28 +54,23 @@ class Comment extends React.Component {
         taggedIndex += 1;
         currStr = '';
       } else {
-        currStr += word + ' '
+        currStr += word + ' ';
       }
-    })
-    if (currStr !== '') textChildren.push(<Text style={styles.commentStyle}>{currStr}</Text>);
+    });
+    if (currStr !== '')
+      textChildren.push(<Text style={styles.commentStyle}>{currStr}</Text>);
     return (
-      <View  style={styles.container}>
-      <TouchableOpacity onPress={() => this.handleUsernameClick()}>
-        <Text style={styles.userText}>
-          {this.props.username + '  '}
-        </Text>
-      </TouchableOpacity>
-      {textChildren}
-      </View>      
-    );
-  }
-
-  render() {
-    return (
-      <View>
-        {this.parseTags(this.props.content)}
+      <View style={styles.container}>
+        <TouchableOpacity onPress={() => this.handleUsernameClick()}>
+          <Text style={styles.userText}>{this.props.username + '  '}</Text>
+        </TouchableOpacity>
+        {textChildren}
       </View>
     );
+  };
+
+  render() {
+    return <View>{this.parseTags(this.props.content)}</View>;
   }
 }
 
@@ -97,7 +87,7 @@ const styles = StyleSheet.create({
   },
   userText: {
     fontWeight: 'bold',
-    color: 'black'
+    color: 'black',
   },
   commentStyle: {
     fontWeight: 'normal',

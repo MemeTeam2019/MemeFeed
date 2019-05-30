@@ -1,5 +1,14 @@
 import React from 'react';
-import { FlatList, StyleSheet, View, Button, TextInput, Keyboard, Modal, Text, TouchableHighlight } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  View,
+  TextInput,
+  Keyboard,
+  Modal,
+  Text,
+  TouchableHighlight,
+} from 'react-native';
 import firebase from 'react-native-firebase';
 import AtResult from './atResult';
 

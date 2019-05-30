@@ -59,14 +59,14 @@ class ExploreFeed extends React.Component {
         .get()
         .then((memesSnap) => {
           firebase
-          .firestore()
-          .collection('Recommendations')
-          .doc(firebase.auth().currentUser.uid)
-          .collection('Memes')
-          .orderBy('time', 'desc')
-          .limit(8)
-          .get()
-          .then((recsSnap) => this.updateFeed(memesSnap, recsSnap))
+            .firestore()
+            .collection('Recommendations')
+            .doc(firebase.auth().currentUser.uid)
+            .collection('Memes')
+            .orderBy('time', 'desc')
+            .limit(8)
+            .get()
+            .then((recsSnap) => this.updateFeed(memesSnap, recsSnap));
         });
     }
   }
@@ -75,25 +75,33 @@ class ExploreFeed extends React.Component {
    * Reset oldestDoc and start pulling from the latest memes in Memes collection
    */
   refreshMemes = () => {
-    this.setState({ memes: [], oldestDocMemes: null, oldestDocRecs: null, refreshing: true }, () => {
-      firebase
-        .firestore()
-        .collection('Memes')
-        .orderBy('time', 'desc')
-        .limit(7)
-        .get()
-        .then((memesSnap) => {
-          firebase
+    this.setState(
+      {
+        memes: [],
+        oldestDocMemes: null,
+        oldestDocRecs: null,
+        refreshing: true,
+      },
+      () => {
+        firebase
           .firestore()
-          .collection('Recommendations')
-          .doc(firebase.auth().currentUser.uid)
           .collection('Memes')
           .orderBy('time', 'desc')
-          .limit(8)
+          .limit(7)
           .get()
-          .then((recsSnap) => this.updateFeed(memesSnap, recsSnap))
-        });
-    });
+          .then((memesSnap) => {
+            firebase
+              .firestore()
+              .collection('Recommendations')
+              .doc(firebase.auth().currentUser.uid)
+              .collection('Memes')
+              .orderBy('time', 'desc')
+              .limit(8)
+              .get()
+              .then((recsSnap) => this.updateFeed(memesSnap, recsSnap));
+          });
+      }
+    );
   };
 
   fetchMemes = () => {
@@ -112,15 +120,15 @@ class ExploreFeed extends React.Component {
         .get()
         .then((memesSnap) => {
           firebase
-          .firestore()
-          .collection('Recommendations')
-          .doc(firebase.auth().currentUser.uid)
-          .collection('Memes')
-          .orderBy('time', 'desc')
-          .limit(8)
-           .startAfter(oldestDocRecs)
-          .get()
-          .then((recsSnap) => this.updateFeed(memesSnap, recsSnap))
+            .firestore()
+            .collection('Recommendations')
+            .doc(firebase.auth().currentUser.uid)
+            .collection('Memes')
+            .orderBy('time', 'desc')
+            .limit(8)
+            .startAfter(oldestDocRecs)
+            .get()
+            .then((recsSnap) => this.updateFeed(memesSnap, recsSnap));
         });
     }
   };
@@ -152,16 +160,13 @@ class ExploreFeed extends React.Component {
       });
     });
 
-
     Promise.all(newMemes).then((resolvedMemes) => {
       this.setState((prevState) => {
-       
-
         const compareTime = (a, b) => {
           if (a.time > b.time) return -1;
           if (a.time < b.time) return 1;
           return 0;
-        }
+        };
 
         resolvedMemes.sort(compareTime);
 
@@ -178,10 +183,9 @@ class ExploreFeed extends React.Component {
     });
   };
 
-
   updateSearch = async (searchTerm = '') => {
     // Set search term state immediately to update SearchBar contents
-    console.log(searchTerm)
+    console.log(searchTerm);
     this.setState({ searchTerm });
 
     const usersRef = firebase.firestore().collection('Users');
