@@ -85,33 +85,17 @@ export default class EditProfilePic extends React.Component {
       console.log('Response = ', response);
 
       if(response.uri){
+        console.log(response.uri);
         this.setState({ icon: response.uri,
         });
         const path = this.state.icon
-        console.log("GETTING IMAGE PATH", path);
+        //convert uri to url and store to firebase
+        const docId = firebase.auth().currentUser.uid+"profile"
+        const storRef = firebase.storage().ref('User_Icon').child(docId);
+        const filePut = await storRef.putFile(path);
 
-        // firebase
-        //   .firestore()
-        //   .collection('Users')
-        //   .doc(firebase.auth().currentUser.uid)
-        //   .update({
-        //     icon: response.uri,
-        //   });
+        storRef.getDownloadURL().then( async (newurl) => {
 
-
-        // const ref = firebase.storage().ref(path)
-        // ref.getDownloadURL()
-        //   .then((url) => {
-        //     console.log("URL FOUND", url);
-        //   })
-
-
-          const docId = firebase.auth().currentUser.uid+Math.round(+new Date() / 1000)
-          const storRef = firebase.storage().ref('User_Icon').child(docId);
-          const response = await storRef.putFile(path);
-
-          storRef.getDownloadURL().then( async (newurl) => {
-            //console.log("getting the actual URL",newurl);
           firebase
             .firestore()
             .collection('Users')
@@ -120,9 +104,7 @@ export default class EditProfilePic extends React.Component {
               icon: newurl,
             });
             console.log("CONVERTING URL DONE");
-        }
-
-      )
+        })
     }
 
       if (response.didCancel) {
