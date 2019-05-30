@@ -1,5 +1,11 @@
 import * as React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import { withNavigation } from 'react-navigation';
 import firebase from 'react-native-firebase';
 
@@ -45,16 +51,17 @@ class Comment extends React.Component {
             </Text>
           );
           textChildren.push(
-            <TouchableOpacity
-              key={key++}
+            <Text
+            key={key++}
+              style={styles.userText}
               onPress={() => this.navigateToUserProfile(usernameToId[username])}
             >
-              <Text style={styles.userText}>{`@${username}`}</Text>
-            </TouchableOpacity>
+              {`@${username}`}
+            </Text>
           );
           textChildren.push(
             <Text key={key++} style={styles.commentStyle}>
-              {word.substr(username.length + 1)}
+              {word.substr(username.length + 1) + ' '}
             </Text>
           );
           currStr = '';
@@ -62,41 +69,6 @@ class Comment extends React.Component {
       });
       if (!found) currStr += `${word} `;
     });
-
-    // words.forEach((word) => {
-    //   if (word[0] === '@') {
-    //     const user = usernamesTagged[taggedIndex] || '';
-    //     const textAfterIndex = user.length + 1;
-    //     textChildren.push(
-    //       <Text key={key++} style={styles.commentStyle}>
-    //         {currStr}
-    //       </Text>
-    //     );
-    //     textChildren.push(
-    //       <TouchableOpacity
-    //         key={key++}
-    //         onPress={() => {
-    //           this.props.navigation.navigate('FriendProfile', {
-    //             uid: usernameToId[user],
-    //           });
-    //         }}
-    //       >
-    //         <Text style={{ fontWeight: 'bold' }}>
-    //           {word.substr(0, textAfterIndex)}
-    //         </Text>
-    //       </TouchableOpacity>
-    //     );
-    //     textChildren.push(
-    //       <Text key={key++} style={styles.commentStyle}>
-    //         {word.substr(textAfterIndex) + ' '}
-    //       </Text>
-    //     );
-    //     taggedIndex += 1;
-    //     currStr = '';
-    //   } else {
-    //     currStr += word + ' ';
-    //   }
-    // });
     if (currStr !== '')
       textChildren.push(
         <Text key={key} style={styles.commentStyle}>
@@ -104,20 +76,22 @@ class Comment extends React.Component {
         </Text>
       );
     return (
-      <View>
+      <View style={styles.container}>
         <TouchableOpacity onPress={() => this.handleUsernameClick()}>
-          <Text style={styles.userText}>{this.props.username + '  '}</Text>
+          <Text style={styles.userText}>
+            {this.props.username + '  '}
+            <TouchableWithoutFeedback onPress={() => console.log('WOO')}>
+              <Text>{textChildren}</Text>
+            </TouchableWithoutFeedback>
+          </Text>
         </TouchableOpacity>
-        <View>{textChildren}</View>
       </View>
     );
   };
 
   render() {
     return (
-      <View key={this.props.key} style={styles.container}>
-        {this.parseTags(this.props.content)}
-      </View>
+      <View key={this.props.key}>{this.parseTags(this.props.content)}</View>
     );
   }
 }
