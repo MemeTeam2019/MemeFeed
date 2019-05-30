@@ -14,6 +14,7 @@ import firebase from 'react-native-firebase';
 import ImagePicker from 'react-native-image-picker';
 import AutoHeightImage from 'react-native-auto-height-image';
 
+
 export default class EditProfilePic extends React.Component {
   static navigationOptions = {
     header: null,
@@ -56,25 +57,74 @@ export default class EditProfilePic extends React.Component {
     }
   }
 
+
+
+  // const docId = firebase.auth().currentUser.uid+Math.round(+new Date() / 1000)
+  // const storRef = firebase.storage().ref('User_Icon').child(docId;
+  // const response = await storRef.putFile(this.state.icon);
+  //
+  // storRef.getDownloadURL().then( async (newurl) => {
+  // firebase
+  //   .firestore()
+  //   .collection('Users')
+  //   .doc(firebase.auth().currentUser.uid)
+  //   .update({
+  //     icon: newurl,
+  //   });
+  // }
+
+
+
+
   //open up the image picker, select image, and have it get updated in firebase
   chooseFile = () => {
     var options = {
       noData: true
     };
-    ImagePicker.showImagePicker(options, response => {
+    ImagePicker.showImagePicker(options, async (response) => {
       console.log('Response = ', response);
 
       if(response.uri){
         this.setState({ icon: response.uri,
         });
-        firebase
-          .firestore()
-          .collection('Users')
-          .doc(firebase.auth().currentUser.uid)
-          .update({
-            icon: response.uri,
-          });
-      }
+        const path = this.state.icon
+        console.log("GETTING IMAGE PATH", path);
+
+        // firebase
+        //   .firestore()
+        //   .collection('Users')
+        //   .doc(firebase.auth().currentUser.uid)
+        //   .update({
+        //     icon: response.uri,
+        //   });
+
+
+        // const ref = firebase.storage().ref(path)
+        // ref.getDownloadURL()
+        //   .then((url) => {
+        //     console.log("URL FOUND", url);
+        //   })
+
+
+          const docId = firebase.auth().currentUser.uid+Math.round(+new Date() / 1000)
+          const storRef = firebase.storage().ref('User_Icon').child(docId);
+          const response = await storRef.putFile(path);
+
+          storRef.getDownloadURL().then( async (newurl) => {
+            //console.log("getting the actual URL",newurl);
+          firebase
+            .firestore()
+            .collection('Users')
+            .doc(firebase.auth().currentUser.uid)
+            .update({
+              icon: newurl,
+            });
+            console.log("CONVERTING URL DONE");
+        }
+
+      )
+    }
+
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -91,11 +141,16 @@ export default class EditProfilePic extends React.Component {
         });
       }
     });
+
  }
 
   //go back to profile with updated picture
   setPicture = async () => {
     this.props.navigation.push('Profile');
+  }
+
+  goCrop = async () => {
+    this.props.navigation.push('Crop');
   }
 
   render() {
@@ -121,7 +176,7 @@ export default class EditProfilePic extends React.Component {
         <View>
           <TouchableOpacity onPress={this.setPicture.bind(this)}
                             style={styles.doneButton}>
-          <Text style={styles.button}> Done </Text>
+              <Text style={styles.button}> Done </Text>
           </TouchableOpacity>
         </View>
       </ImageBackground>

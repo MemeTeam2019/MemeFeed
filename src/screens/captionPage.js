@@ -116,7 +116,7 @@ class CaptionPage extends React.Component{
       return
     }
 
-    const docId = firebase.auth().currentUser.uid+Math.round(+new Date() / 1000)
+     const docId = firebase.auth().currentUser.uid+Math.round(+new Date() / 1000)
      const storRef = firebase.storage().ref('meme_images_TEST').child(docId);
      await storRef.putFile(this.state.imageuri);
 
@@ -170,7 +170,7 @@ class CaptionPage extends React.Component{
                reacts: 0,
              })
              // .then(function(meme) {
-             //console.log("Document written with ID: ", docId);
+             console.log("Document written with ID: ", docId);
 
              // post in this users reacts
              const userReactsRef = firebase
