@@ -266,15 +266,16 @@ class CaptionPage extends React.Component{
 								source={{uri: this.state.imageuri}}
 								width={Dimensions.get("window").width}
 						  />
-
-							<TextInput
-								style = {styles.input}
-								placeholder="Enter a Caption"
-								onChangeText = {(caption) => this.setState({caption: caption})}
-								autoCapitalize="none"
-								multiline
-                value={this.state.caption}
-							/>
+              {
+							// <TextInput
+							// 	style = {styles.input}
+							// 	placeholder="Enter a Caption"
+							// 	onChangeText = {(caption) => this.setState({caption: caption})}
+							// 	autoCapitalize="none"
+							// 	multiline
+              //   value={this.state.caption}
+							// />
+              }
 
 						</View>
 
