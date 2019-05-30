@@ -4,16 +4,25 @@ import { withNavigation } from 'react-navigation';
 import firebase from 'react-native-firebase';
 
 class Comment extends React.Component {
-  handleUsernameClick() {
-    this.props.navigation.push('FriendProfile', {
+  handleUsernameClick = () => {
+    this.props.navigation.navigate('FriendProfile', {
       uid: this.props.uid,
     });
-  }
+  };
+
+  navigateToUserProfile = (uid) => {
+    this.props.navigation.push('FriendProfile', { uid });
+  };
 
   parseTags = (content) => {
     const usernameToId = {};
     const words = content.split(' ');
     const usernamesTagged = this.props.usernamesTagged;
+    const textChildren = [];
+    let currStr = '';
+    let found = false;
+    let key = 0;
+
     usernamesTagged.forEach((username) => {
       firebase
         .firestore()
@@ -25,52 +34,91 @@ class Comment extends React.Component {
           usernameToId[username] = userDoc.id;
         });
     });
-    const textChildren = [];
-    let currStr = '';
-    let taggedIndex = 0;
+
     words.forEach((word) => {
-      if (word[0] === '@') {
-        const user = usernamesTagged[taggedIndex] || '';
-        const textAfterIndex = user.length + 1;
-        textChildren.push(<Text style={styles.commentStyle}>{currStr}</Text>);
-        textChildren.push(
-          <TouchableOpacity
-            onPress={() => {
-              this.props.navigation.navigate('FriendProfile', {
-                uid: usernameToId[user],
-              });
-            }}
-          >
-            <Text style={{ fontWeight: 'bold' }}>
-              {word.substr(0, textAfterIndex)}
+      usernamesTagged.forEach((username) => {
+        if (word.indexOf(username) > -1 && word[0] === '@') {
+          found = true;
+          textChildren.push(
+            <Text key={key++} style={styles.commentStyle}>
+              {currStr + ' '}
             </Text>
-          </TouchableOpacity>
-        );
-        textChildren.push(
-          <Text style={styles.commentStyle}>
-            {word.substr(textAfterIndex) + ' '}
-          </Text>
-        );
-        taggedIndex += 1;
-        currStr = '';
-      } else {
-        currStr += word + ' ';
-      }
+          );
+          textChildren.push(
+            <TouchableOpacity
+              key={key++}
+              onPress={() => this.navigateToUserProfile(usernameToId[username])}
+            >
+              <Text style={styles.userText}>{`@${username}`}</Text>
+            </TouchableOpacity>
+          );
+          textChildren.push(
+            <Text key={key++} style={styles.commentStyle}>
+              {word.substr(username.length + 1)}
+            </Text>
+          );
+          currStr = '';
+        }
+      });
+      if (!found) currStr += `${word} `;
     });
+
+    // words.forEach((word) => {
+    //   if (word[0] === '@') {
+    //     const user = usernamesTagged[taggedIndex] || '';
+    //     const textAfterIndex = user.length + 1;
+    //     textChildren.push(
+    //       <Text key={key++} style={styles.commentStyle}>
+    //         {currStr}
+    //       </Text>
+    //     );
+    //     textChildren.push(
+    //       <TouchableOpacity
+    //         key={key++}
+    //         onPress={() => {
+    //           this.props.navigation.navigate('FriendProfile', {
+    //             uid: usernameToId[user],
+    //           });
+    //         }}
+    //       >
+    //         <Text style={{ fontWeight: 'bold' }}>
+    //           {word.substr(0, textAfterIndex)}
+    //         </Text>
+    //       </TouchableOpacity>
+    //     );
+    //     textChildren.push(
+    //       <Text key={key++} style={styles.commentStyle}>
+    //         {word.substr(textAfterIndex) + ' '}
+    //       </Text>
+    //     );
+    //     taggedIndex += 1;
+    //     currStr = '';
+    //   } else {
+    //     currStr += word + ' ';
+    //   }
+    // });
     if (currStr !== '')
-      textChildren.push(<Text style={styles.commentStyle}>{currStr}</Text>);
+      textChildren.push(
+        <Text key={key} style={styles.commentStyle}>
+          {currStr}
+        </Text>
+      );
     return (
-      <View style={styles.container}>
+      <View>
         <TouchableOpacity onPress={() => this.handleUsernameClick()}>
           <Text style={styles.userText}>{this.props.username + '  '}</Text>
         </TouchableOpacity>
-        {textChildren}
+        <View>{textChildren}</View>
       </View>
     );
   };
 
   render() {
-    return <View>{this.parseTags(this.props.content)}</View>;
+    return (
+      <View key={this.props.key} style={styles.container}>
+        {this.parseTags(this.props.content)}
+      </View>
+    );
   }
 }
 
@@ -81,8 +129,7 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     fontSize: 16,
     flexDirection: 'row',
-    marginLeft: '2.5%',
-    marginRight: '2.5%',
+    marginHorizontal: '2.5%',
     paddingTop: 10,
   },
   userText: {

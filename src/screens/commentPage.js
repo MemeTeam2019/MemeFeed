@@ -225,6 +225,12 @@ class CommentPage extends React.Component {
 
     const ref = firebase.firestore().collection(`CommentsTest/${memeId}/Text`);
 
+    const { text, usernamesTagged } = this.state;
+
+    const filteredUsernames = usernamesTagged.filter(
+      (username) => text.indexOf(username) > -1
+    );
+
     ref
       .get()
       .then((doc) => {
@@ -249,7 +255,7 @@ class CommentPage extends React.Component {
             uid: user.uid,
             text: this.state.text.trim(),
             time: date,
-            usernamesTagged: this.state.usernamesTagged,
+            usernamesTagged: filteredUsernames,
           })
           .then((commentRef) => {
             this.setState({
@@ -336,9 +342,7 @@ class CommentPage extends React.Component {
   };
 
   tagPerson = (username, uid) => {
-    // if we already know to give this person a notifciation we can skip
-    console.log(typeof this.state.usernamesTagged);
-    console.log(this.state.usernamesTagged);
+    // If we already know to give this person a notifciation we can skip
     if (this.state.usernamesTagged.indexOf(username) > -1) {
       this.setModalVisible(!this.state.modalVisible);
       const newText =
@@ -370,8 +374,8 @@ class CommentPage extends React.Component {
   };
 
   sendTagNotifications = () => {
-    for (var i = 0; i < this.state.peopleToTag.length; i++) {
-      username = this.state.usernamesTagged[i];
+    for (let i = 0; i < this.state.peopleToTag.length; i++) {
+      const username = this.state.usernamesTagged[i];
       // verfiy that we are still tagging the people added to the list
       if (this.state.text.indexOf(username) > -1) {
         console.log('tagging ', username);

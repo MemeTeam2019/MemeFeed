@@ -3,12 +3,10 @@ import {
   Image,
   TouchableOpacity,
   View,
-  Text,
   StyleSheet,
   ScrollView,
 } from 'react-native';
 import firebase from 'react-native-firebase';
-import { withNavigation } from 'react-navigation';
 import MemeGrid from '../components/general/memeGrid';
 import MemeList from '../components/general/memeList';
 import SuggestUser from '../components/home/suggestUser';
@@ -52,7 +50,6 @@ class HomeFeed extends React.Component {
         .get()
         .then(this.updateFeed);
     }
-
   }
 
   fetchMemes = () => {
@@ -73,7 +70,6 @@ class HomeFeed extends React.Component {
         .then(this.updateFeed);
     }
   };
-
 
   updateFeed = (querySnapshot) => {
     querySnapshot.docs.forEach((doc) => {
@@ -119,7 +115,7 @@ class HomeFeed extends React.Component {
     this.setState({ memes: [], refreshing: true, oldestDoc: null }, () => {
       firebase
         .firestore()
-        .collection('Feeds')
+        .collection('FeedsTest')
         .doc(firebase.auth().currentUser.uid)
         .collection('Likes')
         .orderBy('time', 'desc')

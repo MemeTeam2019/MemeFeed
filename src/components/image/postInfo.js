@@ -1,9 +1,9 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import firebase from 'react-native-firebase';
+import { withNavigation } from 'react-navigation';
 
 import CommentSample from './commentSample';
-import { withNavigation } from 'react-navigation';
 
 class PostInfo extends React.Component {
   constructor() {
