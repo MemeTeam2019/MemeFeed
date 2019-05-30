@@ -41,18 +41,32 @@ class ExploreFeed extends React.Component {
       searchResults: [],
       searchTerm: '',
       refreshing: true,
-      oldestDoc: null,
+      oldestDocMemes: null,
+      oldestDocRecs: null,
     };
   }
 
   componentDidMount() {
-    firebase
-      .firestore()
-      .collection('MemesTest')
-      .orderBy('time', 'desc')
-      .limit(15)
-      .get()
-      .then(this.updateFeed);
+    this._isMounted = true;
+    if (this._isMounted) {
+      firebase
+        .firestore()
+        .collection('Memes')
+        .orderBy('time', 'desc')
+        .limit(7)
+        .get()
+        .then((memesSnap) => {
+          firebase
+            .firestore()
+            .collection('Recommendations')
+            .doc(firebase.auth().currentUser.uid)
+            .collection('Memes')
+            .orderBy('time', 'desc')
+            .limit(8)
+            .get()
+            .then((recsSnap) => this.updateFeed(memesSnap, recsSnap));
+        });
+    }
   }
 
   /**
@@ -60,15 +74,33 @@ class ExploreFeed extends React.Component {
    * collection `MemesTest`.
    */
   refreshMemes = () => {
-    this.setState({ memes: [], oldestDoc: null, refreshing: true }, () => {
-      firebase
-        .firestore()
-        .collection('MemesTest')
-        .orderBy('time', 'desc')
-        .limit(15)
-        .get()
-        .then(this.updateFeed);
-    });
+    this.setState(
+      {
+        memes: [],
+        oldestDocMemes: null,
+        oldestDocRecs: null,
+        refreshing: true,
+      },
+      () => {
+        firebase
+          .firestore()
+          .collection('MemesTest')
+          .orderBy('time', 'desc')
+          .limit(7)
+          .get()
+          .then((memesSnap) => {
+            firebase
+              .firestore()
+              .collection('Recommendations')
+              .doc(firebase.auth().currentUser.uid)
+              .collection('Memes')
+              .orderBy('time', 'desc')
+              .limit(8)
+              .get()
+              .then((recsSnap) => this.updateFeed(memesSnap, recsSnap));
+          });
+      }
+    );
   };
 
   fetchMemes = () => {
@@ -76,28 +108,33 @@ class ExploreFeed extends React.Component {
     // updating
     if (this.state.updated) {
       this.state.updated = false;
-      const oldestDoc = this.state.oldestDoc;
+      const oldestDocMemes = this.state.oldestDocMemes;
+      const oldestDocRecs = this.state.oldestDocRecs;
       firebase
         .firestore()
         .collection('MemesTest')
         .orderBy('time', 'desc')
-        .limit(15)
-        .startAfter(oldestDoc)
+        .limit(7)
+        .startAfter(oldestDocMemes)
         .get()
-        .then(this.updateFeed);
+        .then((memesSnap) => {
+          firebase
+            .firestore()
+            .collection('Recommendations')
+            .doc(firebase.auth().currentUser.uid)
+            .collection('Memes')
+            .orderBy('time', 'desc')
+            .limit(8)
+            .startAfter(oldestDocRecs)
+            .get()
+            .then((recsSnap) => this.updateFeed(memesSnap, recsSnap));
+        });
     }
   };
 
-  /**
-   * Updates this.state.memes by concatenating the already-loaded memes with the
-   * next fifteen newest memes, then setting state.
-   *
-   * @param {QuerySnapshot} memesSnapshot: Firebase query of the `MemesTest` collection
-   * @returns {null}
-   */
-
-  updateFeed = (memesSnapshot) => {
+  updateFeed = (memesSnapshot, recsSnapshot) => {
     const newMemes = [];
+
     memesSnapshot.docs.forEach((doc) => {
       const { url, time, sub, caption } = doc.data();
       newMemes.push({
@@ -110,14 +147,38 @@ class ExploreFeed extends React.Component {
       });
     });
 
-    this.setState((prevState) => {
-      const mergedMemes = [...prevState.memes, ...newMemes];
-      return {
-        memes: mergedMemes,
-        updated: true,
-        oldestDoc: mergedMemes[mergedMemes.length - 1],
-        refreshing: false,
-      };
+    recsSnapshot.docs.forEach((doc) => {
+      const { url, time, sub } = doc.data();
+      newMemes.push({
+        key: doc.id,
+        doc,
+        src: url,
+        time,
+        sub,
+        postedBy: sub,
+      });
+    });
+
+    Promise.all(newMemes).then((resolvedMemes) => {
+      this.setState((prevState) => {
+        const compareTime = (a, b) => {
+          if (a.time > b.time) return -1;
+          if (a.time < b.time) return 1;
+          return 0;
+        };
+
+        resolvedMemes.sort(compareTime);
+
+        const mergedMemes = prevState.memes.concat(resolvedMemes);
+
+        return {
+          memes: mergedMemes,
+          updated: true,
+          oldestDocRecs: recsSnapshot.docs[recsSnapshot.docs.length - 1],
+          oldestDocMemes: memesSnapshot.docs[memesSnapshot.docs.length - 1],
+          refreshing: false,
+        };
+      });
     });
   };
 
