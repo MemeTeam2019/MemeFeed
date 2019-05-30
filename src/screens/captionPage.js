@@ -254,9 +254,10 @@ class CaptionPage extends React.Component{
             }}
           />
 					<ScrollView
-					ref={(ref) => {
-						this.scrollView = ref;
-					}}
+  					ref={(ref) => {
+  						this.scrollView = ref;
+  					}}
+            style = {{ height: '100%' }}
 					>
           <View style={styles.conatiner}>
 
@@ -265,16 +266,16 @@ class CaptionPage extends React.Component{
 								source={{uri: this.state.imageuri}}
 								width={Dimensions.get("window").width}
 						  />
-          {
-						// 	<TextInput
-						// 		style = {styles.input}
-						// 		placeholder="Enter a Caption"
-						// 		onChangeText = {(caption) => this.setState({caption: caption})}
-						// 		autoCapitalize="none"
-						// 		multiline
-            //     value={this.state.caption}
-						// 	/>
-          }
+
+							<TextInput
+								style = {styles.input}
+								placeholder="Enter a Caption"
+								onChangeText = {(caption) => this.setState({caption: caption})}
+								autoCapitalize="none"
+								multiline
+                value={this.state.caption}
+							/>
+
 						</View>
 
 					</ScrollView>
@@ -289,7 +290,9 @@ export default CaptionPage;
 const styles = StyleSheet.create({
 	conatiner: {
 		alignItems: 'center',
-		justifyContent: 'center'
+		justifyContent: 'center',
+    height: '100%',
+    flex: 1,
 	},
 	navBar: {
     height: '15%',
