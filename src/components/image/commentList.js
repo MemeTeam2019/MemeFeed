@@ -63,7 +63,7 @@ export default CommentList;
 const styles = StyleSheet.create({
   containerStyle: {
     marginTop: 50,
-    bottom: 50,
+    bottom: 65,
     justifyContent: 'center',
     flex: 1,
     backgroundColor: 'rgba(255,255,255,1)',
@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
   buttonSty: {
     paddingTop: 10,
     fontSize: 15,
+    color: 'black',
     fontFamily: 'AvenirNext-Bold',
     textAlign: 'center',
   },

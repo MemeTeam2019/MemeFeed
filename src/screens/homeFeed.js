@@ -1,5 +1,12 @@
 import React from 'react';
-import { Image, TouchableOpacity, View, Modal, StyleSheet } from 'react-native';
+import {
+  Image,
+  TouchableOpacity,
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
 import firebase from 'react-native-firebase';
 
 import MemeGrid from '../components/general/memeGrid';
@@ -16,16 +23,17 @@ class HomeFeed extends React.Component {
     this.unsubscribe = null;
     this.ref = firebase
       .firestore()
-      .collection('Feeds')
+      .collection('FeedsTest')
       .doc(firebase.auth().currentUser.uid)
       .collection('Likes')
       .orderBy('time', 'desc');
     this.state = {
       updated: true,
-      oldestDoc: 0,
+      oldestDoc: null,
       memes: [],
       inGridView: false,
       inFullView: true,
+      refreshing: false,
     };
   }
 
@@ -34,7 +42,7 @@ class HomeFeed extends React.Component {
     if (this._isMounted) {
       firebase
         .firestore()
-        .collection('Feeds')
+        .collection('FeedsTest')
         .doc(firebase.auth().currentUser.uid)
         .collection('Likes')
         .orderBy('time', 'desc')
@@ -52,7 +60,7 @@ class HomeFeed extends React.Component {
       const oldestDoc = this.state.oldestDoc;
       firebase
         .firestore()
-        .collection('Feeds')
+        .collection('FeedsTest')
         .doc(firebase.auth().currentUser.uid)
         .collection('Likes')
         .orderBy('time', 'desc')
@@ -89,8 +97,23 @@ class HomeFeed extends React.Component {
           memes: mergedMemes,
           updated: true,
           oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+          refreshing: false,
         };
       });
+    });
+  };
+
+  refreshMemes = () => {
+    this.setState({ memes: [], refreshing: true, oldestDoc: null }, () => {
+      firebase
+        .firestore()
+        .collection('Feeds')
+        .doc(firebase.auth().currentUser.uid)
+        .collection('Likes')
+        .orderBy('time', 'desc')
+        .limit(15)
+        .get()
+        .then(this.updateFeed);
     });
   };
 
@@ -136,18 +159,59 @@ class HomeFeed extends React.Component {
   render() {
     if (this.state.memes.length === 0) {
       return (
-        <View style={styles.containerStyle}>
-          <View style={styles.navBar}>
-            <Image
-              source={require('../images/banner3.png')}
-              style={{ width: 250, height: 50 }}
-            />
-          </View>
-          <View style={styles.containerStyle2}>
-            <Image
-              source={require('../components/misc/emptyFriendTile.png')}
-              style={styles.tile}
-            />
+        <View style={styles.container}>
+          <View style={styles.containerStyle}>
+            <View style={styles.navBar}>
+              <Image
+                source={require('../images/banner3.png')}
+                style={{ width: 250, height: 50 }}
+              />
+            </View>
+            <ScrollView>
+              <View style={styles.containerStyle2}>
+                <Image
+                  source={require('../components/misc/emptyFriendTile.png')}
+                  style={styles.tile}
+                />
+                <View style={styles.suggestText}>
+                  <Text style={styles.suggestText}>
+                    {' '}
+                    Looking for people to follow?{' '}
+                  </Text>
+                </View>
+                <View style={styles.suggestText}>
+                  <Text style={styles.suggestText}>
+                    {' '}
+                    Follow the creators of Meme Feed!{' '}
+                  </Text>
+                </View>
+                <View style={styles.suggestText}>
+                  <TouchableOpacity>
+                    <Text style={styles.suggestText}> Mia </Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.suggestText}>
+                  <TouchableOpacity>
+                    <Text style={styles.suggestText}> Jon </Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.suggestText}>
+                  <TouchableOpacity>
+                    <Text style={styles.suggestText}> Siddhi </Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.suggestText}>
+                  <TouchableOpacity>
+                    <Text style={styles.suggestText}> Emma </Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.suggestText}>
+                  <TouchableOpacity>
+                    <Text style={styles.suggestText}> Zac </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </ScrollView>
           </View>
         </View>
       );
@@ -183,9 +247,19 @@ class HomeFeed extends React.Component {
           </TouchableOpacity>
         </View>
         {this.state.inGridView ? (
-          <MemeGrid loadMemes={this.fetchMemes} memes={this.state.memes} />
+          <MemeGrid
+            loadMemes={this.fetchMemes}
+            memes={this.state.memes}
+            refreshing={this.state.refreshing}
+            onRefresh={this.refreshMemes}
+          />
         ) : (
-          <MemeList loadMemes={this.fetchMemes} memes={this.state.memes} />
+          <MemeList
+            loadMemes={this.fetchMemes}
+            memes={this.state.memes}
+            refreshing={this.state.refreshing}
+            onRefresh={this.refreshMemes}
+          />
         )}
       </View>
     );
@@ -195,11 +269,15 @@ class HomeFeed extends React.Component {
 export default HomeFeed;
 
 const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    flex: 1,
+  },
   containerStyle: {
     justifyContent: 'center',
     flex: 1,
     backgroundColor: 'rgba(255,255,255,1)',
-    borderBottomWidth: .5,
+    borderBottomWidth: 0.5,
     borderColor: '#D6D6D6',
   },
   modelStyle: {
@@ -235,7 +313,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    borderBottomWidth: .5,
+    borderBottomWidth: 0.5,
     borderColor: '#D6D6D6',
   },
   tile: {
@@ -252,7 +330,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 5,
     paddingRight: 5,
-    borderBottomWidth: .5,
+    borderBottomWidth: 0.5,
     borderColor: '#D6D6D6',
+  },
+  suggestText: {
+    fontSize: 17,
+    fontFamily: 'AvenirNext-Regular',
+    color: 'black',
+    justifyContent: 'center',
+    marginTop: 2,
   },
 });

@@ -13,6 +13,12 @@ class SourceReddit extends React.Component {
     }
   }
 
+  goToSubreddit() {
+    console.log(this.props.sub)
+    this.props.navigation.push('SubReddit', {
+      sub: this.props.sub
+    });
+  }
 
   showActionSheet = () => {
     this.ActionSheet.show();
@@ -22,13 +28,13 @@ class SourceReddit extends React.Component {
         var optionArray = ['Inappropriate/Irrelevant', 'Cancel'];
     // if just from reddit (a.k.a. on the explore page)
     return (
-
-
               <View style={styles.navBar1}>
                 <View style={styles.leftContainer1}>
                 <View style={styles.container}>
-                    <Text style={{fontSize: 15}}>sourced from </Text>
-                    <Text style={{fontSize: 15, fontWeight: 'bold', fontStyle: 'italic', color: '#919191', width: 900, marginRight: 2}}> 'r/{this.props.sub}'</Text>
+                    <Text style={{fontSize: 15, color: 'black'}}>sourced from </Text>
+                    <TouchableOpacity onPress={() => this.goToSubreddit()}>
+                      <Text style={{fontSize: 15, fontWeight: 'bold', fontStyle: 'italic', color: '#919191', width: 900, marginRight: 2}}> 'r/{this.props.sub}'</Text>
+                    </TouchableOpacity>
                   </View>
                 </View>
                 <View style={styles.rightContainer1}>
@@ -49,10 +55,6 @@ class SourceReddit extends React.Component {
                     />
                 </View>
               </View>
-
-
-
-
     );
   }
 }

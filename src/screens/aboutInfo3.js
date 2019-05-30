@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, ImageBackground, Text, Button } from 'react-native';
+import { StyleSheet, ScrollView, View, ImageBackground, Text, Button } from 'react-native';
 
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -8,6 +8,8 @@ export default class LoginScreen extends React.Component {
 
   render() {
     return (
+      <View style={StyleSheet.absoluteFill}>
+      <ScrollView>
       <ImageBackground
         source={require('../images/white.png')}
         style={styles.background}
@@ -32,11 +34,13 @@ export default class LoginScreen extends React.Component {
         <View style={styles.nextBut}>
           <Button
             title="Done"
-            color='#9F02FF'
+            color='#000'
             onPress={() => this.props.navigation.push('Profile')}
           />
         </View>
       </ImageBackground>
+      </ScrollView>
+      </View>
     );
   }
 }
@@ -61,7 +65,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 35,
     fontFamily: 'AvenirNext-Regular',
-    color: '#9F02FF',
+    color: '#000',
     paddingHorizontal: '5%',
     marginBottom: '0.5%',
     textAlign: 'center',
@@ -75,7 +79,7 @@ const styles = StyleSheet.create({
   aboutText: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
-    color: '#9F02FF',
+    color: '#000',
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,
@@ -87,7 +91,7 @@ const styles = StyleSheet.create({
   aboutText2: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
-    color: '#9F02FF',
+    color: '#000',
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,
@@ -121,12 +125,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginBottom: '5%',
   },
   aboutText2: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
-    color: '#9F02FF',
+    color: '#000',
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,

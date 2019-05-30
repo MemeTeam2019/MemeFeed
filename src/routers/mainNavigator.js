@@ -12,11 +12,13 @@ import HomeFeed from '../screens/homeFeed';
 import FriendProfile from '../screens/friendProfileScreen';
 import CommentPage from '../screens/commentPage';
 import FollowList from '../components/home/searchResultList';
-
+import NotePage from '../screens/notePage';
+import SubReddit from '../screens/subReddit';
 import aboutInfo1 from '../screens/aboutInfo1';
 import aboutInfo2 from '../screens/aboutInfo2';
 import aboutInfo3 from '../screens/aboutInfo3';
 import PrivacyPolicyScreen from '../screens/privacyScreen';
+import Subreddit from '../screens/subReddit';
 
 const InfoStack = createStackNavigator({
   aboutInfo1,
@@ -41,6 +43,9 @@ const ExploreStack = createStackNavigator(
     Comment: {
       screen: CommentPage,
     },
+    SubReddit: {
+      screen: SubReddit,
+    }
   },
   {
     initialRouteName: 'Explore',
@@ -64,6 +69,9 @@ const HomeStack = createStackNavigator(
     FollowList: {
       screen: FollowList,
     },
+    SubReddit: {
+      screen: SubReddit,
+    }
   },
   {
     initialRouteName: 'Friend',
@@ -91,12 +99,38 @@ const ProfileStack = createStackNavigator(
       screen: InfoStack,
     },
     Privacy: {
-      screen: PrivacyPolicyScreen
+      screen: PrivacyPolicyScreen,
+    },
+    SubReddit: {
+      screen: SubReddit,
     }
   },
   {
     initialRouteName: 'Profile',
   }
+);
+const NoteStack = createStackNavigator(
+   {
+    Note: {
+      screen: NotePage,
+    },
+    FriendProfile: {
+      screen: FriendProfile,
+    },
+    Tile: {
+      screen: TilePage,
+    },
+    FollowList: {
+      screen: FollowList,
+    },
+    Comment: {
+      screen: CommentPage,
+    },
+  },
+  {
+    initialRouteName: 'Note',
+  }
+
 );
 
 const MainRouter = createBottomTabNavigator({
@@ -112,7 +146,7 @@ const MainRouter = createBottomTabNavigator({
         activeTintColor: '#000000',
         inactiveTintColor: '#D3D3D3',
         style: {
-          height: '10%',
+          height: '9%',
         },
       },
     },
@@ -130,7 +164,25 @@ const MainRouter = createBottomTabNavigator({
         activeTintColor: '#000000',
         inactiveTintColor: '#D3D3D3',
         style: {
-          height: '10%',
+          height: '9%',
+        },
+      },
+    },
+  },
+  Note: {
+    screen: NoteStack,
+    navigationOptions: {
+      showLabel: false,
+      tabBarIcon: ({ tintColor }) => (
+        <Icon name='notifications' size={28} color={tintColor} />
+      ),
+      tabBarOptions: {
+        showLabel: false,
+        showIcon: true,
+        activeTintColor: '#000000',
+        inactiveTintColor: '#D3D3D3',
+        style: {
+          height: '9%',
         },
       },
     },
@@ -148,7 +200,7 @@ const MainRouter = createBottomTabNavigator({
         activeTintColor: '#000000',
         inactiveTintColor: '#D3D3D3',
         style: {
-          height: '10%',
+          height: '9%',
         },
       },
     },

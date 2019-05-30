@@ -44,10 +44,17 @@ class LikedFromReddit extends React.Component {
     })
     .catch(err => console.log(err));
   }
+  //
+  // navigateToFriendProfile() {
+  //   this.props.navigation.navigate("FriendProfile", {
+  //     uid: this.props.poster
+  //   });
+  // }
 
-  navigateToFriendProfile() {
-    this.props.navigation.navigate("FriendProfile", {
-      uid: this.props.poster
+  goToSubreddit() {
+    console.log(this.props.sub)
+    this.props.navigation.push('SubReddit', {
+      sub: this.props.sub
     });
   }
 
@@ -77,7 +84,9 @@ class LikedFromReddit extends React.Component {
             style={styles.likedFromImg}
             source={require('../repostIcon.png')}
           />
-          <Text style={{fontSize: 12, fontWeight: 'bold', fontStyle: 'italic', color: '#919191', width: 800}}> 'r/{this.props.sub}'</Text>
+          <TouchableOpacity onPress={() => this.goToSubreddit()}>
+            <Text style={{fontSize: 12, fontWeight: 'bold', fontStyle: 'italic', color: '#919191', width: 800}}> 'r/{this.props.sub}'</Text>
+          </TouchableOpacity>
         </View>
         </View>
 

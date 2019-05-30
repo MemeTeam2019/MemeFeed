@@ -1,6 +1,14 @@
 
 import React from 'react';
-import { StyleSheet, View, Button, ImageBackground, Image, Text,Dimensions } from 'react-native';
+import { StyleSheet,
+         ScrollView,
+         View,
+         Button,
+         ImageBackground,
+         Image,
+         Text,
+         TouchableOpacity,
+         Dimensions } from 'react-native';
 
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -9,6 +17,8 @@ export default class LoginScreen extends React.Component {
 
   render() {
     return (
+      <View style={StyleSheet.absoluteFill}>
+      <ScrollView>
       <ImageBackground
         source={require('../images/white.png')}
         style={styles.background}
@@ -19,35 +29,35 @@ export default class LoginScreen extends React.Component {
 
         <View style={styles.aboutText}>
           <Text style={styles.aboutText}>
-          React to Memes using each of these 5 emojis ranging from LAME to LMFAO.
+            React to Memes using each of these 5 emojis ranging from LAME to
+            LMFAO.
           </Text>
-          <Text style={styles.aboutText}>
-          When you rank a meme
-          with any of the smiling emoji's it will appear on your
-          profile and on your followers' home feed.
-          </Text>
-          </View>
+        </View>
 
-          <View style={styles.buttonBar}>
-              <Image
-                source={require('../images/Tile/buttonBar.png')}
-                style={{        alignSelf: 'stretch',
-        width: win.width,
-        height: '40.5%', }}
-              />
-          </View>
-
-        <View style={styles.nextBut}>
-          <Button
-            title="Next"
-            color='#9F02FF'
-            style={{paddingTop: 30}}
-            onPress={() =>
-              this.props.navigation.push('Confirm')
-            }
+        <View style={styles.imageStyle}>
+          <Image
+            source={require('../images/Tile/bar.png')}
+            style={styles.tile}
           />
         </View>
+
+        <View style={styles.aboutText}>
+          <Text style={styles.aboutText}>
+            When you rank a meme with any of the smiling emoji's it will appear
+            on your profile and on your followers' home feed.
+          </Text>
+        </View>
+
+        <View style={styles.nextBut}>
+          <TouchableOpacity onPress={() => this.props.navigation.push('Confirm')}
+                            style={styles.button}>
+              <Text style={styles.button}> Next </Text>
+          </TouchableOpacity>
+
+        </View>
       </ImageBackground>
+      </ScrollView>
+      </View>
     );
   }
 }
@@ -75,7 +85,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 35,
     fontFamily: 'AvenirNext-Regular',
-    //color: '#9F02FF',
+    color: 'black',
     paddingHorizontal: '5%',
     marginBottom: '0.5%',
     textAlign: 'center',
@@ -89,7 +99,7 @@ const styles = StyleSheet.create({
   aboutText: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
-    //color: '#9F02FF',
+    color: 'black',
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,
@@ -121,7 +131,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginBottom: '5%',
   },
   buttonBar: {
     flex: 1,
@@ -131,6 +140,33 @@ const styles = StyleSheet.create({
     //backgroundColor: 'purple',
     marginRight: '1%',
     marginLeft: '1%'
+  },
+  imageStyle: {
+    flex: 1,
+    // backgroundColor: 'blue',
+    alignItems: 'center',
+    paddingLeft: 5,
+    paddingRight: 5,
+  },
+  tile: {
+    resizeMode: 'contain',
+    justifyContent: 'center',
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height*.25,
+    // paddingHorizontal: 20,
+    // paddingTop: 10,
+    alignItems: 'center',
+  },
+  button: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center',
+    fontSize: 20,
+    color: 'black',
+    marginBottom: 10,
+    paddingTop: 20,
+    justifyContent: 'flex-end',
   }
 });
 
