@@ -18,7 +18,7 @@ class PostInfo extends React.Component {
   componentDidMount() {
     this.unsubscribe = firebase
       .firestore()
-      .collection(`Comments/${this.props.memeId}/Info`)
+      .collection(`CommentsTest/${this.props.memeId}/Info`)
       .doc('CommentInfo')
       .get()
       .then(this.onCollectionUpdate); // we choose decsending to get most recent
@@ -28,7 +28,7 @@ class PostInfo extends React.Component {
   onCollectionUpdate = () => {
     var countRef = firebase
       .firestore()
-      .collection('Comments/' + this.props.memeId + '/Info')
+      .collection('CommentsTest/' + this.props.memeId + '/Info')
       .doc('CommentInfo');
     countRef
       .get()
@@ -67,8 +67,6 @@ class PostInfo extends React.Component {
               fontFamily: 'AvenirNext-Regular',
               paddingTop: 3,
               marginLeft: '2.5%',
-              color: 'black',
-              marginBottom: 3
             }}
           >
             {this.props.reactCount} Reactions
@@ -115,13 +113,10 @@ class PostInfo extends React.Component {
               />
             </TouchableOpacity> */}
           <Text
-            style={{ fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%', color: 'black' }}
+            style={{ fontWeight: 'bold', paddingTop: 3, marginLeft: '2.5%' }}
           >
             {this.props.reactCount} Reactions
           </Text>
-          <View style={styles.caption}>
-            <Text style={styles.captionText}>{this.props.caption}</Text>
-          </View>
           <CommentSample memeId={this.props.memeId} />
         </View>
       );
@@ -164,12 +159,4 @@ const styles = StyleSheet.create({
     marginLeft: '2.5%',
     //color: '#383838'
   },
-  caption: {
-    marginLeft: '2.5%',
-    paddingTop: 10
-  },
-  captionText: {
-    fontFamily: 'AvenirNext-Regular',
-    fontSize: 16
-  }
 });
