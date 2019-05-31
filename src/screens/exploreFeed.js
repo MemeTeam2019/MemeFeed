@@ -53,7 +53,7 @@ class ExploreFeed extends React.Component {
     if (this._isMounted) {
       firebase
         .firestore()
-        .collection('Memes')
+        .collection('MemesTest')
         .orderBy('time', 'desc')
         .limit(7)
         .get()
@@ -78,7 +78,7 @@ class ExploreFeed extends React.Component {
     this.setState({ memes: [], oldestDocMemes: null, oldestDocRecs: null, refreshing: true }, () => {
       firebase
         .firestore()
-        .collection('Memes')
+        .collection('MemesTest')
         .orderBy('time', 'desc')
         .limit(7)
         .get()
@@ -105,7 +105,7 @@ class ExploreFeed extends React.Component {
       const oldestDocRecs = this.state.oldestDocRecs;
       firebase
         .firestore()
-        .collection('Memes')
+        .collection('MemesTest')
         .orderBy('time', 'desc')
         .limit(7)
         .startAfter(oldestDocMemes)
@@ -129,15 +129,27 @@ class ExploreFeed extends React.Component {
     const newMemes = [];
 
     memesSnapshot.docs.forEach((doc) => {
-      const { url, time, sub } = doc.data();
-      newMemes.push({
-        key: doc.id,
-        doc,
-        src: url,
-        time,
-        sub,
-        postedBy: sub,
-      });
+      const { url, time, sub, author } = doc.data();
+      if (sub) {
+        console.log(sub)
+        newMemes.push({
+          key: doc.id,
+          doc,
+          src: url,
+          time,
+          sub,
+          postedBy: sub,
+        });
+      } else {
+        newMemes.push({
+          key: doc.id,
+          doc,
+          src: url,
+          time,
+          poster: author,
+          postedBy: author,
+        });
+      }
     });
 
     recsSnapshot.docs.forEach((doc) => {
