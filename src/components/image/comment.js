@@ -42,7 +42,9 @@ class Comment extends React.Component {
     });
 
     words.forEach((word) => {
-      usernamesTagged.forEach((username) => {
+      found = false;
+      for (let i = 0; i < usernamesTagged.length; ++i) {
+        const username = usernamesTagged[i];
         if (word.indexOf(username) > -1 && word[0] === '@') {
           found = true;
           textChildren.push(
@@ -52,7 +54,7 @@ class Comment extends React.Component {
           );
           textChildren.push(
             <Text
-            key={key++}
+              key={key++}
               style={styles.userText}
               onPress={() => this.navigateToUserProfile(usernameToId[username])}
             >
@@ -65,9 +67,12 @@ class Comment extends React.Component {
             </Text>
           );
           currStr = '';
+          break;
         }
-      });
-      if (!found) currStr += `${word} `;
+      }
+      if (!found) {
+        currStr += `${word} `;
+      }
     });
     if (currStr !== '')
       textChildren.push(
