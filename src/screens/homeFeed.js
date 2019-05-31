@@ -43,6 +43,9 @@ class HomeFeed extends React.Component {
       .then(this.updateFeed);
   }
 
+  /**
+   * Fetch the next 15 oldest memes from the Feeds collection
+   */
   fetchMemes = () => {
     // garentees not uploading duplicate memes by checking if memes have finished
     // updating
@@ -62,6 +65,10 @@ class HomeFeed extends React.Component {
     }
   };
 
+  /**
+   * Extract a querySnapshot, obtained from the Feeds collection, to an array
+   * of objects to pass down as props to MemeGrid or MemeList
+   */
   updateFeed = (querySnapshot) => {
     const newMemes = [];
     querySnapshot.docs.forEach((doc) => {
@@ -92,6 +99,10 @@ class HomeFeed extends React.Component {
     });
   };
 
+  /**
+   * Clear the currently loaded memes, load the first memes in this person's
+   * feed
+   */
   refreshMemes = () => {
     this.setState({ memes: [], refreshing: true, oldestDoc: null }, () => {
       firebase

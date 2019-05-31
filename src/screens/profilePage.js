@@ -7,11 +7,11 @@ import {
   TouchableOpacity,
   ScrollView,
   RefreshControl,
+  Alert,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import ActionSheet from 'react-native-actionsheet';
 
-import Tile from '../components/image/tile';
 import MemeGrid from '../components/general/memeGrid';
 import MemeList from '../components/general/memeList';
 
@@ -72,14 +72,18 @@ export default class Profile extends React.Component {
         }
       })
       .catch((error) => {
-        //console.log(error);
+        console.log(error);
       });
+
+    // Fetch user info from Users collection
     firebase
       .firestore()
       .collection('Users')
       .doc(uid)
       .get()
       .then((snapshot) => this.setState(snapshot.data()));
+
+    // Fetch the first 15 memes in this person's Reacts collection
     firebase
       .firestore()
       .collection('ReactsTest')
@@ -91,6 +95,9 @@ export default class Profile extends React.Component {
       .then(this.updateFeed);
   }
 
+  /**
+   * Refresh the memes pulled for this user.
+   */
   refreshMemes = () => {
     this.setState({ memes: [], refreshing: true, oldestDoc: null }, () => {
       this.componentDidMount();
@@ -116,6 +123,10 @@ export default class Profile extends React.Component {
     }
   };
 
+  /**
+   * Extract query snapshot from Reacts collection to this.state.memes in order
+   * to pass as props to MemeList or MemeGrid
+   */
   updateFeed = (querySnapshot) => {
     const newMemes = [];
     querySnapshot.docs.forEach((doc) => {
@@ -146,6 +157,9 @@ export default class Profile extends React.Component {
     });
   };
 
+  /**
+   * Fetch all user info from the Users collection
+   */
   getUserInfo = () => {
     const uid = firebase.auth().currentUser.uid;
     firebase
@@ -173,6 +187,9 @@ export default class Profile extends React.Component {
     this.setState({ selectListButtonP: true });
   };
 
+  /**
+   * Log the user out and take them to the login page.
+   */
   logout = () => {
     firebase
       .auth()
@@ -181,7 +198,8 @@ export default class Profile extends React.Component {
         this.props.navigation.navigate('Auth');
       })
       .catch((err) => {
-        //console.log(err);
+        console.log(err);
+        Alert.alert('Error logging out', 'Please try again', [{ text: 'OK' }]);
       });
   };
 
