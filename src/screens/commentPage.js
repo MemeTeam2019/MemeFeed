@@ -258,6 +258,7 @@ class CommentPage extends React.Component {
         .catch((err) => {
           console.log('Error getting document', err);
         });
+      this.setModalVisible(false);
       Keyboard.dismiss();
     };
 
@@ -466,8 +467,6 @@ class CommentPage extends React.Component {
           </View>
         </ScrollView>
         }
-
-
         {/* please forgive me this is the add comment button stuff all right here*/}
         <View
           style={[
