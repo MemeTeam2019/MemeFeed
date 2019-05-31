@@ -5,8 +5,9 @@ import firebase from 'react-native-firebase';
 import Comment from './comment';
 
 class CommentSample extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.renderComment = this.renderComment.bind(this);
     this.unsubscribe = null;
     this.state = {
       comments: [],
@@ -29,7 +30,6 @@ class CommentSample extends React.Component {
 
     querySnapshot.forEach((doc) => {
       const { text, uid, time, usernamesTagged } = doc.data();
-      console.log('\n\n\n~~~~~~~~~~~' + text + ' ' + time + ' ' + '\n\n\n');
 
       firebase
         .firestore()
@@ -52,11 +52,10 @@ class CommentSample extends React.Component {
 
             // resort comments since nested asynchronous function
             const compareTime = (a, b) => {
-              console.log('sorting comments bb');
               if (a.time < b.time) return -1;
               if (a.time > b.time) return 1;
               return 0;
-            }
+            };
 
             this.setState({
               comments: comments.sort(compareTime),
@@ -69,28 +68,22 @@ class CommentSample extends React.Component {
     });
   };
 
-  // componentWillUnmount() {
-  //   this.unsubscribe = null
-  //   this.setState({
-  //     comments: []
-  //   });
-
-  // }
-
-  //Single comment
-  renderComment({ item }) {
+  // Single comment
+  renderComment = ({ item }) => {
     return (
-      <Comment username={item.username} content={item.content} uid={item.key} usernamesTagged={item.usernamesTagged}/>
+      <Comment
+        username={item.username}
+        content={item.content}
+        uid={item.key}
+        usernamesTagged={item.usernamesTagged}
+      />
     );
-  }
+  };
 
   render() {
     return (
       <View style={styles.containerStyle}>
-        <FlatList
-          data={this.state.comments}
-          renderItem={this.renderComment.bind(this)}
-        />
+        <FlatList data={this.state.comments} renderItem={this.renderComment} />
       </View>
     );
   }

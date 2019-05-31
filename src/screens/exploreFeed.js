@@ -139,7 +139,6 @@ class ExploreFeed extends React.Component {
     memesSnapshot.docs.forEach((doc) => {
       const { url, time, sub, author } = doc.data();
       if (sub) {
-        console.log(sub)
         newMemes.push({
           key: doc.id,
           doc,
@@ -197,7 +196,6 @@ class ExploreFeed extends React.Component {
 
   updateSearch = async (searchTerm = '') => {
     // Set search term state immediately to update SearchBar contents
-    console.log(searchTerm);
     this.setState({ searchTerm });
 
     const usersRef = firebase.firestore().collection('Users');
