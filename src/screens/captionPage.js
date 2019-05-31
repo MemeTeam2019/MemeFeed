@@ -298,7 +298,7 @@ class CaptionPage extends React.Component {
               <TextInput
                 style={styles.input}
                 placeholder='Enter a Caption'
-                onChangeText={(caption) => this.setState({ caption: caption })}
+                onChangeText={(caption) => this.setState({ caption })}
                 autoCapitalize='none'
                 multiline
                 value={this.state.caption}

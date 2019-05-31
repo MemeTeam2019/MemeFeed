@@ -51,7 +51,7 @@ class ExploreFeed extends React.Component {
     if (this._isMounted) {
       firebase
         .firestore()
-        .collection('Memes')
+        .collection('MemesTest')
         .orderBy('time', 'desc')
         .limit(7)
         .get()
