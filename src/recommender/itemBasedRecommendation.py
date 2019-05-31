@@ -125,9 +125,20 @@ class ItemBasedRecommendation:
     # i and j should be numpy arrays
     def cosine_similarity(self, i, j):
         try:
-            return np.divide(i.dot(j), np.sqrt(i.dot(i)) * np.sqrt(j.dot(j)))
+            dot_prod_i = i.dot(i)
+            dot_prod_j = j.dot(j)
+            if dot_prod_i == 0 or dot_prod_j == 0:
+                return -1
+            return np.divide(i.dot(j), np.sqrt(dot_prod_j) * np.sqrt(dot_prod_i))
         except Exception:
             return -1
+
+    def pearson_similarity(self, i, j):
+        numerator = denominator = 0
+        ranks_of_i = self.rank_matrix[i]
+        ranks_of_j = self.rank_matrix[j]
+        for uid in self.uids:
+            numerator += (ranks_of_i[uid] - self.) * ()
 
     # Prints all item_ids and their associated rank vector
     def pretty_print_matrix(self):
