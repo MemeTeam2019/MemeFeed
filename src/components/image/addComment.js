@@ -99,11 +99,8 @@ class AddComment extends React.Component {
             this.setState({
               text: '',
             });
-            console.log(this.props);
             this.props.handleNewComment(commentRef);
-            console.log('Added document with ID: ', commentRef.id);
           });
-        console.log('Document data:', doc.data());
       })
       .catch((err) => {
         console.log('Error getting document', err);
@@ -115,8 +112,6 @@ class AddComment extends React.Component {
    * Pulls all users whose username starts with the searchTerm
    */
   updateSearch = async (searchTerm = '') => {
-    console.log('updating search');
-    console.log(searchTerm);
     // Set search term state immediately to update SearchBar contents
     this.setState({ searchTerm });
     const myUid = firebase.auth().currentUser.uid;
@@ -180,8 +175,6 @@ class AddComment extends React.Component {
 
   tagPerson = (username, uid) => {
     // if we already know to give this person a notifciation we can skip
-    console.log(typeof this.state.usernamesTagged);
-    console.log(this.state.usernamesTagged);
     if (this.state.usernamesTagged.indexOf(username) > -1) {
       this.setModalVisible(!this.state.modalVisible);
       const newText =
@@ -204,16 +197,13 @@ class AddComment extends React.Component {
       searchResults: [],
     });
     this.setModalVisible(!this.state.modalVisible);
-    console.log(this.state.peopleToTag);
-    console.log(this.state.usernamesTagged);
   };
 
   sendTagNotifications = () => {
     for (let i = 0; i < this.state.usersTagging.length; i += 1) {
       const username = this.state.usersTagging[i];
       // verfiy that we are still tagging the people added to the list
-      if (this.state.text.indexOf(username) > -1) {
-        console.log('tagging ', username);
+      if ((this.state.text).indexOf(username) > -1) {
         // send notification to this.state.peopleToTag[i])
       }
     }
@@ -235,37 +225,33 @@ class AddComment extends React.Component {
             <View style={{ marginTop: 22 }}>
               <View>
                 <Text>Hello World!</Text>
+              <TextInput
+                {...this.props}
+                multiline
+                autoCapitalize='none'
+                onChangeText={(text) => {
+                  if (text.length-1 < this.state.mostRecentAt){
+                    this.setModalVisible(!this.state.modalVisible);
+                  }
+                  this.state.searchTerm = text.substring(this.state.mostRecentAt+1, text.length);
+                  this.updateSearch(this.state.searchTerm)
+                  this.setState({ text })
+                }}
+                onContentSizeChange={(event) => {
+                  this.setState({
+                    height: Math.min(120, event.nativeEvent.contentSize.height),
+                  });
+                }}
+                style={[styles.input, { height: Math.max(35, this.state.height) }]}
+                value={this.state.text}
+              />
 
-                <TextInput
-                  {...this.props}
-                  multiline
-                  autoCapitalize='none'
-                  onChangeText={(text) => {
-                    console.log(text);
-                    if (text.length - 1 < this.state.mostRecentAt) {
-                      this.setModalVisible(!this.state.modalVisible);
-                    }
-                    this.state.searchTerm = text.substring(
-                      this.state.mostRecentAt + 1,
-                      text.length
-                    );
-                    this.updateSearch(this.state.searchTerm);
-                    this.setState({ text });
-                  }}
-                  onContentSizeChange={(event) => {
-                    this.setState({
-                      height: Math.min(
-                        120,
-                        event.nativeEvent.contentSize.height
-                      ),
-                    });
-                  }}
-                  style={[
-                    styles.input,
-                    { height: Math.max(35, this.state.height) },
-                  ]}
-                  value={this.state.text}
-                />
+              <FlatList
+                data={this.state.searchResults}
+                renderItem={(userRef) => this.renderSearchResult(userRef)}
+                keyExtractor={(item) => item.ref.id}
+              />
+
 
                 <FlatList
                   data={this.state.searchResults}
@@ -303,9 +289,8 @@ class AddComment extends React.Component {
               this.setModalVisible(true);
               this.setState({ mostRecentAt: text.length - 1 });
             }
-            this.state.searchTerm = 'f';
-            this.setState({ text });
-            console.log(typeof this.state.usernamesTagged);
+            this.state.searchTerm = 'f'
+            this.setState({text})
           }}
           onContentSizeChange={(event) => {
             this.setState({
