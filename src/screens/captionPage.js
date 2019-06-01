@@ -257,6 +257,7 @@ class CaptionPage extends React.Component{
 					ref={(ref) => {
 						this.scrollView = ref;
 					}}
+          style = {{ height: '100%', }}
 					>
 					  <View style={styles.conatiner}>
 						  <AutoHeightImage
