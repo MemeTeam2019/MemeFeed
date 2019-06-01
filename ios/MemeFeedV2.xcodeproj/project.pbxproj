@@ -405,6 +405,7 @@
 		9EA3ACDE3CB84CCDBD4FEE28 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
 		A2DA60A434C947649F77920A /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		A90564BE22A1FD9700D18AE5 /* MemeFeedV2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = MemeFeedV2.entitlements; path = MemeFeedV2/MemeFeedV2.entitlements; sourceTree = "<group>"; };
+		A905667222A30F0C00D18AE5 /* MemeFeedV2.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = MemeFeedV2.entitlements; path = MemeFeedV2/MemeFeedV2.entitlements; sourceTree = "<group>"; };
 		AB696C7BE7C74610A8D0411F /* FontAwesome.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		B8462BFA966C4B1698AF64CC /* libRNFirebase.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFirebase.a; sourceTree = "<group>"; };
@@ -562,6 +563,7 @@
 			isa = PBXGroup;
 			children = (
 				A90564BE22A1FD9700D18AE5 /* MemeFeedV2.entitlements */,
+				A905667222A30F0C00D18AE5 /* MemeFeedV2.entitlements */,
 				FBEC66FE2203899200A7DEEF /* GoogleService-Info.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
