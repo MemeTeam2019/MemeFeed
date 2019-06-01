@@ -8,7 +8,6 @@ import {
   ScrollView,
 } from 'react-native';
 import firebase from 'react-native-firebase';
-import ActionSheet from 'react-native-actionsheet';
 
 import Tile from '../components/image/tile';
 import MemeGrid from '../components/general/memeGrid';
@@ -34,7 +33,7 @@ class SubReddit extends React.Component {
     this._isMounted = false;
     this.ref = firebase
       .firestore()
-      .collection('Memes')
+      .collection('MemesTest')
       .where('sub', '==', this.props.navigation.getParam('sub'));
 
     this.state = {
@@ -63,7 +62,7 @@ class SubReddit extends React.Component {
     if (this._isMounted) {
       this.unsubscribe = firebase
         .firestore()
-        .collection('Memes')
+        .collection('MemesTest')
         .where('sub', '==', this.props.navigation.getParam('sub'))
         .get()
         .then(this.updateFeed);
@@ -75,10 +74,9 @@ class SubReddit extends React.Component {
     // updating
     if (this.state.updated) {
       this.state.updated = false;
-      const oldestDoc = this.state.oldestDoc;
       firebase
         .firestore()
-        .collection('Memes')
+        .collection('MemesTest')
         .where('sub', '==', this.props.navigation.getParam('sub'))
         .get()
         .then(this.updateFeed);

@@ -44,6 +44,7 @@ class MemeGrid extends React.Component {
               postedBy,
               poster,
               isSubRedditPg: this.props.isSubRedditPg,
+              caption: data.caption,
             });
           }}
         >
