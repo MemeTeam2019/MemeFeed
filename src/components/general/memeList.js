@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, FlatList, RefreshControl, View } from 'react-native';
+import { StyleSheet, FlatList, RefreshControl, View, ScrollView } from 'react-native';
 
 import Tile from '../image/tile';
 
@@ -22,8 +22,8 @@ class MemeList extends React.PureComponent {
       return null;
 
     return (
-      <View style={styles.container}>
         <Tile
+          style={styles.tile}
           id={item.key}
           memeId={item.key}
           imageUrl={item.src}
@@ -33,29 +33,30 @@ class MemeList extends React.PureComponent {
           poster={item.poster}
           isSubRedditPg={this.props.isSubRedditPg}
         />
-      </View>
     );
   };
 
   render() {
     return (
-      <FlatList
-        style={styles.container}
-        data={this.props.memes}
-        extraData={this.props}
-        keyExtractor={(item, index) => index}
-        renderItem={this.renderTile}
-        onEndReached={() => {
-          // Load new memes once end of list is reached
-          this.props.loadMemes();
-        }}
-        refreshControl={
-          <RefreshControl
-            refreshing={this.props.refreshing}
-            onRefresh={this.props.onRefresh}
-          />
-        }
-      />
+      <ScrollView>
+        <FlatList
+          style={styles.container}
+          data={this.props.memes}
+          extraData={this.props}
+          keyExtractor={(item, index) => index}
+          renderItem={this.renderTile}
+          onEndReached={() => {
+            // Load new memes once end of list is reached
+            this.props.loadMemes();
+          }}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.props.refreshing}
+              onRefresh={this.props.onRefresh}
+            />
+          }
+        />
+      </ScrollView>
     );
   }
 }
@@ -64,6 +65,9 @@ export default MemeList;
 
 const styles = StyleSheet.create({
   container: {
-     flexGrow: 1
+     flexGrow: 0
+  },
+  tile: {
+     flex: 1
   },
 });
