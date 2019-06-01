@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, FlatList, RefreshControl } from 'react-native';
+import { StyleSheet, FlatList, RefreshControl, View } from 'react-native';
 
 import Tile from '../image/tile';
 
@@ -20,24 +20,30 @@ class MemeList extends React.PureComponent {
   renderTile = ({ item }) => {
     if (!item || !item.src || item.numFlags >= 10 || item.src === '')
       return null;
+
     return (
-      <Tile
-        memeId={item.key}
-        imageUrl={item.src}
-        sub={item.sub}
-        likedFrom={item.likedFrom}
-        postedBy={item.postedBy}
-        poster={item.poster}
-        isSubRedditPg={this.props.isSubRedditPg}
-      />
+      <View style={styles.container}>
+        <Tile
+          id={item.key}
+          memeId={item.key}
+          imageUrl={item.src}
+          sub={item.sub}
+          likedFrom={item.likedFrom}
+          postedBy={item.postedBy}
+          poster={item.poster}
+          isSubRedditPg={this.props.isSubRedditPg}
+        />
+      </View>
     );
   };
 
   render() {
     return (
       <FlatList
-        style={styles.containerStyle}
+        style={styles.container}
         data={this.props.memes}
+        extraData={this.props}
+        keyExtractor={(item, index) => index}
         renderItem={this.renderTile}
         onEndReached={() => {
           // Load new memes once end of list is reached
@@ -58,6 +64,6 @@ export default MemeList;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+     flexGrow: 1
   },
 });

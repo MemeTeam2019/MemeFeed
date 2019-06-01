@@ -35,6 +35,7 @@ class ExploreFeed extends React.Component {
     this.unsubscribe = null;
     this.refreshMemes = this.refreshMemes.bind(this);
 
+
     this.state = {
       updated: true,
       inGridView: true,
@@ -55,7 +56,7 @@ class ExploreFeed extends React.Component {
         .firestore()
         .collection('Memes')
         .orderBy('time', 'desc')
-        .limit(7)
+        .limit(70)
         .get()
         .then((memesSnap) => {
           firebase
@@ -64,7 +65,7 @@ class ExploreFeed extends React.Component {
           .doc(firebase.auth().currentUser.uid)
           .collection('Memes')
           .orderBy('time', 'desc')
-          .limit(8)
+          .limit(80)
           .get()
           .then((recsSnap) => this.updateFeed(memesSnap, recsSnap))
         });
@@ -80,7 +81,7 @@ class ExploreFeed extends React.Component {
         .firestore()
         .collection('Memes')
         .orderBy('time', 'desc')
-        .limit(7)
+        .limit(70)
         .get()
         .then((memesSnap) => {
           firebase
@@ -89,7 +90,7 @@ class ExploreFeed extends React.Component {
           .doc(firebase.auth().currentUser.uid)
           .collection('Memes')
           .orderBy('time', 'desc')
-          .limit(8)
+          .limit(80)
           .get()
           .then((recsSnap) => this.updateFeed(memesSnap, recsSnap))
         });
@@ -107,7 +108,7 @@ class ExploreFeed extends React.Component {
         .firestore()
         .collection('Memes')
         .orderBy('time', 'desc')
-        .limit(7)
+        .limit(70)
         .startAfter(oldestDocMemes)
         .get()
         .then((memesSnap) => {
@@ -117,7 +118,7 @@ class ExploreFeed extends React.Component {
           .doc(firebase.auth().currentUser.uid)
           .collection('Memes')
           .orderBy('time', 'desc')
-          .limit(8)
+          .limit(80)
            .startAfter(oldestDocRecs)
           .get()
           .then((recsSnap) => this.updateFeed(memesSnap, recsSnap))
@@ -155,7 +156,6 @@ class ExploreFeed extends React.Component {
 
     Promise.all(newMemes).then((resolvedMemes) => {
       this.setState((prevState) => {
-       
 
         const compareTime = (a, b) => {
           if (a.time > b.time) return -1;
@@ -164,7 +164,6 @@ class ExploreFeed extends React.Component {
         }
 
         resolvedMemes.sort(compareTime);
-
         const mergedMemes = prevState.memes.concat(resolvedMemes);
 
         return {
@@ -181,7 +180,6 @@ class ExploreFeed extends React.Component {
 
   updateSearch = async (searchTerm = '') => {
     // Set search term state immediately to update SearchBar contents
-    console.log(searchTerm)
     this.setState({ searchTerm });
 
     const usersRef = firebase.firestore().collection('Users');

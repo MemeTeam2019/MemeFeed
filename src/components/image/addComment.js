@@ -89,11 +89,8 @@ class AddComment extends React.Component {
             this.setState({
               text: '',
             });
-            console.log(this.props);
             this.props.handleNewComment(commentRef);
-            console.log('Added document with ID: ', commentRef.id);
           });
-        console.log('Document data:', doc.data());
       })
       .catch((err) => {
         console.log('Error getting document', err);
@@ -106,8 +103,6 @@ class AddComment extends React.Component {
    * Pulls all users whose username starts with the searchTerm
    */
   updateSearch = async (searchTerm = '') => {
-    console.log('updating search')
-    console.log(searchTerm)
     // Set search term state immediately to update SearchBar contents
     this.setState({ searchTerm });
     const myUid = firebase.auth().currentUser.uid;
@@ -173,8 +168,6 @@ class AddComment extends React.Component {
 
   tagPerson = (username,uid) => {
     // if we already know to give this person a notifciation we can skip
-    console.log(typeof(this.state.usernamesTagged))
-    console.log(this.state.usernamesTagged)
     if (this.state.usernamesTagged.indexOf(username) > -1) {
       this.setModalVisible(!this.state.modalVisible);
       const newText = this.state.text.substring(0,this.state.mostRecentAt+1)+username
@@ -195,8 +188,6 @@ class AddComment extends React.Component {
       searchResults: []
     });
     this.setModalVisible(!this.state.modalVisible);
-    console.log(this.state.peopleToTag)
-    console.log(this.state.usernamesTagged)
   }
 
   sendTagNotifications = () => {
@@ -204,7 +195,6 @@ class AddComment extends React.Component {
       username = this.state.usersTagging[i]
       // verfiy that we are still tagging the people added to the list
       if ((this.state.text).indexOf(username) > -1) {
-        console.log('tagging ',username)
         // send notification to this.state.peopleToTag[i])
       }
     }
@@ -231,7 +221,6 @@ class AddComment extends React.Component {
                 multiline
                 autoCapitalize='none'
                 onChangeText={(text) => {
-                  console.log(text)
                   if (text.length-1 < this.state.mostRecentAt){
                     this.setModalVisible(!this.state.modalVisible);
                   }
@@ -286,7 +275,6 @@ class AddComment extends React.Component {
             }
             this.state.searchTerm = 'f'
             this.setState({text})
-            console.log(typeof(this.state.usernamesTagged))
           }}
           onContentSizeChange={(event) => {
             this.setState({

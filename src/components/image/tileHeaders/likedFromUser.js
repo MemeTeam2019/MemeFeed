@@ -65,8 +65,6 @@ class LikedFromUser extends React.Component {
     const feedRef = firebase.firestore().doc(`FeedsTest/${uid}/Likes/${memeId}`);
     const reactsRef = firebase.firestore().doc(`ReactsTest/${uid}/Likes/${memeId}`);
 
-    console.log(memeId);
-
     memeRef
       .get()
       .then((docSnapshot) => {
