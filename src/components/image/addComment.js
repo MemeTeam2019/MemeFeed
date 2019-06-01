@@ -3,10 +3,12 @@ import {
   FlatList,
   StyleSheet,
   View,
+  Alert,
   TextInput,
   Keyboard,
   Modal,
   Text,
+  TouchableOpacity,
   TouchableHighlight,
 } from 'react-native';
 import firebase from 'react-native-firebase';
@@ -29,9 +31,9 @@ class AddComment extends React.Component {
     };
   }
 
-  setModalVisible(visible) {
+  setModalVisible = (visible) => {
     this.setState({ modalVisible: visible });
-  }
+  };
 
   _onPressButton = () => {
     const user = firebase.auth().currentUser;
@@ -91,6 +93,8 @@ class AddComment extends React.Component {
    * Pulls all users whose username starts with the searchTerm
    */
   updateSearch = async (searchTerm = '') => {
+    console.log('updating search');
+    console.log(searchTerm);
     // Set search term state immediately to update SearchBar contents
     this.setState({ searchTerm });
     const myUid = firebase.auth().currentUser.uid;
@@ -153,19 +157,23 @@ class AddComment extends React.Component {
   };
 
   tagPerson = (username, uid) => {
-    // If we already know to give this person a notifciation we can skip
-    const { text, mostRecentAt } = this.state;
+    // if we already know to give this person a notifciation we can skip
+    console.log(typeof this.state.usernamesTagged);
+    console.log(this.state.usernamesTagged);
     if (this.state.usernamesTagged.indexOf(username) > -1) {
       this.setModalVisible(!this.state.modalVisible);
-      const newText = text.substring(0, mostRecentAt + 1) + username;
+      const newText =
+        this.state.text.substring(0, this.state.mostRecentAt + 1) + username;
       this.setState({
         text: newText,
         searchTerm: '',
         searchResults: [],
       });
+      return;
     }
 
-    const newText = text.substring(0, mostRecentAt + 1) + username;
+    const newText =
+      this.state.text.substring(0, this.state.mostRecentAt + 1) + username;
     this.state.peopleToTag.push(uid);
     this.state.usernamesTagged.push(username);
     this.setState({
@@ -179,8 +187,8 @@ class AddComment extends React.Component {
   };
 
   sendTagNotifications = () => {
-    for (var i = 0; i < this.state.usersTagging.length; i++) {
-      username = this.state.usersTagging[i];
+    for (let i = 0; i < this.state.usersTagging.length; i += 1) {
+      const username = this.state.usersTagging[i];
       // verfiy that we are still tagging the people added to the list
       if (this.state.text.indexOf(username) > -1) {
         console.log('tagging ', username);
@@ -275,6 +283,7 @@ class AddComment extends React.Component {
             }
             this.state.searchTerm = 'f';
             this.setState({ text });
+            console.log(typeof this.state.usernamesTagged);
           }}
           onContentSizeChange={(event) => {
             this.setState({

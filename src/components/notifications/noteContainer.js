@@ -54,7 +54,7 @@ class Notification extends React.Component {
   handleLiked = () => {
     firebase
       .firestore()
-      .collection('Memes')
+      .collection('MemesTest')
       .doc(this.props.memeId)
       .get()
       .then((doc) => {
@@ -81,7 +81,7 @@ class Notification extends React.Component {
 handleTagged = () => {
   firebase
       .firestore()
-      .collection('Memes')
+      .collection('MemesTest')
       .doc(this.props.memeId)
       .get()
       .then((doc) => {
