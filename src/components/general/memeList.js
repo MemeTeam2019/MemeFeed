@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, FlatList, RefreshControl, View, ScrollView } from 'react-native';
+import { StyleSheet, FlatList, RefreshControl, ScrollView } from 'react-native';
 
 import Tile from '../image/tile';
 
@@ -22,39 +22,40 @@ class MemeList extends React.PureComponent {
       return null;
 
     return (
-        <Tile
-          style={styles.tile}
-          id={item.key}
-          memeId={item.key}
-          imageUrl={item.src}
-          sub={item.sub}
-          likedFrom={item.likedFrom}
-          postedBy={item.postedBy}
-          poster={item.poster}
-          isSubRedditPg={this.props.isSubRedditPg}
-        />
+      <Tile
+        style={styles.tile}
+        id={item.key}
+        memeId={item.key}
+        imageUrl={item.src}
+        sub={item.sub}
+        likedFrom={item.likedFrom}
+        postedBy={item.postedBy}
+        poster={item.poster}
+        isSubRedditPg={this.props.isSubRedditPg}
+      />
     );
   };
 
   render() {
     return (
-      <ScrollView>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={this.props.refreshing}
+            onRefresh={this.props.onRefresh}
+          />
+        }
+      >
         <FlatList
           style={styles.container}
           data={this.props.memes}
           extraData={this.props}
-          keyExtractor={(item, index) => index}
+          keyExtractor={(_, index) => index}
           renderItem={this.renderTile}
           onEndReached={() => {
             // Load new memes once end of list is reached
             this.props.loadMemes();
           }}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.props.refreshing}
-              onRefresh={this.props.onRefresh}
-            />
-          }
         />
       </ScrollView>
     );
@@ -65,9 +66,9 @@ export default MemeList;
 
 const styles = StyleSheet.create({
   container: {
-     flexGrow: 0
+    flexGrow: 0,
   },
   tile: {
-     flex: 1
+    flex: 1,
   },
 });
