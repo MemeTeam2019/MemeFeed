@@ -14,11 +14,11 @@ class PrivacyPolicyScreen extends React.PureComponent {
         <ScrollView>
           <Text style={styles.header}>Meme Feed Privacy Policy</Text>
           <Text style={styles.body}>
-            Effective date: April 22, 2019 {'\n\n'}
+            Effective date: June 1st, 2019 {'\n\n'}
             Thanks for entrusting Meme Feed with your name, email, password, and
             meme tastes. We make keep your private information secure as it is
             of the utmost priority for us. {'\n\n'}
-            We only collect two types of information from you: {'\n\n'}
+            We only collect four types of information from you: {'\n\n'}
             1. Sign up information: name, username, email, & password {'\n'}
             2. Reaction information: your rankings of memes {'\n\n'}
             For the signup information we keep your email and password private
@@ -39,6 +39,21 @@ class PrivacyPolicyScreen extends React.PureComponent {
             consent you are allowed to use this application and we are allowed
             to use your information as outlined in this Privacy Statement.{' '}
             {'\n\n'}
+            3. Comments: when commenting on a post you are allowing Meme
+            Feed to display your comments on a post, no matter it’s location;
+            meaning that when you comment on a post on any page that comment
+            will be forever tied to that meme so anyone can see your comment as
+            long as they are viewing the same meme you commented on.{' '}
+            {'\n\n'}
+            4. Post upload information: when you upload a meme/image and
+            caption to the application you are giving us the right to use and display
+            that given information anywhere on the mobile application. In order to
+            upload a meme/Image Meme Feed requires access to your image library
+            on your device. We only access your image library after you accept Meme
+            Feeds access to your library and when you open the library though the
+            upload image page.{' '}
+            {'\n\n'}
+
             If you wish you delete your account information and data you can
             contact us at:{' '}
             <Text style={styles.email}>memefeedaye@gmail.com</Text>
