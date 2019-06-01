@@ -204,7 +204,7 @@ export default class Profile extends React.Component {
   };
 
   render() {
-    const optionArray = ['About', 'Privacy Policy', 'Log Out', 'Cancel'];
+    const optionArray = ['About', 'Edit Profile Picture', 'Privacy Policy', 'Log Out', 'Cancel'];
 
     if (this.state.memes.length === 0 && !this.state.refreshing) {
       return (
@@ -237,6 +237,8 @@ export default class Profile extends React.Component {
                     this.props.navigation.push('InfoStack');
                   } else if (optionArray[index] === 'Privacy Policy') {
                     this.props.navigation.push('Privacy');
+                  } else if (optionArray[index] === 'Edit Profile Picture'){
+                    this.props.navigation.push('ProfilePic');
                   }
                 }}
               />
@@ -306,6 +308,8 @@ export default class Profile extends React.Component {
                     this.props.navigation.push('InfoStack');
                   } else if (optionArray[index] == 'Privacy Policy') {
                     this.props.navigation.push('Privacy');
+                  }else if (optionArray[index] === 'Edit Profile Picture'){
+                    this.props.navigation.push('ProfilePic');
                   }
                 }}
               />

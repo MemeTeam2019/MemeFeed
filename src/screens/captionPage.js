@@ -51,8 +51,8 @@ class CaptionPage extends React.Component {
 
   // this gets the api key from the server
   componentDidMount() {
-    console.log('mouning hnnng');
-    this.pickPhoto();
+    //console.log('mouning hnnng')
+    this.pickPhoto()
     this.props.navigation.setParams({ upload: this.handleUpload });
     this.props.navigation.setParams({ back: this.pickPhoto });
     this._isMounted = true;
@@ -73,7 +73,6 @@ class CaptionPage extends React.Component {
   }
 
   pickPhoto = () => {
-    console.log('picking das photo');
     const options = {
       noData: true,
     };
@@ -97,7 +96,6 @@ class CaptionPage extends React.Component {
   };
 
   handleUpload = async () => {
-    console.log('UPLOADING HNNNG');
     if (!this.state.imageuri) {
       Alert.alert('Upload Failed', 'Please try again :(');
       return;
@@ -173,7 +171,7 @@ class CaptionPage extends React.Component {
           console.log('Document written with ID: ', docId);
 
           // post in this users reacts
-          const userReactsRef = firebase
+          firebase
             .firestore()
             .collection('ReactsTest')
             .doc(firebase.auth().currentUser.uid)
@@ -184,6 +182,7 @@ class CaptionPage extends React.Component {
               time: Math.round(+new Date() / 1000),
               url: newurl,
               likeFrom: firebase.auth().currentUser.uid,
+              caption: this.state.caption,
             });
 
           // put meme in their followers feeds
