@@ -10,7 +10,6 @@ import {
 import { withNavigation } from 'react-navigation';
 import ActionSheet from 'react-native-actionsheet';
 import firebase from 'react-native-firebase';
-
 import Username from '../username';
 
 class PostedByUser extends React.Component {
@@ -18,7 +17,7 @@ class PostedByUser extends React.Component {
     super(props);
     this.state = {
       iconURL:
-        'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon555.png?alt=media&token=48fb9bf8-4efb-490c-a178-13a9efb2289c',
+        '',
     };
   }
 
@@ -48,7 +47,7 @@ class PostedByUser extends React.Component {
   }
 
   flagMeme = () => {
-    const memeRef = firebase.firestore().doc(`Memes/${this.props.memeId}`);
+    const memeRef = firebase.firestore().doc(`MemesTest/${this.props.memeId}`);
     memeRef
       .get()
       .then((docSnapshot) => {

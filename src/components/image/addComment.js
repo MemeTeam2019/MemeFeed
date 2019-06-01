@@ -1,5 +1,16 @@
 import React from 'react';
-import { FlatList, StyleSheet, View, Button, TextInput, Keyboard, Modal, Text, TouchableHighlight } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  View,
+  Alert,
+  TextInput,
+  Keyboard,
+  Modal,
+  Text,
+  TouchableOpacity,
+  TouchableHighlight,
+} from 'react-native';
 import firebase from 'react-native-firebase';
 import AtResult from './atResult';
 
@@ -7,7 +18,7 @@ class AddComment extends React.Component {
   constructor(props) {
     super(props);
     this._onPressButton = this._onPressButton.bind(this);
-    this.tagPerson = this.tagPerson.bind(this)
+    this.tagPerson = this.tagPerson.bind(this);
     this.state = {
       height: 0,
       modalVisible: false,
@@ -16,14 +27,13 @@ class AddComment extends React.Component {
       searchTerm: '',
       peopleToTag: [],
       usernamesTagged: [],
-      mostRecentAt: -1
+      mostRecentAt: -1,
     };
   }
 
-  setModalVisible(visible) {
-    this.setState({modalVisible: visible});
-  }
-
+  setModalVisible = (visible) => {
+    this.setState({ modalVisible: visible });
+  };
 
   _onPressButton = () => {
     const user = firebase.auth().currentUser;
@@ -98,7 +108,6 @@ class AddComment extends React.Component {
     Keyboard.dismiss();
   };
 
-
   /**
    * Pulls all users whose username starts with the searchTerm
    */
@@ -107,53 +116,51 @@ class AddComment extends React.Component {
     this.setState({ searchTerm });
     const myUid = firebase.auth().currentUser.uid;
 
-
-    const countRef = firebase
+    firebase
       .firestore()
       .collection('Users')
       .doc(myUid)
       .get()
       .then(async (doc) => {
-          const { followersLst } = doc.data();
-          const usersRef = firebase.firestore().collection('Users');
-          const lowerSearchTerm = searchTerm.toLowerCase();
-          let usernameMatches = [];
-          let nameMatches = [];
+        const { followersLst } = doc.data();
+        const usersRef = firebase.firestore().collection('Users');
+        const lowerSearchTerm = searchTerm.toLowerCase();
+        let usernameMatches = [];
+        let nameMatches = [];
 
-          if (!searchTerm) {
-            this.setState({ searchResults: [] });
-            return;
-          }
+        if (!searchTerm) {
+          this.setState({ searchResults: [] });
+          return;
+        }
 
-          usernameMatches = await usersRef
-            .where('searchableUsername', '>=', lowerSearchTerm)
-            .where('searchableUsername', '<', `${lowerSearchTerm}\uf8ff`)
-            .get()
-            .then((snapshot) => snapshot.docs)
-            .catch((err) => console.log(err));
+        usernameMatches = await usersRef
+          .where('searchableUsername', '>=', lowerSearchTerm)
+          .where('searchableUsername', '<', `${lowerSearchTerm}\uf8ff`)
+          .get()
+          .then((snapshot) => snapshot.docs)
+          .catch((err) => console.log(err));
 
-          nameMatches = await usersRef
-            .where('searchableName', '>=', lowerSearchTerm)
-            .where('searchableName', '<', `${lowerSearchTerm}\uf8ff`)
-            .get()
-            .then((snapshot) => snapshot.docs)
-            .catch((err) => console.log(err));
+        nameMatches = await usersRef
+          .where('searchableName', '>=', lowerSearchTerm)
+          .where('searchableName', '<', `${lowerSearchTerm}\uf8ff`)
+          .get()
+          .then((snapshot) => snapshot.docs)
+          .catch((err) => console.log(err));
 
-          // Ensure there are no duplicates and your own profile doesn't show up
-          const combined = [...usernameMatches, ...nameMatches];
-          const searchResults = [];
-          const map = new Map();
-          combined.forEach((snapshot) => {
-            // check if this person is following up
-            if (followersLst.includes(snapshot.ref.id)) {
-              if (!map.has(snapshot.ref.id) && myUid !== snapshot.ref.id) {
-                map.set(snapshot.ref.id);
-                searchResults.push(snapshot);
-              }
+        // Ensure there are no duplicates and your own profile doesn't show up
+        const combined = [...usernameMatches, ...nameMatches];
+        const searchResults = [];
+        const map = new Map();
+        combined.forEach((snapshot) => {
+          // check if this person is following up
+          if (followersLst.includes(snapshot.ref.id)) {
+            if (!map.has(snapshot.ref.id) && myUid !== snapshot.ref.id) {
+              map.set(snapshot.ref.id);
+              searchResults.push(snapshot);
             }
-          });
-          this.setState({ searchResults: searchResults.sort() });
-
+          }
+        });
+        this.setState({ searchResults: searchResults.sort() });
       })
       .catch((err) => {
         console.log('Error getting document', err);
@@ -163,59 +170,61 @@ class AddComment extends React.Component {
   renderSearchResult = (userRef) => {
     const data = userRef.item.data();
     const uid = userRef.item.ref.id;
-    return <AtResult data={data} uid={uid} onSelect={this.tagPerson}/>;
+    return <AtResult data={data} uid={uid} onSelect={this.tagPerson} />;
   };
 
-  tagPerson = (username,uid) => {
+  tagPerson = (username, uid) => {
     // if we already know to give this person a notifciation we can skip
     if (this.state.usernamesTagged.indexOf(username) > -1) {
       this.setModalVisible(!this.state.modalVisible);
-      const newText = this.state.text.substring(0,this.state.mostRecentAt+1)+username
+      const newText =
+        this.state.text.substring(0, this.state.mostRecentAt + 1) + username;
       this.setState({
         text: newText,
         searchTerm: '',
-        searchResults: []
+        searchResults: [],
       });
-      return
+      return;
     }
 
-    const newText = this.state.text.substring(0,this.state.mostRecentAt+1)+username
-    this.state.peopleToTag.push(uid)
-    this.state.usernamesTagged.push(username)
+    const newText =
+      this.state.text.substring(0, this.state.mostRecentAt + 1) + username;
+    this.state.peopleToTag.push(uid);
+    this.state.usernamesTagged.push(username);
     this.setState({
       text: newText,
       searchTerm: '',
-      searchResults: []
+      searchResults: [],
     });
     this.setModalVisible(!this.state.modalVisible);
-  }
+  };
 
   sendTagNotifications = () => {
-    for (var i = 0; i < this.state.usersTagging.length; i++) {
-      username = this.state.usersTagging[i]
+    for (let i = 0; i < this.state.usersTagging.length; i += 1) {
+      const username = this.state.usersTagging[i];
       // verfiy that we are still tagging the people added to the list
       if ((this.state.text).indexOf(username) > -1) {
         // send notification to this.state.peopleToTag[i])
       }
     }
-  }
+  };
 
   render() {
     if (this.state.modalVisible) {
       return (
         <View>
-        <Modal
-          animationType="slide"
-          transparent={false}
-          presentationStyle="pageSheet"
-          visible={this.state.modalVisible}
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
-          }}>
-          <View style={{marginTop: 22}}>
-            <View>
-              <Text>Hello World!</Text>
-
+          <Modal
+            animationType='slide'
+            transparent={false}
+            presentationStyle='pageSheet'
+            visible={this.state.modalVisible}
+            onRequestClose={() => {
+              Alert.alert('Modal has been closed.');
+            }}
+          >
+            <View style={{ marginTop: 22 }}>
+              <View>
+                <Text>Hello World!</Text>
               <TextInput
                 {...this.props}
                 multiline
@@ -244,18 +253,25 @@ class AddComment extends React.Component {
               />
 
 
-              <TouchableHighlight
-                onPress={() => {
-                  this.setModalVisible(!this.state.modalVisible);
-                }}>
-                <Text>Hide Modal</Text>
-              </TouchableHighlight>
+                <FlatList
+                  data={this.state.searchResults}
+                  renderItem={(userRef) => this.renderSearchResult(userRef)}
+                  keyExtractor={(item) => item.ref.id}
+                />
+
+                <TouchableHighlight
+                  onPress={() => {
+                    this.setModalVisible(!this.state.modalVisible);
+                  }}
+                >
+                  <Text>Hide Modal</Text>
+                </TouchableHighlight>
+              </View>
             </View>
-          </View>
-        </Modal>
+          </Modal>
         </View>
-      )
-    } else {
+      );
+    }
     return (
       <View
         style={[
@@ -269,9 +285,9 @@ class AddComment extends React.Component {
           placeholder='Add a comment...'
           autoCapitalize='none'
           onChangeText={(text) => {
-            if (text[text.length-1] === '@') {
+            if (text[text.length - 1] === '@') {
               this.setModalVisible(true);
-              this.setState({mostRecentAt: text.length-1})
+              this.setState({ mostRecentAt: text.length - 1 });
             }
             this.state.searchTerm = 'f'
             this.setState({text})
@@ -285,25 +301,27 @@ class AddComment extends React.Component {
           value={this.state.text}
         />
 
-        <TouchableOpacity onPress={this._onPressButton}
-            style={{backgroundColor: 'transparent',
-                fontFamily: 'AvenirNext-Regular',
-                textAlign: 'center',
-                fontSize: 20,
-                color: 'black',
-                marginBottom: 3,
-                height: Math.max(35, this.state.height),
-                justifyContent: 'center',
-                marginLeft: 10,
-                marginTop: 3}}
-
-            disabled={!this.state.text.trim()} >
-            <Text style={styles.button}>Post </Text>
+        <TouchableOpacity
+          onPress={this._onPressButton}
+          style={{
+            backgroundColor: 'transparent',
+            fontFamily: 'AvenirNext-Regular',
+            textAlign: 'center',
+            fontSize: 20,
+            color: 'black',
+            marginBottom: 3,
+            height: Math.max(35, this.state.height),
+            justifyContent: 'center',
+            marginLeft: 10,
+            marginTop: 3,
+          }}
+          disabled={!this.state.text.trim()}
+        >
+          <Text style={styles.button}>Post </Text>
         </TouchableOpacity>
       </View>
     );
   }
-}
 }
 
 export default AddComment;
@@ -336,7 +354,7 @@ const styles = StyleSheet.create({
     color: 'black',
     marginBottom: 3,
     height: 35,
-    justifyContent: 'center'
+    justifyContent: 'center',
     //height: Math.max(35, this.state.height),
-  }
+  },
 });

@@ -5,13 +5,6 @@ import ActionSheet from 'react-native-actionsheet';
 import firebase from 'react-native-firebase';
 
 class SourceReddit extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: ""
-    }
-  }
-
   showActionSheet = () => {
     this.ActionSheet.show();
   };
