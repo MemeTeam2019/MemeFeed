@@ -3,6 +3,7 @@ from data.db import db
 from data.meme import Meme
 from data.user import User
 from userBasedReccomendations import generateRecommendationsByUser
+from subBasedReccomendations import generateRecommendationsBySub
 
 
 
