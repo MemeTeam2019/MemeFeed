@@ -129,7 +129,7 @@ export default class EditProfilePic extends React.Component {
 
   //go back to profile with updated picture
   setPicture = async () => {
-    this.props.navigation.push('Profile');
+    this.props.navigation.pop();
   }
 
   goCrop = async () => {
