@@ -70,8 +70,6 @@ class LikedFromReddit extends React.Component {
       .firestore()
       .doc(`ReactsTest/${uid}/Likes/${memeId}`);
 
-    console.log(memeId);
-
     memeRef
       .get()
       .then((docSnapshot) => {

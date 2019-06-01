@@ -13,6 +13,7 @@ class Tile extends React.Component {
   constructor(props) {
     super(props);
     this._isMounted = false;
+    this.unsubscribe = false;
     this.updateReactCount = this.updateReactCount.bind(this);
     this.state = {
       reactCount: 0,
@@ -30,6 +31,10 @@ class Tile extends React.Component {
       const reactCount = data.reactCount || 0;
       this.setState({ reactCount });
     });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe = null;
   }
 
   updateReactCount(newReactCount) {
@@ -96,9 +101,7 @@ class Tile extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-    height: '100%',
-    marginBottom: 5,
+    marginBottom: 5
   },
   buttonbar: {
     flexDirection: 'row',

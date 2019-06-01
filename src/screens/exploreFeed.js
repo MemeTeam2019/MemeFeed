@@ -33,6 +33,7 @@ class ExploreFeed extends React.Component {
     this.fetchMemes = this.fetchMemes.bind(this);
     this.refreshMemes = this.refreshMemes.bind(this);
 
+
     this.state = {
       updated: true,
       inGridView: true,
@@ -168,7 +169,6 @@ class ExploreFeed extends React.Component {
         };
 
         resolvedMemes.sort(compareTime);
-
         const mergedMemes = prevState.memes.concat(resolvedMemes);
 
         return {
@@ -184,6 +184,7 @@ class ExploreFeed extends React.Component {
 
   updateSearch = (searchTerm = '') => {
     // Set search term state immediately to update SearchBar contents
+
     this.setState({ searchTerm }, async () => {
       const usersRef = firebase.firestore().collection('Users');
       const lowerSearchTerm = searchTerm.toLowerCase();
