@@ -77,7 +77,7 @@ class CommentPage extends React.Component {
             .firestore()
             .collection(`CommentsTest/${this.state.memeId}/Text`)
             .orderBy('time', 'desc') // we choose decsending to get most recent
-            .limit(Math.min(this.state.commentCount, 5))
+            .limit(Math.min(this.state.commentCount, 10))
             .get()
             .then((querySnapshot) => this.updateComments(querySnapshot));
         }
@@ -98,7 +98,7 @@ class CommentPage extends React.Component {
         .firestore()
         .collection(`CommentsTest/${this.state.memeId}/Text`)
         .orderBy('time', 'desc')
-        .limit(5)
+        .limit(10)
         .startAfter(oldestDoc)
         .get()
         .then(this.updateComments);

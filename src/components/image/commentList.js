@@ -62,10 +62,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: 'black',
     fontFamily: 'AvenirNext-Bold',
-    textAlign: 'center',
+    textAlign: 'left',
   },
   loadMore: {
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
 });
