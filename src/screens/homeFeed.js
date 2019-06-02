@@ -69,41 +69,56 @@ class HomeFeed extends React.Component {
    * Extract a querySnapshot, obtained from the Feeds collection, to an array
    * of objects to pass down as props to MemeGrid or MemeList
    */
+
   /**
    * Extract query snapshot from Reacts collection to this.state.memes in order
    * to pass as props to MemeList or MemeGrid
    */
   updateFeed = (feedsSnapshot) => {
-    const newMemes = feedsSnapshot.docs.map(async (doc) => {
-      const { likedFrom } = doc.data();
-      return firebase
-        .firestore()
-        .collection(`MemesTest`)
-        .doc(doc.id)
-        .get()
-        .then((memeSnapshot) => {
-          if (memeSnapshot.exists) {
-            const { time, url, caption, author, sub } = memeSnapshot.data();
-            return {
-              key: doc.id,
-              doc, // DocumentSnapshot
-              src: url,
-              time,
-              likedFrom: likedFrom[likedFrom.length - 1],
-              // this is to ensure that if a user changes their reaction to a meme
-              // on their own page that the liked from source is still the same
-              // postedBy: likedFrom,
-              poster: author,
-              sub,
-              caption,
-            };
-          }
-          return null;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      const newMemes = feedsSnapshot.docs.map(async (doc) => {
+      const { likers, posReacts, likedFrom } = doc.data();
+      const recentLikedFrom = likedFrom[likedFrom.length - 1];
+      const recentLiker = likers[likers.length - 1];
+      if (posReacts > 0) {
+        return firebase
+          .firestore()
+          .collection(`MemesTest`)
+          .doc(doc.id)
+          .get()
+          .then((memeSnapshot) => {
+            if (memeSnapshot.exists) {
+              const { time, url, caption, author, sub } = memeSnapshot.data();
+               if (recentLikedFrom != recentLiker) {
+                 return {
+                  key: doc.id,
+                  doc,
+                  src: url,
+                  time,
+                  likedFrom: recentLikedFrom,
+                  postedBy: recentLiker,
+                  poster: recentLiker,
+                  caption,
+               } else {
+                 return {
+                  key: doc.id,
+                  doc,
+                  src: url,
+                  time,
+                  poster: recentLiker,
+                  postedBy: recentLiker,
+                  caption,
+                }
+               }
+            }
+            return null;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     });
+        
+        
     Promise.all(newMemes).then((fulfilledMemes) => {
       this.setState((prevState) => {
         const mergedMemes = prevState.memes.concat(
