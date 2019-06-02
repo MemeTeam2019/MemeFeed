@@ -3,7 +3,6 @@ import numpy as np
 
 firestore = db.db
 
-
 class ItemBasedRecommendation:
     def __init__(self, memes=[]):
         '''Maps each meme_id to the uid of users who have reacted positively
@@ -21,6 +20,7 @@ class ItemBasedRecommendation:
 
     # Fetch all uids from the Users collection
     def get_uids(self):
+        print('Fetching all uids...')
         uids = []
         for user in firestore.collection('Users').stream():
             uids.append(user.id)
@@ -28,6 +28,7 @@ class ItemBasedRecommendation:
 
     # Fetch all meme ids from the Memes collection
     def get_meme_ids(self):
+        print('Fetching all meme_ids...')
         meme_ids = []
         for meme in firestore.collection('Memes').stream():
             meme_ids.append(meme.id)
@@ -44,6 +45,7 @@ class ItemBasedRecommendation:
         return reacts
 
     def get_all_reacts(self):
+        print('Fetching all user reacts...')
         all_reacts = {}
         for uid in self.uids:
             all_reacts[uid] = self.get_user_reacts(uid)
@@ -52,6 +54,7 @@ class ItemBasedRecommendation:
     # Fetch all reacts from the Reacts collection, storing them as a
     # dictionary which maps meme_id -> { uid: rank }
     def build_matrix(self):
+        print('Building rank matrix...')
         matrix = {}
         for uid in self.uids:
             for meme in firestore.collection(f'Reacts/{uid}/Likes').stream():
@@ -85,6 +88,7 @@ class ItemBasedRecommendation:
     # Use similarity ranking (in this case, cosine similarity) to group
     # Similar memes together
     def group_similar_items(self):
+        print('Grouping similar items together...')
         groups = {}
         matrix = self.vectorize_all()
         meme_ids = sorted(matrix)
@@ -133,13 +137,6 @@ class ItemBasedRecommendation:
         except Exception:
             return -1
 
-    def pearson_similarity(self, i, j):
-        numerator = denominator = 0
-        ranks_of_i = self.rank_matrix[i]
-        ranks_of_j = self.rank_matrix[j]
-        for uid in self.uids:
-            numerator += (ranks_of_i[uid] - self.) * ()
-
     # Prints all item_ids and their associated rank vector
     def pretty_print_matrix(self):
         for meme_id, _ in self.rank_matrix.items():
@@ -163,26 +160,28 @@ class ItemBasedRecommendation:
             denominator += similarity
         return np.divide(numerator, denominator)
 
+    # Generate all recommendations as a hashmap, mapping
+    # uid -> [(meme_id, predicted_rank), ... ]
+    def generate_recommendations(self):
+        print('Generating recommendations...')
+        recommendations = {}
+        for uid in self.uids:
+            for meme_id in self.meme_ids:
+                try:
+                    predicted = self.predict_rank(uid, meme_id) - 1
+                    if predicted >= 2:
+                        if uid in recommendations:
+                            recommendations[uid][meme_id] = predicted
+                        else:
+                            recommendations[uid] = { meme_id: predicted }
+                except Exception:
+                    continue
+        return recommendations
+
 
 if __name__ == '__main__':
+    # Example usage
     rec = ItemBasedRecommendation()
-    uids = rec.uids
-    meme_ids = rec.meme_ids
-    recommendations = {}
-    for uid in uids:
-        for meme_id in meme_ids:
-            try:
-                predicted = rec.predict_rank(uid, meme_id) - 1
-                if predicted >= 2:
-                    if uid in recommendations:
-                        recommendations[uid].append((meme_id, predicted))
-                    else:
-                        recommendations[uid] = [(meme_id, predicted)]
-            except Exception:
-                continue
-    for uid, prediction in recommendations.items():
-        print(f'{uid} -> [')
-        for meme_id, rank in prediction:
-            print(' ' * (len(uid) + 7) + f'{rank:.5f} predicted for {meme_id}')
-        print(' ' * (len(uid) + 4) + ']')
-        print()
+    recommendations = rec.generate_recommendations()
+    print(recommendations)
+
