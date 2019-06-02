@@ -8,6 +8,7 @@ import {
   View,
   Button,
   TextInput,
+  Text,
   Keyboard,
   Platform,
 } from 'react-native';
@@ -17,6 +18,7 @@ import Tile from '../components/image/tile';
 // import AddComment from '../components/image/addComment';
 import CommentList from '../components/image/commentList';
 import AtResult from '../components/image/atResult';
+import moment from 'moment';
 
 /**
  * Display comments for a meme, along with the buttonBar and the meme itself.
@@ -411,6 +413,7 @@ class CommentPage extends React.Component {
   // }
 
   render() {
+    const time = this.props.navigation.getParam('time', '');
     const sub = this.props.navigation.getParam('sub', '');
     const likedFrom = this.props.navigation.getParam('likedFrom', '');
     const postedBy = this.props.navigation.getParam('postedBy', '');
@@ -471,8 +474,10 @@ class CommentPage extends React.Component {
                   fetchComments={this.fetchComments}
                   commentsLoaded={this.state.commentsLoaded}
                   commentCount={this.state.commentCount}
+                  time={time}
                 />
               </View>
+
             </ScrollView>
           )}
           {/* please forgive me this is the add comment button stuff all right here*/}
@@ -570,5 +575,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     borderWidth: 0.5,
     borderColor: '#d6d7da',
+  },
+  timestamp: {
+    fontFamily: 'AvenirNext-Regular',
+    fontWeight: '300',
+    color: '#919191',
   },
 });

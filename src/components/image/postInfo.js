@@ -46,13 +46,13 @@ class PostInfo extends React.Component {
    * @param {number} unixTime - Time the meme was posted in unix time
    * @returns {string} Human-readable timestamp
    */
-  convertTime = (unixTime) => {
-    const theMoment = moment.unix(unixTime);
-    if (theMoment.isValid()) {
-      return theMoment.fromNow();
-    }
-    return 'A while ago';
-  };
+    convertTime = (unixTime) => {
+      const theMoment = moment.unix(unixTime);
+      if (theMoment.isValid()) {
+        return theMoment.fromNow();
+      }
+      return 'A while ago';
+    };
 
   /**
    * Handles navigation to the comment page.
@@ -77,9 +77,6 @@ class PostInfo extends React.Component {
             {this.props.reactCount} Reactions
           </Text>
           <Text style={styles.captionText}>{this.props.caption}</Text>
-          <Text style={styles.timestamp}>
-            {this.convertTime(this.props.time)}
-          </Text>
         </View>
       );
     }

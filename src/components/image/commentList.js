@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import Comment from './comment';
+import moment from 'moment';
 
 class CommentList extends React.Component {
   constructor(props) {
@@ -27,6 +28,14 @@ class CommentList extends React.Component {
     );
   };
 
+  convertTime = (unixTime) => {
+    const theMoment = moment.unix(unixTime);
+    if (theMoment.isValid()) {
+      return theMoment.fromNow();
+    }
+    return 'A while ago';
+  };
+
   render() {
     const { comments } = this.props;
     return (
@@ -41,9 +50,12 @@ class CommentList extends React.Component {
           </TouchableOpacity>
         )}
         {/* Map each comment to a comment component */}
-        <View style={{ marginBottom: '20%' }}>
+        <View>
           {comments.map((comment) => this.renderComment(comment))}
         </View>
+        <Text style={styles.timestamp}>
+          {this.convertTime(this.props.time)}
+        </Text>
       </View>
     );
   }
@@ -55,7 +67,7 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     flex: 1,
-    backgroundColor: 'rgba(255,255,255,1)',
+    backgroundColor: 'rgba(255,0,255,1)',
     marginHorizontal: '2.5%',
   },
   loadMoreText: {
@@ -67,5 +79,12 @@ const styles = StyleSheet.create({
   loadMore: {
     justifyContent: 'center',
     alignItems: 'flex-start',
+  },
+  timestamp: {
+    fontFamily: 'AvenirNext-Regular',
+    fontWeight: '300',
+    color: '#919191',
+    marginTop: '5%',
+    marginBottom: '20%'
   },
 });
