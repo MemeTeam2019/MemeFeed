@@ -46,25 +46,36 @@ class PostInfo extends React.Component {
    * @param {number} unixTime - Time the meme was posted in unix time
    * @returns {string} Human-readable timestamp
    */
-    convertTime = (unixTime) => {
-      const theMoment = moment.unix(unixTime);
-      if (theMoment.isValid()) {
-        return theMoment.fromNow();
-      }
-      return 'A while ago';
-    };
+  convertTime = (unixTime) => {
+    const theMoment = moment.unix(unixTime);
+    if (theMoment.isValid()) {
+      return theMoment.fromNow();
+    }
+    return 'A while ago';
+  };
 
   /**
    * Handles navigation to the comment page.
    */
   handleCommentClick = () => {
+    const {
+      memeId,
+      imageUrl,
+      sub,
+      likedFrom,
+      postedBy,
+      poster,
+      time,
+    } = this.props;
+    console.log(this.props);
     this.props.navigation.navigate('Comment', {
-      memeId: this.props.memeId,
-      uri: this.props.imageUrl,
-      sub: this.props.sub,
-      likedFrom: this.props.likedFrom,
-      postedBy: this.props.postedBy,
-      poster: this.props.poster,
+      memeId,
+      uri: imageUrl,
+      sub,
+      likedFrom,
+      postedBy,
+      poster,
+      time,
     });
   };
 

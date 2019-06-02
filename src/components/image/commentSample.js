@@ -25,28 +25,26 @@ class CommentSample extends React.Component {
   }
 
   // function for extracting Firebase responses to the state
-  onCollectionUpdate = (querySnapshot) => {
+  onCollectionUpdate = (commentsSnapshot) => {
     const comments = [];
 
-    querySnapshot.forEach((doc) => {
-      const { text, uid, time, usernamesTagged } = doc.data();
-
+    commentsSnapshot.forEach((commentDoc) => {
+      const { text, uid, time, usernamesTagged } = commentDoc.data();
       firebase
         .firestore()
         .collection('Users')
         .doc(uid)
         .get()
-        .then((doc) => {
-          if (!doc.exists) {
+        .then((userDoc) => {
+          if (!userDoc.exists) {
             console.log(`No such user ${uid} exist!`);
           } else {
-            const { username } = doc.data();
+            const { username } = userDoc.data();
             comments.push({
-              key: doc.id,
-              doc, // DocumentSnapshot
+              key: commentDoc.id,
+              username,
               content: text,
               time,
-              username,
               usernamesTagged: usernamesTagged || [],
             });
 
@@ -70,11 +68,13 @@ class CommentSample extends React.Component {
 
   // Single comment
   renderComment = ({ item }) => {
+    console.log(item);
     return (
       <Comment
+        key={item.key}
+        uid={item.uid}
         username={item.username}
         content={item.content}
-        uid={item.key}
         usernamesTagged={item.usernamesTagged}
       />
     );
@@ -83,7 +83,11 @@ class CommentSample extends React.Component {
   render() {
     return (
       <View style={styles.containerStyle}>
-        <FlatList data={this.state.comments} renderItem={this.renderComment} />
+        <FlatList
+          data={this.state.comments}
+          renderItem={this.renderComment}
+          keyExtractor={(_, index) => index.toString()}
+        />
       </View>
     );
   }

@@ -1,3 +1,4 @@
+/* eslint-disable react/sort-comp */
 import React from 'react';
 import {
   ScrollView,
@@ -42,7 +43,7 @@ class CommentPage extends React.Component {
     this._onPressButton = this._onPressButton.bind(this);
     this.tagPerson = this.tagPerson.bind(this);
     this.state = {
-      imageuri: this.props.navigation.getParam('uri', null),
+      uri: this.props.navigation.getParam('uri', null),
       memeId: this.props.navigation.getParam('memeId', null),
       comments: [],
       commentCount: 0,
@@ -85,9 +86,24 @@ class CommentPage extends React.Component {
         }
       })
       .catch((err) => {
-        //console.log('Error getting document', err);
+        console.log('Error getting document', err);
       });
   }
+
+  /**
+   * Converts the `time` field from the Firebase Meme document to
+   * human-readable time.
+   *
+   * @param {number} unixTime - Time the meme was posted in unix time
+   * @returns {string} Human-readable timestamp
+   */
+  convertTime = (unixTime) => {
+    const theMoment = moment.unix(unixTime);
+    if (theMoment.isValid()) {
+      return theMoment.fromNow();
+    }
+    return 'A while ago';
+  };
 
   /**
    * Fetch the next latest comments based on the oldest comment
@@ -263,7 +279,6 @@ class CommentPage extends React.Component {
             this.setState({
               text: '',
             });
-            console.log(this.props);
             this.handleNewComment(commentRef);
             console.log('Added document with ID: ', commentRef.id);
           });
@@ -413,7 +428,7 @@ class CommentPage extends React.Component {
   // }
 
   render() {
-    const time = this.props.navigation.getParam('time', '');
+    const time = this.props.navigation.getParam('time', -1);
     const sub = this.props.navigation.getParam('sub', '');
     const likedFrom = this.props.navigation.getParam('likedFrom', '');
     const postedBy = this.props.navigation.getParam('postedBy', '');
@@ -458,7 +473,7 @@ class CommentPage extends React.Component {
               <View>
                 <Tile
                   memeId={this.state.memeId}
-                  imageUrl={this.state.imageuri}
+                  imageUrl={this.state.uri}
                   sub={sub}
                   likedFrom={likedFrom}
                   postedBy={postedBy}
@@ -477,7 +492,6 @@ class CommentPage extends React.Component {
                   time={time}
                 />
               </View>
-
             </ScrollView>
           )}
           {/* please forgive me this is the add comment button stuff all right here*/}

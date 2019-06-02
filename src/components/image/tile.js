@@ -69,6 +69,7 @@ class Tile extends React.Component {
               postedBy={this.props.postedBy}
               poster={this.props.poster}
               caption={this.props.caption}
+              time={this.props.time}
             />
           </View>
           <View>
@@ -101,7 +102,7 @@ class Tile extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginBottom: 5
+    marginBottom: 5,
   },
   buttonbar: {
     flexDirection: 'row',

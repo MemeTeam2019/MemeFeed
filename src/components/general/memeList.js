@@ -31,6 +31,7 @@ class MemeList extends React.PureComponent {
         likedFrom={item.likedFrom}
         postedBy={item.postedBy}
         poster={item.poster}
+        time={item.time}
         isSubRedditPg={this.props.isSubRedditPg}
       />
     );
@@ -50,7 +51,7 @@ class MemeList extends React.PureComponent {
           style={styles.container}
           data={this.props.memes}
           extraData={this.props}
-          keyExtractor={(_, index) => index}
+          keyExtractor={(item) => item.key}
           renderItem={this.renderTile}
           onEndReached={() => {
             // Load new memes once end of list is reached
