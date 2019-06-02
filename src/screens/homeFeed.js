@@ -73,19 +73,32 @@ class HomeFeed extends React.Component {
     const newMemes = [];
     querySnapshot.docs.forEach((doc) => {
       const { time, url, posReacts, likedFrom, likers, caption } = doc.data();
+
       if (posReacts > 0) {
         const recentLikedFrom = likedFrom[likedFrom.length - 1];
         const recentLiker = likers[likers.length - 1];
-        newMemes.push({
-          key: doc.id,
-          doc,
-          src: url,
-          time,
-          likedFrom: recentLikedFrom,
-          postedBy: recentLiker,
-          poster: recentLiker,
-          caption,
-        });
+        if (recentLikedFrom != recentLiker) {
+          newMemes.push({
+            key: doc.id,
+            doc,
+            src: url,
+            time,
+            likedFrom: recentLikedFrom,
+            postedBy: recentLiker,
+            poster: recentLiker,
+            caption,
+          });
+        } else {
+          newMemes.push({
+            key: doc.id,
+            doc,
+            src: url,
+            time,
+            poster: recentLiker,
+            postedBy: recentLiker,
+            caption,
+          });
+        }
       }
     });
     this.setState((prevState) => {
