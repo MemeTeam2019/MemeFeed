@@ -126,7 +126,7 @@ class User:
             sum_of_ranks += rank
             number_of_ranks += 1
 
-        self.avg_rank = sum_of_ranks/number_of_ranks if number_of_ranks  != 0 else 0
+        self.avg_rank = sum_of_ranks/number_of_ranks if number_of_ranks != 0 else 0
         return self.avg_rank
 
     def recent_subreddits(self):

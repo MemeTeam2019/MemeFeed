@@ -181,7 +181,5 @@ class ItemBasedRecommendation:
 
 if __name__ == '__main__':
     # Example usage
-    rec = ItemBasedRecommendation()
-    recommendations = rec.generate_recommendations()
-    print(recommendations)
+    rec = ItemBasedRecommendation().generate_recommendations()
 
