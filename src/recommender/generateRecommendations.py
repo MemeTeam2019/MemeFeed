@@ -79,19 +79,22 @@ def consolidateRecommendations(userVotes, itemVotes, subredditVotes):
                         rec_ref.set({
                             'time': modifiedTime,
                             'url': memeData['url'],
-                            'sub': memeData['sub']
+                            'sub': memeData['sub'],
+                            'caption':  memeData['caption']
                         })
                     else:
                         rec_ref.set({
                             'time': modifiedTime,
                             'url': memeData['url'],
-                            'author': memeData['author']
+                            'author': memeData['author'],
+                            'caption':  memeData['caption']
                         })
                 except: 
                     rec_ref.set({
                         'time': modifiedTime,
                         'url': memeData['url'],
-                        'author': memeData['author']
+                        'author': memeData['author'],
+                        'caption':  memeData['caption']
                     })
 
 
