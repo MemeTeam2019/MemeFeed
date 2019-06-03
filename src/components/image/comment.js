@@ -108,8 +108,8 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     fontSize: 16,
     flexDirection: 'row',
-    marginHorizontal: '2.5%',
-    paddingTop: 10,
+    // marginHorizontal: '2.5%',
+    paddingTop: '1.5%',
   },
   usernameText: {
     fontWeight: '700',

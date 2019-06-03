@@ -32,6 +32,7 @@ class MemeList extends React.PureComponent {
         postedBy={item.postedBy}
         poster={item.poster}
         time={item.time}
+        caption={item.caption}
         isSubRedditPg={this.props.isSubRedditPg}
       />
     );

@@ -66,6 +66,7 @@ class PostInfo extends React.Component {
       postedBy,
       poster,
       time,
+      caption,
     } = this.props;
     console.log(this.props);
     this.props.navigation.navigate('Comment', {
@@ -76,6 +77,7 @@ class PostInfo extends React.Component {
       postedBy,
       poster,
       time,
+      caption,
     });
   };
 
@@ -95,16 +97,18 @@ class PostInfo extends React.Component {
     if (this.state.commentCount > 2) {
       return (
         <View style={styles.container}>
-          <Text style={styles.reactionsText}>
-            {this.props.reactCount} Reactions
-          </Text>
-          <Text style={styles.captionText}>{this.props.caption}</Text>
-          <CommentSample memeId={this.props.memeId} />
-          <TouchableOpacity onPress={this.handleCommentClick}>
-            <Text style={styles.commentStringStyle}>
-              {this.state.commentString}
+          <View style={{ marginBottom: '2%'}} >
+            <Text style={styles.reactionsText}>
+              {this.props.reactCount} Reactions
             </Text>
-          </TouchableOpacity>
+            <Text style={styles.captionText}>{this.props.caption}</Text>
+            <CommentSample memeId={this.props.memeId} />
+            <TouchableOpacity onPress={this.handleCommentClick}>
+              <Text style={styles.commentStringStyle}>
+                {this.state.commentString}
+              </Text>
+            </TouchableOpacity>
+          </View>
           <Text style={styles.timestamp}>
             {this.convertTime(this.props.time)}
           </Text>
@@ -114,11 +118,13 @@ class PostInfo extends React.Component {
     // Render just one comment in the sample
     return (
       <View style={styles.container}>
-        <Text style={styles.reactionsText}>
-          {this.props.reactCount} Reactions
-        </Text>
-        <Text style={styles.captionText}>{this.props.caption}</Text>
-        <CommentSample memeId={this.props.memeId} />
+        <View style={{ marginBottom: '2%'}} >
+          <Text style={styles.reactionsText}>
+            {this.props.reactCount} Reactions
+          </Text>
+          <Text style={styles.captionText}>{this.props.caption}</Text>
+          <CommentSample memeId={this.props.memeId} />
+        </View>
         <Text style={styles.timestamp}>
           {this.convertTime(this.props.time)}
         </Text>
@@ -149,6 +155,7 @@ const styles = StyleSheet.create({
   captionText: {
     fontFamily: 'AvenirNext-Regular',
     fontSize: 16,
+    // marginHorizontal: '2.5%',
   },
   timestamp: {
     fontFamily: 'AvenirNext-Regular',

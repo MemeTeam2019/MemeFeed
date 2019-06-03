@@ -433,6 +433,7 @@ class CommentPage extends React.Component {
     const likedFrom = this.props.navigation.getParam('likedFrom', '');
     const postedBy = this.props.navigation.getParam('postedBy', '');
     const poster = this.props.navigation.getParam('poster', '');
+    const caption = this.props.navigation.getParam('caption', '');
 
     return (
       <View>
@@ -478,6 +479,7 @@ class CommentPage extends React.Component {
                   likedFrom={likedFrom}
                   postedBy={postedBy}
                   poster={poster}
+                  caption={caption}
                   showAllComments={this.showAllComments}
                   isSubRedditPg={this.props.navigation.getParam(
                     'isSubRedditPg'

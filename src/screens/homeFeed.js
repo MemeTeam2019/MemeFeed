@@ -98,7 +98,8 @@ class HomeFeed extends React.Component {
                   postedBy: recentLiker,
                   poster: recentLiker,
                   caption,
-               } else {
+                }
+              } else {
                  return {
                   key: doc.id,
                   doc,
@@ -117,8 +118,8 @@ class HomeFeed extends React.Component {
           });
       }
     });
-        
-        
+
+
     Promise.all(newMemes).then((fulfilledMemes) => {
       this.setState((prevState) => {
         const mergedMemes = prevState.memes.concat(

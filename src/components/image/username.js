@@ -67,7 +67,7 @@ class Username extends React.Component {
   render() {
     return (
       <TouchableOpacity onPress={() => this.goToUser()}>
-        <Text style={styles.text}>{this.state.username}</Text>
+        <Text style={styles.text}> {this.state.username}</Text>
       </TouchableOpacity>
     );
   }
