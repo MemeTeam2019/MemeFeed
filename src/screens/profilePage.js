@@ -249,7 +249,7 @@ export default class Profile extends React.Component {
                 }}
                 title='User Settings'
                 options={optionArray}
-                cancelButtonIndex={3}
+                cancelButtonIndex={4}
                 destructiveIndex={0}
                 onPress={(index) => {
                   if (optionArray[index] === 'Log Out') {
@@ -320,7 +320,7 @@ export default class Profile extends React.Component {
                 ref={(o) => (this.ActionSheet = o)}
                 title={'User Settings'}
                 options={optionArray}
-                cancelButtonIndex={3}
+                cancelButtonIndex={4}
                 destructiveIndex={0}
                 onPress={(index) => {
                   if (optionArray[index] == 'Log Out') {
