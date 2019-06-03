@@ -16,7 +16,6 @@ import firebase from 'react-native-firebase';
 import moment from 'moment';
 
 import Tile from '../components/image/tile';
-// import AddComment from '../components/image/addComment';
 import CommentList from '../components/image/commentList';
 import AtResult from '../components/image/atResult';
 

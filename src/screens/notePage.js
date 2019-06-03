@@ -22,6 +22,7 @@ class NotePage extends React.Component {
   constructor(props) {
     super(props);
     this.refreshNotes = this.refreshNotes.bind(this);
+    this.notificationListener = null;
     this.state = {
       notes: [],
       refreshing: true,
@@ -105,7 +106,7 @@ class NotePage extends React.Component {
           loadNotes={this.fetchNotes}
           notes={this.state.notes}
           refreshing={this.state.refreshing}
-          onRefresh={this.refreshNotes}
+          refreshNotes={this.refreshNotes}
         />
       </View>
     );

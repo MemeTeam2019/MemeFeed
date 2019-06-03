@@ -123,5 +123,6 @@ const styles = StyleSheet.create({
     height: 40,
     width: 40,
     resizeMode: 'contain',
+    paddingLeft: '2.5%',
   },
 });

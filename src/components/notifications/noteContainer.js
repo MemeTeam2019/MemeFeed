@@ -52,6 +52,7 @@ class Notification extends React.Component {
           const { url, time, sub, author, caption } = doc.data();
           if (sub) {
             data = {
+              memeId: doc.id,
               key: doc.id,
               doc,
               uri: url,
@@ -62,6 +63,7 @@ class Notification extends React.Component {
             };
           } else {
             data = {
+              memeId: doc.id,
               key: doc.id,
               doc,
               uri: url,
@@ -95,6 +97,7 @@ class Notification extends React.Component {
           const { url, time, sub, author, caption } = doc.data();
           if (sub) {
             data = {
+              memeId: doc.id,
               key: doc.id,
               doc,
               uri: url,
@@ -105,6 +108,7 @@ class Notification extends React.Component {
             };
           } else {
             data = {
+              memeId: doc.id,
               key: doc.id,
               doc,
               uri: url,

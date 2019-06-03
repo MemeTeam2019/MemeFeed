@@ -122,6 +122,7 @@ const styles = StyleSheet.create({
   notificationDot: {
     height: 40,
     width: 40,
-    resizeMode: 'contain',
+    // resizeMode: 'contain',
+    paddingLeft: '2.5%',
   },
 });
