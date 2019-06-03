@@ -75,13 +75,16 @@ class User:
             rank = react_data['rank']
             likedFrom = react_data['likedFrom']
             user_ref = db.collection('Users').document(likedFrom)
-            if likedFrom not in subreddits:
+            try:
+                user_ref.get()
                 if likedFrom not in user_counter:
                     react_data['likedFrom'] = 0
                 if rank >= 2:
                     user_counter[likedFrom] += rank
                 else:
                     user_counter[likedFrom] += rank - 4
+            except:
+                continue
 
         top_users = user_counter.most_common(len(user_counter))
         if len(top_users) >= 1:
@@ -126,7 +129,8 @@ class User:
             sum_of_ranks += rank
             number_of_ranks += 1
 
-        self.avg_rank = sum_of_ranks/number_of_ranks if number_of_ranks != 0 else 0
+        self.avg_rank = sum_of_ranks/number_of_ranks if number_of_ranks  != 0 else 0
+
         return self.avg_rank
 
     def recent_subreddits(self):
