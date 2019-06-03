@@ -20,7 +20,7 @@ class LoadingScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Text style={styles.loadingText}>Loading...</Text>
-        <ActivityIndicator size="large" />
+        <ActivityIndicator size='large' />
       </View>
     );
   }

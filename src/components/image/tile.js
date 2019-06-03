@@ -9,6 +9,27 @@ import TileHeader from './tileHeader';
 import PostInfo from './postInfo';
 import CommentButton from './commentButton';
 
+/** 
+* Component for each meme.
+* Uses tileHeader.js, photo.js, buttonBar.js, postInfo.js
+*
+* Used by:
+*   memeList.js
+*   commentPage.js
+*   tilePage.js
+*   subReddit.js
+*
+* Props:
+*   this.props.sub
+*   this.props.likedFrom
+*   this.props.poster
+*   this.props.memeId
+*   this.props.isSubRedditPg
+*   this.props.imageUrl
+*   this.props.postedBy
+*   this.props.caption
+*   this.props.time
+*/
 class Tile extends React.Component {
   constructor(props) {
     super(props);

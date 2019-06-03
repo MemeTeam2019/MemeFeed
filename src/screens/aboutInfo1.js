@@ -1,5 +1,13 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, Button, ImageBackground, Text, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Button,
+  ImageBackground,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -9,42 +17,43 @@ export default class LoginScreen extends React.Component {
   render() {
     return (
       <View style={StyleSheet.absoluteFill}>
-      <ScrollView>
-      <ImageBackground
-        source={require('../images/white.png')}
-        style={styles.background}
-      >
-        <View style={styles.container}>
-          <Text style={styles.title}>Welcome to</Text>
-          <Text style={styles.title}>MemeFeed</Text>
-        </View>
-        <View style={styles.aboutText}>
-          <Text style={styles.aboutText}>
-            Meme Feed is a place where you can view an endless supply of memes
-            without having to look at any family photos or your ex-coworkers
-            beach photos. (We don't care about your Bahama beach boyfriend
-            Sally!)
-          </Text>
-          <Text style={styles.aboutText}>
-            With memes ranging in all categories, Meme Feed strives to provide
-            the perfect app for meme browsing and finding other memers like
-            you!
-          </Text>
-          <Text style={styles.aboutText2}>
-            Contact us at memefeedaye@gmail.com
-          </Text>
-        </View>
+        <ScrollView>
+          <ImageBackground
+            source={require('../images/white.png')}
+            style={styles.background}
+          >
+            <View style={styles.container}>
+              <Text style={styles.title}>Welcome to</Text>
+              <Text style={styles.title}>MemeFeed</Text>
+            </View>
+            <View style={styles.aboutText}>
+              <Text style={styles.aboutText}>
+                Meme Feed is a place where you can view an endless supply of
+                memes without having to look at any family photos or your
+                ex-coworkers beach photos. (We don't care about your Bahama
+                beach boyfriend Sally!)
+              </Text>
+              <Text style={styles.aboutText}>
+                With memes ranging in all categories, Meme Feed strives to
+                provide the perfect app for meme browsing and finding other
+                memers like you!
+              </Text>
+              <Text style={styles.aboutText2}>
+                Contact us at memefeedaye@gmail.com
+              </Text>
+            </View>
 
-        <View style={styles.nextBut}>
-          <TouchableOpacity onPress={() => this.props.navigation.push('aboutInfo2')}
-                            style={styles.button}>
-              <Text style={styles.button}> Next </Text>
-          </TouchableOpacity>
-        </View>
-      </ImageBackground>
-      </ScrollView>
+            <View style={styles.nextBut}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.push('aboutInfo2')}
+                style={styles.button}
+              >
+                <Text style={styles.button}> Next </Text>
+              </TouchableOpacity>
+            </View>
+          </ImageBackground>
+        </ScrollView>
       </View>
-
     );
   }
 }
@@ -114,7 +123,7 @@ const styles = StyleSheet.create({
     marginRight: '3%',
     //height: '50%'
     justifyContent: 'center',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   background: {
     flex: 1,
@@ -134,5 +143,5 @@ const styles = StyleSheet.create({
     color: 'black',
     marginBottom: 10,
     paddingTop: 20,
-  }
+  },
 });

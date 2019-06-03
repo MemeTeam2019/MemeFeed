@@ -53,12 +53,10 @@ class SubReddit extends React.Component {
     };
   }
 
-
-
   componentDidMount() {
     this._isMounted = true;
-    console.log('==========')
-    console.log(this.props.navigation.getParam('sub'))
+    console.log('==========');
+    console.log(this.props.navigation.getParam('sub'));
     if (this._isMounted) {
       this.unsubscribe = firebase
         .firestore()
@@ -100,13 +98,10 @@ class SubReddit extends React.Component {
         if (a.time > b.time) return -1;
         if (a.time < b.time) return 1;
         return 0;
-      }
+      };
 
-      newMemes.sort(compareTime)
-
+      newMemes.sort(compareTime);
     });
-
-
 
     Promise.all(newMemes).then((resolvedMemes) => {
       this.setState((prevState) => {
@@ -123,8 +118,6 @@ class SubReddit extends React.Component {
 
   //comment sample line 53 (sorting the meme list)
 
-
-
   onGridViewPressedP = () => {
     this.setState({ selectGridButtonP: true });
     this.setState({ selectListButtonP: false });
@@ -134,8 +127,6 @@ class SubReddit extends React.Component {
     this.setState({ selectGridButtonP: false });
     this.setState({ selectListButtonP: true });
   };
-
-
 
   renderItem(item, itemSize, itemPaddingHorizontal) {
     return (
@@ -163,8 +154,7 @@ class SubReddit extends React.Component {
     return <Tile memeId={item.key} imageUrl={item.src} />;
   };
 
-
-render() {
+  render() {
     const optionArray = ['About', 'Privacy Policy', 'Log Out', 'Cancel'];
     // Photo List/Full View of images
     return (
@@ -174,7 +164,10 @@ render() {
             <View style={styles.leftContainer1}>
               <Text style={[styles.text, { textAlign: 'left' }]}>{}</Text>
             </View>
-            <Text style={styles.textSty4}> r/{this.props.navigation.getParam('sub')}</Text>
+            <Text style={styles.textSty4}>
+              {' '}
+              r/{this.props.navigation.getParam('sub')}
+            </Text>
             <View style={styles.rightContainer1}>
               <View style={styles.rightIcon1} />
             </View>
@@ -209,9 +202,17 @@ render() {
           </View>
 
           {this.state.selectListButtonP ? (
-            <MemeList loadMemes={this.fetchMemes} memes={this.state.memes} isSubRedditPg={true}/>
+            <MemeList
+              loadMemes={this.fetchMemes}
+              memes={this.state.memes}
+              isSubRedditPg={true}
+            />
           ) : (
-            <MemeGrid loadMemes={this.fetchMemes} memes={this.state.memes} isSubRedditPg={true}/>
+            <MemeGrid
+              loadMemes={this.fetchMemes}
+              memes={this.state.memes}
+              isSubRedditPg={true}
+            />
           )}
         </ScrollView>
       </React.Fragment>
@@ -401,7 +402,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 10,
-   backgroundColor: 'white',
+    backgroundColor: 'white',
   },
 
   navBar2: {
@@ -437,7 +438,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 10,
     alignItems: 'center',
-        backgroundColor: 'white',
+    backgroundColor: 'white',
   },
   containerStyle2: {
     flex: 2,

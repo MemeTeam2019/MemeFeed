@@ -1,6 +1,14 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Button, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  Button,
+  Platform,
+} from 'react-native';
 
 class PrivacyPolicyScreen extends React.PureComponent {
   static navigationOptions = {
@@ -39,28 +47,27 @@ class PrivacyPolicyScreen extends React.PureComponent {
             consent you are allowed to use this application and we are allowed
             to use your information as outlined in this Privacy Statement.{' '}
             {'\n\n'}
-            3. Comments: when commenting on a post you are allowing Meme
-            Feed to display your comments on a post, no matter it’s location;
-            meaning that when you comment on a post on any page that comment
-            will be forever tied to that meme so anyone can see your comment as
-            long as they are viewing the same meme you commented on.{' '}
-            {'\n\n'}
-            4. Post upload information: when you upload a meme/image and
-            caption to the application you are giving us the right to use and display
-            that given information anywhere on the mobile application. In order to
-            upload a meme/Image Meme Feed requires access to your image library
-            on your device. We only access your image library after you accept Meme
-            Feeds access to your library and when you open the library though the
-            upload image page.{' '}
-            {'\n\n'}
-
+            3. Comments: when commenting on a post you are allowing Meme Feed to
+            display your comments on a post, no matter it’s location; meaning
+            that when you comment on a post on any page that comment will be
+            forever tied to that meme so anyone can see your comment as long as
+            they are viewing the same meme you commented on. {'\n\n'}
+            4. Post upload information: when you upload a meme/image and caption
+            to the application you are giving us the right to use and display
+            that given information anywhere on the mobile application. In order
+            to upload a meme/Image Meme Feed requires access to your image
+            library on your device. We only access your image library after you
+            accept Meme Feeds access to your library and when you open the
+            library though the upload image page. {'\n\n'}
             If you wish you delete your account information and data you can
             contact us at:{' '}
             <Text style={styles.email}>memefeedaye@gmail.com</Text>
           </Text>
-          <TouchableOpacity onPress={() => this.props.navigation.pop()}
-                  style={styles.button}>
-              <Text style={styles.button}> Back </Text>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.pop()}
+            style={styles.button}
+          >
+            <Text style={styles.button}> Back </Text>
           </TouchableOpacity>
         </ScrollView>
       </View>
@@ -108,5 +115,5 @@ const styles = StyleSheet.create({
     color: 'black',
     marginBottom: 10,
     paddingTop: 20,
-  }
+  },
 });

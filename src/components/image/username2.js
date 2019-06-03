@@ -2,7 +2,6 @@ import React from 'react';
 import { Text, StyleSheet, TouchableOpacity, View } from 'react-native';
 import firebase from 'react-native-firebase';
 
-
 /**
  * Touchable username which routes to the friendProfile of the user.
  *
@@ -68,9 +67,7 @@ class Username2 extends React.Component {
   render() {
     return (
       <TouchableOpacity onPress={() => this.goToUser()}>
-
-          <Text style={styles.touchSpace}>{this.state.username}</Text>
-
+        <Text style={styles.touchSpace}>{this.state.username}</Text>
       </TouchableOpacity>
     );
   }
@@ -91,8 +88,8 @@ const styles = StyleSheet.create({
     marginLeft: '2.5%',
     color: '#919191',
     backgroundColor: 'transparent',
-    textAlignVertical: 'top'
-  }
+    textAlignVertical: 'top',
+  },
 });
 
 export default Username2;

@@ -22,7 +22,7 @@ class AtResult extends React.PureComponent {
     return (
       <React.Fragment>
         <TouchableOpacity
-          onPress={() => this.props.onSelect(data.username,uid)}
+          onPress={() => this.props.onSelect(data.username, uid)}
           style={styles.resultContainer}
         >
           <View>

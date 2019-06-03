@@ -13,8 +13,12 @@ class SourceReddit extends React.Component {
     const uid = firebase.auth().currentUser.uid;
     const memeId = this.props.memeId;
     const memeRef = firebase.firestore().doc(`MemesTest/${memeId}`);
-    const feedRef = firebase.firestore().doc(`FeedsTest/${uid}/Likes/${memeId}`);
-    const reactsRef = firebase.firestore().doc(`ReactsTest/${uid}/Likes/${memeId}`);
+    const feedRef = firebase
+      .firestore()
+      .doc(`FeedsTest/${uid}/Likes/${memeId}`);
+    const reactsRef = firebase
+      .firestore()
+      .doc(`ReactsTest/${uid}/Likes/${memeId}`);
 
     memeRef
       .get()
@@ -73,9 +77,9 @@ class SourceReddit extends React.Component {
         sub: this.props.sub,
       });
     } else {
-      this.props.navigation.pop()
+      this.props.navigation.pop();
     }
-  }
+  };
 
   render() {
     const optionArray = ['Inappropriate/Irrelevant', 'Cancel'];
@@ -84,21 +88,21 @@ class SourceReddit extends React.Component {
       <View style={styles.navBar1}>
         <View style={styles.leftContainer1}>
           <View style={styles.container}>
-          <TouchableOpacity onPress={() => this.goToSubreddit()}>
-            <Text
-              style={{
-                fontSize: 15,
-                fontWeight: 'bold',
-                fontStyle: 'italic',
-                color: '#919191',
-                width: 900,
-                marginRight: 2,
-              }}
-            >
-              {' '}
-              'r/{this.props.sub}'
-            </Text>
-          </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.goToSubreddit()}>
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontWeight: 'bold',
+                  fontStyle: 'italic',
+                  color: '#919191',
+                  width: 900,
+                  marginRight: 2,
+                }}
+              >
+                {' '}
+                'r/{this.props.sub}'
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
         <View style={styles.rightContainer1}>
@@ -171,7 +175,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginBottom: 5,
     color: '#919191',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
   },
   touchSpace: {
     padding: 5,
@@ -183,6 +187,6 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
     width: 900,
     marginRight: 2,
-    paddingLeft: 5
-  }
+    paddingLeft: 5,
+  },
 });

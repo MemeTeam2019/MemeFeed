@@ -3,8 +3,27 @@ import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 
 import { withNavigation } from 'react-navigation';
 
+/** 
+ * Comment Button component. 
+ * It is the speech bubble button below the meme next to the button bar
+ * 
+ * Used by:
+ *    tile.js
+ * 
+ * Props:
+ *    this.props.memeId,
+      this.props.imageUrl,
+      this.props.sub,
+      this.props.likedFrom,
+      this.props.postedBy,
+      this.props.poster,
+      this.props.caption,
+      this.props.time,
+*/
+
 class CommentButton extends React.Component {
   handleCommentClick() {
+    // When the button is pressed, it will navigate to Comment.js
     this.props.navigation.navigate('Comment', {
       memeId: this.props.memeId,
       uri: this.props.imageUrl,
@@ -16,7 +35,6 @@ class CommentButton extends React.Component {
       time: this.props.time,
     });
   }
-
   render() {
     return (
       <View style={styles.button}>

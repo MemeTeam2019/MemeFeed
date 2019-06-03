@@ -55,9 +55,11 @@ export default class ConfirmScreen extends React.Component {
           . Check your inbox
         </Text>
         <View style={styles.nextBut}>
-          <TouchableOpacity onPress={() => this.props.navigation.popToTop()}
-                            style={styles.button}>
-              <Text style={styles.button}> Ok </Text>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.popToTop()}
+            style={styles.button}
+          >
+            <Text style={styles.button}> Ok </Text>
           </TouchableOpacity>
         </View>
       </ImageBackground>
@@ -122,5 +124,5 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingTop: 20,
     justifyContent: 'flex-end',
-  }
+  },
 });

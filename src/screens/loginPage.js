@@ -11,7 +11,7 @@ import {
   Dimensions,
   Platform,
   TouchableOpacity,
-  Text
+  Text,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 
@@ -32,12 +32,9 @@ class LoginScreen extends React.Component {
     const password = this.state.password;
 
     if (email === '' || password === '') {
-      Alert.alert('Error', 'Enter Email and Password', [
-        { text: 'OK' },
-      ]);
+      Alert.alert('Error', 'Enter Email and Password', [{ text: 'OK' }]);
       return;
     }
-
 
     firebase
       .auth()
@@ -104,12 +101,16 @@ class LoginScreen extends React.Component {
               secureTextEntry
               onChangeText={(password) => this.setState({ password })}
             />
-            <TouchableOpacity onPress={() => this.handleLogin()}
-                              style={styles.button} >
+            <TouchableOpacity
+              onPress={() => this.handleLogin()}
+              style={styles.button}
+            >
               <Text style={styles.button}>Log In </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.props.navigation.push('Signup')}
-                              style={styles.button} >
+            <TouchableOpacity
+              onPress={() => this.props.navigation.push('Signup')}
+              style={styles.button}
+            >
               <Text style={styles.button}>Sign Up </Text>
             </TouchableOpacity>
           </ScrollView>
@@ -168,8 +169,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 20,
     color: '#fff',
-    marginBottom: 3
-  }
+    marginBottom: 3,
+  },
 });
 
 export default LoginScreen;

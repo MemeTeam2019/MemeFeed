@@ -16,8 +16,7 @@ class PostedByUser extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      iconURL:
-        '',
+      iconURL: '',
     };
   }
 

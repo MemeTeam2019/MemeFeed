@@ -50,9 +50,7 @@ class CommentList extends React.Component {
           </TouchableOpacity>
         )}
         {/* Map each comment to a comment component */}
-        <View>
-          {comments.map((comment) => this.renderComment(comment))}
-        </View>
+        <View>{comments.map((comment) => this.renderComment(comment))}</View>
         <Text style={styles.timestamp}>
           {this.convertTime(this.props.time)}
         </Text>
@@ -85,6 +83,6 @@ const styles = StyleSheet.create({
     fontWeight: '300',
     color: '#919191',
     marginTop: '5%',
-    marginBottom: '20%'
+    marginBottom: '20%',
   },
 });

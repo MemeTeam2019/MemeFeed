@@ -52,7 +52,7 @@ class CaptionPage extends React.Component {
   // this gets the api key from the server
   componentDidMount() {
     //console.log('mouning hnnng')
-    this.pickPhoto()
+    this.pickPhoto();
     this.props.navigation.setParams({ upload: this.handleUpload });
     this.props.navigation.setParams({ back: this.pickPhoto });
     this._isMounted = true;

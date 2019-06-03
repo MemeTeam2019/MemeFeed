@@ -1,5 +1,12 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, Button, ImageBackground, Text } from 'react-native';
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Button,
+  ImageBackground,
+  Text,
+} from 'react-native';
 
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -9,35 +16,36 @@ export default class LoginScreen extends React.Component {
   render() {
     return (
       <View style={StyleSheet.absoluteFill}>
-      <ScrollView>
-      <ImageBackground
-        source={require('../images/white.png')}
-        style={styles.background}
-      >
-        <View style={styles.container}>
-          <Text style={styles.title}>Coming Soon</Text>
-        </View>
-        <View style={styles.aboutText}>
-          <Text style={styles.aboutText}>
-            MemeFeed is current a Beta verison!
-          </Text>
-          <Text style={styles.aboutText}>
-            Be sure to update the app later this year for new features including
-            Meme Uploading, User Tagging, and an all new Meme Recommendation
-            Algorithm for meme suggestions personalized to your meme taste.
-          </Text>
-        </View>
-        <View style={styles.nextBut}>
-          <Button
-            title="Let's Get Started"
-            color='#000'
-            onPress={() =>
-              this.props.navigation.push('Privacy', { signup: true })
-            }
-          />
-        </View>
-      </ImageBackground>
-      </ScrollView>
+        <ScrollView>
+          <ImageBackground
+            source={require('../images/white.png')}
+            style={styles.background}
+          >
+            <View style={styles.container}>
+              <Text style={styles.title}>Coming Soon</Text>
+            </View>
+            <View style={styles.aboutText}>
+              <Text style={styles.aboutText}>
+                MemeFeed is current a Beta verison!
+              </Text>
+              <Text style={styles.aboutText}>
+                Be sure to update the app later this year for new features
+                including Meme Uploading, User Tagging, and an all new Meme
+                Recommendation Algorithm for meme suggestions personalized to
+                your meme taste.
+              </Text>
+            </View>
+            <View style={styles.nextBut}>
+              <Button
+                title="Let's Get Started"
+                color='#000'
+                onPress={() =>
+                  this.props.navigation.push('Privacy', { signup: true })
+                }
+              />
+            </View>
+          </ImageBackground>
+        </ScrollView>
       </View>
     );
   }

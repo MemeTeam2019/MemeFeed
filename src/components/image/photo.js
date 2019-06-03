@@ -4,10 +4,9 @@ import { Dimensions, StyleSheet, View, Image } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 
 class Photo extends React.PureComponent {
-
   constructor(props) {
     super(props);
-    this._isMounted = false
+    this._isMounted = false;
     this.state = {
       width: Dimensions.get('window').width,
       height: 0,
@@ -18,9 +17,9 @@ class Photo extends React.PureComponent {
     this._isMounted = true;
     const memeid = this.props.memeId;
     Image.getSize(this.props.imageUrl, (imageWidth, imageHeight) => {
-      width = Dimensions.get('window').width
-      height = (width/imageWidth)*imageHeight
-      this.setState({width, height})
+      width = Dimensions.get('window').width;
+      height = (width / imageWidth) * imageHeight;
+      this.setState({ width, height });
     });
   }
 
@@ -29,7 +28,6 @@ class Photo extends React.PureComponent {
     this.unsubscribe = null;
   }
 
-
   render() {
     return (
       <View style={styles.modelStyle}>
@@ -37,13 +35,15 @@ class Photo extends React.PureComponent {
           source={{
             uri: this.props.imageUrl,
           }}
-          style={{width: this.state.width, height: this.state.height, resizeMode: 'contain', }}
+          style={{
+            width: this.state.width,
+            height: this.state.height,
+            resizeMode: 'contain',
+          }}
         />
       </View>
     );
   }
-
-
 }
 
 export default Photo;
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fff',
-    borderTopWidth: .5,
+    borderTopWidth: 0.5,
     borderColor: '#D6D6D6',
   },
 });

@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Text,
-  Platform
+  Platform,
 } from 'react-native';
 
 import firebase from 'react-native-firebase';
@@ -25,7 +25,6 @@ export default class EditProfilePic extends React.Component {
       selectedIcon: false,
       icon: '',
     };
-
   }
 
   componentDidMount() {
@@ -42,7 +41,6 @@ export default class EditProfilePic extends React.Component {
           if (docSnapshot.exists) {
             const { icon } = docSnapshot.data();
             this.setState({ icon });
-
           }
         })
         .catch((error) => {
@@ -57,28 +55,27 @@ export default class EditProfilePic extends React.Component {
     }
   }
 
-
   //go back to profile with updated picture
   setPicture = async () => {
     this.props.navigation.push('Profile');
-  }
+  };
 
   render() {
     return (
       <View>
-    <ImageCrop
-      ref={'cropper'}
-      image={this.state.icon }
-      cropHeight={this.state.height}
-      cropWidth={this.state.width}
-      zoom={this.state.zoom}
-      maxZoom={80}
-      minZoom={20}
-      panToMove={true}
-      pinchToZoom={true}
-    />
-    <Text onPress={this.capture()}>Capture()</Text>
-  </View>
+        <ImageCrop
+          ref={'cropper'}
+          image={this.state.icon}
+          cropHeight={this.state.height}
+          cropWidth={this.state.width}
+          zoom={this.state.zoom}
+          maxZoom={80}
+          minZoom={20}
+          panToMove={true}
+          pinchToZoom={true}
+        />
+        <Text onPress={this.capture()}>Capture()</Text>
+      </View>
     );
   }
 }
@@ -111,7 +108,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0.5 },
     shadowOpacity: 0.5,
     shadowRadius: 0.4,
-    color: 'black'
+    color: 'black',
   },
   textButton: {
     fontSize: 20,
@@ -124,7 +121,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignItems: 'center',
     height: 70,
-    color: 'black'
+    color: 'black',
   },
   button: {
     fontSize: 18,
@@ -153,12 +150,11 @@ const styles = StyleSheet.create({
   picture: {
     justifyContent: 'center',
     alignItems: 'center',
-
   },
   doneButton: {
     flex: 1,
     justifyContent: 'center',
     marginTop: 50,
     marginBottom: 36,
-  }
+  },
 });

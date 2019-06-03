@@ -1,14 +1,15 @@
-
 import React from 'react';
-import { StyleSheet,
-         ScrollView,
-         View,
-         Button,
-         ImageBackground,
-         Image,
-         Text,
-         TouchableOpacity,
-         Dimensions } from 'react-native';
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Button,
+  ImageBackground,
+  Image,
+  Text,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 
 export default class LoginScreen extends React.Component {
   static navigationOptions = {
@@ -18,45 +19,46 @@ export default class LoginScreen extends React.Component {
   render() {
     return (
       <View style={StyleSheet.absoluteFill}>
-      <ScrollView>
-      <ImageBackground
-        source={require('../images/white.png')}
-        style={styles.background}
-      >
-        <View style={styles.container}>
-          <Text style={styles.title}>Reactions</Text>
-        </View>
+        <ScrollView>
+          <ImageBackground
+            source={require('../images/white.png')}
+            style={styles.background}
+          >
+            <View style={styles.container}>
+              <Text style={styles.title}>Reactions</Text>
+            </View>
 
-        <View style={styles.aboutText}>
-          <Text style={styles.aboutText}>
-            React to Memes using each of these 5 emojis ranging from LAME to
-            LMFAO.
-          </Text>
-        </View>
+            <View style={styles.aboutText}>
+              <Text style={styles.aboutText}>
+                React to Memes using each of these 5 emojis ranging from LAME to
+                LMFAO.
+              </Text>
+            </View>
 
-        <View style={styles.imageStyle}>
-          <Image
-            source={require('../images/Tile/bar.png')}
-            style={styles.tile}
-          />
-        </View>
+            <View style={styles.imageStyle}>
+              <Image
+                source={require('../images/Tile/bar.png')}
+                style={styles.tile}
+              />
+            </View>
 
-        <View style={styles.aboutText}>
-          <Text style={styles.aboutText}>
-            When you rank a meme with any of the smiling emoji's it will appear
-            on your profile and on your followers' home feed.
-          </Text>
-        </View>
+            <View style={styles.aboutText}>
+              <Text style={styles.aboutText}>
+                When you rank a meme with any of the smiling emoji's it will
+                appear on your profile and on your followers' home feed.
+              </Text>
+            </View>
 
-        <View style={styles.nextBut}>
-          <TouchableOpacity onPress={() => this.props.navigation.push('Confirm')}
-                            style={styles.button}>
-              <Text style={styles.button}> Next </Text>
-          </TouchableOpacity>
-
-        </View>
-      </ImageBackground>
-      </ScrollView>
+            <View style={styles.nextBut}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.push('Confirm')}
+                style={styles.button}
+              >
+                <Text style={styles.button}> Next </Text>
+              </TouchableOpacity>
+            </View>
+          </ImageBackground>
+        </ScrollView>
       </View>
     );
   }
@@ -139,7 +141,7 @@ const styles = StyleSheet.create({
     //marginBottom: '5%',
     //backgroundColor: 'purple',
     marginRight: '1%',
-    marginLeft: '1%'
+    marginLeft: '1%',
   },
   imageStyle: {
     flex: 1,
@@ -152,7 +154,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     justifyContent: 'center',
     width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height*.25,
+    height: Dimensions.get('window').height * 0.25,
     // paddingHorizontal: 20,
     // paddingTop: 10,
     alignItems: 'center',
@@ -167,10 +169,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingTop: 20,
     justifyContent: 'flex-end',
-  }
+  },
 });
-
-
 
 //            onPress={() =>
 //              this.props.navigation.push('Privacy', { signup: true })
