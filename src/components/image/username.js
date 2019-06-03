@@ -78,8 +78,8 @@ export default withNavigation(Username);
 const styles = StyleSheet.create({
   text: {
     fontSize: 16,
-    fontFamily: 'AvenirNext-Bold',
-    marginLeft: '2.5%',
-    color: 'black'
+    color: 'black',
+    fontFamily: 'AvenirNext-Regular',
+    fontWeight: '600',
   },
 });

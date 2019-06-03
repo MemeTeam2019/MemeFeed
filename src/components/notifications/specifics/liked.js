@@ -1,77 +1,74 @@
-import React, { Component } from 'react';
-import {Text, StyleSheet, View, Image, TouchableOpacity} from 'react-native';
-import Username from '../../image/username';
-import ActionSheet from 'react-native-actionsheet';
-
+import React from 'react';
+import { Text, StyleSheet, View, Image } from 'react-native';
 import firebase from 'react-native-firebase';
+import moment from 'moment';
+
+import Username from '../../image/username';
 
 class Followed extends React.Component {
   constructor(props) {
     super(props);
+    this.notificationDot = require('../../../images/notificationDot.png');
     this.state = {
-      username: '',
-      iconURL: ''
-    }
+      iconURL: '',
+    };
   }
 
   componentDidMount() {
     const uid = this.props.uid;
-    const userRef = firebase.firestore().collection("Users").doc(uid);
-    //get the profile icon
+    // Get the profile icon
     firebase
-    .firestore()
-    .collection('Users')
-    .doc(uid)
-    .get()
-    .then((docSnapshot) => {
-      if(docSnapshot.exists) {
-        const { icon } = docSnapshot.data();
-          this.state.iconURL = icon
-        console.log(this.state.iconURL)
-        console.log(icon)
-      }
-      else{
-        console.log("doesn't exist")
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-    userRef.get().then(snapshot => {
-      const data = snapshot.data();
-      this.setState({username: data.username})
-    })
-    .catch(err => console.log(err));
+      .firestore()
+      .collection('Users')
+      .doc(uid)
+      .get()
+      .then((docSnapshot) => {
+        if (docSnapshot.exists) {
+          const { icon } = docSnapshot.data();
+          this.setState({ iconURL: icon });
+        } else {
+          console.log("doesn't exist");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
+
+  /**
+   * Converts the `time` field from the Firebase Meme document to
+   * human-readable time.
+   *
+   * @param {number} unixTime - Time the meme was posted in unix time
+   * @returns {string} Human-readable timestamp
+   */
+  convertTime = (unixTime) => {
+    const theMoment = moment.unix(unixTime);
+    if (theMoment.isValid()) {
+      return theMoment.fromNow();
+    }
+    return 'a while ago';
+  };
 
   render() {
     return (
-
-
-
-
-
       <View style={styles.navBar1}>
-      <View style={styles.leftContainer1}>
-        <View style={styles.container}>
-          <Image
-            style={styles.userImg}
-            source={{uri: this.state.iconURL}}
-          />
-          <Username uid={this.props.uid} navigation={this.props.navigation} />
-          <Text style={{fontSize: 12, fontWeight: 'bold', fontStyle: 'italic', color: '#919191', width: 800}}> reacted to your meme</Text>
+        <View style={styles.leftContainer1}>
+          <View style={styles.container}>
+            <Image
+              style={styles.userImg}
+              source={{ uri: this.state.iconURL }}
+            />
+            <Username uid={this.props.uid} navigation={this.props.navigation} />
+            <Text style={styles.text}>
+              {` reacted to your meme ${this.convertTime(this.props.time)}`}
+            </Text>
+          </View>
         </View>
-        </View>
-
+        {!this.props.viewed && (
+          <Image source={this.notificationDot} style={styles.notificationDot} />
+        )}
       </View>
-
-
-
-
-
-
-
-
     );
   }
 }
@@ -79,62 +76,39 @@ class Followed extends React.Component {
 export default Followed;
 
 const styles = StyleSheet.create({
-   container: {
+  container: {
     flexDirection: 'row',
     backgroundColor: 'transparent',
     width: '100%',
     height: 30,
-    paddingHorizontal: 10,
     alignItems: 'center',
     marginTop: 5,
- 
-  },
-  containerA: {
-    flexDirection: 'column',
-    width: '100%',
-    height: 50,
-    alignItems: 'center',
-    marginTop: 30,
-    borderBottomWidth: .5,
-    borderColor: '#D6D6D6',
-    //borderTopWidth: .5,
-    paddingTop: 7,
   },
   text: {
-    fontSize: 16,
-    fontFamily: 'AvenirNext-Bold',
-    marginLeft: 10
+    fontSize: 12,
+    fontFamily: 'AvenirNext-Regular',
+    color: '#919191',
+    fontWeight: '500',
   },
   userImg: {
     width: 30,
     height: 30,
     borderRadius: 15,
-    marginRight: 2
-  },
-  likedFromImg: {
-    width: 30,
-    height: 25,
-  },
-  button: {
-    flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'flex-end'
   },
   navBar1: {
     height: 70,
-    paddingTop: 10, //50
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     alignItems: 'center',
     borderBottomColor: '#bbb',
+    marginHorizontal: '3%',
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   leftContainer1: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    width: '80%'
+    width: '80%',
   },
   rightContainer1: {
     flex: 1,
@@ -145,19 +119,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     marginRight: 10,
   },
-  rightIcon1: {
-    height: 10,
-    width: 20,
+  notificationDot: {
+    height: 40,
+    width: 40,
     resizeMode: 'contain',
   },
-  report: {
-    fontFamily: 'AvenirNext-Bold',
-    marginRight: 10,
-    fontSize: 20,
-    marginBottom: 5,
-    color: '#919191',
-    backgroundColor: 'white',
-    marginLeft: 2
-  }
-
 });

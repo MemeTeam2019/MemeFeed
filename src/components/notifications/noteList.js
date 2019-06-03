@@ -26,6 +26,7 @@ class NoteList extends React.Component {
         uid={item.uid}
         memeId={item.memeId}
         viewed={item.viewed}
+        time={item.time}
       />
     );
   };

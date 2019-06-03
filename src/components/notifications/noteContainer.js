@@ -6,25 +6,21 @@ import Followed from './specifics/followed';
 import Liked from './specifics/liked';
 import Tagged from './specifics/tagged';
 
-/**
- * Renders the meme poster or the subreddit from which a meme was pulled from.
- *
- * Used by:
- *    tile.js
- *    commentPage.js
- *
- * Props:
- *    sub (String): The subreddit the meme was pulled from.
- *    poster (String): The poster of the meme.
- *    likedFrom (String): The user the liker found the post from.
- */
 class Notification extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      viewed: this.props.viewed,
+    };
+  }
+
   /**
    * Update the 'viewed' field of a notification to true
    */
   updateViewedStatus = () => {
     const myUid = firebase.auth().currentUser.uid;
     const notificationId = this.props.notificationId;
+    this.setState({ viewed: true });
     firebase
       .firestore()
       .doc(`NotificationsTest/${myUid}/Notes/${notificationId}`)
@@ -41,6 +37,9 @@ class Notification extends React.Component {
     });
   };
 
+  /**
+   * Navigate to the meme associated with this notification
+   */
   handleLiked = () => {
     firebase
       .firestore()
@@ -81,6 +80,9 @@ class Notification extends React.Component {
       });
   };
 
+  /**
+   * Navigate to the meme for which the person was tagged in
+   */
   handleTagged = () => {
     firebase
       .firestore()
@@ -126,7 +128,11 @@ class Notification extends React.Component {
     if (this.props.type === 'follow') {
       return (
         <TouchableOpacity onPress={this.handleFollowed}>
-          <Followed uid={this.props.uid} viewed={this.props.viewed} />
+          <Followed
+            uid={this.props.uid}
+            time={this.props.time}
+            viewed={this.state.viewed}
+          />
         </TouchableOpacity>
       );
     }
@@ -135,9 +141,10 @@ class Notification extends React.Component {
       return (
         <TouchableOpacity onPress={this.handleLiked}>
           <Liked
-            meme={this.props.memeId}
+            memeId={this.props.memeId}
             uid={this.props.uid}
-            viewed={this.props.viewed}
+            time={this.props.time}
+            viewed={this.state.viewed}
           />
         </TouchableOpacity>
       );
@@ -146,9 +153,10 @@ class Notification extends React.Component {
     return (
       <TouchableOpacity onPress={this.handleTagged}>
         <Tagged
-          meme={this.props.memeId}
+          memeId={this.props.memeId}
           uid={this.props.uid}
-          viewed={this.props.viewed}
+          time={this.props.time}
+          viewed={this.state.viewed}
         />
       </TouchableOpacity>
     );

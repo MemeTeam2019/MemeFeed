@@ -84,7 +84,7 @@ class Comment extends React.Component {
       <View style={styles.container}>
         <TouchableOpacity onPress={() => this.handleUsernameClick()}>
           <Text style={styles.usernameText}>
-            {this.props.username + '  '}
+            {this.props.username + ' '}
             <TouchableWithoutFeedback onPress={() => console.log('WOO')}>
               <Text>{textChildren}</Text>
             </TouchableWithoutFeedback>
@@ -123,6 +123,5 @@ const styles = StyleSheet.create({
   commentStyle: {
     fontWeight: 'normal',
     color: 'black',
-    fontWeight: '100',
   },
 });
