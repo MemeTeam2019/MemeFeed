@@ -69,46 +69,70 @@ class HomeFeed extends React.Component {
    * Extract a querySnapshot, obtained from the Feeds collection, to an array
    * of objects to pass down as props to MemeGrid or MemeList
    */
-  updateFeed = (querySnapshot) => {
-    const newMemes = [];
-    querySnapshot.docs.forEach((doc) => {
-      const { time, url, posReacts, likedFrom, likers, caption } = doc.data();
 
+  /**
+   * Extract query snapshot from Reacts collection to this.state.memes in order
+   * to pass as props to MemeList or MemeGrid
+   */
+  updateFeed = (feedsSnapshot) => {
+      const newMemes = feedsSnapshot.docs.map(async (doc) => {
+      const { likers, posReacts, likedFrom } = doc.data();
+      const recentLikedFrom = likedFrom[likedFrom.length - 1];
+      const recentLiker = likers[likers.length - 1];
       if (posReacts > 0) {
-        const recentLikedFrom = likedFrom[likedFrom.length - 1];
-        const recentLiker = likers[likers.length - 1];
-        if (recentLikedFrom != recentLiker) {
-          newMemes.push({
-            key: doc.id,
-            doc,
-            src: url,
-            time,
-            likedFrom: recentLikedFrom,
-            postedBy: recentLiker,
-            poster: recentLiker,
-            caption,
+        return firebase
+          .firestore()
+          .collection(`MemesTest`)
+          .doc(doc.id)
+          .get()
+          .then((memeSnapshot) => {
+            if (memeSnapshot.exists) {
+              const { time, url, caption, author, sub } = memeSnapshot.data();
+               if (recentLikedFrom != recentLiker) {
+                 return {
+                  key: doc.id,
+                  doc,
+                  src: url,
+                  time,
+                  likedFrom: recentLikedFrom,
+                  postedBy: recentLiker,
+                  poster: recentLiker,
+                  caption,
+                }
+              } else {
+                 return {
+                  key: doc.id,
+                  doc,
+                  src: url,
+                  time,
+                  poster: recentLiker,
+                  postedBy: recentLiker,
+                  caption,
+                }
+               }
+            }
+            return null;
+          })
+          .catch((error) => {
+            console.log(error);
           });
-        } else {
-          newMemes.push({
-            key: doc.id,
-            doc,
-            src: url,
-            time,
-            poster: recentLiker,
-            postedBy: recentLiker,
-            caption,
-          });
-        }
       }
     });
-    this.setState((prevState) => {
-      const mergedMemes = prevState.memes.concat(newMemes);
-      return {
-        memes: mergedMemes,
-        updated: true,
-        oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
-        refreshing: false,
-      };
+
+
+    Promise.all(newMemes).then((fulfilledMemes) => {
+      this.setState((prevState) => {
+        const mergedMemes = prevState.memes.concat(
+          fulfilledMemes.filter((meme) => meme != null)
+        );
+        console.log(mergedMemes);
+        return {
+          memes: mergedMemes,
+          updated: true,
+          oldestDoc: feedsSnapshot.docs[feedsSnapshot.docs.length - 1],
+          refreshing: false,
+        };
+      });
     });
   };
 
@@ -145,29 +169,6 @@ class HomeFeed extends React.Component {
       inGridView: false,
     });
   };
-
-  renderItem(item, itemSize, itemPaddingHorizontal) {
-    // Single item of Grid
-    return (
-      <TouchableOpacity
-        key={item.id}
-        style={{
-          width: itemSize,
-          height: itemSize,
-          paddingHorizontal: itemPaddingHorizontal,
-        }}
-        onPress={() => {
-          this.ShowModalFunction(true, item.src, item.key);
-        }}
-      >
-        <Image
-          resizeMode='cover'
-          style={{ flex: 1 }}
-          source={{ uri: item.src }}
-        />
-      </TouchableOpacity>
-    );
-  }
 
   render() {
     if (this.state.memes.length === 0 && !this.state.refreshing) {

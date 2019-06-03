@@ -13,6 +13,7 @@ class CommentButton extends React.Component {
       postedBy: this.props.postedBy,
       poster: this.props.poster,
       caption: this.props.caption,
+      time: this.props.time,
     });
   }
 

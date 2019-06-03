@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import Comment from './comment';
+import moment from 'moment';
 
 class CommentList extends React.Component {
   constructor(props) {
@@ -17,15 +18,22 @@ class CommentList extends React.Component {
    */
   renderComment = (item) => {
     return (
-      <View key={item.key}>
-        <Comment
-          key={item.key}
-          uid={item.uid}
-          username={item.username}
-          content={item.content}
-        />
-      </View>
+      <Comment
+        key={item.key}
+        username={item.username}
+        content={item.content}
+        uid={item.uid}
+        usernamesTagged={item.usernamesTagged || []}
+      />
     );
+  };
+
+  convertTime = (unixTime) => {
+    const theMoment = moment.unix(unixTime);
+    if (theMoment.isValid()) {
+      return theMoment.fromNow();
+    }
+    return 'A while ago';
   };
 
   render() {
@@ -42,7 +50,12 @@ class CommentList extends React.Component {
           </TouchableOpacity>
         )}
         {/* Map each comment to a comment component */}
-        {comments.map((comment) => this.renderComment(comment))}
+        <View>
+          {comments.map((comment) => this.renderComment(comment))}
+        </View>
+        <Text style={styles.timestamp}>
+          {this.convertTime(this.props.time)}
+        </Text>
       </View>
     );
   }
@@ -54,17 +67,24 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     flex: 1,
-    backgroundColor: 'rgba(255,255,255,1)',
+    backgroundColor: 'rgba(255,0,255,1)',
     marginHorizontal: '2.5%',
   },
   loadMoreText: {
     fontSize: 15,
     color: 'black',
     fontFamily: 'AvenirNext-Bold',
-    textAlign: 'center',
+    textAlign: 'left',
   },
   loadMore: {
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+  },
+  timestamp: {
+    fontFamily: 'AvenirNext-Regular',
+    fontWeight: '300',
+    color: '#919191',
+    marginTop: '5%',
+    marginBottom: '20%'
   },
 });

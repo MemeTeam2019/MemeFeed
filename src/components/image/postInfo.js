@@ -58,13 +58,26 @@ class PostInfo extends React.Component {
    * Handles navigation to the comment page.
    */
   handleCommentClick = () => {
+    const {
+      memeId,
+      imageUrl,
+      sub,
+      likedFrom,
+      postedBy,
+      poster,
+      time,
+      caption,
+    } = this.props;
+    console.log(this.props);
     this.props.navigation.navigate('Comment', {
-      memeId: this.props.memeId,
-      uri: this.props.imageUrl,
-      sub: this.props.sub,
-      likedFrom: this.props.likedFrom,
-      postedBy: this.props.postedBy,
-      poster: this.props.poster,
+      memeId,
+      uri: imageUrl,
+      sub,
+      likedFrom,
+      postedBy,
+      poster,
+      time,
+      caption,
     });
   };
 
@@ -77,9 +90,6 @@ class PostInfo extends React.Component {
             {this.props.reactCount} Reactions
           </Text>
           <Text style={styles.captionText}>{this.props.caption}</Text>
-          <Text style={styles.timestamp}>
-            {this.convertTime(this.props.time)}
-          </Text>
         </View>
       );
     }
@@ -87,16 +97,18 @@ class PostInfo extends React.Component {
     if (this.state.commentCount > 2) {
       return (
         <View style={styles.container}>
-          <Text style={styles.reactionsText}>
-            {this.props.reactCount} Reactions
-          </Text>
-          <Text style={styles.captionText}>{this.props.caption}</Text>
-          <CommentSample memeId={this.props.memeId} />
-          <TouchableOpacity onPress={this.handleCommentClick}>
-            <Text style={styles.commentStringStyle}>
-              {this.state.commentString}
+          <View style={{ marginBottom: '2%'}} >
+            <Text style={styles.reactionsText}>
+              {this.props.reactCount} Reactions
             </Text>
-          </TouchableOpacity>
+            <Text style={styles.captionText}>{this.props.caption}</Text>
+            <CommentSample memeId={this.props.memeId} />
+            <TouchableOpacity onPress={this.handleCommentClick}>
+              <Text style={styles.commentStringStyle}>
+                {this.state.commentString}
+              </Text>
+            </TouchableOpacity>
+          </View>
           <Text style={styles.timestamp}>
             {this.convertTime(this.props.time)}
           </Text>
@@ -106,11 +118,13 @@ class PostInfo extends React.Component {
     // Render just one comment in the sample
     return (
       <View style={styles.container}>
-        <Text style={styles.reactionsText}>
-          {this.props.reactCount} Reactions
-        </Text>
-        <Text style={styles.captionText}>{this.props.caption}</Text>
-        <CommentSample memeId={this.props.memeId} />
+        <View style={{ marginBottom: '2%'}} >
+          <Text style={styles.reactionsText}>
+            {this.props.reactCount} Reactions
+          </Text>
+          <Text style={styles.captionText}>{this.props.caption}</Text>
+          <CommentSample memeId={this.props.memeId} />
+        </View>
         <Text style={styles.timestamp}>
           {this.convertTime(this.props.time)}
         </Text>
@@ -141,6 +155,7 @@ const styles = StyleSheet.create({
   captionText: {
     fontFamily: 'AvenirNext-Regular',
     fontSize: 16,
+    // marginHorizontal: '2.5%',
   },
   timestamp: {
     fontFamily: 'AvenirNext-Regular',

@@ -142,7 +142,7 @@ class LikedFromReddit extends React.Component {
             <TouchableOpacity onPress={() => this.goToSubreddit()}>
               <Text
                 style={{
-                  fontSize: 12,
+                  fontSize: 13,
                   fontWeight: 'bold',
                   fontStyle: 'italic',
                   color: '#919191',
