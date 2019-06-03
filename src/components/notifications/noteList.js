@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, FlatList } from 'react-native';
+import { StyleSheet, FlatList, RefreshControl } from 'react-native';
 
 import Notification from './noteContainer';
 
@@ -41,6 +41,12 @@ class NoteList extends React.Component {
         onEndReached={() => {
           this.props.loadNotes();
         }}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.props.refreshing}
+            onRefresh={this.props.refreshNotes}
+          />
+        }
       />
     );
   }
