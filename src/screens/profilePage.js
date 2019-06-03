@@ -129,7 +129,7 @@ export default class Profile extends React.Component {
    */
   updateFeed = (reactsSnapshot) => {
     const newMemes = reactsSnapshot.docs.map(async (doc) => {
-      const { likedFrom, rank } = doc.data();
+      const { likedFrom, rank, url } = doc.data();
       return firebase
         .firestore()
         .collection(`MemesTest`)
@@ -137,7 +137,7 @@ export default class Profile extends React.Component {
         .get()
         .then((memeSnapshot) => {
           if (memeSnapshot.exists && rank > 1) {
-            const { time, url, caption } = memeSnapshot.data();
+            const { caption, time } = memeSnapshot.data();
             return {
               key: doc.id,
               doc, // DocumentSnapshot
