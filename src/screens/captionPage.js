@@ -276,27 +276,18 @@ class CaptionPage extends React.Component {
       <View>
       { this.state.isUploading &&
         <View 
-        style={{justifyContent: 'center', alignItems: 'center',}}
-        >
-          <Text 
-          style={{fontSize: 1000 }}>
-            
-          </Text>
-          <Text 
-          style={{fontSize: 1000 }}>
-            
-          </Text>
-          <Text 
-          style={{fontSize: 1000 }}>
-            
-          </Text>
-          
+        style={{justifyContent: 'center', alignItems: 'center', marginTop: '50%',}}
+        >          
           <ActivityIndicator
-            color = "black"
+            color = "#5B5B5B"
             size = "large"
           />
           <Text 
-          style={{color:"black", fontSize: 22,}}>
+          style={{fontSize: 1000 }}>
+            
+          </Text>
+          <Text 
+          style={{color:"#5B5B5B", fontSize: 20,}}>
             Uploading Meme
           </Text>
         </View>
