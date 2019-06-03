@@ -7,6 +7,8 @@ import {
   KeyboardAvoidingView,
   Button,
   ScrollView,
+  Text,
+  ActivityIndicator,
 } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import firebase from 'react-native-firebase';
@@ -37,6 +39,7 @@ class CaptionPage extends React.Component {
     this._isMounted = false;
     this.unsubscribe = null;
     this.state = {
+      isUploading: false,
       api_key: '',
       filename: this.props.navigation.getParam('filename', ''),
       imageuri: this.props.navigation.getParam('imageuri', ''),
@@ -96,12 +99,16 @@ class CaptionPage extends React.Component {
   };
 
   handleUpload = async () => {
+    this.setState({ isUploading: true });
+
     if (!this.state.imageuri) {
+      this.setState({ isUploading: false });
       Alert.alert('Upload Failed', 'Please try again :(');
       return;
     }
 
     if (this.state.caption === '') {
+      this.setState({ isUploading: false });
       Alert.alert('Empty caption! Say something about your meme :)');
       return;
     }
@@ -146,6 +153,7 @@ class CaptionPage extends React.Component {
         let isNSFW = responseJson.responses[0]['safeSearchAnnotation']['adult'];
         // if image is nsfw don't post
         if (isNSFW === 'VERY_LIKELY' || isNSFW === 'LIKELY') {
+          this.setState({ isUploading: false });
           Alert.alert(
             'Upload Error',
             'This image was flagged for showing NSFW content, which goes against our policy. If you think this was a mistake email us at: memefeedaye@gmail.com',
@@ -254,58 +262,79 @@ class CaptionPage extends React.Component {
           this.props.navigation.navigate('Profile', {
             uid: firebase.auth().currentUser.uid,
           });
+          this.setState({ isUploading: false });
         }
       } catch (error) {
+        this.setState({ isUploading: false });
         console.log(error);
       }
     });
   };
 
   render() {
-    // if (this.state.isChosen === false){
-    //   this.pickPhoto()
-    // }
     return (
-      <KeyboardAvoidingView
-        behavior='position'
-        keyboardVerticalOffset={Dimensions.get('window').height * 0.12}
-      >
-        <View>
-          <NavigationEvents
-            onDidFocus={() => {
-              this.setState(
-                {
-                  isChosen: false,
-                  caption: '',
-                  imageuri: '',
-                },
-                () => this.pickPhoto()
-              );
-            }}
+      <View>
+      { this.state.isUploading &&
+        <View 
+        style={{justifyContent: 'center', alignItems: 'center', marginTop: '50%',}}
+        >          
+          <ActivityIndicator
+            color = "#5B5B5B"
+            size = "large"
           />
-          <ScrollView
-            ref={(ref) => {
-              this.scrollView = ref;
-            }}
-          >
-            <View style={styles.conatiner}>
-              <AutoHeightImage
-                style={styles.image}
-                source={{ uri: this.state.imageuri }}
-                width={Dimensions.get('window').width}
-              />
-              <TextInput
-                style={styles.input}
-                placeholder='Enter a Caption'
-                onChangeText={(caption) => this.setState({ caption })}
-                autoCapitalize='none'
-                multiline
-                value={this.state.caption}
-              />
-            </View>
-          </ScrollView>
+          <Text 
+          style={{fontSize: 1000 }}>
+            
+          </Text>
+          <Text 
+          style={{color:"#5B5B5B", fontSize: 20,}}>
+            Uploading Meme
+          </Text>
         </View>
-      </KeyboardAvoidingView>
+      }
+      { !this.state.isUploading &&
+        <KeyboardAvoidingView
+          behavior='position'
+          keyboardVerticalOffset={Dimensions.get('window').height * 0.12}
+        >
+          <View>
+            <NavigationEvents
+              onDidFocus={() => {
+                this.setState(
+                  {
+                    isChosen: false,
+                    caption: '',
+                    imageuri: '',
+                  },
+                  () => this.pickPhoto()
+                );
+              }}
+            />
+            <ScrollView
+              ref={(ref) => {
+                this.scrollView = ref;
+              }}
+            >
+              <View style={styles.conatiner}>
+                <AutoHeightImage
+                  style={styles.image}
+                  source={{ uri: this.state.imageuri }}
+                  width={Dimensions.get('window').width}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder='Enter a Caption'
+                  onChangeText={(caption) => this.setState({ caption })}
+                  autoCapitalize='none'
+                  multiline
+                  value={this.state.caption}
+                />
+              </View>
+            </ScrollView>
+          </View>
+        </KeyboardAvoidingView>
+      }
+      </View>
     );
   }
 }
