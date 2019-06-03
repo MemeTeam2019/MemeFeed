@@ -60,12 +60,11 @@ class NotePage extends React.Component {
   };
 
   updateList = (querySnapshot) => {
-    console.log(querySnapshot);
     const newNotes = [];
     querySnapshot.docs.forEach((doc) => {
       const { type, time, uid, memeId, viewed } = doc.data();
-      console.log(doc.data);
       newNotes.push({
+        notificationId: doc.id,
         type,
         doc,
         uid,
@@ -76,7 +75,6 @@ class NotePage extends React.Component {
     });
 
     Promise.all(newNotes).then((resolvedNotes) => {
-      console.log(resolvedNotes);
       this.setState((prevState) => {
         const mergedNotes = prevState.notes.concat(resolvedNotes);
         return {

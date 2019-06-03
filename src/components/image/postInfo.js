@@ -68,7 +68,6 @@ class PostInfo extends React.Component {
       time,
       caption,
     } = this.props;
-    console.log(this.props);
     this.props.navigation.navigate('Comment', {
       memeId,
       uri: imageUrl,
@@ -97,7 +96,7 @@ class PostInfo extends React.Component {
     if (this.state.commentCount > 2) {
       return (
         <View style={styles.container}>
-          <View style={{ marginBottom: '2%'}} >
+          <View style={{ marginBottom: '2%' }}>
             <Text style={styles.reactionsText}>
               {this.props.reactCount} Reactions
             </Text>
@@ -118,7 +117,7 @@ class PostInfo extends React.Component {
     // Render just one comment in the sample
     return (
       <View style={styles.container}>
-        <View style={{ marginBottom: '2%'}} >
+        <View style={{ marginBottom: '2%' }}>
           <Text style={styles.reactionsText}>
             {this.props.reactCount} Reactions
           </Text>

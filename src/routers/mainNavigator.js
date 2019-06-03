@@ -121,14 +121,11 @@ const NoteStack = createStackNavigator(
     FriendProfile: {
       screen: FriendProfile,
     },
-    Tile: {
-      screen: TilePage,
+    Comment: {
+      screen: CommentPage,
     },
     FollowList: {
       screen: FollowList,
-    },
-    Comment: {
-      screen: CommentPage,
     },
   },
   {

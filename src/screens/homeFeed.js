@@ -75,7 +75,7 @@ class HomeFeed extends React.Component {
    * to pass as props to MemeList or MemeGrid
    */
   updateFeed = (feedsSnapshot) => {
-      const newMemes = feedsSnapshot.docs.map(async (doc) => {
+    const newMemes = feedsSnapshot.docs.map(async (doc) => {
       const { likers, posReacts, likedFrom } = doc.data();
       const recentLikedFrom = likedFrom[likedFrom.length - 1];
       const recentLiker = likers[likers.length - 1];
@@ -87,9 +87,9 @@ class HomeFeed extends React.Component {
           .get()
           .then((memeSnapshot) => {
             if (memeSnapshot.exists) {
-              const { time, url, caption, author, sub } = memeSnapshot.data();
-               if (recentLikedFrom != recentLiker) {
-                 return {
+              const { time, url, caption, reacts } = memeSnapshot.data();
+              if (recentLikedFrom != recentLiker) {
+                return {
                   key: doc.id,
                   doc,
                   src: url,
@@ -98,9 +98,10 @@ class HomeFeed extends React.Component {
                   postedBy: recentLiker,
                   poster: recentLiker,
                   caption,
-                }
+                  reacts,
+                };
               } else {
-                 return {
+                return {
                   key: doc.id,
                   doc,
                   src: url,
@@ -108,8 +109,9 @@ class HomeFeed extends React.Component {
                   poster: recentLiker,
                   postedBy: recentLiker,
                   caption,
-                }
-               }
+                  reacts,
+                };
+              }
             }
             return null;
           })
@@ -118,7 +120,6 @@ class HomeFeed extends React.Component {
           });
       }
     });
-
 
     Promise.all(newMemes).then((fulfilledMemes) => {
       this.setState((prevState) => {

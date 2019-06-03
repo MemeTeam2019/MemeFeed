@@ -14,18 +14,14 @@ import Notification from './noteContainer';
 class NoteList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      imageuri: '',
-      isLoading: true,
-      notes: [],
-    };
+    this.renderNote = this.renderNote.bind(this);
   }
 
   renderNote = ({ item }) => {
     if (!item || !item.type) return null;
-    console.log(item.type);
     return (
       <Notification
+        notificationId={item.notificationId}
         type={item.type}
         uid={item.uid}
         memeId={item.memeId}
@@ -39,7 +35,8 @@ class NoteList extends React.Component {
       <FlatList
         style={styles.containerStyle}
         data={this.props.notes}
-        renderItem={this.renderNote.bind(this)}
+        renderItem={this.renderNote}
+        keyExtractor={(item) => item.notificationId}
         onEndReached={() => {
           this.props.loadNotes();
         }}

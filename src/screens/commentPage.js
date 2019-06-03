@@ -9,17 +9,16 @@ import {
   View,
   Button,
   TextInput,
-  Text,
   Keyboard,
   Platform,
 } from 'react-native';
 import firebase from 'react-native-firebase';
+import moment from 'moment';
 
 import Tile from '../components/image/tile';
 // import AddComment from '../components/image/addComment';
 import CommentList from '../components/image/commentList';
 import AtResult from '../components/image/atResult';
-import moment from 'moment';
 
 /**
  * Display comments for a meme, along with the buttonBar and the meme itself.
