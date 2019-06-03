@@ -141,11 +141,9 @@ class FriendProfile extends React.Component {
   };
 
   updateFeed = (reactsSnapshot) => {
-    console.log('updatging the user feed bish')
     const newMemes = reactsSnapshot.docs.map(async (doc) => {
       const { url, rank, likedFrom } = doc.data();
-      console.log("bish " + doc.data())
-      console.log("bish " + doc.id)
+      console.log("liked From:  " + likedFrom)
       if (rank > 1) {
         return firebase
           .firestore()
@@ -153,19 +151,18 @@ class FriendProfile extends React.Component {
           .doc(doc.id)
           .get()
           .then((memeSnapshot) => {
-            console.log('WE MADE IT ALMOST DONE')
             if (memeSnapshot.exists) {
               const { caption, time } = memeSnapshot.data();
               return {
                 key: doc.id,
-                doc, // DocumentSnapshot
+                doc,
                 src: url,
                 time,
                 likedFrom,
                 // this is to ensure that if a user changes their reaction to a meme
                 // on their own page that the liked from source is still the same
                 postedBy: likedFrom,
-                poster: firebase.auth().currentUser.uid,
+                poster: this.props.navigation.getParam('uid'),
                 caption,
               };
             }

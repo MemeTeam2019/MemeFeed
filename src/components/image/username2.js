@@ -29,6 +29,7 @@ class Username2 extends React.Component {
   }
 
   componentDidMount() {
+    console.log("username2 page"+ (this.props.uid));
     this._isMounted = true;
 
     const ref = firebase
@@ -58,7 +59,7 @@ class Username2 extends React.Component {
         uid: this.props.uid,
       });
     } else {
-      this.props.navigation.navigate('FriendProfile', {
+      this.props.navigation.push('FriendProfile', {
         uid: this.props.uid,
       });
     }
