@@ -107,7 +107,6 @@ class ButtonBar extends React.Component {
     reactRef.get().then((likesSnapshot) => {
       const data = likesSnapshot.data();
       const hasReacted = likesSnapshot.exists && data.rank !== -1;
-      console.log(this.props.postedBy);
       reactRef.set({
         rank: oldReact === newReact ? -1 : newReact,
         time: date,
@@ -119,7 +118,6 @@ class ButtonBar extends React.Component {
         .then(async (memeSnapshot) => {
           const memeData = memeSnapshot.data();
           let newReactCount = 0;
-          console.log(hasReacted);
           if (!hasReacted) {
             newReactCount = memeData.reactCount + 1 || 1;
           } else if (hasReacted && oldReact === newReact) {

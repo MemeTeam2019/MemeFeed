@@ -5,8 +5,9 @@ import firebase from 'react-native-firebase';
 import Comment from './comment';
 
 class CommentSample extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.renderComment = this.renderComment.bind(this);
     this.unsubscribe = null;
     this.state = {
       comments: [],
@@ -16,7 +17,7 @@ class CommentSample extends React.Component {
   componentDidMount() {
     this.unsubscribe = firebase
       .firestore()
-      .collection(`Comments/${this.props.memeId}/Text`)
+      .collection(`CommentsTest/${this.props.memeId}/Text`)
       .orderBy('time', 'desc')
       .limit(2) // we choose decsending to get most recent
       .get()
@@ -24,38 +25,35 @@ class CommentSample extends React.Component {
   }
 
   // function for extracting Firebase responses to the state
-  onCollectionUpdate = (querySnapshot) => {
+  onCollectionUpdate = (commentsSnapshot) => {
     const comments = [];
 
-    querySnapshot.forEach((doc) => {
-      const { text, uid, time } = doc.data();
-      console.log('\n\n\n~~~~~~~~~~~' + text + ' ' + time + ' ' + '\n\n\n');
-
+    commentsSnapshot.forEach((commentDoc) => {
+      const { text, uid, time, usernamesTagged } = commentDoc.data();
       firebase
         .firestore()
         .collection('Users')
         .doc(uid)
         .get()
-        .then((doc) => {
-          if (!doc.exists) {
+        .then((userDoc) => {
+          if (!userDoc.exists) {
             console.log(`No such user ${uid} exist!`);
           } else {
-            const { username } = doc.data();
+            const { username } = userDoc.data();
             comments.push({
-              key: doc.id,
-              doc, // DocumentSnapshot
+              key: commentDoc.id,
+              username,
               content: text,
               time,
-              username,
+              usernamesTagged: usernamesTagged || [],
             });
 
             // resort comments since nested asynchronous function
             const compareTime = (a, b) => {
-              console.log('sorting comments bb');
               if (a.time < b.time) return -1;
               if (a.time > b.time) return 1;
               return 0;
-            }
+            };
 
             this.setState({
               comments: comments.sort(compareTime),
@@ -68,27 +66,27 @@ class CommentSample extends React.Component {
     });
   };
 
-  // componentWillUnmount() {
-  //   this.unsubscribe = null
-  //   this.setState({
-  //     comments: []
-  //   });
-
-  // }
-
-  //Single comment
-  renderComment({ item }) {
+  // Single comment
+  renderComment = ({ item }) => {
+    console.log(item);
     return (
-      <Comment username={item.username} content={item.content} uid={item.key} />
+      <Comment
+        key={item.key}
+        uid={item.uid}
+        username={item.username}
+        content={item.content}
+        usernamesTagged={item.usernamesTagged}
+      />
     );
-  }
+  };
 
   render() {
     return (
       <View style={styles.containerStyle}>
         <FlatList
           data={this.state.comments}
-          renderItem={this.renderComment.bind(this)}
+          renderItem={this.renderComment}
+          keyExtractor={(_, index) => index.toString()}
         />
       </View>
     );

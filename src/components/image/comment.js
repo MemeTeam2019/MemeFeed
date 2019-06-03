@@ -7,26 +7,96 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
+import firebase from 'react-native-firebase';
 
 class Comment extends React.Component {
-  handleUsernameClick() {
-    this.props.navigation.push('FriendProfile', {
+  handleUsernameClick = () => {
+    this.props.navigation.navigate('FriendProfile', {
       uid: this.props.uid,
     });
-  }
+  };
 
-  render() {
+  navigateToUserProfile = (uid) => {
+    this.props.navigation.push('FriendProfile', { uid });
+  };
+
+  parseTags = (content) => {
+    const usernameToId = {};
+    const words = content.split(' ');
+    const usernamesTagged = this.props.usernamesTagged;
+    const textChildren = [];
+    let currStr = '';
+    let found = false;
+    let key = 0;
+
+    usernamesTagged.forEach((username) => {
+      firebase
+        .firestore()
+        .collection('Users')
+        .where('username', '==', username)
+        .get()
+        .then((querySnapshot) => {
+          const userDoc = querySnapshot.docs[0];
+          usernameToId[username] = userDoc.id;
+        });
+    });
+
+    words.forEach((word) => {
+      found = false;
+      for (let i = 0; i < usernamesTagged.length; ++i) {
+        const username = usernamesTagged[i];
+        if (word.indexOf(username) > -1 && word[0] === '@') {
+          found = true;
+          textChildren.push(
+            <Text key={key++} style={styles.commentStyle}>
+              {currStr + ' '}
+            </Text>
+          );
+          textChildren.push(
+            <Text
+              key={key++}
+              style={styles.userText}
+              onPress={() => this.navigateToUserProfile(usernameToId[username])}
+            >
+              {`@${username}`}
+            </Text>
+          );
+          textChildren.push(
+            <Text key={key++} style={styles.commentStyle}>
+              {word.substr(username.length + 1) + ' '}
+            </Text>
+          );
+          currStr = '';
+          break;
+        }
+      }
+      if (!found) {
+        currStr += `${word} `;
+      }
+    });
+    if (currStr !== '')
+      textChildren.push(
+        <Text key={key} style={styles.commentStyle}>
+          {currStr}
+        </Text>
+      );
     return (
       <View style={styles.container}>
         <TouchableOpacity onPress={() => this.handleUsernameClick()}>
-          <Text style={styles.userText}>
-            {this.props.username}
-            <TouchableWithoutFeedback>
-              <Text style={styles.commentStyle}> {this.props.content} </Text>
+          <Text style={styles.usernameText}>
+            {this.props.username + '  '}
+            <TouchableWithoutFeedback onPress={() => console.log('WOO')}>
+              <Text>{textChildren}</Text>
             </TouchableWithoutFeedback>
           </Text>
         </TouchableOpacity>
       </View>
+    );
+  };
+
+  render() {
+    return (
+      <View key={this.props.key}>{this.parseTags(this.props.content)}</View>
     );
   }
 }
@@ -38,16 +108,21 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     fontSize: 16,
     flexDirection: 'row',
-    marginLeft: '2.5%',
-    marginRight: '2.5%',
-    paddingTop: 10,
+    // marginHorizontal: '2.5%',
+    paddingTop: '1.5%',
+  },
+  usernameText: {
+    fontWeight: '700',
+    color: 'black',
   },
   userText: {
-    fontWeight: 'bold',
-    color: 'black'
+    fontWeight: '500',
+    fontStyle: 'italic',
+    color: 'black',
   },
   commentStyle: {
     fontWeight: 'normal',
-    color: 'black'
+    color: 'black',
+    fontWeight: '100',
   },
 });

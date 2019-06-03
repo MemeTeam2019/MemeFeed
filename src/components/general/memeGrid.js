@@ -27,8 +27,8 @@ class MemeGrid extends React.Component {
     if (!data || !data.src) {
       return this._renderPlaceholder(i);
     }
-    const { src, key, sub, likedFrom, postedBy, poster } = data;
-    console.log(data);
+    const { src, key, sub, likedFrom, postedBy, poster, numFlags } = data;
+    if (numFlags >= 10 || src === '') return null;
     return (
       <View style={[styles.item]} key={i}>
         <TouchableOpacity
@@ -43,6 +43,9 @@ class MemeGrid extends React.Component {
               likedFrom,
               postedBy,
               poster,
+              isSubRedditPg: this.props.isSubRedditPg,
+              caption: data.caption,
+              time: data.time,
             });
           }}
         >
@@ -58,13 +61,6 @@ class MemeGrid extends React.Component {
   };
 
   _renderPlaceholder = (i) => <View style={styles.item} key={i} />;
-
-  navigateToTilePage(data) {
-    const { navigation } = this.props;
-    navigation.push('Tile', {
-      memes: [data],
-    });
-  }
 
   render() {
     return (

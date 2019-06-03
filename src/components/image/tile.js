@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { withNavigation } from 'react-navigation';
 import firebase from 'react-native-firebase';
 
 import ButtonBar from './buttonBar';
@@ -12,6 +13,7 @@ class Tile extends React.Component {
   constructor(props) {
     super(props);
     this._isMounted = false;
+    this.unsubscribe = false;
     this.updateReactCount = this.updateReactCount.bind(this);
     this.state = {
       reactCount: 0,
@@ -19,7 +21,6 @@ class Tile extends React.Component {
   }
 
   componentDidMount() {
-    this._isMounted = true;
     const memeid = this.props.memeId;
     const ref = firebase
       .firestore()
@@ -28,10 +29,12 @@ class Tile extends React.Component {
     ref.get().then((docSnapshot) => {
       const data = docSnapshot.data();
       const reactCount = data.reactCount || 0;
-      if (this._isMounted) {
-        this.setState({ reactCount });
-      }
+      this.setState({ reactCount });
     });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe = null;
   }
 
   updateReactCount(newReactCount) {
@@ -44,7 +47,9 @@ class Tile extends React.Component {
         <TileHeader
           sub={this.props.sub}
           likedFrom={this.props.likedFrom}
-          poster={this.props.poster}xp
+          poster={this.props.poster}
+          memeId={this.props.memeId}
+          isSubRedditPg={this.props.isSubRedditPg}
         />
         <Photo imageUrl={this.props.imageUrl} />
         <View
@@ -63,6 +68,8 @@ class Tile extends React.Component {
               likedFrom={this.props.likedFrom}
               postedBy={this.props.postedBy}
               poster={this.props.poster}
+              caption={this.props.caption}
+              time={this.props.time}
             />
           </View>
           <View>
@@ -71,6 +78,7 @@ class Tile extends React.Component {
               memeId={this.props.memeId}
               postedBy={this.props.postedBy}
               updateReacts={this.updateReactCount}
+              caption={this.props.caption}
             />
           </View>
         </View>
@@ -83,6 +91,8 @@ class Tile extends React.Component {
           postedBy={this.props.postedBy}
           poster={this.props.poster}
           showAllComments={this.props.showAllComments}
+          caption={this.props.caption}
+          time={this.props.time}
         />
       </View>
     );
@@ -92,13 +102,11 @@ class Tile extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-    height: '100%',
-    marginBottom: 5
+    marginBottom: 5,
   },
   buttonbar: {
     flexDirection: 'row',
   },
 });
 
-export default Tile;
+export default withNavigation(Tile);

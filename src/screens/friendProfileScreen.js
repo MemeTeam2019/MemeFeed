@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  RefreshControl
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import firebase from 'react-native-firebase';
@@ -44,6 +45,7 @@ class FriendProfile extends React.Component {
       isFollowing: false,
       userExists: false,
       iconURL: '',
+      refreshing: false,
     };
   }
 
@@ -138,32 +140,69 @@ class FriendProfile extends React.Component {
     }
   };
 
-  updateFeed = (querySnapshot) => {
-    const newMemes = [];
-    querySnapshot.docs.forEach((doc) => {
-      const { time, url, rank, likedFrom } = doc.data();
+  updateFeed = (reactsSnapshot) => {
+    console.log('updatging the user feed bish')
+    const newMemes = reactsSnapshot.docs.map(async (doc) => {
+      const { url, rank, likedFrom } = doc.data();
+      console.log("bish " + doc.data())
+      console.log("bish " + doc.id)
       if (rank > 1) {
-        newMemes.push({
-          key: doc.id,
-          doc,
-          src: url,
-          time,
-          likedFrom,
-          postedBy: this.props.navigation.getParam('uid'),
-          poster: this.props.navigation.getParam('uid'),
-        });
-      }
-    });
-
-    Promise.all(newMemes).then((resolvedMemes) => {
-      this.setState((prevState) => {
-        const mergedMemes = prevState.memes.concat(resolvedMemes);
-        return {
-          memes: mergedMemes,
-          updated: true,
-          oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
-        };
+        return firebase
+          .firestore()
+          .collection(`MemesTest`)
+          .doc(doc.id)
+          .get()
+          .then((memeSnapshot) => {
+            console.log('WE MADE IT ALMOST DONE')
+            if (memeSnapshot.exists) {
+              const { caption, time } = memeSnapshot.data();
+              return {
+                key: doc.id,
+                doc, // DocumentSnapshot
+                src: url,
+                time,
+                likedFrom,
+                // this is to ensure that if a user changes their reaction to a meme
+                // on their own page that the liked from source is still the same
+                postedBy: likedFrom,
+                poster: firebase.auth().currentUser.uid,
+                caption,
+              };
+            }
+            return null;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        }
       });
+
+      Promise.all(newMemes).then((fulfilledMemes) => {
+        this.setState((prevState) => {
+          const mergedMemes = prevState.memes.concat(
+            fulfilledMemes.filter((meme) => meme != null)
+          );
+          return {
+            memes: mergedMemes,
+            updated: true,
+            oldestDoc: reactsSnapshot.docs[reactsSnapshot.docs.length - 1],
+            refreshing: false,
+          };
+        });
+      });
+  }
+
+  refreshMemes = () => {
+    this.setState({ memes: [], refreshing: true, oldestDoc: null }, () => {
+      firebase
+        .firestore()
+        .collection('ReactsTest')
+        .doc(this.props.navigation.getParam('uid', ''))
+        .collection('Likes')
+        .orderBy('time', 'desc')
+        .limit(10)
+        .get()
+        .then(this.updateFeed);
     });
   };
 
@@ -234,7 +273,7 @@ class FriendProfile extends React.Component {
 
     // send follow notification to user
     if (nowFollowing) {
-      const theirNoteRef = firebase
+      firebase
         .firestore()
         .collection('NotificationsTest')
         .doc(theirUid)
@@ -275,9 +314,9 @@ class FriendProfile extends React.Component {
             feedRef.get().then(async (feedDoc) => {
               // if this meme is already in this persons feed
               if (feedDoc.exists) {
-                const { posReacts, time } = feedDoc.data();
+                const { posReacts, feedTime } = feedDoc.data();
                 const newPosReacts = posReacts + 1;
-                const recentLikedTime = time;
+                const recentLikedTime = feedTime;
 
                 // if the person we just followed has liked this meme more recently
                 if (recentLikedTime < userLikedTime) {
@@ -370,7 +409,7 @@ class FriendProfile extends React.Component {
   onCollectionUpdate = (querySnapshot) => {
     const memes = [];
     querySnapshot.forEach((doc) => {
-      const { time, url, rank, likedFrom } = doc.data();
+      const { time, url, rank, likedFrom, caption } = doc.data();
       if (rank > 1)
         memes.push({
           key: doc.id,
@@ -380,6 +419,7 @@ class FriendProfile extends React.Component {
           likedFrom,
           postedBy: this.props.navigation.getParam('uid'),
           poster: this.props.navigation.getParam('uid'),
+          caption,
         });
       this.setState({ memes });
     });
@@ -487,7 +527,14 @@ class FriendProfile extends React.Component {
         <View style={styles.navBar}>
           <Text style={styles.textSty4}>{this.state.username}</Text>
         </View>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              onRefresh={this.refreshMemes}
+              refreshing={this.state.refreshing}
+            />
+          }
+        >
           {/* Profile Pic, Follwers, Follwing Block */}
           <View style={styles.navBar2}>
             <View style={styles.leftContainer2}>
