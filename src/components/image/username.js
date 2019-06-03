@@ -81,5 +81,6 @@ const styles = StyleSheet.create({
     color: 'black',
     fontFamily: 'AvenirNext-Regular',
     fontWeight: '600',
+    marginRight: '2.5%',
   },
 });
