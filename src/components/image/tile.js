@@ -16,7 +16,7 @@ class Tile extends React.Component {
     this.unsubscribe = false;
     this.updateReactCount = this.updateReactCount.bind(this);
     this.state = {
-      reactCount: 0,
+      reactCount: this.props.reacts,
     };
   }
 
@@ -24,7 +24,7 @@ class Tile extends React.Component {
     const memeid = this.props.memeId;
     const ref = firebase
       .firestore()
-      .collection('Memes')
+      .collection('MemesTest')
       .doc(memeid);
     ref.get().then((docSnapshot) => {
       const data = docSnapshot.data();
@@ -79,6 +79,7 @@ class Tile extends React.Component {
               postedBy={this.props.postedBy}
               updateReacts={this.updateReactCount}
               caption={this.props.caption}
+              reacts={this.props.reacts}
             />
           </View>
         </View>

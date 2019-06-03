@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, FlatList } from 'react-native';
+import { StyleSheet, FlatList, RefreshControl } from 'react-native';
 
 import Notification from './noteContainer';
 
@@ -14,22 +14,19 @@ import Notification from './noteContainer';
 class NoteList extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      imageuri: '',
-      isLoading: true,
-      notes: [],
-    };
+    this.renderNote = this.renderNote.bind(this);
   }
 
   renderNote = ({ item }) => {
     if (!item || !item.type) return null;
-    console.log(item.type);
     return (
       <Notification
+        notificationId={item.notificationId}
         type={item.type}
         uid={item.uid}
         memeId={item.memeId}
         viewed={item.viewed}
+        time={item.time}
       />
     );
   };
@@ -39,10 +36,17 @@ class NoteList extends React.Component {
       <FlatList
         style={styles.containerStyle}
         data={this.props.notes}
-        renderItem={this.renderNote.bind(this)}
+        renderItem={this.renderNote}
+        keyExtractor={(item) => item.notificationId}
         onEndReached={() => {
           this.props.loadNotes();
         }}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.props.refreshing}
+            onRefresh={this.props.refreshNotes}
+          />
+        }
       />
     );
   }

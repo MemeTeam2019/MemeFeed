@@ -16,19 +16,21 @@ import NoteList from '../components/notifications/noteList';
  */
 class NotePage extends React.Component {
   static navigationOptions = {
-    title: 'NotificationsTest',
+    title: 'Notifications',
   };
 
   constructor(props) {
     super(props);
+    this.refreshNotes = this.refreshNotes.bind(this);
+    this.notificationListener = null;
     this.state = {
-      updated: true,
       notes: [],
+      refreshing: true,
     };
   }
 
   componentDidMount() {
-    this.unsubscribe = firebase
+    firebase
       .firestore()
       .collection('NotificationsTest')
       .doc(firebase.auth().currentUser.uid)
@@ -39,13 +41,8 @@ class NotePage extends React.Component {
       .then(this.updateList);
   }
 
-  fetchNotes = () => {
-    // garentees not uploading duplicate memes by checking if memes have finished
-    // updating
-    if (this.state.updated) {
-      console.log(firebase.auth().currentUser.uid);
-      this.state.updated = false;
-      const oldestDoc = this.state.oldestDoc;
+  refreshNotes = () => {
+    this.setState({ refreshing: true, notes: [], oldestDoc: null }, () => {
       firebase
         .firestore()
         .collection('NotificationsTest')
@@ -53,19 +50,33 @@ class NotePage extends React.Component {
         .collection('Notes')
         .orderBy('time', 'desc')
         .limit(15)
-        .startAfter(oldestDoc)
         .get()
         .then(this.updateList);
-    }
+    });
+  };
+
+  fetchNotes = () => {
+    // garentees not uploading duplicate memes by checking if memes have finished
+    // updating
+    const oldestDoc = this.state.oldestDoc;
+    firebase
+      .firestore()
+      .collection('NotificationsTest')
+      .doc(firebase.auth().currentUser.uid)
+      .collection('Notes')
+      .orderBy('time', 'desc')
+      .limit(15)
+      .startAfter(oldestDoc)
+      .get()
+      .then(this.updateList);
   };
 
   updateList = (querySnapshot) => {
-    console.log(querySnapshot);
     const newNotes = [];
     querySnapshot.docs.forEach((doc) => {
       const { type, time, uid, memeId, viewed } = doc.data();
-      console.log(doc.data);
       newNotes.push({
+        notificationId: doc.id,
         type,
         doc,
         uid,
@@ -76,13 +87,12 @@ class NotePage extends React.Component {
     });
 
     Promise.all(newNotes).then((resolvedNotes) => {
-      console.log(resolvedNotes);
       this.setState((prevState) => {
         const mergedNotes = prevState.notes.concat(resolvedNotes);
         return {
           notes: mergedNotes,
-          updated: true,
           oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+          refreshing: false,
         };
       });
     });
@@ -92,7 +102,12 @@ class NotePage extends React.Component {
     return (
       <View style={styles.containerStyle}>
         {/* List View */}
-        <NoteList loadNotes={this.fetchNotes} notes={this.state.notes} />
+        <NoteList
+          loadNotes={this.fetchNotes}
+          notes={this.state.notes}
+          refreshing={this.state.refreshing}
+          refreshNotes={this.refreshNotes}
+        />
       </View>
     );
   }
