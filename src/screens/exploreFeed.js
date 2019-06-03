@@ -53,7 +53,7 @@ class ExploreFeed extends React.Component {
         .firestore()
         .collection('MemesTest')
         .orderBy('time', 'desc')
-        .limit(7)
+        .limit(14)
         .get()
         .then((memesSnap) => {
           firebase
@@ -62,7 +62,7 @@ class ExploreFeed extends React.Component {
             .doc(firebase.auth().currentUser.uid)
             .collection('Memes')
             .orderBy('time', 'desc')
-            .limit(8)
+            .limit(16)
             .get()
             .then((recsSnap) => this.updateFeed(memesSnap, recsSnap));
         });
@@ -135,6 +135,20 @@ class ExploreFeed extends React.Component {
   updateFeed = (memesSnapshot, recsSnapshot) => {
     const newMemes = [];
 
+
+    // recsSnapshot.docs.forEach((doc) => {
+    //   const { url, time, sub, caption } = doc.data();
+    //   newMemes.push({
+    //     key: doc.id,
+    //     doc,
+    //     src: url,
+    //     time,
+    //     sub,
+    //     postedBy: sub,
+    //     caption,
+    //   });
+    // });
+
     memesSnapshot.docs.forEach((doc) => {
       const { url, time, sub, author, caption } = doc.data();
       if (sub) {
@@ -159,19 +173,6 @@ class ExploreFeed extends React.Component {
         });
       }
     });
-
-    // recsSnapshot.docs.forEach((doc) => {
-    //   const { url, time, sub, caption } = doc.data();
-    //   newMemes.push({
-    //     key: doc.id,
-    //     doc,
-    //     src: url,
-    //     time,
-    //     sub,
-    //     postedBy: sub,
-    //     caption,
-    //   });
-    // });
 
     Promise.all(newMemes).then((resolvedMemes) => {
       this.setState((prevState) => {
