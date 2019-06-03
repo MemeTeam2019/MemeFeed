@@ -57,25 +57,6 @@ export default class EditProfilePic extends React.Component {
     }
   }
 
-
-
-  // const docId = firebase.auth().currentUser.uid+Math.round(+new Date() / 1000)
-  // const storRef = firebase.storage().ref('User_Icon').child(docId;
-  // const response = await storRef.putFile(this.state.icon);
-  //
-  // storRef.getDownloadURL().then( async (newurl) => {
-  // firebase
-  //   .firestore()
-  //   .collection('Users')
-  //   .doc(firebase.auth().currentUser.uid)
-  //   .update({
-  //     icon: newurl,
-  //   });
-  // }
-
-
-
-
   //open up the image picker, select image, and have it get updated in firebase
   chooseFile = () => {
     var options = {
@@ -84,7 +65,7 @@ export default class EditProfilePic extends React.Component {
 
     ImagePicker.launchImageLibrary(options, async (response) => {
       console.log('Response = ', response);
-
+      //if user selects an image, stored under response.uri
       if(response.uri){
         console.log(response.uri);
         this.setState({ icon: response.uri,
@@ -94,9 +75,9 @@ export default class EditProfilePic extends React.Component {
         const docId = firebase.auth().currentUser.uid+"profile"
         const storRef = firebase.storage().ref('User_Icon').child(docId);
         const filePut = await storRef.putFile(path);
-
+        //convert uri into url and store in firebase
         storRef.getDownloadURL().then( async (newurl) => {
-
+          //update firebase with new icon
           firebase
             .firestore()
             .collection('Users')
@@ -107,7 +88,7 @@ export default class EditProfilePic extends React.Component {
             console.log("CONVERTING URL DONE");
         })
     }
-
+      //errors for image picker
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.error) {
@@ -129,12 +110,9 @@ export default class EditProfilePic extends React.Component {
 
   //go back to profile with updated picture
   setPicture = async () => {
-    this.props.navigation.pop();
+    this.props.navigation.push('Profile');
   }
 
-  goCrop = async () => {
-    this.props.navigation.push('Crop');
-  }
 
   render() {
     return (

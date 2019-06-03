@@ -185,11 +185,11 @@ def main():
 
     # get recommendations
     userVotes = generateRecommendationsByUser(userVectors, userReactions, userAverageReactions)
-    # itemVotes = ''
+    itemVotes = ItemBasedRecommendation().generate_recommendations()
     # subredditsVotes = ''
     #
     # vote on recommendations
-    orderedRecommendations = consolidateRecommendations(userVotes, userVotes, userVotes)
+    # orderedRecommendations = consolidateRecommendations(userVotes, userVotes, userVotes)
 
     # return orderedRecommendations
 
@@ -201,3 +201,4 @@ class MemeData(object):
     def __init__(self, url, sub):
         self.url = url
         self.sub = sub
+

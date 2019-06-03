@@ -140,33 +140,57 @@ class FriendProfile extends React.Component {
     }
   };
 
-  updateFeed = (querySnapshot) => {
-    querySnapshot.docs.forEach((doc) => {
-      const { time, url, rank, likedFrom, caption } = doc.data();
-      const newMemes = [];
+  updateFeed = (reactsSnapshot) => {
+    console.log('updatging the user feed bish')
+    const newMemes = reactsSnapshot.docs.map(async (doc) => {
+      const { url, rank, likedFrom } = doc.data();
+      console.log("bish " + doc.data())
+      console.log("bish " + doc.id)
       if (rank > 1) {
-        newMemes.push({
-          key: doc.id,
-          doc,
-          src: url,
-          time,
-          likedFrom,
-          caption,
-          postedBy: this.props.navigation.getParam('uid'),
-          poster: this.props.navigation.getParam('uid'),
-        });
+        return firebase
+          .firestore()
+          .collection(`MemesTest`)
+          .doc(doc.id)
+          .get()
+          .then((memeSnapshot) => {
+            console.log('WE MADE IT ALMOST DONE')
+            if (memeSnapshot.exists) {
+              const { caption, time } = memeSnapshot.data();
+              return {
+                key: doc.id,
+                doc, // DocumentSnapshot
+                src: url,
+                time,
+                likedFrom,
+                // this is to ensure that if a user changes their reaction to a meme
+                // on their own page that the liked from source is still the same
+                postedBy: likedFrom,
+                poster: firebase.auth().currentUser.uid,
+                caption,
+              };
+            }
+            return null;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+        }
+      });
+
+      Promise.all(newMemes).then((fulfilledMemes) => {
         this.setState((prevState) => {
-          const mergedMemes = prevState.memes.concat(newMemes);
+          const mergedMemes = prevState.memes.concat(
+            fulfilledMemes.filter((meme) => meme != null)
+          );
           return {
             memes: mergedMemes,
             updated: true,
-            oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+            oldestDoc: reactsSnapshot.docs[reactsSnapshot.docs.length - 1],
             refreshing: false,
           };
         });
-      }
-    });
-  };
+      });
+  }
 
   refreshMemes = () => {
     this.setState({ memes: [], refreshing: true, oldestDoc: null }, () => {
