@@ -636,7 +636,7 @@ export default withNavigation(FriendProfile);
 // import friend grid and pass the uid as a prop instead of the <ProfileGrid/> component ^^^
 const styles = StyleSheet.create({
   containerStyle: {
-    flex: 0,
+    flex: 1,
     backgroundColor: '#ffffff',
   },
   headerSty: {
