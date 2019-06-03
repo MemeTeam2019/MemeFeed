@@ -16,7 +16,7 @@ import NoteList from '../components/notifications/noteList';
  */
 class NotePage extends React.Component {
   static navigationOptions = {
-    title: 'NotificationsTest',
+    title: 'Notifications',
   };
 
   constructor(props) {

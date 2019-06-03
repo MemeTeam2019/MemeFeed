@@ -88,7 +88,7 @@ class HomeFeed extends React.Component {
           .then((memeSnapshot) => {
             if (memeSnapshot.exists) {
               const { time, url, caption, reacts } = memeSnapshot.data();
-              if (recentLikedFrom != recentLiker) {
+              if (recentLikedFrom !== recentLiker) {
                 return {
                   key: doc.id,
                   doc,
@@ -100,18 +100,17 @@ class HomeFeed extends React.Component {
                   caption,
                   reacts,
                 };
-              } else {
-                return {
-                  key: doc.id,
-                  doc,
-                  src: url,
-                  time,
-                  poster: recentLiker,
-                  postedBy: recentLiker,
-                  caption,
-                  reacts,
-                };
               }
+              return {
+                key: doc.id,
+                doc,
+                src: url,
+                time,
+                poster: recentLiker,
+                postedBy: recentLiker,
+                caption,
+                reacts,
+              };
             }
             return null;
           })
@@ -126,7 +125,6 @@ class HomeFeed extends React.Component {
         const mergedMemes = prevState.memes.concat(
           fulfilledMemes.filter((meme) => meme != null)
         );
-        console.log(mergedMemes);
         return {
           memes: mergedMemes,
           updated: true,

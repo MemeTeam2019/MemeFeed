@@ -165,7 +165,7 @@ class CaptionPage extends React.Component {
             time: Math.round(+new Date() / 1000),
             score: 0,
             caption: this.state.caption,
-            reacts: 0,
+            reacts: 1,
           });
           // .then(function(meme) {
           console.log('Document written with ID: ', docId);

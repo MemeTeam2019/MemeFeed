@@ -22,7 +22,7 @@ class Notification extends React.Component {
   /**
    * Update the 'viewed' field of a notification to true
    */
-  updateSeenStatus = () => {
+  updateViewedStatus = () => {
     const myUid = firebase.auth().currentUser.uid;
     const notificationId = this.props.notificationId;
     firebase
@@ -35,6 +35,7 @@ class Notification extends React.Component {
    * Navigate to the profile of the person who followed you
    */
   handleFollowed = () => {
+    this.updateViewedStatus();
     this.props.navigation.push('FriendProfile', {
       uid: this.props.uid,
     });
@@ -48,26 +49,31 @@ class Notification extends React.Component {
       .get()
       .then((doc) => {
         if (doc.exists) {
-          const {
-            src,
-            time,
-            sub,
-            caption,
-            likedFrom,
-            postedBy,
-            poster,
-          } = doc.data();
-          console.log(doc.data());
-          this.props.navigation.push('Comment', {
-            memeId: doc.id,
-            uri: src,
-            sub,
-            likedFrom,
-            postedBy,
-            poster,
-            caption,
-            time,
-          });
+          let data = {};
+          const { url, time, sub, author, caption } = doc.data();
+          if (sub) {
+            data = {
+              key: doc.id,
+              doc,
+              uri: url,
+              time,
+              sub,
+              postedBy: sub,
+              caption,
+            };
+          } else {
+            data = {
+              key: doc.id,
+              doc,
+              uri: url,
+              time,
+              poster: author,
+              postedBy: author,
+              caption,
+            };
+          }
+          this.updateViewedStatus();
+          this.props.navigation.push('Comment', data);
         }
       })
       .catch((err) => {
@@ -83,9 +89,30 @@ class Notification extends React.Component {
       .get()
       .then((doc) => {
         if (doc.exists) {
-          const { url, time, sub } = doc.data();
-          const data = { key: doc.id, doc, src: url, time, sub, postedBy: sub };
-          console.log(data);
+          let data = {};
+          const { url, time, sub, author, caption } = doc.data();
+          if (sub) {
+            data = {
+              key: doc.id,
+              doc,
+              uri: url,
+              time,
+              sub,
+              postedBy: sub,
+              caption,
+            };
+          } else {
+            data = {
+              key: doc.id,
+              doc,
+              uri: url,
+              time,
+              poster: author,
+              postedBy: author,
+              caption,
+            };
+          }
+          this.updateViewedStatus();
           this.props.navigation.push('Comment', data);
         }
       })
