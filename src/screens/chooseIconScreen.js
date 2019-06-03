@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Text,
-  Platform,
+  Platform
 } from 'react-native';
 
 import firebase from 'react-native-firebase';
@@ -16,9 +16,12 @@ export default class LoginScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
-
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
+    this.state = {
+      selectedIcon: false,
+      icon: '',
+    };
     this.iconImages = {
       1: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon777.png?alt=media&token=715029a5-662d-4a5b-ab03-6d677fd63697',
       2: 'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon666.png?alt=media&token=86089f45-4d4d-4604-b6e8-fa1d30269549',
@@ -194,10 +197,8 @@ export default class LoginScreen extends React.Component {
         </View>
 
         <View style={styles.nextBut}>
-          <TouchableOpacity
-            onPress={this._onNextButton.bind()}
-            style={styles.button}
-          >
+          <TouchableOpacity onPress={this._onNextButton.bind()}
+                  style={styles.button}>
             <Text style={styles.button}> Next </Text>
           </TouchableOpacity>
         </View>
@@ -234,7 +235,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0.5 },
     shadowOpacity: 0.5,
     shadowRadius: 0.4,
-    color: 'black',
+    color: 'black'
   },
   aboutText: {
     fontSize: 18,
@@ -305,5 +306,5 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingTop: 20,
     justifyContent: 'flex-end',
-  },
+  }
 });
