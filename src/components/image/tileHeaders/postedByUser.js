@@ -81,7 +81,6 @@ class PostedByUser extends React.Component {
       <View style={styles.navBar1}>
         <View style={styles.leftContainer1}>
           <View style={styles.container}>
-            <Text style={styles.text}> Posted by </Text>
             <Image
               style={styles.userImg}
               source={{ uri: this.state.iconURL }}

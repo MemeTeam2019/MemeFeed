@@ -72,6 +72,8 @@ class SourceReddit extends React.Component {
       this.props.navigation.push('SubReddit', {
         sub: this.props.sub,
       });
+    } else {
+      this.props.navigation.pop()
     }
   }
 
@@ -82,7 +84,7 @@ class SourceReddit extends React.Component {
       <View style={styles.navBar1}>
         <View style={styles.leftContainer1}>
           <View style={styles.container}>
-            <Text style={{ fontSize: 15 }}>sourced from </Text>
+          <TouchableOpacity onPress={() => this.goToSubreddit()}>
             <Text
               style={{
                 fontSize: 15,
@@ -96,6 +98,7 @@ class SourceReddit extends React.Component {
               {' '}
               'r/{this.props.sub}'
             </Text>
+          </TouchableOpacity>
           </View>
         </View>
         <View style={styles.rightContainer1}>

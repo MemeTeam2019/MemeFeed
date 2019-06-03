@@ -127,33 +127,48 @@ export default class Profile extends React.Component {
    * Extract query snapshot from Reacts collection to this.state.memes in order
    * to pass as props to MemeList or MemeGrid
    */
-  updateFeed = (querySnapshot) => {
-    const newMemes = [];
-    querySnapshot.docs.forEach((doc) => {
-      const { time, url, rank, likedFrom, caption } = doc.data();
-      if (rank > 1) {
-        newMemes.push({
-          key: doc.id,
-          doc, // DocumentSnapshot
-          src: url,
-          time,
-          likedFrom,
-          // this is to ensure that if a user changes their reaction to a meme
-          // on their own page that the liked from source is still the same
-          postedBy: likedFrom,
-          poster: firebase.auth().currentUser.uid,
-          caption,
+  updateFeed = (reactsSnapshot) => {
+    const newMemes = reactsSnapshot.docs.map(async (doc) => {
+      const { likedFrom, rank } = doc.data();
+      return firebase
+        .firestore()
+        .collection(`MemesTest`)
+        .doc(doc.id)
+        .get()
+        .then((memeSnapshot) => {
+          if (memeSnapshot.exists && rank > 1) {
+            const { time, url, caption } = memeSnapshot.data();
+            return {
+              key: doc.id,
+              doc, // DocumentSnapshot
+              src: url,
+              time,
+              likedFrom,
+              // this is to ensure that if a user changes their reaction to a meme
+              // on their own page that the liked from source is still the same
+              postedBy: likedFrom,
+              poster: firebase.auth().currentUser.uid,
+              caption,
+            };
+          }
+          return null;
+        })
+        .catch((error) => {
+          console.log(error);
         });
-      }
     });
-    this.setState((prevState) => {
-      const mergedMemes = prevState.memes.concat(newMemes);
-      return {
-        memes: mergedMemes,
-        updated: true,
-        oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
-        refreshing: false,
-      };
+    Promise.all(newMemes).then((fulfilledMemes) => {
+      this.setState((prevState) => {
+        const mergedMemes = prevState.memes.concat(
+          fulfilledMemes.filter((meme) => meme != null)
+        );
+        return {
+          memes: mergedMemes,
+          updated: true,
+          oldestDoc: reactsSnapshot.docs[reactsSnapshot.docs.length - 1],
+          refreshing: false,
+        };
+      });
     });
   };
 
@@ -204,7 +219,13 @@ export default class Profile extends React.Component {
   };
 
   render() {
-    const optionArray = ['About', 'Edit Profile Picture', 'Privacy Policy', 'Log Out', 'Cancel'];
+    const optionArray = [
+      'About',
+      'Edit Profile Picture',
+      'Privacy Policy',
+      'Log Out',
+      'Cancel',
+    ];
 
     if (this.state.memes.length === 0 && !this.state.refreshing) {
       return (
@@ -237,7 +258,7 @@ export default class Profile extends React.Component {
                     this.props.navigation.push('InfoStack');
                   } else if (optionArray[index] === 'Privacy Policy') {
                     this.props.navigation.push('Privacy');
-                  } else if (optionArray[index] === 'Edit Profile Picture'){
+                  } else if (optionArray[index] === 'Edit Profile Picture') {
                     this.props.navigation.push('ProfilePic');
                   }
                 }}
@@ -308,7 +329,7 @@ export default class Profile extends React.Component {
                     this.props.navigation.push('InfoStack');
                   } else if (optionArray[index] == 'Privacy Policy') {
                     this.props.navigation.push('Privacy');
-                  }else if (optionArray[index] === 'Edit Profile Picture'){
+                  } else if (optionArray[index] === 'Edit Profile Picture') {
                     this.props.navigation.push('ProfilePic');
                   }
                 }}

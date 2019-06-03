@@ -1,12 +1,13 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, FlatList } from 'react-native';
 import firebase from 'react-native-firebase';
 
 import Comment from './comment';
 
 class CommentSample extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    this.renderComment = this.renderComment.bind(this);
     this.unsubscribe = null;
     this.state = {
       comments: [],
@@ -20,36 +21,31 @@ class CommentSample extends React.Component {
       .orderBy('time', 'desc')
       .limit(2) // we choose decsending to get most recent
       .get()
-      .then(this.updateComments);
+      .then(this.onCollectionUpdate);
   }
 
-  /**
-   * Extract information for each comment into this.state.comments
-   *
-   * @param {QuerySnapshot} commentsSnapshot: from `CommentsTest/{uid}/Text`
-   * @returns {null}
-   */
-  updateComments = (commentsSnapshot) => {
+  // function for extracting Firebase responses to the state
+  onCollectionUpdate = (commentsSnapshot) => {
     const comments = [];
-    commentsSnapshot.forEach((doc) => {
-      const { text, uid, time } = doc.data();
+
+    commentsSnapshot.forEach((commentDoc) => {
+      const { text, uid, time, usernamesTagged } = commentDoc.data();
       firebase
         .firestore()
         .collection('Users')
         .doc(uid)
         .get()
         .then((userDoc) => {
-          if (!doc.exists) {
+          if (!userDoc.exists) {
             console.log(`No such user ${uid} exist!`);
           } else {
             const { username } = userDoc.data();
             comments.push({
-              key: doc.id,
-              uid,
-              userDoc, // DocumentSnapshot
+              key: commentDoc.id,
+              username,
               content: text,
               time,
-              username,
+              usernamesTagged: usernamesTagged || [],
             });
 
             // resort comments since nested asynchronous function
@@ -68,33 +64,30 @@ class CommentSample extends React.Component {
           console.log('Error getting document', err);
         });
     });
-    this.setState({ comments });
   };
 
-  /**
-   * Renders a single comment item wrapped in a <View> tag.
-   *
-   * @param {Object} item: Element of this.state.comments, obtained from updateComments
-   * @returns {JSXElement} Comment component wrapped in a <View>
-   */
-  renderComment = (item) => {
+  // Single comment
+  renderComment = ({ item }) => {
+    console.log(item);
     return (
-      <View key={item.key}>
-        <Comment
-          key={item.key}
-          uid={item.uid}
-          username={item.username}
-          content={item.content}
-        />
-      </View>
+      <Comment
+        key={item.key}
+        uid={item.uid}
+        username={item.username}
+        content={item.content}
+        usernamesTagged={item.usernamesTagged}
+      />
     );
   };
 
   render() {
-    const { comments } = this.state;
     return (
       <View style={styles.containerStyle}>
-        {comments.map((comment) => this.renderComment(comment))}
+        <FlatList
+          data={this.state.comments}
+          renderItem={this.renderComment}
+          keyExtractor={(_, index) => index.toString()}
+        />
       </View>
     );
   }
