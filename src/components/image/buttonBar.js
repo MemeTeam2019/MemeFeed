@@ -101,7 +101,7 @@ class ButtonBar extends React.Component {
       .doc(memeId);
     const memeRef = firebase
       .firestore()
-      .collection('Memes')
+      .collection('MemesTest')
       .doc(memeId);
 
     reactRef.get().then((likesSnapshot) => {

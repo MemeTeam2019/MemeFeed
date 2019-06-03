@@ -162,17 +162,17 @@ class ExploreFeed extends React.Component {
             }
     });
 
-    recsSnapshot.docs.forEach((doc) => {
-      const { url, time, sub } = doc.data();
-      newMemes.push({
-        key: doc.id,
-        doc,
-        src: url,
-        time,
-        sub,
-        postedBy: sub,
-      });
-    });
+    // recsSnapshot.docs.forEach((doc) => {
+    //   const { url, time, sub } = doc.data();
+    //   newMemes.push({
+    //     key: doc.id,
+    //     doc,
+    //     src: url,
+    //     time,
+    //     sub,
+    //     postedBy: sub,
+    //   });
+    // });
 
     Promise.all(newMemes).then((resolvedMemes) => {
       this.setState((prevState) => {
