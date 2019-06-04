@@ -20,15 +20,17 @@ import CommentButton from './commentButton';
 *   subReddit.js
 *
 * Props:
-*   this.props.sub
-*   this.props.likedFrom
-*   this.props.poster
-*   this.props.memeId
-*   this.props.isSubRedditPg
-*   this.props.imageUrl
-*   this.props.postedBy
-*   this.props.caption
-*   this.props.time
+*   sub (String): The subreddit the meme was scraped from
+*   likedFrom (String): The uid of the user another user liked the associated
+*         meme from
+*   poster (String): The uid of the user who posted the associated meme
+*   memeId (String): The id of the Firebase document in the Memes collection 
+*   imageUrl (String): The image URL of the meme
+*   postedBy (String): The uid of the user who posted the meme associated with
+ *        the memeId
+*   caption (String): The caption associated with the meme. scraped from Reddit
+          along with the meme
+*   time (String): The time each meme was posted to the feeds
 */
 class Tile extends React.Component {
   constructor(props) {

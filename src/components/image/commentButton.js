@@ -11,14 +11,18 @@ import { withNavigation } from 'react-navigation';
  *    tile.js
  * 
  * Props:
- *    this.props.memeId,
-      this.props.imageUrl,
-      this.props.sub,
-      this.props.likedFrom,
-      this.props.postedBy,
-      this.props.poster,
-      this.props.caption,
-      this.props.time,
+ *    memeId (String): The id of the Firebase document in the Memes collection
+      imageUrl (String): The image URL of the meme
+      sub (String): The subreddit the meme was scraped from
+      likedFrom (String): The uid of the user another user liked the associated
+*         meme from
+      postedBy (String): The uid of the user who posted the meme associated with
+ *        the memeId
+      poster (String): The uid of the user who posted the associated meme
+      caption (String): The caption associated with the meme. scraped from Reddit
+          along with the meme
+      time (String): The time each meme was posted to the feeds or entered into 
+          Firebase
 */
 
 class CommentButton extends React.Component {
