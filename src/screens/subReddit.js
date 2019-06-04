@@ -22,64 +22,54 @@ import MemeList from '../components/general/memeList';
  * None
  */
 class SubReddit extends React.Component {
-  static navigationOptions = {
-    header: null,
+  static navigationOptions = ({navigation}) =>{
+    return{
+    title: "r/"+navigation.getParam('sub'),
+    }; 
   };
 
   constructor(props) {
     super(props);
-    this.unsubscribe = null;
-    this.userListener = null;
-    this._isMounted = false;
-    this.ref = firebase
-      .firestore()
-      .collection('MemesTest')
-      .where('sub', '==', this.props.navigation.getParam('sub'));
+    this.refreshMemes = this.refreshMemes.bind(this);
 
     this.state = {
-      username: '',
-      name: '',
-      followingCnt: 0,
-      followersCnt: 0,
-      followingLst: [],
-      followersLst: [],
       selectGridButtonP: true,
       selectListButtonP: false,
       updated: true,
       memes: [],
-      oldestDoc: 0,
-      icon: '',
-      //sub: ''
+      oldestDoc: null,
+      refreshing: true,
+      gridView: true,
     };
   }
 
 
 
   componentDidMount() {
-    this._isMounted = true;
     console.log('==========')
     console.log(this.props.navigation.getParam('sub'))
-    if (this._isMounted) {
-      this.unsubscribe = firebase
-        .firestore()
-        .collection('MemesTest')
-        .where('sub', '==', this.props.navigation.getParam('sub'))
-        .get()
-        .then(this.updateFeed);
-    }
+    this.unsubscribe = firebase
+      .firestore()
+      .collection('MemesTest')
+      .where('sub', '==', this.props.navigation.getParam('sub'))
+      .get()
+      .then(this.updateFeed);
   }
 
   fetchMemes = () => {
     // garentees not uploading duplicate memes by checking if memes have finished
     // updating
     if (this.state.updated) {
-      this.state.updated = false;
-      firebase
-        .firestore()
-        .collection('MemesTest')
-        .where('sub', '==', this.props.navigation.getParam('sub'))
-        .get()
-        .then(this.updateFeed);
+      const oldestDoc = this.state.oldestDoc;
+      if (oldestDoc) {
+        firebase
+          .firestore()
+          .collection('MemesTest')
+          .where('sub', '==', this.props.navigation.getParam('sub'))
+          .startAfter(oldestDoc)
+          .get()
+          .then(this.updateFeed);
+      }
     }
   };
 
@@ -116,6 +106,7 @@ class SubReddit extends React.Component {
           memes: mergedMemes,
           updated: true,
           oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+          refreshing: false,
         };
       });
     });
@@ -123,7 +114,20 @@ class SubReddit extends React.Component {
 
   //comment sample line 53 (sorting the meme list)
 
-
+   /**
+   * Clear the currently loaded memes, load the first memes in this person's
+   * feed
+   */
+  refreshMemes = () => {
+    this.setState({ memes: [], refreshing: true, oldestDoc: null}, () => {
+      firebase
+        .firestore()
+        .collection('MemesTest')
+        .where('sub', '==', this.props.navigation.getParam('sub'))
+        .get()
+        .then(this.updateFeed);
+    })
+  };
 
   onGridViewPressedP = () => {
     this.setState({ selectGridButtonP: true });
@@ -169,18 +173,6 @@ render() {
     // Photo List/Full View of images
     return (
       <React.Fragment>
-        <View style={styles.containerStyle}>
-          <View style={styles.navBar1}>
-            <View style={styles.leftContainer1}>
-              <Text style={[styles.text, { textAlign: 'left' }]}>{}</Text>
-            </View>
-            <Text style={styles.textSty4}> r/{this.props.navigation.getParam('sub')}</Text>
-            <View style={styles.rightContainer1}>
-              <View style={styles.rightIcon1} />
-            </View>
-          </View>
-        </View>
-        <ScrollView>
           <View style={styles.containerStyle}>
             {/* Profile Pic, Follwers, Follwing Block */}
             {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
@@ -208,12 +200,19 @@ render() {
             </View>
           </View>
 
-          {this.state.selectListButtonP ? (
-            <MemeList loadMemes={this.fetchMemes} memes={this.state.memes} isSubRedditPg={true}/>
+          {this.state.selectGridButtonP ? (
+            <MemeGrid loadMemes={this.fetchMemes} 
+              memes={this.state.memes} 
+              isSubRedditPg={true}
+              refreshing={this.state.refreshing}
+              onRefresh={this.refreshMemes}/>
           ) : (
-            <MemeGrid loadMemes={this.fetchMemes} memes={this.state.memes} isSubRedditPg={true}/>
+            <MemeList loadMemes={this.fetchMemes} 
+              memes={this.state.memes} 
+              isSubRedditPg={true} 
+              refreshing={this.state.refreshing}
+              onRefresh={this.refreshMemes}/>
           )}
-        </ScrollView>
       </React.Fragment>
     );
   }
