@@ -47,7 +47,7 @@ class PostedByUser extends React.Component {
   }
 
   flagMeme = () => {
-    const memeRef = firebase.firestore().doc(`MemesTest/${this.props.memeId}`);
+    const memeRef = firebase.firestore().doc(`Memes/${this.props.memeId}`);
     memeRef
       .get()
       .then((docSnapshot) => {

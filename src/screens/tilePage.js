@@ -27,7 +27,7 @@ class TilePage extends React.Component {
     return (
       <FlatList
         style={styles.containerStyle}
-        data={this.props.navigation.getParam('MemesTest')}
+        data={this.props.navigation.getParam('Memes')}
         renderItem={this.renderTile.bind(this)}
       />
     );

@@ -164,7 +164,7 @@ class CaptionPage extends React.Component {
           // post in Memes and use the doc id it creates elsewhere
           const memeCollection = firebase
             .firestore()
-            .collection('MemesTest')
+            .collection('Memes')
             .doc(docId);
           memeCollection.set({
             url: newurl,
@@ -181,7 +181,7 @@ class CaptionPage extends React.Component {
           // post in this users reacts
           firebase
             .firestore()
-            .collection('ReactsTest')
+            .collection('Reacts')
             .doc(firebase.auth().currentUser.uid)
             .collection('Likes')
             .doc(docId)
@@ -208,7 +208,7 @@ class CaptionPage extends React.Component {
                 const friendUid = followersLst[i];
                 firebase
                   .firestore()
-                  .collection('FeedsTest')
+                  .collection('Feeds')
                   .doc(friendUid)
                   .collection('Likes')
                   .doc(docId)
@@ -223,7 +223,6 @@ class CaptionPage extends React.Component {
                   });
               }
             });
-          // });
 
           // put meme in their followers feeds
           this.unsubscribe = firebase
@@ -239,7 +238,7 @@ class CaptionPage extends React.Component {
                 const friendUid = followersLst[i];
                 firebase
                   .firestore()
-                  .collection('FeedsTest')
+                  .collection('Feeds')
                   .doc(friendUid)
                   .collection('Likes')
                   .doc(docId)

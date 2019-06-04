@@ -32,7 +32,7 @@ class NotePage extends React.Component {
   componentDidMount() {
     firebase
       .firestore()
-      .collection('NotificationsTest')
+      .collection('Notifications')
       .doc(firebase.auth().currentUser.uid)
       .collection('Notes')
       .orderBy('time', 'desc')
@@ -45,7 +45,7 @@ class NotePage extends React.Component {
     this.setState({ refreshing: true, notes: [], oldestDoc: null }, () => {
       firebase
         .firestore()
-        .collection('NotificationsTest')
+        .collection('Notifications')
         .doc(firebase.auth().currentUser.uid)
         .collection('Notes')
         .orderBy('time', 'desc')
@@ -61,7 +61,7 @@ class NotePage extends React.Component {
     const oldestDoc = this.state.oldestDoc;
     firebase
       .firestore()
-      .collection('NotificationsTest')
+      .collection('Notifications')
       .doc(firebase.auth().currentUser.uid)
       .collection('Notes')
       .orderBy('time', 'desc')

@@ -48,7 +48,7 @@ class ButtonBar extends React.Component {
     const memeId = this.props.memeId;
     const ref = firebase
       .firestore()
-      .collection('ReactsTest')
+      .collection('Reacts')
       .doc(user.uid)
       .collection('Likes')
       .doc(memeId);
@@ -81,7 +81,7 @@ class ButtonBar extends React.Component {
     if (oldReact === null) {
       const noteRef = firebase
         .firestore()
-        .collection('NotificationsTest')
+        .collection('Notifications')
         .doc(this.props.postedBy)
         .collection('Notes');
       noteRef.add({
@@ -96,7 +96,7 @@ class ButtonBar extends React.Component {
     // Update the Reacts collection for current uid
     const reactRef = firebase
       .firestore()
-      .collection('ReactsTest')
+      .collection('Reacts')
       .doc(user.uid)
       .collection('Likes')
       .doc(memeId);
@@ -112,7 +112,7 @@ class ButtonBar extends React.Component {
       });
       firebase
         .firestore()
-        .doc(`MemesTest/${memeId}`)
+        .doc(`Memes/${memeId}`)
         .get()
         .then(async (memeDoc) => {
           if (memeDoc.exists) {
@@ -153,7 +153,7 @@ class ButtonBar extends React.Component {
 
             firebase
               .firestore()
-              .doc(`MemesTest/${memeId}`)
+              .doc(`Memes/${memeId}`)
               .update({
                 positiveWeight,
                 negativeWeight,
@@ -221,53 +221,53 @@ class ButtonBar extends React.Component {
     // grab this users follower list
     // go through each follower,and get that f_uid
     // add to the collection Feeds/f_uid and add that react
-    this.unsubscribe = firebase
-      .firestore()
-      .collection('Users')
-      .doc(firebase.auth().currentUser.uid)
-      .get()
-      .then(async (doc) => {
-        const { followersLst } = doc.data();
-        // go through the people are following us
-        for (let i = 0; i < followersLst.length; i++) {
-          // grab friend uid
-          const friendUid = followersLst[i];
-          firebase
-            .firestore()
-            .collection('FeedsTest')
-            .doc(friendUid)
-            .collection('Likes')
-            .doc(memeId)
-            .get()
-            .then(async (doc) => {
-              if (doc.exists) {
-                const { posReacts, time } = doc.data();
-                const newPosReacts = posReacts + 1;
-                // originally did not like the meme but now does
-                // or first time liking the meme and ranking it highly
-                // then add to the total number of positive votes
-                if (
-                  (oldReact < 2 && newReact > 1 && oldReact != newReact) ||
-                  (oldReact === null && newReact > 1)
-                ) {
-                  firebase
-                    .firestore()
-                    .collection('FeedsTest')
-                    .doc(friendUid)
-                    .collection('Likes')
-                    .doc(memeId)
-                    .update({
-                      posReacts: newPosReacts,
-                      time: date,
-                      // add this user as someone that liked this meme
-                      likers: firebase.firestore.FieldValue.arrayUnion(
-                        firebase.auth().currentUser.uid
-                      ),
-                      likedFrom: firebase.firestore.FieldValue.arrayUnion(
-                        this.props.postedBy
-                      ),
-                    });
-                }
+          this.unsubscribe = firebase
+          .firestore()
+          .collection('Users')
+          .doc(firebase.auth().currentUser.uid)
+          .get()
+          .then(async (doc) => {
+            const { followersLst } = doc.data();
+            // go through the people are following us
+            for (let i = 0; i < followersLst.length; i++) {
+              // grab friend uid
+              const friendUid = followersLst[i];
+              firebase
+                .firestore()
+                .collection('Feeds')
+                .doc(friendUid)
+                .collection('Likes')
+                .doc(memeId)
+                .get()
+                .then(async (doc) => {
+                  if (doc.exists) {
+                    const { posReacts, time } = doc.data();
+                    const newPosReacts = posReacts + 1;
+                    // originally did not like the meme but now does
+                    // or first time liking the meme and ranking it highly
+                    // then add to the total number of positive votes
+                    if (
+                      (oldReact < 2 && newReact > 1 && oldReact != newReact) ||
+                      (oldReact === null && newReact > 1)
+                    ) {
+                      firebase
+                        .firestore()
+                        .collection('Feeds')
+                        .doc(friendUid)
+                        .collection('Likes')
+                        .doc(memeId)
+                        .update({
+                          posReacts: newPosReacts,
+                          time: date,
+                          // add this user as someone that liked this meme
+                          likers: firebase.firestore.FieldValue.arrayUnion(
+                            firebase.auth().currentUser.uid
+                          ),
+                          likedFrom: firebase.firestore.FieldValue.arrayUnion(
+                            this.props.postedBy
+                          ),
+                        });
+                    }
 
                 // originally liked the meme, but now does not
                 // OR unreacting to meme
@@ -279,7 +279,7 @@ class ButtonBar extends React.Component {
                   }
                   firebase
                     .firestore()
-                    .collection('FeedsTest')
+                    .collection('Feeds')
                     .doc(friendUid)
                     .collection('Likes')
                     .doc(memeId)
@@ -301,7 +301,7 @@ class ButtonBar extends React.Component {
                 if (newReact > 1) {
                   firebase
                     .firestore()
-                    .collection('FeedsTest')
+                    .collection('Feeds')
                     .doc(friendUid)
                     .collection('Likes')
                     .doc(memeId)

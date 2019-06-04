@@ -23,7 +23,7 @@ class Notification extends React.Component {
     this.setState({ viewed: true });
     firebase
       .firestore()
-      .doc(`NotificationsTest/${myUid}/Notes/${notificationId}`)
+      .doc(`Notifications/${myUid}/Notes/${notificationId}`)
       .update({ viewed: true });
   };
 
@@ -43,7 +43,7 @@ class Notification extends React.Component {
   handleLiked = () => {
     firebase
       .firestore()
-      .collection('MemesTest')
+      .collection('Memes')
       .doc(this.props.memeId)
       .get()
       .then((doc) => {
@@ -88,7 +88,7 @@ class Notification extends React.Component {
   handleTagged = () => {
     firebase
       .firestore()
-      .collection('MemesTest')
+      .collection('Memes')
       .doc(this.props.memeId)
       .get()
       .then((doc) => {

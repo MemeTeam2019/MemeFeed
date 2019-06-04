@@ -22,7 +22,7 @@ class PostInfo extends React.Component {
   componentDidMount() {
     firebase
       .firestore()
-      .collection(`CommentsTest/${this.props.memeId}/Info`)
+      .collection(`Comments/${this.props.memeId}/Info`)
       .doc('CommentInfo')
       .get()
       .then((doc) => {
