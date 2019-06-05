@@ -28,7 +28,10 @@ class SearchResult extends React.PureComponent {
           <View>
             <Image
               style={styles.profilePic}
-              source={{ uri: data.icon || null }}
+              source={{ 
+                uri: data.icon || null,
+                cache: 'force-cache'
+              }}
             />
           </View>
           <View>

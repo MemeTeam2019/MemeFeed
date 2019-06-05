@@ -53,6 +53,7 @@ class MemeGrid extends React.Component {
             style={{ flex: 1 }}
             source={{
               uri: data.src || null,
+              cache: 'force-cache',
             }}
           />
         </TouchableOpacity>

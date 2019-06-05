@@ -2,7 +2,6 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import firebase from 'react-native-firebase';
-
 import ButtonBar from './buttonBar';
 import Photo from './photo';
 import TileHeader from './tileHeader';
@@ -51,7 +50,10 @@ class Tile extends React.Component {
           memeId={this.props.memeId}
           isSubRedditPg={this.props.isSubRedditPg}
         />
-        <Photo imageUrl={this.props.imageUrl} />
+        <Photo 
+          imageUrl={this.props.imageUrl} 
+          memeId={this.props.memeId}
+        />
         <View
           style={{
             flex: 1,
