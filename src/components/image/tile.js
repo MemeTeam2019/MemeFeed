@@ -31,6 +31,26 @@ class Tile extends React.Component {
       const reactCount = data.reactCount || 0;
       this.setState({ reactCount });
     });
+
+    // If meme is in this users recommendations set the time to 0
+    // to ensure the meme won't be recommended to them again 
+    var recRef = firebase
+      .firestore()
+      .collection('Recommendations')
+      .doc(firebase.auth().currentUser.uid)
+      .collection('Memes')
+      .doc(memeid);
+
+    recRef.get()
+      .then(doc => {
+        if (doc.exists) {
+          doc.update({time: 0});
+        }
+      })
+      .catch(err => {
+        console.log('Error getting document', err);
+      });
+
   }
 
   componentWillUnmount() {
