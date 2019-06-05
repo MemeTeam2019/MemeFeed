@@ -448,7 +448,10 @@ class FriendProfile extends React.Component {
           <View style={styles.navBar2}>
             <View style={styles.leftContainer2}>
               <Image
-                source={{ uri: this.state.iconURL || null }}
+                source={{ 
+                  uri: this.state.iconURL || null,
+                  cache: 'force-cache'
+                }}
                 style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
               />
             </View>
@@ -536,7 +539,10 @@ class FriendProfile extends React.Component {
           <View style={styles.navBar2}>
             <View style={styles.leftContainer2}>
               <Image
-                source={{ uri: this.state.iconURL || null }}
+                source={{ 
+                  uri: this.state.iconURL || null,
+                  cache: 'force-cache'
+                }}
                 style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
               />
             </View>

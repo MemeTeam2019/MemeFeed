@@ -129,7 +129,10 @@ class LikedFromReddit extends React.Component {
           <View style={styles.container}>
             <Image
               style={styles.userImg}
-              source={{ uri: this.state.iconURL || null }}
+              source={{
+                uri: this.state.iconURL || null,
+                cache: 'force-cache'
+              }}
             />
             <Username
               uid={this.props.poster}

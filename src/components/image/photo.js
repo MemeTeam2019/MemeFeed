@@ -36,6 +36,7 @@ class Photo extends React.PureComponent {
         <Image
           source={{
             uri: this.props.imageUrl || null,
+            cache: 'force-cache'
           }}
           style={{width: this.state.width, height: this.state.height, resizeMode: 'contain', }}
         />

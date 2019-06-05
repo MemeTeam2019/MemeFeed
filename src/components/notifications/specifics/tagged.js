@@ -61,7 +61,10 @@ class Followed extends React.Component {
           <View style={styles.container}>
             <Image
               style={styles.userImg}
-              source={{ uri: this.state.iconURL }}
+              source={{ 
+                uri: this.state.iconURL || null,
+                cache: 'force-cache'
+              }}
             />
             <Username uid={this.props.uid} navigation={this.props.navigation} />
             <Text style={styles.text}>

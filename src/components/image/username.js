@@ -51,6 +51,11 @@ class Username extends React.Component {
       });
   }
 
+  componentWillUnmount() {
+    this.unsubscribe = null;
+    this._isMounted = false;
+  }
+
   goToUser() {
     // If going to our own profile
     if (this.props.uid === firebase.auth().currentUser.uid) {

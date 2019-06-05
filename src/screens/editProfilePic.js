@@ -125,7 +125,10 @@ export default class EditProfilePic extends React.Component {
         </View>
         <View style={styles.picture}>
           <Image
-            source={{ uri: this.state.icon || null }}
+            source={{ 
+              uri: this.state.icon || null,
+              cache: 'force-cache'
+            }}
             style={{ width: 200, height: 200, borderRadius: 200 / 2, justifyContent: 'center', alignItems: 'center' }}
           />
         </View>
