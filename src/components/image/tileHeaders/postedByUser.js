@@ -16,23 +16,22 @@ class PostedByUser extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      iconURL:
-        '',
+      iconURL: '',
     };
   }
 
   componentDidMount() {
     const uid = this.props.poster;
-    firebase
-      .firestore()
-      .collection('Users')
-      .doc(uid);
     // Get the profile icon
-    firebase
-      .firestore()
-      .collection('Users')
-      .doc(uid)
-      .get()
+    this.userPromise = this.makeCancelable(
+      firebase
+        .firestore()
+        .collection('Users')
+        .doc(uid)
+        .get()
+    );
+
+    this.userPromise.promise
       .then((docSnapshot) => {
         if (docSnapshot.exists) {
           const { icon } = docSnapshot.data();
@@ -45,6 +44,28 @@ class PostedByUser extends React.Component {
         console.log(error);
       });
   }
+
+  componentWillUnmount() {
+    this.userPromise.cancel();
+  }
+
+  makeCancelable = (promise) => {
+    let hasCanceled = false;
+
+    const wrappedPromise = new Promise((resolve, reject) => {
+      promise.then(
+        (value) =>
+          hasCanceled ? reject({ isCanceled: true, value }) : resolve(value),
+        (error) => reject({ isCanceled: hasCanceled, error })
+      );
+    });
+    return {
+      promise: wrappedPromise,
+      cancel: () => {
+        hasCanceled = true;
+      },
+    };
+  };
 
   flagMeme = () => {
     const memeRef = firebase.firestore().doc(`MemesTest/${this.props.memeId}`);
@@ -83,7 +104,7 @@ class PostedByUser extends React.Component {
           <View style={styles.container}>
             <Image
               style={styles.userImg}
-              source={{ 
+              source={{
                 uri: this.state.iconURL || null,
                 cache: 'force-cache',
               }}
