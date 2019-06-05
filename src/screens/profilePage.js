@@ -269,7 +269,7 @@ export default class Profile extends React.Component {
           <View style={styles.navBar2}>
             <View style={styles.leftContainer2}>
               <Image
-                source={{ uri: this.state.icon }}
+                source={{ uri: this.state.icon || null }}
                 style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
               />
             </View>
@@ -351,7 +351,7 @@ export default class Profile extends React.Component {
               {/* Profile Picture */}
               <View style={styles.leftContainer2}>
                 <Image
-                  source={{ uri: this.state.icon }}
+                  source={{ uri: this.state.icon || null }}
                   style={{ width: 85, height: 85, borderRadius: 85 / 2 }}
                 />
               </View>

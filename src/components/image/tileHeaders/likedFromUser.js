@@ -124,7 +124,7 @@ class LikedFromUser extends React.Component {
           <View style={styles.container}>
             <Image
               style={styles.userImg}
-              source={{ uri: this.state.iconURL }}
+              source={{ uri: this.state.iconURL || null }}
             />
             <Username
               uid={this.props.poster}

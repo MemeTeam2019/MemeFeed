@@ -129,7 +129,7 @@ class LikedFromReddit extends React.Component {
           <View style={styles.container}>
             <Image
               style={styles.userImg}
-              source={{ uri: this.state.iconURL }}
+              source={{ uri: this.state.iconURL || null }}
             />
             <Username
               uid={this.props.poster}
@@ -137,7 +137,7 @@ class LikedFromReddit extends React.Component {
             />
             <Image
               style={styles.likedFromImg}
-              source={require('../repostIcon.png')}
+              source={require('../repostIcon.png') || null}
             />
             <TouchableOpacity onPress={() => this.goToSubreddit()}>
               <Text

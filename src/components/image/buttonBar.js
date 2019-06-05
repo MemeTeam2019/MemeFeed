@@ -338,7 +338,7 @@ class ButtonBar extends React.Component {
       <Image
         resizeMode='cover'
         style={{ flex: 1 }}
-        source={{ uri: this.emojiRank[data] }}
+        source={{ uri: this.emojiRank[data] || null }}
       />
     </TouchableOpacity>;
   };

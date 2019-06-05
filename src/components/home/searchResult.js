@@ -26,7 +26,10 @@ class SearchResult extends React.PureComponent {
           style={styles.resultContainer}
         >
           <View>
-            <Image style={styles.profilePic} source={{ uri: data.icon }} />
+            <Image
+              style={styles.profilePic}
+              source={{ uri: data.icon || null }}
+            />
           </View>
           <View>
             <Text style={styles.primaryText}>{data.username}</Text>

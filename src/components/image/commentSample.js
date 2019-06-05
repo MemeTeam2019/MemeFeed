@@ -68,7 +68,6 @@ class CommentSample extends React.Component {
 
   // Single comment
   renderComment = ({ item }) => {
-    console.log(item);
     return (
       <Comment
         key={item.key}

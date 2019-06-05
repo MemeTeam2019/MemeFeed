@@ -18,9 +18,9 @@ class Photo extends React.PureComponent {
     this._isMounted = true;
     const memeid = this.props.memeId;
     Image.getSize(this.props.imageUrl, (imageWidth, imageHeight) => {
-      width = Dimensions.get('window').width
-      height = (width/imageWidth)*imageHeight
-      this.setState({width, height})
+      const width = Dimensions.get('window').width;
+      const height = (width / imageWidth) * imageHeight;
+      this.setState({ width, height });
     });
   }
 
@@ -35,7 +35,7 @@ class Photo extends React.PureComponent {
       <View style={styles.modelStyle}>
         <Image
           source={{
-            uri: this.props.imageUrl,
+            uri: this.props.imageUrl || null,
           }}
           style={{width: this.state.width, height: this.state.height, resizeMode: 'contain', }}
         />

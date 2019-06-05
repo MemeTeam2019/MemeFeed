@@ -22,11 +22,14 @@ class AtResult extends React.PureComponent {
     return (
       <React.Fragment>
         <TouchableOpacity
-          onPress={() => this.props.onSelect(data.username,uid)}
+          onPress={() => this.props.onSelect(data.username, uid)}
           style={styles.resultContainer}
         >
           <View>
-            <Image style={styles.profilePic} source={{ uri: data.icon }} />
+            <Image
+              style={styles.profilePic}
+              source={{ uri: data.icon || null }}
+            />
           </View>
           <View>
             <Text style={styles.primaryText}>{data.username}</Text>

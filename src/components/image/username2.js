@@ -29,7 +29,6 @@ class Username2 extends React.Component {
   }
 
   componentDidMount() {
-    console.log("username2 page"+ (this.props.uid));
     this._isMounted = true;
 
     const ref = firebase
@@ -41,7 +40,7 @@ class Username2 extends React.Component {
       .get()
       .then((docSnapshot) => {
         if (docSnapshot.exists) {
-          let data = docSnapshot.data();
+          const data = docSnapshot.data();
           if (data && this._isMounted) {
             this.setState({ username: data.username });
           }
