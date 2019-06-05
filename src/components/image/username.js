@@ -19,8 +19,6 @@ class Username extends React.Component {
     header: null,
   };
 
-  _isMounted = false;
-
   constructor(props) {
     super(props);
     this.state = {
@@ -29,27 +27,41 @@ class Username extends React.Component {
   }
 
   componentDidMount() {
-    this._isMounted = true;
-
-    const ref = firebase
-      .firestore()
-      .collection('Users')
-      .doc(this.props.uid);
-
-    ref
-      .get()
-      .then((docSnapshot) => {
-        if (docSnapshot.exists) {
-          const data = docSnapshot.data();
-          if (data && this._isMounted) {
-            this.setState({ username: data.username });
-          }
-        }
+    this.userPromise = this.makeCancelable(
+      firebase
+        .firestore()
+        .doc(`Users/${this.props.uid}`)
+        .get()
+    );
+    this.userPromise.promise
+      .then((userDoc) => {
+        if (userDoc.exists)
+          this.setState({ username: userDoc.data().username });
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => console.log('woops'));
   }
+
+  componentWillUnmount() {
+    this.userPromise.cancel();
+  }
+
+  makeCancelable = (promise) => {
+    let hasCanceled = false;
+
+    const wrappedPromise = new Promise((resolve, reject) => {
+      promise.then(
+        (value) =>
+          hasCanceled ? reject({ isCanceled: true, value }) : resolve(value),
+        (error) => reject({ isCanceled: hasCanceled, error })
+      );
+    });
+    return {
+      promise: wrappedPromise,
+      cancel: () => {
+        hasCanceled = true;
+      },
+    };
+  };
 
   goToUser() {
     // If going to our own profile

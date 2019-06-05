@@ -23,31 +23,42 @@ class LikedFromReddit extends React.Component {
   }
 
   componentDidMount() {
-    const uid = this.props.poster;
-    firebase
-      .firestore()
-      .collection('Users')
-      .doc(uid);
     // Get the profile icon
-    firebase
-      .firestore()
-      .collection('Users')
-      .doc(uid)
-      .get()
-      .then((docSnapshot) => {
-        if (docSnapshot.exists) {
-          const { icon } = docSnapshot.data();
-          this.setState({
-            iconURL: icon,
-          });
-        } else {
-          console.log("doesn't exist");
-        }
+    this.userPromise = this.makeCancelable(
+      firebase
+        .firestore()
+        .doc(`Users/${this.props.poster}`)
+        .get()
+    );
+
+    this.userPromise.promise
+      .then((userDoc) => {
+        if (userDoc.exists) this.setState({ iconURL: userDoc.data().icon });
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => console.log('woops'));
   }
+
+  componentWillUnmount() {
+    this.userPromise.cancel();
+  }
+
+  makeCancelable = (promise) => {
+    let hasCanceled = false;
+
+    const wrappedPromise = new Promise((resolve, reject) => {
+      promise.then(
+        (value) =>
+          hasCanceled ? reject({ isCanceled: true, value }) : resolve(value),
+        (error) => reject({ isCanceled: hasCanceled, error })
+      );
+    });
+    return {
+      promise: wrappedPromise,
+      cancel: () => {
+        hasCanceled = true;
+      },
+    };
+  };
 
   goToSubreddit = () => {
     this.props.navigation.push('SubReddit', {
