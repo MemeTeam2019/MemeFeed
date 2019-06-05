@@ -5,9 +5,8 @@ from data.user import User
 from userBasedReccomendations import generateRecommendationsByUser
 import pprint
 import time
-from subBasedReccomendations import generateRecommendationsBySub
-
-
+from subBasedRecomendations import generateRecommendationsBySub
+from itemBasedRecommendation import ItemBasedRecommendation
 
 
 # STEP 1 ------------------------------------------------------- update vectors
@@ -180,18 +179,17 @@ def voteUsingOneGroup(memeIds, votes, recommendations):
 def main():
     # update vectors
     (userVectors , userReactions, userAverageReactions) = updateUserVectors()
-    #s memeVectors = updateMemeVectors()
-    # subredditVectors = updateSubredditVectors()
+    memeVectors = updateMemeVectors()
+    subVectors = updateSubredditVectors()
 
     # get recommendations
     userVotes = generateRecommendationsByUser(userVectors, userReactions, userAverageReactions)
     itemVotes = ItemBasedRecommendation().generate_recommendations()
-    # subredditsVotes = ''
-    #
+    subredditsVotes = generateRecommendationsBySub(userVectors, userReactions, memeVectors, subVectors)
+    
     # vote on recommendations
-    # orderedRecommendations = consolidateRecommendations(userVotes, userVotes, userVotes)
+    orderedRecommendations = consolidateRecommendations(userVotes, itemVotes, userVotes)
 
-    # return orderedRecommendations
 
 
 if __name__ == "__main__":

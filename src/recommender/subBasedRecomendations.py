@@ -44,12 +44,10 @@ def findUnseenMemes(userReactions, thisUser, memeVectors, subVectors):
     recommenededMemes = {}
     alreadySeen = userReactions[thisUser]
     thisVector = userVectors[thisUser]
-
-
-        for meme in memeVectors:
-            # if user hasn't seen the meme yet
-            if meme not in alreadySeen:
-                    unseenMemes[meme] = getValues(thisUser,memeVectors[meme],subVectors)
+    for meme in memeVectors:
+        # if user hasn't seen the meme yet
+        if meme not in alreadySeen:
+                unseenMemes[meme] = getValues(thisUser,memeVectors[meme],subVectors)
 
     # after seeing how similar users felt about these memes we adjust their
     # feelings to this current user
