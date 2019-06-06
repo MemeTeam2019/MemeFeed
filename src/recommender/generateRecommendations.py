@@ -183,8 +183,8 @@ def main():
     subVectors = updateSubredditVectors()
 
     # get recommendations
-    userVotes = generateRecommendationsByUser(userVectors, userReactions, userAverageReactions)
-    itemVotes = ItemBasedRecommendation().generate_recommendations()
+    # userVotes = generateRecommendationsByUser(userVectors, userReactions, userAverageReactions)
+    # itemVotes = ItemBasedRecommendation().generate_recommendations()
     subredditsVotes = generateRecommendationsBySub(userVectors, userReactions, memeVectors, subVectors)
     
     # vote on recommendations

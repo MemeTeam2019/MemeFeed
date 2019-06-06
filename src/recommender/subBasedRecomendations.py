@@ -39,11 +39,11 @@ def consolidate(listVal):
     if rating < 0:
         rating = 0
     return rating
+    
 def findUnseenMemes(userReactions, thisUser, memeVectors, subVectors):
     unseenMemes = {}
     recommenededMemes = {}
     alreadySeen = userReactions[thisUser]
-    thisVector = userVectors[thisUser]
     for meme in memeVectors:
         # if user hasn't seen the meme yet
         if meme not in alreadySeen:

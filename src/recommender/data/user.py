@@ -73,18 +73,19 @@ class User:
         for react in reacts:
             react_data = react.to_dict()
             rank = react_data['rank']
-            likedFrom = react_data['likedFrom']
-            user_ref = db.collection('Users').document(likedFrom)
-            try:
-                user_ref.get()
-                if likedFrom not in user_counter:
-                    react_data['likedFrom'] = 0
-                if rank >= 2:
-                    user_counter[likedFrom] += rank
-                else:
-                    user_counter[likedFrom] += rank - 4
-            except:
-                continue
+            if 'likedFrom' in react_data:
+                likedFrom = react_data['likedFrom']
+                user_ref = db.collection('Users').document(likedFrom)
+                try:
+                    user_ref.get()
+                    if likedFrom not in user_counter:
+                        react_data['likedFrom'] = 0
+                    if rank >= 2:
+                        user_counter[likedFrom] += rank
+                    else:
+                        user_counter[likedFrom] += rank - 4
+                except:
+                    continue
 
         top_users = user_counter.most_common(len(user_counter))
         if len(top_users) >= 1:
