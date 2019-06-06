@@ -48,7 +48,7 @@ class ButtonBar extends React.Component {
     const memeId = this.props.memeId;
     const ref = firebase
       .firestore()
-      .collection('ReactsTest')
+      .collection('Reacts')
       .doc(user.uid)
       .collection('Likes')
       .doc(memeId);
@@ -96,7 +96,7 @@ class ButtonBar extends React.Component {
     // Update the Reacts collection for current uid
     const reactRef = firebase
       .firestore()
-      .collection('ReactsTest')
+      .collection('Reacts')
       .doc(user.uid)
       .collection('Likes')
       .doc(memeId);
@@ -113,7 +113,7 @@ class ButtonBar extends React.Component {
       });
       firebase
         .firestore()
-        .doc(`MemesTest/${memeId}`)
+        .doc(`Memes/${memeId}`)
         .get()
         .then(async (memeDoc) => {
           if (memeDoc.exists) {
@@ -154,7 +154,7 @@ class ButtonBar extends React.Component {
 
             firebase
               .firestore()
-              .doc(`MemesTest/${memeId}`)
+              .doc(`Memes/${memeId}`)
               .update({
                 positiveWeight,
                 negativeWeight,
@@ -240,7 +240,7 @@ class ButtonBar extends React.Component {
           const friendUid = followersLst[i];
           firebase
             .firestore()
-            .collection('FeedsTest')
+            .collection('Feeds')
             .doc(friendUid)
             .collection('Likes')
             .doc(memeId)
@@ -258,7 +258,7 @@ class ButtonBar extends React.Component {
                 ) {
                   firebase
                     .firestore()
-                    .collection('FeedsTest')
+                    .collection('Feeds')
                     .doc(friendUid)
                     .collection('Likes')
                     .doc(memeId)
@@ -285,7 +285,7 @@ class ButtonBar extends React.Component {
                   }
                   firebase
                     .firestore()
-                    .collection('FeedsTest')
+                    .collection('Feeds')
                     .doc(friendUid)
                     .collection('Likes')
                     .doc(memeId)
@@ -307,7 +307,7 @@ class ButtonBar extends React.Component {
                 if (newReact > 1) {
                   firebase
                     .firestore()
-                    .collection('FeedsTest')
+                    .collection('Feeds')
                     .doc(friendUid)
                     .collection('Likes')
                     .doc(memeId)

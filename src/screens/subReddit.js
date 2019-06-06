@@ -50,7 +50,7 @@ class SubReddit extends React.Component {
     console.log(this.props.navigation.getParam('sub'))
     this.unsubscribe = firebase
       .firestore()
-      .collection('MemesTest')
+      .collection('Memes')
       .where('sub', '==', this.props.navigation.getParam('sub'))
       .get()
       .then(this.updateFeed);
@@ -64,7 +64,7 @@ class SubReddit extends React.Component {
       if (oldestDoc) {
         firebase
           .firestore()
-          .collection('MemesTest')
+          .collection('Memes')
           .where('sub', '==', this.props.navigation.getParam('sub'))
           .startAfter(oldestDoc)
           .get()
@@ -122,7 +122,7 @@ class SubReddit extends React.Component {
     this.setState({ memes: [], refreshing: true, oldestDoc: null}, () => {
       firebase
         .firestore()
-        .collection('MemesTest')
+        .collection('Memes')
         .where('sub', '==', this.props.navigation.getParam('sub'))
         .get()
         .then(this.updateFeed);

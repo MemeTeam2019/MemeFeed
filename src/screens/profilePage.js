@@ -35,7 +35,7 @@ export default class Profile extends React.Component {
     this._isMounted = false;
     this.ref = firebase
       .firestore()
-      .collection('ReactsTest')
+      .collection('Reacts')
       .doc(firebase.auth().currentUser.uid)
       .collection('Likes')
       .orderBy('time', 'desc');
@@ -86,7 +86,7 @@ export default class Profile extends React.Component {
     // Fetch the first 15 memes in this person's Reacts collection
     firebase
       .firestore()
-      .collection('ReactsTest')
+      .collection('Reacts')
       .doc(firebase.auth().currentUser.uid)
       .collection('Likes')
       .orderBy('time', 'desc')
@@ -112,7 +112,7 @@ export default class Profile extends React.Component {
       const oldestDoc = this.state.oldestDoc;
       firebase
         .firestore()
-        .collection('ReactsTest')
+        .collection('Reacts')
         .doc(firebase.auth().currentUser.uid)
         .collection('Likes')
         .orderBy('time', 'desc')
@@ -132,7 +132,7 @@ export default class Profile extends React.Component {
       const { likedFrom, rank, url } = doc.data();
       return firebase
         .firestore()
-        .collection(`MemesTest`)
+        .collection(`Memes`)
         .doc(doc.id)
         .get()
         .then((memeSnapshot) => {

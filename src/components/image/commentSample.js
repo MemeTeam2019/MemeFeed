@@ -17,7 +17,7 @@ class CommentSample extends React.Component {
   componentDidMount() {
     this.unsubscribe = firebase
       .firestore()
-      .collection(`CommentsTest/${this.props.memeId}/Text`)
+      .collection(`Comments/${this.props.memeId}/Text`)
       .orderBy('time', 'desc')
       .limit(2) // we choose decsending to get most recent
       .get()
