@@ -138,7 +138,6 @@ class ExploreFeed extends React.Component {
   updateFeed = (memesSnapshot, recsSnapshot) => {
     const newMemes = [];
 
-
     recsSnapshot.docs.forEach((doc) => {
       const { url, time, sub, caption } = doc.data();
       newMemes.push({

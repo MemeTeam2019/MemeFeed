@@ -3,7 +3,7 @@ import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 
 import { withNavigation } from 'react-navigation';
 
-class CommentButton extends React.Component {
+class CommentButton extends React.PureComponent {
   handleCommentClick() {
     this.props.navigation.push('Comment', {
       memeId: this.props.memeId,

@@ -23,14 +23,14 @@ class MemeGrid extends React.Component {
     header: null,
   };
 
-  _renderItem = (data, i) => {
+  _renderItem = (data) => {
     if (!data || !data.src) {
-      return this._renderPlaceholder(i);
+      return this._renderPlaceholder();
     }
     const { src, key, sub, likedFrom, postedBy, poster, numFlags } = data;
     if (numFlags >= 10 || src === '') return null;
     return (
-      <View style={[styles.item]} key={i.toString()}>
+      <View style={[styles.item]}>
         <TouchableOpacity
           style={{
             flex: 1,
@@ -61,7 +61,7 @@ class MemeGrid extends React.Component {
     );
   };
 
-  _renderPlaceholder = (i) => <View style={styles.item} key={i} />;
+  _renderPlaceholder = () => <View style={styles.item} />;
 
   render() {
     return (

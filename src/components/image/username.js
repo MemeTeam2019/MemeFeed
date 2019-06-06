@@ -38,7 +38,7 @@ class Username extends React.Component {
         if (userDoc.exists)
           this.setState({ username: userDoc.data().username });
       })
-      .catch((error) => console.log('woops'));
+      .catch((error) => {});
   }
 
   componentWillUnmount() {

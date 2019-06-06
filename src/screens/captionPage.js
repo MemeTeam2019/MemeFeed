@@ -47,15 +47,9 @@ class CaptionPage extends React.Component {
     };
   }
 
-  componentWillUnmount() {
-    this._isMounted = false;
-    this.unsubscribe = null;
-  }
-
   // this gets the api key from the server
   componentDidMount() {
-    //console.log('mouning hnnng')
-    this.pickPhoto()
+    this.pickPhoto();
     this.props.navigation.setParams({ upload: this.handleUpload });
     this.props.navigation.setParams({ back: this.pickPhoto });
     this._isMounted = true;
@@ -75,6 +69,11 @@ class CaptionPage extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+    this.unsubscribe = null;
+  }
+
   pickPhoto = () => {
     const options = {
       noData: true,
@@ -84,7 +83,6 @@ class CaptionPage extends React.Component {
         this.setState({
           imageuri: response.uri,
           filename: response.filename,
-          isChosen: true,
           caption: '',
         });
       }
@@ -274,66 +272,63 @@ class CaptionPage extends React.Component {
   render() {
     return (
       <View>
-      { this.state.isUploading &&
-        <View 
-        style={{justifyContent: 'center', alignItems: 'center', marginTop: '50%',}}
-        >          
-          <ActivityIndicator
-            color = "#5B5B5B"
-            size = "large"
-          />
-          <Text 
-          style={{fontSize: 1000 }}>
-            
-          </Text>
-          <Text 
-          style={{color:"#5B5B5B", fontSize: 20,}}>
-            Uploading Meme
-          </Text>
-        </View>
-      }
-      { !this.state.isUploading &&
-        <KeyboardAvoidingView
-          behavior='position'
-          keyboardVerticalOffset={Dimensions.get('window').height * 0.12}
-        >
-          <View>
-            <NavigationEvents
-              onDidFocus={() => {
-                this.setState(
-                  {
-                    isChosen: false,
-                    caption: '',
-                    imageuri: '',
-                  },
-                  () => this.pickPhoto()
-                );
-              }}
-            />
-            <ScrollView
-              ref={(ref) => {
-                this.scrollView = ref;
-              }}
-            >
-              <View style={styles.conatiner}>
-                <AutoHeightImage
-                  style={styles.image}
-                  source={{ uri: this.state.imageuri }}
-                  width={Dimensions.get('window').width}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder='Enter a Caption'
-                  onChangeText={(caption) => this.setState({ caption })}
-                  autoCapitalize='none'
-                  multiline
-                  value={this.state.caption}
-                />
-              </View>
-            </ScrollView>
+        {this.state.isUploading && (
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: '50%',
+            }}
+          >
+            <ActivityIndicator color='#5B5B5B' size='large' />
+            <Text style={{ fontSize: 1000 }} />
+            <Text style={{ color: '#5B5B5B', fontSize: 20 }}>
+              Uploading Meme
+            </Text>
           </View>
-        </KeyboardAvoidingView>
-      }
+        )}
+        {!this.state.isUploading && (
+          <KeyboardAvoidingView
+            behavior='position'
+            keyboardVerticalOffset={Dimensions.get('window').height * 0.12}
+          >
+            <View>
+              <NavigationEvents
+                onDidFocus={() => {
+                  this.setState(
+                    {
+                      isChosen: false,
+                      caption: '',
+                      imageuri: '',
+                    },
+                    () => this.pickPhoto()
+                  );
+                }}
+              />
+              <ScrollView
+                ref={(ref) => {
+                  this.scrollView = ref;
+                }}
+              >
+                <View style={styles.conatiner}>
+                  <AutoHeightImage
+                    style={styles.image}
+                    source={{ uri: this.state.imageuri }}
+                    width={Dimensions.get('window').width}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder='Enter a Caption'
+                    onChangeText={(caption) => this.setState({ caption })}
+                    autoCapitalize='none'
+                    multiline
+                    value={this.state.caption}
+                  />
+                </View>
+              </ScrollView>
+            </View>
+          </KeyboardAvoidingView>
+        )}
       </View>
     );
   }

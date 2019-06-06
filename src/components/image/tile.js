@@ -12,7 +12,6 @@ class Tile extends React.Component {
   constructor(props) {
     super(props);
     this._isMounted = false;
-    this.unsubscribe = false;
     this.updateReactCount = this.updateReactCount.bind(this);
     this.state = {
       reactCount: this.props.reacts,
@@ -20,20 +19,17 @@ class Tile extends React.Component {
   }
 
   componentDidMount() {
-    const memeid = this.props.memeId;
-    const ref = firebase
+    const memeId = this.props.memeId;
+    firebase
       .firestore()
       .collection('MemesTest')
-      .doc(memeid);
-    ref.get().then((docSnapshot) => {
-      const data = docSnapshot.data();
-      const reactCount = data.reactCount || 0;
-      this.setState({ reactCount });
-    });
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe = null;
+      .doc(memeId)
+      .get()
+      .then((docSnapshot) => {
+        const data = docSnapshot.data();
+        const reactCount = data.reactCount || 0;
+        this.setState({ reactCount });
+      });
   }
 
   updateReactCount(newReactCount) {
@@ -50,10 +46,7 @@ class Tile extends React.Component {
           memeId={this.props.memeId}
           isSubRedditPg={this.props.isSubRedditPg}
         />
-        <Photo 
-          imageUrl={this.props.imageUrl} 
-          memeId={this.props.memeId}
-        />
+        <Photo imageUrl={this.props.imageUrl} memeId={this.props.memeId} />
         <View
           style={{
             flex: 1,

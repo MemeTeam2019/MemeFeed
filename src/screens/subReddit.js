@@ -22,10 +22,10 @@ import MemeList from '../components/general/memeList';
  * None
  */
 class SubReddit extends React.Component {
-  static navigationOptions = ({navigation}) =>{
-    return{
-    title: "r/"+navigation.getParam('sub'),
-    }; 
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: 'r/' + navigation.getParam('sub'),
+    };
   };
 
   constructor(props) {
@@ -43,11 +43,8 @@ class SubReddit extends React.Component {
     };
   }
 
-
-
   componentDidMount() {
-    console.log('==========')
-    console.log(this.props.navigation.getParam('sub'))
+    console.log(this.props.navigation.getParam('sub'));
     this.unsubscribe = firebase
       .firestore()
       .collection('MemesTest')
@@ -67,66 +64,67 @@ class SubReddit extends React.Component {
           .collection('MemesTest')
           .where('sub', '==', this.props.navigation.getParam('sub'))
           .startAfter(oldestDoc)
+          .orderBy('time', 'desc')
           .get()
-          .then(this.updateFeed);
+          .then(this.updateFeed)
+          .catch((error) => console.log(error));
       }
     }
   };
 
-  updateFeed = (querySnapshot) => {
+  updateFeed = (memesSnapshot) => {
     const newMemes = [];
-    querySnapshot.docs.forEach((doc) => {
-      const { url, time, sub } = doc.data();
-      newMemes.push({
-        key: doc.id,
-        doc,
-        src: url,
-        time,
-        sub,
-        postedBy: sub,
-      });
 
-      const compareTime = (a, b) => {
-        if (a.time > b.time) return -1;
-        if (a.time < b.time) return 1;
-        return 0;
+    memesSnapshot.docs.forEach((doc) => {
+      const { url, time, sub, author, caption } = doc.data();
+      if (sub) {
+        newMemes.push({
+          key: doc.id,
+          doc,
+          src: url,
+          time,
+          sub,
+          postedBy: sub,
+          caption,
+        });
+      } else {
+        newMemes.push({
+          key: doc.id,
+          doc,
+          src: url,
+          time,
+          poster: author,
+          postedBy: author,
+          caption,
+        });
       }
-
-      newMemes.sort(compareTime)
-
     });
 
-
-
     Promise.all(newMemes).then((resolvedMemes) => {
-      this.setState((prevState) => {
-        var mergedMemes = prevState.memes.concat(resolvedMemes);
-
-        return {
-          memes: mergedMemes,
-          updated: true,
-          oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
-          refreshing: false,
-        };
-      });
+      const mergedMemes = prevState.memes.concat(resolvedMemes);
+      return {
+        memes: mergedMemes,
+        updated: true,
+        refreshing: false,
+      };
     });
   };
 
   //comment sample line 53 (sorting the meme list)
 
-   /**
+  /**
    * Clear the currently loaded memes, load the first memes in this person's
    * feed
    */
   refreshMemes = () => {
-    this.setState({ memes: [], refreshing: true, oldestDoc: null}, () => {
+    this.setState({ memes: [], refreshing: true, oldestDoc: null }, () => {
       firebase
         .firestore()
         .collection('MemesTest')
         .where('sub', '==', this.props.navigation.getParam('sub'))
         .get()
         .then(this.updateFeed);
-    })
+    });
   };
 
   onGridViewPressedP = () => {
@@ -138,8 +136,6 @@ class SubReddit extends React.Component {
     this.setState({ selectGridButtonP: false });
     this.setState({ selectListButtonP: true });
   };
-
-
 
   renderItem(item, itemSize, itemPaddingHorizontal) {
     return (
@@ -167,52 +163,55 @@ class SubReddit extends React.Component {
     return <Tile memeId={item.key} imageUrl={item.src} />;
   };
 
-
-render() {
+  render() {
     const optionArray = ['About', 'Privacy Policy', 'Log Out', 'Cancel'];
     // Photo List/Full View of images
     return (
       <React.Fragment>
-          <View style={styles.containerStyle}>
-            {/* Profile Pic, Follwers, Follwing Block */}
-            {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
-            <View style={styles.navBut}>
-              <TouchableOpacity onPress={() => this.onListViewPressedP()}>
-                <Image
-                  source={require('../images/fullFeedF.png')}
-                  style={{
-                    opacity: this.state.selectListButtonP ? 1 : 0.3,
-                    width: 100,
-                    height: 50,
-                  }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.onGridViewPressedP()}>
-                <Image
-                  source={require('../images/gridFeedF.png')}
-                  style={{
-                    opacity: this.state.selectGridButtonP ? 1 : 0.3,
-                    width: 100,
-                    height: 50,
-                  }}
-                />
-              </TouchableOpacity>
-            </View>
+        <View style={styles.containerStyle}>
+          {/* Profile Pic, Follwers, Follwing Block */}
+          {/*DIFFERENT VIEW TYPE FEED BUTTONS*/}
+          <View style={styles.navBut}>
+            <TouchableOpacity onPress={() => this.onListViewPressedP()}>
+              <Image
+                source={require('../images/fullFeedF.png')}
+                style={{
+                  opacity: this.state.selectListButtonP ? 1 : 0.3,
+                  width: 100,
+                  height: 50,
+                }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => this.onGridViewPressedP()}>
+              <Image
+                source={require('../images/gridFeedF.png')}
+                style={{
+                  opacity: this.state.selectGridButtonP ? 1 : 0.3,
+                  width: 100,
+                  height: 50,
+                }}
+              />
+            </TouchableOpacity>
           </View>
+        </View>
 
-          {this.state.selectGridButtonP ? (
-            <MemeGrid loadMemes={this.fetchMemes} 
-              memes={this.state.memes} 
-              isSubRedditPg={true}
-              refreshing={this.state.refreshing}
-              onRefresh={this.refreshMemes}/>
-          ) : (
-            <MemeList loadMemes={this.fetchMemes} 
-              memes={this.state.memes} 
-              isSubRedditPg={true} 
-              refreshing={this.state.refreshing}
-              onRefresh={this.refreshMemes}/>
-          )}
+        {this.state.selectGridButtonP ? (
+          <MemeGrid
+            loadMemes={this.fetchMemes}
+            memes={this.state.memes}
+            isSubRedditPg={true}
+            refreshing={this.state.refreshing}
+            onRefresh={this.refreshMemes}
+          />
+        ) : (
+          <MemeList
+            loadMemes={this.fetchMemes}
+            memes={this.state.memes}
+            isSubRedditPg={true}
+            refreshing={this.state.refreshing}
+            onRefresh={this.refreshMemes}
+          />
+        )}
       </React.Fragment>
     );
   }
@@ -400,7 +399,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 10,
-   backgroundColor: 'white',
+    backgroundColor: 'white',
   },
 
   navBar2: {
@@ -436,7 +435,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 10,
     alignItems: 'center',
-        backgroundColor: 'white',
+    backgroundColor: 'white',
   },
   containerStyle2: {
     flex: 2,

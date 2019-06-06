@@ -38,7 +38,7 @@ class HomeFeed extends React.Component {
       .doc(firebase.auth().currentUser.uid)
       .collection('Likes')
       .orderBy('time', 'desc')
-      .limit(15)
+      .limit(3)
       .get()
       .then(this.updateFeed);
   }
@@ -58,7 +58,7 @@ class HomeFeed extends React.Component {
         .doc(firebase.auth().currentUser.uid)
         .collection('Likes')
         .orderBy('time', 'desc')
-        .limit(15)
+        .limit(5)
         .startAfter(oldestDoc)
         .get()
         .then(this.updateFeed);
@@ -118,6 +118,7 @@ class HomeFeed extends React.Component {
             console.log(error);
           });
       }
+      return null;
     });
 
     Promise.all(newMemes).then((fulfilledMemes) => {

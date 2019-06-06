@@ -59,7 +59,7 @@ class MemeList extends React.PureComponent {
             // Load new memes once end of list is reached
             this.props.loadMemes();
           }}
-          onEndReachedThreshold={500}
+          initialNumToRender={3}
         />
       </ScrollView>
     );
