@@ -102,7 +102,8 @@ class ButtonBar extends React.Component {
       .doc(memeId);
 
     reactRef.get().then((likesSnapshot) => {
-      const data = likesSnapshot.data();
+      let data = {};
+      if (likesSnapshot.exists) data = likesSnapshot.data();
       const hasReacted = likesSnapshot.exists && data.rank !== -1;
       reactRef.set({
         rank: oldReact === newReact ? -1 : newReact,
@@ -160,52 +161,56 @@ class ButtonBar extends React.Component {
                 reactCount: newReactCount,
                 lastReacted: date,
               })
-              .then((doc) => console.log(doc.data()));
+              .then((doc) => console.log(doc.data()))
+              .catch((error) => console.log(error));
 
             const subredditRef = firebase
               .firestore()
               .collection('SubredditVectors')
               .doc(memeData.sub);
-            subredditRef.get().then((snapshot) => {
-              if (!snapshot.exists) {
-                subredditRef.set({
-                  positiveWeight: newReact > 1 ? newReact : 0,
-                  negativeWeight: newReact < 2 ? newReact : 0,
-                  lastReacted: date,
-                });
-              } else {
-                const subredditData = snapshot.data();
-                let posWeight = subredditData.positiveWeight;
-                let negWeight = subredditData.negativeWeight;
-
-                if (newReact > 1) {
-                  posWeight = posWeight + newReact + 1;
+            subredditRef
+              .get()
+              .then((snapshot) => {
+                if (!snapshot.exists) {
+                  subredditRef.set({
+                    positiveWeight: newReact > 1 ? newReact : 0,
+                    negativeWeight: newReact < 2 ? newReact : 0,
+                    lastReacted: date,
+                  });
                 } else {
-                  negWeight = negWeight + newReact + 1;
-                }
+                  const subredditData = snapshot.data();
+                  let posWeight = subredditData.positiveWeight;
+                  let negWeight = subredditData.negativeWeight;
 
-                if (oldReact != null) {
-                  if (oldReact > 1) {
-                    posWeight = posWeight - oldReact - 1;
-                  } else {
-                    negWeight = negWeight - oldReact - 1;
-                  }
-                }
-                if (oldReact === newReact) {
                   if (newReact > 1) {
-                    posWeight = posWeight - oldReact - 1;
+                    posWeight = posWeight + newReact + 1;
                   } else {
-                    negWeight = negWeight - oldReact - 1;
+                    negWeight = negWeight + newReact + 1;
                   }
-                }
 
-                subredditRef.update({
-                  positiveWeight: posWeight,
-                  negativeWeight: negWeight,
-                  lastReacted: date,
-                });
-              }
-            });
+                  if (oldReact != null) {
+                    if (oldReact > 1) {
+                      posWeight = posWeight - oldReact - 1;
+                    } else {
+                      negWeight = negWeight - oldReact - 1;
+                    }
+                  }
+                  if (oldReact === newReact) {
+                    if (newReact > 1) {
+                      posWeight = posWeight - oldReact - 1;
+                    } else {
+                      negWeight = negWeight - oldReact - 1;
+                    }
+                  }
+
+                  subredditRef.update({
+                    positiveWeight: posWeight,
+                    negativeWeight: negWeight,
+                    lastReacted: date,
+                  });
+                }
+              })
+              .catch((error) => console.log(error));
             this.props.updateReacts(newReactCount);
           }
         })
@@ -221,13 +226,14 @@ class ButtonBar extends React.Component {
     // grab this users follower list
     // go through each follower,and get that f_uid
     // add to the collection Feeds/f_uid and add that react
-    this.unsubscribe = firebase
+    firebase
       .firestore()
       .collection('Users')
       .doc(firebase.auth().currentUser.uid)
       .get()
       .then(async (doc) => {
-        const { followersLst } = doc.data();
+        let followersLst = [];
+        if (doc.exists) followersLst = doc.data().followersLst;
         // go through the people are following us
         for (let i = 0; i < followersLst.length; i++) {
           // grab friend uid
@@ -315,7 +321,8 @@ class ButtonBar extends React.Component {
                     });
                 }
               }
-            });
+            })
+            .catch((error) => console.log(error));
         }
       });
   };

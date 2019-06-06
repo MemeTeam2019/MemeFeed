@@ -20,7 +20,7 @@
     "react-native-elements": "^1.1.0",
     "react-native-firebase": "^5.2.3",
     "react-native-gesture-handler": "^1.0.15",
-    "react-native-grid-component": "^1.1.0",
+    "react-native-grid-component": "^2.0.0",
     "react-native-image-grid": "^1.0.0",
     "react-native-image-picker": "^0.28.1",
     "react-native-options-menu": "^2.0.2",

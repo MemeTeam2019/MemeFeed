@@ -53,13 +53,13 @@ class MemeList extends React.PureComponent {
           style={styles.container}
           data={this.props.memes}
           extraData={this.props}
-          keyExtractor={(item) => item.key}
+          keyExtractor={(_, index) => index.toString()}
           renderItem={this.renderTile}
           onEndReached={() => {
             // Load new memes once end of list is reached
             this.props.loadMemes();
           }}
-          onEndReachedThreshold ={500}
+          onEndReachedThreshold={500}
         />
       </ScrollView>
     );

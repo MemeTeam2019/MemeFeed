@@ -30,7 +30,7 @@ class MemeGrid extends React.Component {
     const { src, key, sub, likedFrom, postedBy, poster, numFlags } = data;
     if (numFlags >= 10 || src === '') return null;
     return (
-      <View style={[styles.item]} key={i}>
+      <View style={[styles.item]} key={i.toString()}>
         <TouchableOpacity
           style={{
             flex: 1,
@@ -72,6 +72,7 @@ class MemeGrid extends React.Component {
         data={this.props.memes}
         itemsPerRow={3}
         onEndReached={this.props.loadMemes}
+        keyExtractor={(_, index) => index.toString()}
         refreshControl={
           <RefreshControl
             refreshing={this.props.refreshing}
