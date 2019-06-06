@@ -1,6 +1,6 @@
 
-def subPosition(thisVector,thisMeme):
-    source = thisMeme.sub
+def subPosition(thisVector, thisMeme):
+    source = thisMeme[5]
     positiveSubs = [thisVector.top_1_subreddit, thisVector.top_2_subreddit, thisVector.top_3_subreddit]
     negativeSubs =  [thisVector.bottom_1_subreddit, thisVector.bottom_2_subreddit, thisVector.bottom_3_subreddit]
     if source in positiveSubs:
@@ -10,9 +10,10 @@ def subPosition(thisVector,thisMeme):
         return -1
 
     return 0
+
 def similarSubs(thisVector,thisMeme,subVectors):
     rating = 0
-    source = thisMeme.sub
+    source = thisMeme[5]
     similarSubs = subVectors[source].similarSubs
     positiveSubs = [thisVector.top_1_subreddit, thisVector.top_2_subreddit, thisVector.top_3_subreddit]
     negativeSubs =  [thisVector.bottom_1_subreddit, thisVector.bottom_2_subreddit, thisVector.bottom_3_subreddit]
@@ -21,17 +22,21 @@ def similarSubs(thisVector,thisMeme,subVectors):
             rating+=.5
         if sub in negativeSubs:
             rating-=.1
+
 def popularMeme(memeVector):
     osW = memeVector.positiveWeight
     negW = memeVector.negativeWeight
     return (posW/negW)/2
+
 def popularSub(subVector):
     posW = subVector.positiveWeight
     negW = subVector.negativeWeight
     return (posW/negW)/2
+
 def getValues(thisVector,memeVector,subVectors):
     listVal = [subPosition(thisVector,memeVector),similarSubs(thisVector,memeVector,subVectors), popularMeme(memeVector), popularSub(subVectors[memeVectors.sub])]
     return listVal
+
 def consolidate(listVal):
     rating = (listVal[0]+listVal[1]+ listVal[2] + listVal[3]) / 4
     if rating > 4:
