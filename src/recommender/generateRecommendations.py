@@ -2,6 +2,7 @@ import sys
 from data.db import db
 from data.meme import Meme
 from data.user import User
+from data.subreddit import Subreddit
 from userBasedReccomendations import generateRecommendationsByUser
 import pprint
 import time
@@ -45,7 +46,13 @@ def updateMemeVectors():
 # updateSubredditVectors updates the subreddit vectors and returns them as a
 # hashmap where key: meme-id and value: vector
 def updateSubredditVectors():
-    pass
+    subredditVectors = {}
+    docs = db.collection('SubredditVectors').stream()
+    for doc in docs:
+        subreddit = Subreddit(doc.id, doc.to_dict())
+        subredditVectors[doc.id] = subreddit.vectorize()
+
+    return subredditVectors
 
 # STEP 2 ----------------------------------------------------- consolidate votes
 # consolidateRecommendations finds the final set of recommendations for each
@@ -179,12 +186,15 @@ def voteUsingOneGroup(memeIds, votes, recommendations):
 def main():
     # update vectors
     (userVectors , userReactions, userAverageReactions) = updateUserVectors()
+    print("users updated")
     memeVectors = updateMemeVectors()
+    print("memes updated")
     subVectors = updateSubredditVectors()
+    print("subs updated")
 
     # get recommendations
-    # userVotes = generateRecommendationsByUser(userVectors, userReactions, userAverageReactions)
-    # itemVotes = ItemBasedRecommendation().generate_recommendations()
+     userVotes = generateRecommendationsByUser(userVectors, userReactions, userAverageReactions)
+     itemVotes = ItemBasedRecommendation().generate_recommendations()
     subredditsVotes = generateRecommendationsBySub(userVectors, userReactions, memeVectors, subVectors)
     
     # vote on recommendations
