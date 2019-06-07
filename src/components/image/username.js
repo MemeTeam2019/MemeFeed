@@ -6,20 +6,12 @@ import { withNavigation } from 'react-navigation';
 /**
  * Touchable username which routes to the friendProfile of the user.
  *
- * Used by:
- *     comment.js
- *     likedFromReddit.js
- *     likedFromUser.js
- *     sourceReddit.js
- * Props:
- *     uid (String): Firebase id of the user in question.
+ * @prop {String} uid: Firebase user id associated with this username component
  */
 class Username extends React.Component {
   static navigationOptions = {
     header: null,
   };
-
-  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -32,8 +24,6 @@ class Username extends React.Component {
    * Fetch the username associated with the uid passed down via props
    */
   componentDidMount() {
-    this._isMounted = true;
-
     const ref = firebase
       .firestore()
       .collection('Users')
@@ -44,9 +34,7 @@ class Username extends React.Component {
       .then((docSnapshot) => {
         if (docSnapshot.exists) {
           const data = docSnapshot.data();
-          if (data && this._isMounted) {
-            this.setState({ username: data.username });
-          }
+          this.setState({ username: data.username });
         }
       })
       .catch((error) => {

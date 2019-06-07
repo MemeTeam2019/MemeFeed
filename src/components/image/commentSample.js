@@ -75,7 +75,6 @@ class CommentSample extends React.Component {
    * @returns {Comment} A comment object
    */
   renderComment = ({ item }) => {
-    console.log(item);
     return (
       <Comment
         key={item.key}

@@ -10,15 +10,15 @@ import { withNavigation } from 'react-navigation';
 import Grid from 'react-native-grid-component';
 
 /**
- * Displays memes in a Grid format. When a meme is pressed, it will navigate
- * to a Tile where the user can interact with it.
+ * Renders memes in a grid view. Each grid is touchable and navigates to the
+ * associated CommentPage.
  *
- * Recieves an array of Meme Objects, obtained from firebase. Refer to Memes
- * collection in Firebase for fields.
- *
- * Props - memes: Array[Object]
+ * @prop {Array[Object]} memes: Array of objects which hold data obtained from
+ *                              the meme document
+ * @prop {function} loadMemes: Callback obtained from parent component to update
+ *                             memes and pass down a new memes prop
  */
-class MemeGrid extends React.Component {
+class MemeGrid extends React.PureComponent {
   static navigationOptions = {
     header: null,
   };

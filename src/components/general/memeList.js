@@ -4,12 +4,12 @@ import { StyleSheet, FlatList, RefreshControl, ScrollView } from 'react-native';
 import Tile from '../image/tile';
 
 /**
- * Render a list of memes using the Tile component
+ * Renders a list of memes using the Tile component.
  *
- * Props
- * -----
- * memes: Array[Object]
- * loadMemes: function
+ * @prop {Array[Object]} memes: Array of objects which hold data obtained from
+ *                              the meme document
+ * @prop {function} loadMemes: Callback obtained from parent component to update
+ *                             memes and pass down a new memes prop
  */
 class MemeList extends React.PureComponent {
   constructor(props) {
@@ -41,27 +41,23 @@ class MemeList extends React.PureComponent {
 
   render() {
     return (
-      <ScrollView
+      <FlatList
+        style={styles.container}
+        data={this.props.memes}
+        extraData={this.props}
+        keyExtractor={(item) => item.key}
+        renderItem={this.renderTile}
+        onEndReached={() => {
+          // Load new memes once end of list is reached
+          this.props.loadMemes();
+        }}
         refreshControl={
           <RefreshControl
             refreshing={this.props.refreshing}
             onRefresh={this.props.onRefresh}
           />
         }
-      >
-        <FlatList
-          style={styles.container}
-          data={this.props.memes}
-          extraData={this.props}
-          keyExtractor={(item) => item.key}
-          renderItem={this.renderTile}
-          onEndReached={() => {
-            // Load new memes once end of list is reached
-            this.props.loadMemes();
-          }}
-          onEndReachedThreshold ={500}
-        />
-      </ScrollView>
+      />
     );
   }
 }

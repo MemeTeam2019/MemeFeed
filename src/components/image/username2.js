@@ -29,7 +29,6 @@ class Username2 extends React.Component {
   }
 
   componentDidMount() {
-    console.log("username2 page"+ (this.props.uid));
     this._isMounted = true;
 
     const ref = firebase
