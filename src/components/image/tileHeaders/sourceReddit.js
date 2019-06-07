@@ -9,6 +9,10 @@ class SourceReddit extends React.Component {
     this.ActionSheet.show();
   };
 
+
+  /**
+   * Increment flag count of all meme collections: Memes, Feeds, and Reacts
+   */
   flagMeme = () => {
     const uid = firebase.auth().currentUser.uid;
     const memeId = this.props.memeId;
@@ -16,6 +20,7 @@ class SourceReddit extends React.Component {
     const feedRef = firebase.firestore().doc(`Feeds/${uid}/Likes/${memeId}`);
     const reactsRef = firebase.firestore().doc(`Reacts/${uid}/Likes/${memeId}`);
 
+    // increment flags in memes collection
     memeRef
       .get()
       .then((docSnapshot) => {
@@ -32,6 +37,8 @@ class SourceReddit extends React.Component {
         );
         console.log(err);
       });
+
+    // increment flags in feeds collection
     feedRef
       .get()
       .then((docSnapshot) => {
@@ -48,6 +55,8 @@ class SourceReddit extends React.Component {
         );
         console.log(err);
       });
+
+    // increment flags in reacts collection
     reactsRef
       .get()
       .then((docSnapshot) => {

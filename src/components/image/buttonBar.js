@@ -73,6 +73,12 @@ class ButtonBar extends React.Component {
     this.unsubscribe = null;
   }
 
+
+  /*
+   * When the user presses a the reaction button information
+   * needs to be updated regarding the current view on the screen,
+   * that memes popularity, and that subreddits popularity
+   */
   _onPressButton = async (newReact) => {
     const oldReact = this.state.selectedButton;
     const user = firebase.auth().currentUser;
@@ -110,6 +116,8 @@ class ButtonBar extends React.Component {
         url: this.props.imageUrl,
         likedFrom: this.props.postedBy,
       });
+
+      // update memes popularity score
       firebase
         .firestore()
         .doc(`Memes/${memeId}`)
@@ -162,6 +170,7 @@ class ButtonBar extends React.Component {
               })
               .then((doc) => console.log(doc.data()));
 
+            // update subreddits popularity score
             const subredditRef = firebase
               .firestore()
               .collection('SubredditVectors')
@@ -320,6 +329,7 @@ class ButtonBar extends React.Component {
       });
   };
 
+  // navigate to comment page when user clicks comment icon
   handleCommentClick() {
     this.props.navigation.navigate('Comment', {
       memeId: this.props.memeId,

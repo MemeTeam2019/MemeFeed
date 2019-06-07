@@ -22,6 +22,9 @@ class LikedFromReddit extends React.Component {
     };
   }
 
+  /**
+   * When component mounts it gets information about the user icon
+   */
   componentDidMount() {
     const uid = this.props.poster;
     firebase
@@ -49,6 +52,10 @@ class LikedFromReddit extends React.Component {
       });
   }
 
+  /**
+    * When a user clicks on the subreddit in this header
+    * we are taken to a subreddit page 
+    */
   goToSubreddit = () => {
     this.props.navigation.push('SubReddit', {
       sub: this.props.sub,
@@ -59,6 +66,12 @@ class LikedFromReddit extends React.Component {
     this.ActionSheet.show();
   };
 
+  /**
+    * flagMeme increments the total number of flags associated
+    * with a meme and is designated for hiding Inappropriate 
+    * content. In order for memes to be properly hiden three
+    * collections need to be changed: Feeds, Memes, and Reacts
+    */
   flagMeme = () => {
     const uid = firebase.auth().currentUser.uid;
     const memeId = this.props.memeId;
@@ -70,6 +83,7 @@ class LikedFromReddit extends React.Component {
       .firestore()
       .doc(`Reacts/${uid}/Likes/${memeId}`);
 
+    // increment the number of flags associated with a meme
     memeRef
       .get()
       .then((docSnapshot) => {
@@ -86,6 +100,8 @@ class LikedFromReddit extends React.Component {
         );
         console.log(err);
       });
+
+    // also incrememnt the number of flags in the Feeds collection
     feedRef
       .get()
       .then((docSnapshot) => {
@@ -102,6 +118,8 @@ class LikedFromReddit extends React.Component {
         );
         console.log(err);
       });
+
+    // also incrememnt the number of flags in the Reacts collection
     reactsRef
       .get()
       .then((docSnapshot) => {

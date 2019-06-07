@@ -31,6 +31,10 @@ class HomeFeed extends React.Component {
     };
   }
 
+  /**
+   * When component mounts display most recent 15 memes that their
+   * friends have liked
+   */
   componentDidMount() {
     firebase
       .firestore()

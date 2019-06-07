@@ -204,6 +204,11 @@ class CommentPage extends React.Component {
     this.setState({ modalVisible: visible });
   }
 
+  /**
+   * _onPressButton gets triggered when a user clicks post on their comment
+   * it adds their comment to the proper collection and calls the necessary
+   * function to send tag notifcations so users
+   */
   _onPressButton = () => {
     // send notification
     this.sendTagNotifications();
@@ -211,6 +216,7 @@ class CommentPage extends React.Component {
     const date = Math.round(+new Date() / 1000);
     const memeId = this.state.memeId;
 
+    // increment the number of comments on the page
     const countRef = firebase
       .firestore()
       .collection(`Comments/${memeId}/Info`)
@@ -226,6 +232,8 @@ class CommentPage extends React.Component {
             { merge: true }
           );
         } else {
+          // increment the number of comments that
+          // are in this document
           const { count } = doc.data();
           countRef.set(
             {
@@ -247,6 +255,7 @@ class CommentPage extends React.Component {
       (username) => text.indexOf(username) > -1
     );
 
+    // now add the comment the user wrote to the right collection
     ref
       .get()
       .then((doc) => {
@@ -350,12 +359,20 @@ class CommentPage extends React.Component {
       });
   };
 
+  /**
+   * renderSearchResult displays the search result
+   */
   renderSearchResult = (userRef) => {
     const data = userRef.item.data();
     const uid = userRef.item.ref.id;
     return <AtResult data={data} uid={uid} onSelect={this.tagPerson} />;
   };
 
+  /**
+   * tagPerson gets called when someone clicks on a name for someone to tag
+   * this function changes the state to add this name to the list of Notifications
+   * and closes the tagging modal
+   */
   tagPerson = (username, uid) => {
     // If we already know to give this person a notifciation we can skip
     if (this.state.usernamesTagged.indexOf(username) > -1) {
@@ -371,10 +388,13 @@ class CommentPage extends React.Component {
       return;
     }
 
+    // change the text to show the name they are tagging
     const newText =
       this.state.text.substring(0, this.state.mostRecentAt + 1) +
       username +
       ' ';
+
+    // update the state
     this.state.peopleToTag.push(uid);
     this.state.usernamesTagged.push(username);
     this.setState({
@@ -384,17 +404,17 @@ class CommentPage extends React.Component {
       tryingToTag: false,
     });
     this.setModalVisible(!this.state.modalVisible);
-    console.log(this.state.peopleToTag);
-    console.log(this.state.usernamesTagged);
   };
 
+  /**
+   * sendTagNotifications sends notifications for each user
+   * that got tagged in this post
+   */
   sendTagNotifications = () => {
     for (let i = 0; i < this.state.peopleToTag.length; i++) {
       const username = this.state.usernamesTagged[i];
       // verfiy that we are still tagging the people added to the list
       if (this.state.text.indexOf(username) > -1) {
-        console.log('tagging ', username);
-        // send notification to this.state.peopleToTag[i])
         const uid = firebase.auth().currentUser.uid;
         const time = Math.round(+new Date() / 1000);
         const memeId = this.state.memeId;
@@ -414,16 +434,6 @@ class CommentPage extends React.Component {
       }
     }
   };
-
-  // for (var i = 0; i < this.state.usersTagging.length; i++) {
-  //   username = this.state.usersTagging[i]
-  //   // verfiy that we are still tagging the people added to the list
-  //   if ((this.state.text).indexOf(username) > -1) {
-  //     console.log('tagging ',username)
-  //     // send notification to this.state.peopleToTag[i])
-  //   }
-  // }
-  // }
 
   render() {
     const time = this.props.navigation.getParam('time', -1);
@@ -494,7 +504,7 @@ class CommentPage extends React.Component {
               </View>
             </ScrollView>
           )}
-          {/* please forgive me this is the add comment button stuff all right here*/}
+          {/* what follows is the add comment button */}
           <View
             style={[
               styles.container,

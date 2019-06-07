@@ -46,6 +46,10 @@ class PostedByUser extends React.Component {
       });
   }
 
+
+  /**
+   * Increment flag count of all meme collections: Memes, Feeds, and Reacts
+   */
   flagMeme = () => {
     const memeRef = firebase.firestore().doc(`Memes/${this.props.memeId}`);
     memeRef

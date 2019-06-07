@@ -23,6 +23,9 @@ class LikedFromUser extends React.Component {
     };
   }
 
+  /**
+   * When component mounts it gets information about the user icon
+   */
   componentDidMount() {
     const uid = this.props.poster;
     firebase
@@ -49,6 +52,9 @@ class LikedFromUser extends React.Component {
     this.ActionSheet.show();
   };
 
+  /**
+    * Navigate to profile page
+    */
   navigateToFriendProfile = () => {
     this.props.navigation.navigate('FriendProfile', {
       uid: this.props.poster,
@@ -65,6 +71,7 @@ class LikedFromUser extends React.Component {
     const feedRef = firebase.firestore().doc(`Feeds/${uid}/Likes/${memeId}`);
     const reactsRef = firebase.firestore().doc(`Reacts/${uid}/Likes/${memeId}`);
 
+    // increment flags in memes collection
     memeRef
       .get()
       .then((docSnapshot) => {
@@ -81,6 +88,8 @@ class LikedFromUser extends React.Component {
         );
         console.log(err);
       });
+    
+    // increment flags in feeds collection
     feedRef
       .get()
       .then((docSnapshot) => {
@@ -97,6 +106,8 @@ class LikedFromUser extends React.Component {
         );
         console.log(err);
       });
+
+    // increment flags in reacts collection
     reactsRef
       .get()
       .then((docSnapshot) => {

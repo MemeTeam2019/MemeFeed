@@ -57,6 +57,11 @@ export default class Profile extends React.Component {
     };
   }
 
+  /**
+   * When the component mounts get information regarding
+   * their profile such as reactions, user image, followers, 
+   * following, name, etc
+   */
   componentDidMount() {
     const uid = firebase.auth().currentUser.uid;
     // Get the profile icon

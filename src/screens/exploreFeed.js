@@ -46,6 +46,10 @@ class ExploreFeed extends React.Component {
     };
   }
 
+  /**
+   * When the comment is mounted recommendations and recent memes
+   * are pulled and updated
+   */
   componentDidMount() {
     this._isMounted = true;
     if (this._isMounted) {
