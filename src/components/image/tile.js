@@ -44,6 +44,9 @@ class Tile extends React.Component {
     };
   }
 
+  /**
+   * Fetch the commentCount from the appropriate Meme document
+   */
   componentDidMount() {
     const memeid = this.props.memeId;
     const ref = firebase
@@ -61,6 +64,11 @@ class Tile extends React.Component {
     this.unsubscribe = null;
   }
 
+  /**
+   * Updates the react count for a meme. Passed down as a callback to ButtonBar component.
+   *
+   * @param {number} newReactCount: The updated react count when a user reacts to a meme
+   */
   updateReactCount(newReactCount) {
     this.setState({ reactCount: newReactCount });
   }

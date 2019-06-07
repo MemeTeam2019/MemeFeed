@@ -19,12 +19,15 @@ class CommentSample extends React.Component {
       .firestore()
       .collection(`Comments/${this.props.memeId}/Text`)
       .orderBy('time', 'desc')
-      .limit(2) // we choose decsending to get most recent
+      .limit(2) // We choose decsending to get most recent
       .get()
       .then(this.onCollectionUpdate);
   }
 
-  // function for extracting Firebase responses to the state
+  /**
+   * Extracts a QuerySnapshot from the Comments collection
+   * @param {QuerySnapshot} commentsSnapshot: A QuerySnapshot obtained from the Text collection of this memeId
+   */
   onCollectionUpdate = (commentsSnapshot) => {
     const comments = [];
 
@@ -66,7 +69,11 @@ class CommentSample extends React.Component {
     });
   };
 
-  // Single comment
+  /**
+   * Renders a single Comment item.
+   * @param {Object} item: Data extracted from this.state.comments, produced by onCollectionUpdate
+   * @returns {Comment} A comment object
+   */
   renderComment = ({ item }) => {
     console.log(item);
     return (

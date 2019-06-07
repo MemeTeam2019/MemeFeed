@@ -33,7 +33,13 @@ class Comment extends React.Component {
     this.props.navigation.push('FriendProfile', { uid });
   };
 
-  //parseTags() looks for tags in the comment, a string that starts with @
+  /**
+   * Looks for tags based on the usernamesTagged array prop, making each one a
+   * TouchableOpacity which navigates to the user's friendProfilePage
+   *
+   * @param {String} content: The comment of the string
+   * @returns {View} Component which renders the comment
+   */
   parseTags = (content) => {
     const usernameToId = {};
     const words = content.split(' ');
@@ -54,12 +60,10 @@ class Comment extends React.Component {
           usernameToId[username] = userDoc.id;
         });
     });
-    /** 
-     * for each word in the comment, 
-     *    if the word starts with @, save the words before it in currStr and push to the textChildren array
-     *    push the username into textChildren. This will have its own styling and navigation
-     *    then push the rest of the comment into textChildren
-    */
+  
+    // If the word starts with @, save the words before it in currStr and push to the textChildren array
+    // push the username into textChildren. This will have its own styling and navigation
+    // then push the rest of the comment into textChildren
     words.forEach((word) => {
       found = false;
       for (let i = 0; i < usernamesTagged.length; ++i) {
@@ -93,14 +97,14 @@ class Comment extends React.Component {
         currStr += `${word} `;
       }
     });
-    //if the currStr is not a username or empty, push into textChildren with commentStyle
+    // If the currStr is not a username or empty, push into textChildren with commentStyle
     if (currStr !== '')
       textChildren.push(
         <Text key={key} style={styles.commentStyle}>
           {currStr}
         </Text>
       );
-    //This is what will be seen on the UI. The username, and then the textChildren array
+    // This is what will be seen on the UI. The username, and then the textChildren array
     return (
       <View style={styles.container}>
         <TouchableOpacity onPress={() => this.handleUsernameClick()}>

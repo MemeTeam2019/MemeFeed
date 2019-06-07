@@ -28,6 +28,9 @@ class Username extends React.Component {
     };
   }
 
+  /**
+   * Fetch the username associated with the uid passed down via props
+   */
   componentDidMount() {
     this._isMounted = true;
 
@@ -51,6 +54,9 @@ class Username extends React.Component {
       });
   }
 
+  /**
+   * Handle navigation to the appropriate profilePage
+   */
   goToUser() {
     // If going to our own profile
     if (this.props.uid === firebase.auth().currentUser.uid) {

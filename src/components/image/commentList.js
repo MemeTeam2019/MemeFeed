@@ -4,7 +4,13 @@ import moment from 'moment';
 
 import Comment from './comment';
 
-class CommentList extends React.Component {
+/**
+ * Renders comments passed down via the comments prop.
+ * @props {Array[Object]} comments: A a list of objects which contain the appropriate information
+ *                                  for each comment.
+ * @props {number} time: Unix time of when the meme was posted, obtained from the Meme document.
+ */
+class CommentList extends React.PureComponent {
   constructor(props) {
     super(props);
     this.renderComment = this.renderComment.bind(this);
@@ -28,6 +34,13 @@ class CommentList extends React.Component {
     );
   };
 
+  /**
+   * Converts the `time` field from the Firebase Meme document to
+   * human-readable time.
+   *
+   * @param {number} unixTime - Time the meme was posted in unix time
+   * @returns {string} Human-readable timestamp
+   */
   convertTime = (unixTime) => {
     const theMoment = moment.unix(unixTime);
     if (theMoment.isValid()) {

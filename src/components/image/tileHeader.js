@@ -28,6 +28,9 @@ class TileHeader extends React.Component {
     };
   }
 
+  /**
+   * Fetch the username of the person this meme was likedFrom
+   */
   componentDidMount() {
     firebase
       .firestore()
@@ -46,8 +49,8 @@ class TileHeader extends React.Component {
   }
 
   render() {
-    // if meme is just from a sub reddit
-    if (this.props.sub){
+    // Meme was sourced from a subreddit
+    if (this.props.sub) {
       return (
         <SourceReddit
           sub={this.props.sub}
@@ -56,11 +59,11 @@ class TileHeader extends React.Component {
         />
       );
     }
-    // meme posted by a user
+    // Meme was posted by a user
     else if (!(this.props.likedFrom)) {
         return <PostedByUser poster={this.props.poster}/>;
     }
-    // if meme liked from reddit
+    // Meme was liked from a subreddit
     else if (this.state.username === '') {
       return (
         <LikedFromReddit

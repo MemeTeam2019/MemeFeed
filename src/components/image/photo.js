@@ -4,38 +4,35 @@ import { Dimensions, StyleSheet, View, Image } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 
 /**
- * The photo component
+ * The photo component. Extracts the width and height of the item before rendering.
  * 
  * Used by:
  *  tile.js
  */
 
-class Photo extends React.PureComponent {
-
+class Photo extends React.Component {
+  /**
+   * Full width image.
+   * @param {Object} props 
+   */
   constructor(props) {
     super(props);
-    this._isMounted = false
     this.state = {
       width: Dimensions.get('window').width,
       height: 0,
     };
   }
 
+  /**
+   * Sets the dimensions of the image as state
+   */
   componentDidMount() {
-    this._isMounted = true;
-    const memeid = this.props.memeId;
     Image.getSize(this.props.imageUrl, (imageWidth, imageHeight) => {
       width = Dimensions.get('window').width
-      height = (width/imageWidth)*imageHeight
+      height = (width / imageWidth) * imageHeight
       this.setState({width, height})
     });
   }
-
-  componentWillUnmount() {
-    this._isMounted = false;
-    this.unsubscribe = null;
-  }
-
 
   render() {
     return (

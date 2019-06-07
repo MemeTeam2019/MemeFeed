@@ -26,7 +26,10 @@ import { withNavigation } from 'react-navigation';
 */
 
 class CommentButton extends React.Component {
-  handleCommentClick() {
+  /**
+   * Handles navigation to the comment page associated with the memeId
+   */
+  handleCommentClick = () => {
     this.props.navigation.push('Comment', {
       memeId: this.props.memeId,
       uri: this.props.imageUrl,
