@@ -74,7 +74,7 @@ export default class ChooseIconScreen extends React.Component {
                   this.state.selectedIcon === false
                     ? require('../images/userIcons/icon777.png')
                     : require('../images/userIcons/iconG7.png')
-                }   {/* if selected, color, else gray scale*/}
+                }
                 style={{ width: 80, height: 80, borderRadius: 80 / 2 }}
               />
             </TouchableOpacity>
@@ -88,7 +88,7 @@ export default class ChooseIconScreen extends React.Component {
                   this.state.selectedIcon === false
                     ? require('../images/userIcons/icon666.png')
                     : require('../images/userIcons/iconG6.png')
-                }   {/* if selected, color, else gray scale*/}
+                }
                 style={{ width: 80, height: 80, borderRadius: 80 / 2 }}
               />
             </TouchableOpacity>
@@ -103,7 +103,7 @@ export default class ChooseIconScreen extends React.Component {
                   this.state.selectedIcon === false
                     ? require('../images/userIcons/icon999.png')
                     : require('../images/userIcons/iconG9.png')
-                }   {/* if selected, color, else gray scale*/}
+                }
                 style={{ width: 80, height: 80, borderRadius: 80 / 2 }}
               />
             </TouchableOpacity>
@@ -119,7 +119,7 @@ export default class ChooseIconScreen extends React.Component {
                   this.state.selectedIcon === false
                     ? require('../images/userIcons/icon111.png')
                     : require('../images/userIcons/iconG1.png')
-                }   {/* if selected, color, else gray scale*/}
+                }
                 style={{ width: 80, height: 80, borderRadius: 80 / 2 }}
               />
             </TouchableOpacity>
@@ -133,7 +133,7 @@ export default class ChooseIconScreen extends React.Component {
                   this.state.selectedIcon === false
                     ? require('../images/userIcons/icon222.png')
                     : require('../images/userIcons/iconG2.png')
-                }   {/* if selected, color, else gray scale*/}
+                }
                 style={{ width: 80, height: 80, borderRadius: 80 / 2 }}
               />
             </TouchableOpacity>
@@ -147,7 +147,7 @@ export default class ChooseIconScreen extends React.Component {
                   this.state.selectedIcon === false
                     ? require('../images/userIcons/icon888.png')
                     : require('../images/userIcons/iconG8.png')
-                }   {/* if selected, color, else gray scale*/}
+                }
                 style={{ width: 80, height: 80, borderRadius: 80 / 2 }}
               />
             </TouchableOpacity>
@@ -163,7 +163,7 @@ export default class ChooseIconScreen extends React.Component {
                   this.state.selectedIcon === false
                     ? require('../images/userIcons/icon333.png')
                     : require('../images/userIcons/iconG3.png')
-                }   {/* if selected, color, else gray scale*/}
+                }
                 style={{ width: 80, height: 80, borderRadius: 80 / 2 }}
               />
             </TouchableOpacity>
@@ -177,7 +177,7 @@ export default class ChooseIconScreen extends React.Component {
                   this.state.selectedIcon === false
                     ? require('../images/userIcons/icon444.png')
                     : require('../images/userIcons/iconG4.png')
-                }   {/* if selected, color, else gray scale*/}
+                }
                 style={{ width: 80, height: 80, borderRadius: 80 / 2 }}
               />
             </TouchableOpacity>
@@ -191,7 +191,7 @@ export default class ChooseIconScreen extends React.Component {
                   this.state.selectedIcon === false
                     ? require('../images/userIcons/icon555.png')
                     : require('../images/userIcons/iconG5.png')
-                }   {/* if selected, color, else gray scale*/}
+                }
                 style={{ width: 80, height: 80, borderRadius: 80 / 2 }}
               />
             </TouchableOpacity>

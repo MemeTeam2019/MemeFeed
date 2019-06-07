@@ -98,10 +98,7 @@ const styles = StyleSheet.create({
   aboutText: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
-<<<<<<< HEAD
-=======
     color: 'black',
->>>>>>> 2b7a2f12bfb3e0c38943ef14c7b16da9178eabf1
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,

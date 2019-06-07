@@ -48,7 +48,6 @@ export default class AboutPage2 extends React.Component {
             When you rank a meme with any of the smiling emoji's it will appear
             on your profile and on your followers' home feed.
           </Text>
-<<<<<<< HEAD
           </View>
 
           <View style={styles.buttonBar}>
@@ -59,9 +58,6 @@ export default class AboutPage2 extends React.Component {
                         height: '40.5%', }}
               />
           </View>
-=======
-        </View>
->>>>>>> 2b7a2f12bfb3e0c38943ef14c7b16da9178eabf1
 
         <View style={styles.nextBut}>
           <TouchableOpacity onPress={() => this.props.navigation.push('Confirm')}
@@ -97,10 +93,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 35,
     fontFamily: 'AvenirNext-Regular',
-<<<<<<< HEAD
-=======
     color: 'black',
->>>>>>> 2b7a2f12bfb3e0c38943ef14c7b16da9178eabf1
     paddingHorizontal: '5%',
     marginBottom: '0.5%',
     textAlign: 'center',
@@ -113,10 +106,7 @@ const styles = StyleSheet.create({
   aboutText: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
-<<<<<<< HEAD
-=======
     color: 'black',
->>>>>>> 2b7a2f12bfb3e0c38943ef14c7b16da9178eabf1
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,

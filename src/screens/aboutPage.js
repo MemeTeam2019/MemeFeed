@@ -66,11 +66,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingRight: 3,
     paddingLeft: 3,
-<<<<<<< HEAD
     paddingTop: 5,
-=======
-    paddingTop: 5, //50
->>>>>>> 2b7a2f12bfb3e0c38943ef14c7b16da9178eabf1
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 36,
@@ -81,10 +77,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 35,
     fontFamily: 'AvenirNext-Regular',
-<<<<<<< HEAD
-=======
     color: 'black',
->>>>>>> 2b7a2f12bfb3e0c38943ef14c7b16da9178eabf1
     paddingHorizontal: '5%',
     marginBottom: '0.5%',
     textAlign: 'center',
@@ -111,10 +104,7 @@ const styles = StyleSheet.create({
   aboutText: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
-<<<<<<< HEAD
-=======
     color: 'black',
->>>>>>> 2b7a2f12bfb3e0c38943ef14c7b16da9178eabf1
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,
