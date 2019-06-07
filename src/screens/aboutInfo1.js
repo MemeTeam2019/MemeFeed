@@ -1,11 +1,12 @@
 import React from 'react';
 import { StyleSheet, View, Button, ImageBackground, Text } from 'react-native';
 
-export default class LoginScreen extends React.Component {
+export default class AboutInfo extends React.Component {
   static navigationOptions = {
     header: null,
   };
 
+  //about page from the About section in Profile menu
   render() {
     return (
       <ImageBackground
@@ -103,12 +104,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,
-    paddingTop: 20, //50
+    paddingTop: 20, 
     paddingLeft: 5,
-    //backgroundColor: 'blue',
     marginLeft: '3%',
     marginRight: '3%',
-    //height: '50%'
     justifyContent: 'center',
     textAlign: 'center'
   },

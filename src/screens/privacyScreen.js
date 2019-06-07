@@ -6,7 +6,7 @@ class PrivacyPolicyScreen extends React.PureComponent {
   static navigationOptions = {
     header: null,
   };
-
+  //privacy statement for user's 
   render() {
     const signup = this.props.navigation.getParam('signup', false);
     return (

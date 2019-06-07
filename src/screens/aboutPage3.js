@@ -1,10 +1,11 @@
 import React from 'react';
 import { StyleSheet, View, Button, ImageBackground, Text } from 'react-native';
 
-export default class LoginScreen extends React.Component {
+export default class AboutPage3 extends React.Component {
   static navigationOptions = {
     header: null,
   };
+
 
   render() {
     return (

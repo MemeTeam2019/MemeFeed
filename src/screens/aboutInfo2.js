@@ -9,11 +9,12 @@ import {
   Dimensions,
 } from 'react-native';
 
-export default class LoginScreen extends React.Component {
+export default class AboutInfo2 extends React.Component {
   static navigationOptions = {
     header: null,
   };
 
+  //about page from the About section in Profile menu
   render() {
     return (
       <ImageBackground

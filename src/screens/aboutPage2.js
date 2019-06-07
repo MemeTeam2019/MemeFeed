@@ -2,11 +2,13 @@
 import React from 'react';
 import { StyleSheet, View, Button, ImageBackground, Image, Text,Dimensions } from 'react-native';
 
-export default class LoginScreen extends React.Component {
+export default class AboutPage2 extends React.Component {
   static navigationOptions = {
     header: null,
   };
 
+  //about page from user creating new account
+  //explain reactions and the button bar, how to get memes onto your profile
   render() {
     return (
       <ImageBackground
@@ -31,9 +33,9 @@ export default class LoginScreen extends React.Component {
           <View style={styles.buttonBar}>
               <Image
                 source={require('../images/Tile/buttonBar.png')}
-                style={{        alignSelf: 'stretch',
-        width: win.width,
-        height: '40.5%', }}
+                style={{alignSelf: 'stretch',
+                        width: win.width,
+                        height: '40.5%', }}
               />
           </View>
 
@@ -61,26 +63,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingRight: 3,
     paddingLeft: 3,
-    paddingTop: 10, //50
-    //flexDirection: 'row',
+    paddingTop: 10,
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 36,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
-    //backgroundColor: 'blue',
     marginTop: '25%',
-    //marginBottom: '2%'
   },
   title: {
     fontSize: 35,
     fontFamily: 'AvenirNext-Regular',
-    //color: '#9F02FF',
     paddingHorizontal: '5%',
     marginBottom: '0.5%',
     textAlign: 'center',
     height: 50,
-    //backgroundColor: 'red',
     shadowColor: 'black',
     shadowOffset: { width: 0, height: 0.5 },
     shadowOpacity: 0.5,
@@ -89,16 +86,13 @@ const styles = StyleSheet.create({
   aboutText: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
-    //color: '#9F02FF',
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,
-    paddingTop: 1, //50
+    paddingTop: 1,
     paddingLeft: 5,
-    //backgroundColor: 'blue',
     marginLeft: '3%',
     marginRight: '3%',
-    //height: '50%'
   },
   input: {
     height: '12%',
@@ -127,15 +121,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    //marginBottom: '5%',
-    //backgroundColor: 'purple',
     marginRight: '1%',
     marginLeft: '1%'
   }
 });
-
-
-
-//            onPress={() =>
-//              this.props.navigation.push('Privacy', { signup: true })
-//            }

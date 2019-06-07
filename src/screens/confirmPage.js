@@ -13,7 +13,7 @@ export default class ConfirmScreen extends React.Component {
   static navigationOptions = {
     header: null,
   };
-
+  //send a confirming email to user's email address and push back to splash page
   componentDidMount() {
     if (firebase.auth().currentUser) {
       firebase
@@ -71,7 +71,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   text: {
-    //color: '#9F02FF',
     fontSize: 18,
     paddingHorizontal: '5%',
     textAlign: 'center',
@@ -86,12 +85,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 35,
     fontFamily: 'AvenirNext-Regular',
-    //color: '#9F02FF',
     paddingHorizontal: '5%',
     marginBottom: '0.5%',
     textAlign: 'center',
     height: 50,
-    //backgroundColor: 'red',
     shadowColor: 'black',
     shadowOffset: { width: 0, height: 0.5 },
     shadowOpacity: 0.5,
@@ -100,15 +97,12 @@ const styles = StyleSheet.create({
   aboutText: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
-    //color: '#9F02FF',
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,
-    paddingTop: 150, //50
+    paddingTop: 150,
     paddingLeft: 5,
-    //backgroundColor: 'blue',
     marginLeft: '3%',
     marginRight: '3%',
-    //height: '50%'
   },
 });
