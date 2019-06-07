@@ -128,7 +128,7 @@ async function upload(url, author, sub, time, score, caption) {
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
-
+//list of subreddits to pull from
 var subreddits = [
   'wholesomememes',
   'BikiniBottomTwitter',
@@ -193,6 +193,7 @@ var subreddits = [
   'Physicsmemes',
   'Engineeringmemes',
   'gaywashedmemes',
+  
 ];
 
 for (i = 0; i < subreddits.length; i++) {
