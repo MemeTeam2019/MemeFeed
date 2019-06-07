@@ -16,6 +16,10 @@ import { TextInput } from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-picker';
 import AutoHeightImage from 'react-native-auto-height-image';
 
+  /**
+   * Renders the image upload page
+   */
+
 class CaptionPage extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -54,7 +58,6 @@ class CaptionPage extends React.Component {
 
   // this gets the api key from the server
   componentDidMount() {
-    //console.log('mouning hnnng')
     this.pickPhoto()
     this.props.navigation.setParams({ upload: this.handleUpload });
     this.props.navigation.setParams({ back: this.pickPhoto });
@@ -98,21 +101,28 @@ class CaptionPage extends React.Component {
     });
   };
 
+  // handleUpload gets triggered when a user presses post,
+  // this function checks if its safe for the internet,
+  // posts the image to the users profile, the explore feed of
+  // all users, and to the home feed of their followers.
   handleUpload = async () => {
     this.setState({ isUploading: true });
 
+    // handles the case when the upload fails
     if (!this.state.imageuri) {
       this.setState({ isUploading: false });
       Alert.alert('Upload Failed', 'Please try again :(');
       return;
     }
 
+    // handles the case where the caption is empty
     if (this.state.caption === '') {
       this.setState({ isUploading: false });
       Alert.alert('Empty caption! Say something about your meme :)');
       return;
     }
 
+    // stores the document in firebase
     const docId =
       firebase.auth().currentUser.uid + Math.round(+new Date() / 1000);
     const storRef = firebase
@@ -122,6 +132,8 @@ class CaptionPage extends React.Component {
     await storRef.putFile(this.state.imageuri);
 
     storRef.getDownloadURL().then(async (newurl) => {
+      // make a request to Google Image Recognition to see if image is
+      // NSFW
       try {
         let body = JSON.stringify({
           requests: [
@@ -148,8 +160,6 @@ class CaptionPage extends React.Component {
           }
         );
         let responseJson = await response.json();
-        console.log(responseJson);
-        console.log(responseJson.responses[0]['safeSearchAnnotation']['adult']);
         let isNSFW = responseJson.responses[0]['safeSearchAnnotation']['adult'];
         // if image is nsfw don't post
         if (isNSFW === 'VERY_LIKELY' || isNSFW === 'LIKELY') {
@@ -175,8 +185,6 @@ class CaptionPage extends React.Component {
             caption: this.state.caption,
             reacts: 1,
           });
-          // .then(function(meme) {
-          console.log('Document written with ID: ', docId);
 
           // post in this users reacts
           firebase
