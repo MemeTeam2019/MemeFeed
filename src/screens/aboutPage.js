@@ -1,15 +1,24 @@
 import React from 'react';
-import { StyleSheet, View, Button, ImageBackground, Text } from 'react-native';
+import { StyleSheet,
+         ScrollView,
+         View,
+         Button,
+         ImageBackground,
+         Text,
+         TouchableOpacity } from 'react-native';
 
 export default class AboutPage extends React.Component {
   static navigationOptions = {
     header: null,
   };
+  // style={{paddingBottom : 100}}>
 
   //about page from when user creates new account
   //explaining meme feed and the general idea of the app
   render() {
     return (
+      <View style={StyleSheet.absoluteFill}>
+      <ScrollView>
       <ImageBackground
         source={require('../images/white.png')}
         style={styles.background}
@@ -29,7 +38,7 @@ export default class AboutPage extends React.Component {
             With memes ranging in all categories, Meme Feed strives to
             provide the perfect app for meme browsing
             and finding other
-            meme-holics like you!
+            memers like you!
           </Text>
           <Text style={styles.aboutText2}>
             Contact us at memefeedaye@gmail.com
@@ -37,13 +46,15 @@ export default class AboutPage extends React.Component {
         </View>
 
         <View style={styles.nextBut}>
-          <Button
-            title="Next"
-            color='#9F02FF'
-            onPress={() => this.props.navigation.push('About2')}
-          />
+          <TouchableOpacity onPress={() => this.props.navigation.push('About2')}
+                  style={styles.button}>
+            <Text style={styles.button}> Next </Text>
+          </TouchableOpacity>
         </View>
       </ImageBackground>
+      </ScrollView>
+      </View>
+
     );
   }
 }
@@ -55,7 +66,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingRight: 3,
     paddingLeft: 3,
+<<<<<<< HEAD
     paddingTop: 5,
+=======
+    paddingTop: 5, //50
+>>>>>>> 2b7a2f12bfb3e0c38943ef14c7b16da9178eabf1
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 36,
@@ -66,6 +81,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 35,
     fontFamily: 'AvenirNext-Regular',
+<<<<<<< HEAD
+=======
+    color: 'black',
+>>>>>>> 2b7a2f12bfb3e0c38943ef14c7b16da9178eabf1
     paddingHorizontal: '5%',
     marginBottom: '0.5%',
     textAlign: 'center',
@@ -86,11 +105,16 @@ const styles = StyleSheet.create({
     marginLeft: '3%',
     marginRight: '3%',
     justifyContent: 'center',
-    textAlign: 'center'
+    textAlign: 'center',
+    color: 'black'
   },
   aboutText: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
+<<<<<<< HEAD
+=======
+    color: 'black',
+>>>>>>> 2b7a2f12bfb3e0c38943ef14c7b16da9178eabf1
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,
@@ -119,6 +143,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginBottom: '5%',
+    // marginBottom: '20%',
+  },
+  button: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center',
+    fontSize: 20,
+    color: 'black',
+    marginBottom: 10,
+    paddingTop: 20,
+    justifyContent: 'flex-end',
   }
 });

@@ -67,7 +67,7 @@ class Username extends React.Component {
   render() {
     return (
       <TouchableOpacity onPress={() => this.goToUser()}>
-        <Text style={styles.text}>{this.state.username}</Text>
+        <Text style={styles.text}> {this.state.username}</Text>
       </TouchableOpacity>
     );
   }
@@ -78,7 +78,9 @@ export default withNavigation(Username);
 const styles = StyleSheet.create({
   text: {
     fontSize: 16,
-    fontFamily: 'AvenirNext-Bold',
-    marginLeft: '2.5%',
+    color: 'black',
+    fontFamily: 'AvenirNext-Regular',
+    fontWeight: '600',
+    marginRight: '2.5%',
   },
 });

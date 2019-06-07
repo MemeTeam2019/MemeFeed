@@ -1,6 +1,6 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet, Button } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Button, Platform } from 'react-native';
 
 class PrivacyPolicyScreen extends React.PureComponent {
   static navigationOptions = {
@@ -11,14 +11,14 @@ class PrivacyPolicyScreen extends React.PureComponent {
     const signup = this.props.navigation.getParam('signup', false);
     return (
       <View>
-        <ScrollView style={{ marginBottom: 40 }}>
+        <ScrollView>
           <Text style={styles.header}>Meme Feed Privacy Policy</Text>
           <Text style={styles.body}>
-            Effective date: April 22, 2019 {'\n\n'}
+            Effective date: June 1st, 2019 {'\n\n'}
             Thanks for entrusting Meme Feed with your name, email, password, and
             meme tastes. We make keep your private information secure as it is
             of the utmost priority for us. {'\n\n'}
-            We only collect two types of information from you: {'\n\n'}
+            We only collect four types of information from you: {'\n\n'}
             1. Sign up information: name, username, email, & password {'\n'}
             2. Reaction information: your rankings of memes {'\n\n'}
             For the signup information we keep your email and password private
@@ -39,16 +39,29 @@ class PrivacyPolicyScreen extends React.PureComponent {
             consent you are allowed to use this application and we are allowed
             to use your information as outlined in this Privacy Statement.{' '}
             {'\n\n'}
+            3. Comments: when commenting on a post you are allowing Meme
+            Feed to display your comments on a post, no matter it’s location;
+            meaning that when you comment on a post on any page that comment
+            will be forever tied to that meme so anyone can see your comment as
+            long as they are viewing the same meme you commented on.{' '}
+            {'\n\n'}
+            4. Post upload information: when you upload a meme/image and
+            caption to the application you are giving us the right to use and display
+            that given information anywhere on the mobile application. In order to
+            upload a meme/Image Meme Feed requires access to your image library
+            on your device. We only access your image library after you accept Meme
+            Feeds access to your library and when you open the library though the
+            upload image page.{' '}
+            {'\n\n'}
+
             If you wish you delete your account information and data you can
             contact us at:{' '}
             <Text style={styles.email}>memefeedaye@gmail.com</Text>
           </Text>
-          <Button
-            title='Back'
-            color='#9F02FF'
-            style={{ paddingTop: 30, marginBottom: '30' }}
-            onPress={() => this.props.navigation.pop()}
-          />
+          <TouchableOpacity onPress={() => this.props.navigation.pop()}
+                  style={styles.button}>
+              <Text style={styles.button}> Back </Text>
+          </TouchableOpacity>
         </ScrollView>
       </View>
     );
@@ -63,12 +76,14 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
     paddingTop: '15%',
+    color: 'black',
   },
   body: {
     fontSize: 14,
     fontFamily: 'AvenirNext-Regular',
     paddingVertical: '7.5%',
     paddingHorizontal: '6%',
+    color: 'black',
   },
   email: {
     textDecorationLine: 'underline',
@@ -85,4 +100,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: '5%',
   },
+  button: {
+    backgroundColor: 'transparent',
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center',
+    fontSize: 20,
+    color: 'black',
+    marginBottom: 10,
+    paddingTop: 20,
+  }
 });

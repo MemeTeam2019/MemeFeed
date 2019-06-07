@@ -1,5 +1,11 @@
 import React from 'react';
-import { Image, TouchableOpacity, View, StyleSheet } from 'react-native';
+import {
+  Image,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  RefreshControl,
+} from 'react-native';
 import { withNavigation } from 'react-navigation';
 import Grid from 'react-native-grid-component';
 
@@ -21,8 +27,8 @@ class MemeGrid extends React.Component {
     if (!data || !data.src) {
       return this._renderPlaceholder(i);
     }
-    const { src, key, sub, likedFrom, postedBy, poster } = data;
-    console.log(data);
+    const { src, key, sub, likedFrom, postedBy, poster, numFlags } = data;
+    if (numFlags >= 10 || src === '') return null;
     return (
       <View style={[styles.item]} key={i}>
         <TouchableOpacity
@@ -37,6 +43,9 @@ class MemeGrid extends React.Component {
               likedFrom,
               postedBy,
               poster,
+              isSubRedditPg: this.props.isSubRedditPg,
+              caption: data.caption,
+              time: data.time,
             });
           }}
         >
@@ -53,13 +62,6 @@ class MemeGrid extends React.Component {
 
   _renderPlaceholder = (i) => <View style={styles.item} key={i} />;
 
-  navigateToTilePage(data) {
-    const { navigation } = this.props;
-    navigation.push('Tile', {
-      memes: [data],
-    });
-  }
-
   render() {
     return (
       <Grid
@@ -68,13 +70,13 @@ class MemeGrid extends React.Component {
         renderPlaceholder={this._renderPlaceholder}
         data={this.props.memes}
         itemsPerRow={3}
-        onEndReached={() => {
-          console.log('on end reached');
-          console.log('===========\n\n\n\nloading more memes\n===============');
-          // Call parent function
-          this.props.loadMemes();
-          console.log(this.props.memes);
-        }}
+        onEndReached={this.props.loadMemes}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.props.refreshing}
+            onRefresh={this.props.onRefresh}
+          />
+        }
       />
     );
   }

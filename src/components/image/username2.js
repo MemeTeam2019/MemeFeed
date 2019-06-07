@@ -1,7 +1,6 @@
 import React from 'react';
-import { Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Text, StyleSheet, TouchableOpacity, View } from 'react-native';
 import firebase from 'react-native-firebase';
-
 
 /**
  * Touchable username which routes to the friendProfile of the user.
@@ -30,6 +29,7 @@ class Username2 extends React.Component {
   }
 
   componentDidMount() {
+    console.log("username2 page"+ (this.props.uid));
     this._isMounted = true;
 
     const ref = firebase
@@ -59,7 +59,7 @@ class Username2 extends React.Component {
         uid: this.props.uid,
       });
     } else {
-      this.props.navigation.navigate('FriendProfile', {
+      this.props.navigation.push('FriendProfile', {
         uid: this.props.uid,
       });
     }
@@ -77,9 +77,11 @@ class Username2 extends React.Component {
 const styles = StyleSheet.create({
   text: {
     fontSize: 16,
-    fontFamily: 'AvenirNext-Bold',
+    fontFamily: 'AvenirNext-Regular',
     marginLeft: '2.5%',
-    color: '#919191'
+    color: '#919191',
+    backgroundColor: 'transparent',
+    fontWeight: '600',
   },
 });
 

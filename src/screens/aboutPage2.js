@@ -1,6 +1,14 @@
 
 import React from 'react';
-import { StyleSheet, View, Button, ImageBackground, Image, Text,Dimensions } from 'react-native';
+import { StyleSheet,
+         ScrollView,
+         View,
+         Button,
+         ImageBackground,
+         Image,
+         Text,
+         TouchableOpacity,
+         Dimensions } from 'react-native';
 
 export default class AboutPage2 extends React.Component {
   static navigationOptions = {
@@ -11,6 +19,8 @@ export default class AboutPage2 extends React.Component {
   //explain reactions and the button bar, how to get memes onto your profile
   render() {
     return (
+      <View style={StyleSheet.absoluteFill}>
+      <ScrollView>
       <ImageBackground
         source={require('../images/white.png')}
         style={styles.background}
@@ -21,13 +31,24 @@ export default class AboutPage2 extends React.Component {
 
         <View style={styles.aboutText}>
           <Text style={styles.aboutText}>
-          React to Memes using each of these 5 emojis ranging from LAME to LMFAO.
+            React to Memes using each of these 5 emojis ranging from LAME to
+            LMFAO.
           </Text>
+        </View>
+
+        <View style={styles.imageStyle}>
+          <Image
+            source={require('../images/Tile/bar.png')}
+            style={styles.tile}
+          />
+        </View>
+
+        <View style={styles.aboutText}>
           <Text style={styles.aboutText}>
-          When you rank a meme
-          with any of the smiling emoji's it will appear on your
-          profile and on your followers' home feed.
+            When you rank a meme with any of the smiling emoji's it will appear
+            on your profile and on your followers' home feed.
           </Text>
+<<<<<<< HEAD
           </View>
 
           <View style={styles.buttonBar}>
@@ -38,18 +59,20 @@ export default class AboutPage2 extends React.Component {
                         height: '40.5%', }}
               />
           </View>
+=======
+        </View>
+>>>>>>> 2b7a2f12bfb3e0c38943ef14c7b16da9178eabf1
 
         <View style={styles.nextBut}>
-          <Button
-            title="Next"
-            color='#9F02FF'
-            style={{paddingTop: 30}}
-            onPress={() =>
-              this.props.navigation.push('Confirm')
-            }
-          />
+          <TouchableOpacity onPress={() => this.props.navigation.push('Confirm')}
+                            style={styles.button}>
+              <Text style={styles.button}> Next </Text>
+          </TouchableOpacity>
+
         </View>
       </ImageBackground>
+      </ScrollView>
+      </View>
     );
   }
 }
@@ -74,6 +97,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 35,
     fontFamily: 'AvenirNext-Regular',
+<<<<<<< HEAD
+=======
+    color: 'black',
+>>>>>>> 2b7a2f12bfb3e0c38943ef14c7b16da9178eabf1
     paddingHorizontal: '5%',
     marginBottom: '0.5%',
     textAlign: 'center',
@@ -86,6 +113,10 @@ const styles = StyleSheet.create({
   aboutText: {
     fontSize: 18,
     fontFamily: 'AvenirNext-Regular',
+<<<<<<< HEAD
+=======
+    color: 'black',
+>>>>>>> 2b7a2f12bfb3e0c38943ef14c7b16da9178eabf1
     paddingHorizontal: '4%',
     marginBottom: '1%',
     paddingRight: 5,
@@ -115,7 +146,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginBottom: '5%',
   },
   buttonBar: {
     flex: 1,
@@ -123,5 +153,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: '1%',
     marginLeft: '1%'
+  },
+  imageStyle: {
+    flex: 1,
+    // backgroundColor: 'blue',
+    alignItems: 'center',
+    paddingLeft: 5,
+    paddingRight: 5,
+  },
+  tile: {
+    resizeMode: 'contain',
+    justifyContent: 'center',
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height*.25,
+    // paddingHorizontal: 20,
+    // paddingTop: 10,
+    alignItems: 'center',
+  },
+  button: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center',
+    fontSize: 20,
+    color: 'black',
+    marginBottom: 10,
+    paddingTop: 20,
+    justifyContent: 'flex-end',
   }
 });

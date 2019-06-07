@@ -5,13 +5,15 @@ import { withNavigation } from 'react-navigation';
 
 class CommentButton extends React.Component {
   handleCommentClick() {
-    this.props.navigation.navigate('Comment', {
+    this.props.navigation.push('Comment', {
       memeId: this.props.memeId,
       uri: this.props.imageUrl,
       sub: this.props.sub,
       likedFrom: this.props.likedFrom,
       postedBy: this.props.postedBy,
       poster: this.props.poster,
+      caption: this.props.caption,
+      time: this.props.time,
     });
   }
 

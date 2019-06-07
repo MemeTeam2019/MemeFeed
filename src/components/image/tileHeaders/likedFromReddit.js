@@ -1,113 +1,180 @@
-import React, { Component } from 'react';
-import {Text, StyleSheet, View, Image, TouchableOpacity} from 'react-native';
+import React from 'react';
+import {
+  Text,
+  StyleSheet,
+  View,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import { withNavigation } from 'react-navigation';
-import Username from '../username';
 import ActionSheet from 'react-native-actionsheet';
-
 import firebase from 'react-native-firebase';
+
+import Username from '../username';
 
 class LikedFromReddit extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
-      iconURL: ''
-    }
+      iconURL:
+        'https://firebasestorage.googleapis.com/v0/b/memefeed-6b0e1.appspot.com/o/UserIcons%2Ficon555.png?alt=media&token=48fb9bf8-4efb-490c-a178-13a9efb2289c',
+    };
   }
 
   componentDidMount() {
     const uid = this.props.poster;
-    const userRef = firebase.firestore().collection("Users").doc(uid);
-    //get the profile icon
     firebase
-    .firestore()
-    .collection('Users')
-    .doc(uid)
-    .get()
-    .then((docSnapshot) => {
-      if(docSnapshot.exists) {
-        const { icon } = docSnapshot.data();
-          this.state.iconURL = icon
-        console.log(this.state.iconURL)
-        console.log(icon)
-      }
-      else{
-        console.log("doesn't exist")
-      }
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-    userRef.get().then(snapshot => {
-      const data = snapshot.data();
-      this.setState({username: data.username})
-    })
-    .catch(err => console.log(err));
+      .firestore()
+      .collection('Users')
+      .doc(uid);
+    // Get the profile icon
+    firebase
+      .firestore()
+      .collection('Users')
+      .doc(uid)
+      .get()
+      .then((docSnapshot) => {
+        if (docSnapshot.exists) {
+          const { icon } = docSnapshot.data();
+          this.setState({
+            iconURL: icon,
+          });
+        } else {
+          console.log("doesn't exist");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
-  navigateToFriendProfile() {
-    this.props.navigation.navigate("FriendProfile", {
-      uid: this.props.poster
+  goToSubreddit = () => {
+    this.props.navigation.push('SubReddit', {
+      sub: this.props.sub,
     });
-  }
+  };
 
   showActionSheet = () => {
     this.ActionSheet.show();
   };
 
+  flagMeme = () => {
+    const uid = firebase.auth().currentUser.uid;
+    const memeId = this.props.memeId;
+    const memeRef = firebase.firestore().doc(`Memes/${memeId}`);
+    const feedRef = firebase
+      .firestore()
+      .doc(`Feeds/${uid}/Likes/${memeId}`);
+    const reactsRef = firebase
+      .firestore()
+      .doc(`Reacts/${uid}/Likes/${memeId}`);
+
+    memeRef
+      .get()
+      .then((docSnapshot) => {
+        if (docSnapshot.exists) {
+          const { numFlags } = docSnapshot.data();
+          memeRef.update({ numFlags: numFlags + 1 || 1 });
+        }
+      })
+      .catch((err) => {
+        Alert.alert(
+          'Oops!',
+          'Something went wrong when flagging this image. Please contact us at memefeedaye@gmail.com',
+          { text: 'Ok' }
+        );
+        console.log(err);
+      });
+    feedRef
+      .get()
+      .then((docSnapshot) => {
+        if (docSnapshot.exists) {
+          const { prevNumFlags } = docSnapshot.data();
+          feedRef.update({ numFlags: prevNumFlags + 1 || 1 });
+        }
+      })
+      .catch((err) => {
+        Alert.alert(
+          'Oops!',
+          'Something went wrong when flagging this image. Please contact us at memefeedaye@gmail.com',
+          { text: 'Ok' }
+        );
+        console.log(err);
+      });
+    reactsRef
+      .get()
+      .then((docSnapshot) => {
+        if (docSnapshot.exists) {
+          const { prevNumFlags } = docSnapshot.data();
+          reactsRef.update({ numFlags: prevNumFlags + 1 || 1 });
+        }
+      })
+      .catch((err) => {
+        Alert.alert(
+          'Oops!',
+          'Something went wrong when flagging this image. Please contact us at memefeedaye@gmail.com',
+          { text: 'Ok' }
+        );
+        console.log(err);
+      });
+  };
+
   render() {
-    var optionArray = ['Inappropriate/Irrelevant', 'Cancel'];
+    const optionArray = ['Inappropriate/Irrelevant', 'Cancel'];
     // if just from reddit (a.k.a. on the explore page)
-    console.log(this.props.sub)
     return (
-
-
-
-
-
       <View style={styles.navBar1}>
-      <View style={styles.leftContainer1}>
-        <View style={styles.container}>
-          <Image
-            style={styles.userImg}
-            source={{uri: this.state.iconURL}}
-          />
-          <Username uid={this.props.poster} navigation={this.props.navigation} />
-          <Image
-            style={styles.likedFromImg}
-            source={require('../repostIcon.png')}
-          />
-          <Text style={{fontSize: 12, fontWeight: 'bold', fontStyle: 'italic', color: '#919191', width: 800}}> 'r/{this.props.sub}'</Text>
-        </View>
-        </View>
+        <View style={styles.leftContainer1}>
+          <View style={styles.container}>
+            <Image
+              style={styles.userImg}
+              source={{ uri: this.state.iconURL }}
+            />
+            <Username
+              uid={this.props.poster}
+              navigation={this.props.navigation}
+            />
+            <Image
+              style={styles.likedFromImg}
+              source={require('../repostIcon.png')}
+            />
+            <TouchableOpacity onPress={() => this.goToSubreddit()}>
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontWeight: 'bold',
+                  fontStyle: 'italic',
+                  color: '#919191',
+                  width: 800,
+                }}
+              >
+                ' r/{this.props.sub}'
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-
-        <View style={styles.rightContainer1}>
-          <View style={styles.rightIcon1} />
-          <TouchableOpacity onPress={this.showActionSheet}>
-            <Text style={styles.report}> . . . </Text>
-          </TouchableOpacity>
-          <ActionSheet
-            ref={(o) => (this.ActionSheet = o)}
-            options={optionArray}
-            cancelButtonIndex={1}
-            destructiveIndex={0}
-            onPress={(index) => {
-              if (optionArray[index] == 'Inappropriate/Irrelevant') {
-
-              }
-            }}
-          />
+          <View style={styles.rightContainer1}>
+            <View style={styles.rightIcon1} />
+            <TouchableOpacity onPress={this.showActionSheet}>
+              <Text style={styles.report}>...</Text>
+            </TouchableOpacity>
+            <ActionSheet
+              ref={(o) => {
+                this.ActionSheet = o;
+              }}
+              options={optionArray}
+              cancelButtonIndex={1}
+              destructiveIndex={0}
+              onPress={(index) => {
+                if (optionArray[index] === 'Inappropriate/Irrelevant') {
+                  this.flagMeme();
+                }
+              }}
+            />
+          </View>
         </View>
       </View>
-
-
-
-
-
-
-
-
     );
   }
 }
@@ -115,7 +182,7 @@ class LikedFromReddit extends React.Component {
 export default withNavigation(LikedFromReddit);
 
 const styles = StyleSheet.create({
-   container: {
+  container: {
     flexDirection: 'row',
     backgroundColor: 'transparent',
     width: '85%',
@@ -130,21 +197,20 @@ const styles = StyleSheet.create({
     height: 50,
     alignItems: 'center',
     marginTop: 30,
-    borderBottomWidth: .5,
+    borderBottomWidth: 0.5,
     borderColor: '#D6D6D6',
-    //borderTopWidth: .5,
     paddingTop: 7,
   },
   text: {
     fontSize: 16,
     fontFamily: 'AvenirNext-Bold',
-    marginLeft: 10
+    marginLeft: 10,
   },
   userImg: {
     width: 30,
     height: 30,
     borderRadius: 15,
-    marginRight: 2
+    marginRight: 2,
   },
   likedFromImg: {
     width: 30,
@@ -152,13 +218,13 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'flex-end'
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   navBar1: {
     height: 95,
-    paddingTop: 50, //50
+    paddingTop: 50,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -167,7 +233,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    width: '80%'
+    width: '80%',
   },
   rightContainer1: {
     flex: 1,
@@ -190,7 +256,18 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     color: '#919191',
     backgroundColor: 'white',
-    marginLeft: 2
-  }
-
+    marginLeft: 2,
+  },
+  touchSpace: {
+    padding: 5,
+    fontSize: 15,
+    fontFamily: 'AvenirNext-Bold',
+    fontStyle: 'italic',
+    color: '#919191',
+    backgroundColor: 'transparent',
+    textAlignVertical: 'top',
+    width: 900,
+    marginRight: 2,
+    paddingLeft: 5,
+  },
 });

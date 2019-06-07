@@ -1,58 +1,59 @@
 import React from 'react';
-import {
-  TouchableOpacity,
-  Text,
-  View,
-  StyleSheet,
-  FlatList,
-} from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import moment from 'moment';
 
-// import ButtonBar from './buttonBar';
 import Comment from './comment';
 
 class CommentList extends React.Component {
   constructor(props) {
     super(props);
-    this.renderComment.bind(this);
-    console.log(props);
+    this.renderComment = this.renderComment.bind(this);
   }
 
-  // Single comment
-  renderComment = ({ item }) => {
+  /**
+   * Renders a single comment item wrapped in a <View> tag.
+   *
+   * @param {Object} item: Element of this.state.comments, obtained from updateComments
+   * @returns {JSXElement} Comment component wrapped in a <View>
+   */
+  renderComment = (item) => {
     return (
       <Comment
         key={item.key}
         username={item.username}
         content={item.content}
         uid={item.uid}
+        usernamesTagged={item.usernamesTagged || []}
       />
     );
   };
 
+  convertTime = (unixTime) => {
+    const theMoment = moment.unix(unixTime);
+    if (theMoment.isValid()) {
+      return theMoment.fromNow();
+    }
+    return 'A while ago';
+  };
+
   render() {
-    // if there are more comments to load
-    if (this.props.commentsLoaded < this.props.commentCount) {
-      return (
-        <View style={[styles.containerStyle]}>
-          {/* <ButtonBar memeId={this.props.memeId} /> */}
+    const { comments } = this.props;
+    return (
+      <View key={this.props.comments} style={{ marginHorizontal: '2.5%' }}>
+        {/* Only render "Load more" if there are more comments to load */}
+        {this.props.commentsLoaded < this.props.commentCount && (
           <TouchableOpacity
             onPress={this.props.fetchComments}
-            style={{ justifyContent: 'center', alignItems: 'center' }}
+            style={styles.loadMore}
           >
-            <Text style={styles.buttonSty}>Load more comments</Text>
+            <Text style={styles.loadMoreText}>Load more comments</Text>
           </TouchableOpacity>
-          <FlatList
-            data={this.props.comments}
-            renderItem={this.renderComment}
-          />
-        </View>
-      );
-    }
-    // no more comments to load
-    return (
-      <View style={[styles.containerStyle]}>
-        {/* <ButtonBar memeId={this.props.memeId} /> */}
-        <FlatList data={this.props.comments} renderItem={this.renderComment} />
+        )}
+        {/* Map each comment to a comment component */}
+        <View>{comments.map((comment) => this.renderComment(comment))}</View>
+        <Text style={styles.timestamp}>
+          {this.convertTime(this.props.time)}
+        </Text>
       </View>
     );
   }
@@ -61,23 +62,27 @@ class CommentList extends React.Component {
 export default CommentList;
 
 const styles = StyleSheet.create({
-  containerStyle: {
-    marginTop: 50,
-    bottom: 50,
+  container: {
     justifyContent: 'center',
     flex: 1,
-    backgroundColor: 'rgba(255,255,255,1)',
+    backgroundColor: 'rgba(255,0,255,1)',
+    marginHorizontal: '2.5%',
   },
-  buttonSty: {
-    paddingTop: 10,
+  loadMoreText: {
     fontSize: 15,
+    color: 'black',
     fontFamily: 'AvenirNext-Bold',
-    textAlign: 'center',
+    textAlign: 'left',
   },
   loadMore: {
-    height: 40,
-    width: 205,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+  },
+  timestamp: {
+    fontFamily: 'AvenirNext-Regular',
+    fontWeight: '300',
+    color: '#919191',
+    marginTop: '5%',
+    marginBottom: '20%',
   },
 });

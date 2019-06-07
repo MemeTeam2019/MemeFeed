@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Text,
+  Platform
 } from 'react-native';
 
 import firebase from 'react-native-firebase';
@@ -198,11 +199,10 @@ export default class ChooseIconScreen extends React.Component {
         </View>
 
         <View style={styles.nextBut}>
-          <Button
-            title='Next'
-            color='#9F02FF'
-            onPress={this._onNextButton.bind()}
-          />
+          <TouchableOpacity onPress={this._onNextButton.bind()}
+                  style={styles.button}>
+            <Text style={styles.button}> Next </Text>
+          </TouchableOpacity>
         </View>
       </ImageBackground>
     );
@@ -237,6 +237,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0.5 },
     shadowOpacity: 0.5,
     shadowRadius: 0.4,
+    color: 'black'
   },
   aboutText: {
     fontSize: 18,
@@ -290,6 +291,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginBottom: '5%',
+    marginBottom: '2%',
   },
+  button: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center',
+    fontSize: 20,
+    color: 'black',
+    marginBottom: 10,
+    paddingTop: 20,
+    justifyContent: 'flex-end',
+  }
 });

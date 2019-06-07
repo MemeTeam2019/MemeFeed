@@ -2,6 +2,9 @@
 #
 .DS_Store
 GoogleService-Info.plist
+env
+memefeed-6b0e1-firebase-adminsdk-z2wdj-c66935b5ea.json
+*.pyc
 
 # Xcode
 #
@@ -55,3 +58,6 @@ buck-out/
 
 # Bundle artifact
 *.jsbundle
+
+# secrets
+memefeed-6b0e1-firebase-adminsdk-z2wdj-8f0b0d9ad9.json

@@ -1,25 +1,20 @@
 import React from 'react';
 import {
   StyleSheet,
-  View,
+  ScrollView,
   Text,
   KeyboardAvoidingView,
-  Button,
   TextInput,
   Alert,
   ImageBackground,
   TouchableOpacity,
+  Dimensions,
+  Platform,
+  ActivityIndicator,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import { CheckBox } from 'react-native-elements';
 
-/**
- * Handles signing up for new accounts.
- *
- * Props
- * -----
- * None
- */
 class SignupScreen extends React.Component {
   static navigationOptions = {
     header: null,
@@ -34,6 +29,7 @@ class SignupScreen extends React.Component {
       password: '',
       cpassword: '',
       checked: false,
+      uploading: false,
     };
   }
 
@@ -58,11 +54,12 @@ class SignupScreen extends React.Component {
             followersLst: [],
             followingLst: [],
           });
-          return uid;
         }
+        this.setState({ uploading: false });
       })
       .then(() => this.props.navigation.push('Icon'))
       .catch(() => {
+        this.setState({ uploading: false });
         Alert.alert('Signup Error', `Error creating User doc for ${email}`, [
           { text: 'OK', style: 'cancel' },
         ]);
@@ -70,12 +67,17 @@ class SignupScreen extends React.Component {
   };
 
   handleSubmit = () => {
+    this.setState({ uploading:true });
     const email = this.state.email;
     const name = this.state.name;
     const username = this.state.username;
     const password = this.state.password;
     if (password !== this.state.cpassword) {
       Alert.alert("Passwords don't match", '', [{ text: 'OK' }]);
+      return;
+    }
+    if (email === '' || password === '' || name === '' || username === '') {
+      Alert.alert('Error', 'Enter in all information', [{ text: 'OK' }]);
       return;
     }
     firebase
@@ -86,6 +88,7 @@ class SignupScreen extends React.Component {
           const uid = user.user.uid;
           this.addUserDoc(uid, email, name, username);
         } else {
+          this.setState({ uploading: false });
           Alert.alert(
             'Signup Error',
             "Couldn't create acount. Please try again",
@@ -94,6 +97,7 @@ class SignupScreen extends React.Component {
         }
       })
       .catch((error) => {
+        this.setState({ uploading: false });
         Alert.alert('Error', error.code, [
           {
             text: 'Dismiss',
@@ -109,10 +113,17 @@ class SignupScreen extends React.Component {
         source={require('../images/bkgrnd.jpeg')}
         style={styles.background}
       >
-        <View style={styles.container}>
-          <KeyboardAvoidingView
-            contentContainerStyle={styles.addBottomPadding}
-            behavior='position'
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'android' ? null : 'padding'}
+          style={styles.container}
+          keyboardVerticalOffset={0}
+        >
+          <ScrollView
+            contentContainerStyle={{
+              flex: 1,
+              justifyContent: 'center',
+              // marginTop: '25%',
+            }}
           >
             <Text style={styles.title}>Sign Up</Text>
             <TextInput
@@ -150,8 +161,6 @@ class SignupScreen extends React.Component {
             <CheckBox
               center
               title='Accept Privacy Policy'
-              // checkedIcon='dot-circle-o'
-              // uncheckedIcon='circle-o'
               checkedColor='white'
               checked={this.state.checked}
               containerStyle={styles.checkboxContainer}
@@ -177,15 +186,31 @@ class SignupScreen extends React.Component {
               </Text>
             </TouchableOpacity>
 
-            <Button
-              title='Submit'
-              style={styles.submit}
-              color='#fff'
-              disabled={!this.state.checked}
-              onPress={() => this.handleSubmit()}
-            />
-          </KeyboardAvoidingView>
-        </View>
+            { !this.state.uploading &&  this.state.checked &&
+              <TouchableOpacity
+                onPress={() => this.handleSubmit()}
+                style={styles.button}
+                disabled={false}
+              >
+                <Text style={styles.button}>Submit </Text>
+              </TouchableOpacity>
+            }
+            { !this.state.uploading && !this.state.checked &&
+              <TouchableOpacity
+                onPress={() => this.handleSubmit()}
+                style={styles.disabledButton}
+                disabled={true}
+              >
+                <Text style={styles.disabledButton}>Submit </Text>
+              </TouchableOpacity>
+            }
+            { this.state.uploading &&
+              <ActivityIndicator
+                color="white"
+              />
+            }
+          </ScrollView>
+        </KeyboardAvoidingView>
       </ImageBackground>
     );
   }
@@ -196,9 +221,11 @@ export default SignupScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: '18%',
     alignItems: 'center',
     justifyContent: 'center',
+    flexGrow: 1,
+    height: Dimensions.get('window').height,
+    width: Dimensions.get('window').width,
   },
   title: {
     fontSize: 36,
@@ -207,8 +234,8 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   input: {
-    width: 325,
-    height: 55,
+    width: Dimensions.get('window').width * 0.85,
+    height: 50,
     backgroundColor: '#FFFFFF',
     borderRadius: 5,
     fontSize: 18,
@@ -244,5 +271,21 @@ const styles = StyleSheet.create({
   privacyText: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  button: {
+    backgroundColor: 'transparent',
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center',
+    fontSize: 20,
+    color: '#fff',
+    marginBottom: 3,
+  },
+  disabledButton: {
+    backgroundColor: 'transparent',
+    fontFamily: 'AvenirNext-Regular',
+    textAlign: 'center',
+    fontSize: 20,
+    color: '#CDCDCD',
+    marginBottom: 3,
   },
 });

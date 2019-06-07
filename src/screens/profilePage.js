@@ -6,11 +6,12 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  RefreshControl,
+  Alert,
 } from 'react-native';
 import firebase from 'react-native-firebase';
 import ActionSheet from 'react-native-actionsheet';
 
-import Tile from '../components/image/tile';
 import MemeGrid from '../components/general/memeGrid';
 import MemeList from '../components/general/memeList';
 
@@ -50,49 +51,58 @@ export default class Profile extends React.Component {
       selectListButtonP: false,
       updated: true,
       memes: [],
-      oldestDoc: 0,
-      icon: ''
+      oldestDoc: null,
+      icon: '',
+      refreshing: true,
     };
   }
 
   componentDidMount() {
-    this._isMounted = true;
-    if (this._isMounted) {
-      const uid = firebase.auth().currentUser.uid;
-      // Get the profile icon
-      firebase
-        .firestore()
-        .collection('Users')
-        .doc(uid)
-        .get()
-        .then((docSnapshot) => {
-          if (docSnapshot.exists) {
-            const { icon } = docSnapshot.data();
-            this.setState({ icon })
-          } else {
-            console.log("doesn't exist");
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      this.userListener = firebase
-        .firestore()
-        .collection('Users')
-        .doc(uid)
-        .get()
-        .then((snapshot) => this.setState(snapshot.data()));
-      firebase
-        .firestore()
-        .collection('Reacts')
-        .doc(firebase.auth().currentUser.uid)
-        .collection('Likes')
-        .orderBy('time', 'desc')
-        .limit(15)
-        .get()
-        .then(this.updateFeed);
-    }
+    const uid = firebase.auth().currentUser.uid;
+    // Get the profile icon
+    firebase
+      .firestore()
+      .collection('Users')
+      .doc(uid)
+      .get()
+      .then((docSnapshot) => {
+        if (docSnapshot.exists) {
+          const { icon } = docSnapshot.data();
+          this.setState({ icon });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    // Fetch user info from Users collection
+    firebase
+      .firestore()
+      .collection('Users')
+      .doc(uid)
+      .get()
+      .then((snapshot) => this.setState(snapshot.data()));
+
+    // Fetch the first 15 memes in this person's Reacts collection
+    firebase
+      .firestore()
+      .collection('Reacts')
+      .doc(firebase.auth().currentUser.uid)
+      .collection('Likes')
+      .orderBy('time', 'desc')
+      .limit(15)
+      .get()
+      .then(this.updateFeed);
   }
+
+  /**
+   * Refresh the memes pulled for this user.
+   */
+  refreshMemes = () => {
+    this.setState({ memes: [], refreshing: true, oldestDoc: null }, () => {
+      this.componentDidMount();
+    });
+  };
 
   fetchMemes = () => {
     // garentees not uploading duplicate memes by checking if memes have finished
@@ -113,38 +123,58 @@ export default class Profile extends React.Component {
     }
   };
 
-  updateFeed = (querySnapshot) => {
-    const newMemes = [];
-
-    querySnapshot.docs.forEach((doc) => {
-      const { time, url, rank, likedFrom } = doc.data();
-      if (rank > 1) {
-        newMemes.push({
-          key: doc.id,
-          doc, // DocumentSnapshot
-          src: url,
-          time,
-          likedFrom,
-          // this is to ensure that if a user changes their reaction to a meme
-          // on their own page that the liked from source is still the same
-          postedBy: likedFrom,
-          poster: firebase.auth().currentUser.uid,
+  /**
+   * Extract query snapshot from Reacts collection to this.state.memes in order
+   * to pass as props to MemeList or MemeGrid
+   */
+  updateFeed = (reactsSnapshot) => {
+    const newMemes = reactsSnapshot.docs.map(async (doc) => {
+      const { likedFrom, rank, url } = doc.data();
+      return firebase
+        .firestore()
+        .collection(`Memes`)
+        .doc(doc.id)
+        .get()
+        .then((memeSnapshot) => {
+          if (memeSnapshot.exists && rank > 1) {
+            const { caption, time } = memeSnapshot.data();
+            return {
+              key: doc.id,
+              doc, // DocumentSnapshot
+              src: url,
+              time,
+              likedFrom,
+              // this is to ensure that if a user changes their reaction to a meme
+              // on their own page that the liked from source is still the same
+              postedBy: likedFrom,
+              poster: firebase.auth().currentUser.uid,
+              caption,
+            };
+          }
+          return null;
+        })
+        .catch((error) => {
+          console.log(error);
         });
-      }
     });
-
-    Promise.all(newMemes).then((resolvedMemes) => {
+    Promise.all(newMemes).then((fulfilledMemes) => {
       this.setState((prevState) => {
-        const mergedMemes = prevState.memes.concat(resolvedMemes);
+        const mergedMemes = prevState.memes.concat(
+          fulfilledMemes.filter((meme) => meme != null)
+        );
         return {
           memes: mergedMemes,
           updated: true,
-          oldestDoc: querySnapshot.docs[querySnapshot.docs.length - 1],
+          oldestDoc: reactsSnapshot.docs[reactsSnapshot.docs.length - 1],
+          refreshing: false,
         };
       });
     });
   };
 
+  /**
+   * Fetch all user info from the Users collection
+   */
   getUserInfo = () => {
     const uid = firebase.auth().currentUser.uid;
     firebase
@@ -172,6 +202,9 @@ export default class Profile extends React.Component {
     this.setState({ selectListButtonP: true });
   };
 
+  /**
+   * Log the user out and take them to the login page.
+   */
   logout = () => {
     firebase
       .auth()
@@ -181,39 +214,20 @@ export default class Profile extends React.Component {
       })
       .catch((err) => {
         console.log(err);
+        Alert.alert('Error logging out', 'Please try again', [{ text: 'OK' }]);
       });
   };
 
-  renderItem(item, itemSize, itemPaddingHorizontal) {
-    return (
-      <TouchableOpacity
-        key={item.id}
-        style={{
-          width: itemSize,
-          height: itemSize,
-          paddingHorizontal: itemPaddingHorizontal,
-        }}
-        onPress={() => {
-          this.ShowModalFunction(true, item.src);
-        }}
-      >
-        <Image
-          resizeMode='cover'
-          style={{ flex: 1 }}
-          source={{ uri: item.src }}
-        />
-      </TouchableOpacity>
-    );
-  }
-
-  renderTile = ({ item }) => {
-    return <Tile memeId={item.key} imageUrl={item.src} />;
-  };
-
   render() {
-    const optionArray = ['About', 'Privacy Policy', 'Log Out', 'Cancel'];
+    const optionArray = [
+      'About',
+      'Edit Profile Picture',
+      'Privacy Policy',
+      'Log Out',
+      'Cancel',
+    ];
 
-    if (this.state.memes.length === 0) {
+    if (this.state.memes.length === 0 && !this.state.refreshing) {
       return (
         <View style={styles.containerStyle}>
           <View style={styles.navBar1}>
@@ -235,16 +249,17 @@ export default class Profile extends React.Component {
                 }}
                 title='User Settings'
                 options={optionArray}
-                cancelButtonIndex={3}
+                cancelButtonIndex={4}
                 destructiveIndex={0}
                 onPress={(index) => {
-                  console.log(index);
-                  if (optionArray[index] == 'Log Out') {
+                  if (optionArray[index] === 'Log Out') {
                     this.logout();
-                  } else if (optionArray[index] == 'About') {
+                  } else if (optionArray[index] === 'About') {
                     this.props.navigation.push('InfoStack');
-                  } else if (optionArray[index] == 'Privacy Policy') {
+                  } else if (optionArray[index] === 'Privacy Policy') {
                     this.props.navigation.push('Privacy');
+                  } else if (optionArray[index] === 'Edit Profile Picture') {
+                    this.props.navigation.push('ProfilePic');
                   }
                 }}
               />
@@ -305,7 +320,7 @@ export default class Profile extends React.Component {
                 ref={(o) => (this.ActionSheet = o)}
                 title={'User Settings'}
                 options={optionArray}
-                cancelButtonIndex={3}
+                cancelButtonIndex={4}
                 destructiveIndex={0}
                 onPress={(index) => {
                   if (optionArray[index] == 'Log Out') {
@@ -314,13 +329,22 @@ export default class Profile extends React.Component {
                     this.props.navigation.push('InfoStack');
                   } else if (optionArray[index] == 'Privacy Policy') {
                     this.props.navigation.push('Privacy');
+                  } else if (optionArray[index] === 'Edit Profile Picture') {
+                    this.props.navigation.push('ProfilePic');
                   }
                 }}
               />
             </View>
           </View>
         </View>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              onRefresh={this.refreshMemes}
+              refreshing={this.state.refreshing}
+            />
+          }
+        >
           <View style={styles.containerStyle}>
             {/* Profile Pic, Follwers, Follwing Block */}
             <View style={styles.navBar2}>
@@ -440,14 +464,13 @@ const styles = StyleSheet.create({
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 50, //50
+    paddingTop: 50,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: 360,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
-    backgroundColor: 'white',
   },
   navBut: {
     height: 50,
@@ -465,9 +488,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     backgroundColor: 'white',
     paddingRight: 1,
+    color: 'black',
     paddingLeft: 1,
     paddingHorizontal: 10,
-    backgroundColor: 'white',
     marginRight: '9%',
     marginLeft: '9%',
   },
@@ -476,6 +499,7 @@ const styles = StyleSheet.create({
     fontFamily: 'AvenirNext-Regular',
     backgroundColor: 'white',
     paddingRight: 3,
+    color: 'black',
     paddingHorizontal: 10,
   },
   textSty3: {
@@ -485,6 +509,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingRight: 2,
     paddingLeft: 2,
+    color: 'black',
     paddingHorizontal: 10,
   },
   textSty4: {
@@ -493,6 +518,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingRight: 3,
     paddingHorizontal: 10,
+    color: 'black',
     fontWeight: 'bold',
   },
   textSty5: {
@@ -503,23 +529,19 @@ const styles = StyleSheet.create({
     paddingRight: 2,
     paddingLeft: 2,
     paddingHorizontal: 10,
-    borderColor: '#778899',
     color: '#778899',
-    borderWidth: 1,
-    borderRadius: 5,
   },
   profilePic: {
     backgroundColor: 'white',
     elevation: 3,
     paddingHorizontal: 20,
     paddingRight: 3,
-    paddingTop: 10, //50
+    paddingTop: 10,
     flexDirection: 'row',
     alignItems: 'center',
     fontSize: 360,
     fontFamily: 'AvenirNext-Regular',
     textAlign: 'center',
-    backgroundColor: 'white',
   },
   textshadow: {
     fontSize: 40,
@@ -553,7 +575,7 @@ const styles = StyleSheet.create({
   },
   navBar1: {
     height: 95,
-    paddingTop: 50, //50
+    paddingTop: 50,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -582,14 +604,11 @@ const styles = StyleSheet.create({
   followBut: {
     fontSize: 17,
     fontFamily: 'AvenirNext-Regular',
-    borderColor: '#A4A4A4',
     color: '#5B5B5B',
     justifyContent: 'center',
   },
   followBut2: {
-    borderWidth: 0.6,
     width: '25%',
-    borderRadius: 3.5,
     marginLeft: 25,
     flexDirection: 'row',
     justifyContent: 'center',

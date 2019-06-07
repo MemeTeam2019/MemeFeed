@@ -10,7 +10,7 @@ class TilePage extends React.Component {
 
   renderTile({ item }) {
     //for list view
-    console.log(item.key);
+    //console.log(item.key);
     return (
       <Tile
         memeId={item.key}
@@ -27,7 +27,7 @@ class TilePage extends React.Component {
     return (
       <FlatList
         style={styles.containerStyle}
-        data={this.props.navigation.getParam('memes')}
+        data={this.props.navigation.getParam('Memes')}
         renderItem={this.renderTile.bind(this)}
       />
     );
