@@ -17,8 +17,12 @@ def updateUserVectors():
     userReactions = {}
     userAverageReactions = {}
     users = db.collection('Users').stream()
+    i = 5
 
     for user in users:
+        i -= 1
+        if i == 0:
+            continue
         u = User(user.id, user.to_dict())
         memes = {}
         for id, meme in u.get_reacts().items():
@@ -35,7 +39,12 @@ def updateUserVectors():
 def updateMemeVectors():
     memeVectors = {}
     docs = db.collection('Memes').stream()
+    i = 5
+
     for doc in docs:
+        i -= 1
+        if i == 0:
+            continue
         meme = Meme(doc.id, doc.to_dict())
         memeVectors[doc.id] = meme.vectorize()
 
@@ -55,6 +64,7 @@ def consolidateRecommendations(userVotes, itemVotes, subredditVotes):
     finalRecommendations = {}
     currentTime = time.time()
     for user in userVotes:
+        print(user)
         finalRecommendations[user] = consolidateRecommendationsByUser(user,
             userVotes[user],
             itemVotes[user],
@@ -171,7 +181,7 @@ def voteUsingOneGroup(memeIds, votes, recommendations):
     for memeId in memeIds:
         rank = votes[memeId]
         if rank >= 2:
-            recommendations[memeId] = {'predictedRank': avgRank,
+            recommendations[memeId] = {'predictedRank': rank,
                                             'confidence': 1 }
     return recommendations
 
