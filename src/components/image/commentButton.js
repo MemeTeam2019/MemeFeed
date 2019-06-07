@@ -3,6 +3,28 @@ import { StyleSheet, View, Image, TouchableOpacity } from 'react-native';
 
 import { withNavigation } from 'react-navigation';
 
+/**
+* Comment Button component.
+* It is the speech bubble button below the meme next to the button bar
+*
+* Used by:
+*   tile.js
+*
+* Props:
+*   memeId (String): The id of the Firebase document in the Memes collection
+*   imageUrl (String): The image URL of the meme
+*   sub (String): The subreddit the meme was scraped from
+*   likedFrom (String): The uid of the user another user liked the associated
+*     meme from
+*   postedBy (String): The uid of the user who posted the meme associated with
+*     the memeId
+*   poster (String): The uid of the user who posted the associated meme
+*   caption (String): The caption associated with the meme. scraped from Reddit
+*     along with the meme
+*   time (String): The time each meme was posted to the feeds or entered into
+*     Firebase
+*/
+
 class CommentButton extends React.Component {
   handleCommentClick() {
     this.props.navigation.push('Comment', {

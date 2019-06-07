@@ -3,6 +3,13 @@ import { Dimensions, StyleSheet, View, Image } from 'react-native';
 
 import AutoHeightImage from 'react-native-auto-height-image';
 
+/**
+ * The photo component
+ * 
+ * Used by:
+ *  tile.js
+ */
+
 class Photo extends React.PureComponent {
 
   constructor(props) {
