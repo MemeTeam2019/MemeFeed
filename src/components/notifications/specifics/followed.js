@@ -5,6 +5,23 @@ import moment from 'moment';
 
 import Username from '../../image/username';
 
+
+/**
+ * Renders a Follow Notification
+ *
+ * Used by:
+ *    noteContainer.js
+ *
+ * Props:
+ *     
+ *      uid(string): the user affliated with the notification
+ *      time(int): the time the notification was made
+ *      viewed(boolean): wether the user has clicked it or not
+ *
+ */
+
+
+
 class Followed extends React.Component {
   constructor(props) {
     super(props);

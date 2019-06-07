@@ -16,6 +16,19 @@ import { TextInput } from 'react-native-gesture-handler';
 import ImagePicker from 'react-native-image-picker';
 import AutoHeightImage from 'react-native-auto-height-image';
 
+
+/**
+ * Screen from which users can upload photos
+ *
+ * Used by:
+ *     mainNavigator.js
+ *
+ * Props:
+ *     None
+ */
+
+
+
 class CaptionPage extends React.Component {
   static navigationOptions = ({ navigation }) => {
     return {
@@ -74,7 +87,7 @@ class CaptionPage extends React.Component {
         });
     }
   }
-
+//opens library for user to pick
   pickPhoto = () => {
     const options = {
       noData: true,

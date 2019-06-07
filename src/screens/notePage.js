@@ -5,8 +5,7 @@ import firebase from 'react-native-firebase';
 import NoteList from '../components/notifications/noteList';
 
 /**
- * Feed of novel memes in Firebase, which are pulled from various subreddits.
- * Can also search for users on this screen
+ * A list of Notifications from other users
  *
  * Used by:
  *     mainNavigator.js
@@ -40,7 +39,7 @@ class NotePage extends React.Component {
       .get()
       .then(this.updateList);
   }
-
+//get new notes
   refreshNotes = () => {
     this.setState({ refreshing: true, notes: [], oldestDoc: null }, () => {
       firebase

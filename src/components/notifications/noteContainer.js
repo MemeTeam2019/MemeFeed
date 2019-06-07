@@ -6,6 +6,26 @@ import Followed from './specifics/followed';
 import Liked from './specifics/liked';
 import Tagged from './specifics/tagged';
 
+
+/**
+ * Renders a Notification. Serves as a Container 
+ * for the three diffrent varients of of Notification
+ *
+ * Used by:
+ *    noteList.js
+ *
+ * Props:
+ *    notificationId(string): the notification being rendered
+ *      type(string): what kind of notification it is (follow,like,tag)
+ *      uid(string): the user affliated with the notification
+ *      memeId(string): the meme affliated with the notification
+ *      viewed(boolean): wether the user has clicked it or not
+ *      time(int): the time the notification was made
+ */
+
+
+
+
 class Notification extends React.Component {
   constructor(props) {
     super(props);
