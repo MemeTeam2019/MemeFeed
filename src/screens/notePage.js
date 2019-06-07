@@ -40,7 +40,7 @@ class NotePage extends React.Component {
       .get()
       .then(this.updateList);
   }
-
+//gets new notifications
   refreshNotes = () => {
     this.setState({ refreshing: true, notes: [], oldestDoc: null }, () => {
       firebase
@@ -56,8 +56,6 @@ class NotePage extends React.Component {
   };
 
   fetchNotes = () => {
-    // garentees not uploading duplicate memes by checking if memes have finished
-    // updating
     const oldestDoc = this.state.oldestDoc;
     firebase
       .firestore()

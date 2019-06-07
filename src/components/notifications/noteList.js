@@ -4,7 +4,7 @@ import { StyleSheet, FlatList, RefreshControl } from 'react-native';
 import Notification from './noteContainer';
 
 /**
- * Render a list of memes using the Tile component
+ * Render a list of notes using the noteContainer component
  *
  * Props
  * -----

@@ -5,6 +5,22 @@ import moment from 'moment';
 
 import Username from '../../image/username';
 
+
+/**
+ * Renders a Liked Notification
+ *
+ * Used by:
+ *    noteContainer.js
+ *
+ * Props:
+ *     
+ *      memeId(string): the meme affliated with the notification
+ *      uid(string): the user affliated with the notification
+ *      time(int): the time the notification was made
+ *      viewed(boolean): wether the user has clicked it or not
+ *
+ */
+
 class Followed extends React.Component {
   constructor(props) {
     super(props);
