@@ -17,12 +17,8 @@ def updateUserVectors():
     userReactions = {}
     userAverageReactions = {}
     users = db.collection('Users').stream()
-    i = 5
 
     for user in users:
-        i -= 1
-        if i == 0:
-            continue
         u = User(user.id, user.to_dict())
         memes = {}
         for id, meme in u.get_reacts().items():
@@ -39,12 +35,8 @@ def updateUserVectors():
 def updateMemeVectors():
     memeVectors = {}
     docs = db.collection('Memes').stream()
-    i = 5
 
     for doc in docs:
-        i -= 1
-        if i == 0:
-            continue
         meme = Meme(doc.id, doc.to_dict())
         memeVectors[doc.id] = meme.vectorize()
 
