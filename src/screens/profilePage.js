@@ -137,7 +137,7 @@ export default class Profile extends React.Component {
         .get()
         .then((memeSnapshot) => {
           if (memeSnapshot.exists && rank > 1) {
-            const { caption, time } = memeSnapshot.data();
+            const { caption, time, numFlags } = memeSnapshot.data();
             return {
               key: doc.id,
               doc, // DocumentSnapshot
@@ -149,6 +149,7 @@ export default class Profile extends React.Component {
               postedBy: likedFrom,
               poster: firebase.auth().currentUser.uid,
               caption,
+              numFlags,
             };
           }
           return null;
@@ -160,7 +161,7 @@ export default class Profile extends React.Component {
     Promise.all(newMemes).then((fulfilledMemes) => {
       this.setState((prevState) => {
         const mergedMemes = prevState.memes.concat(
-          fulfilledMemes.filter((meme) => meme != null)
+          fulfilledMemes.filter((meme) => meme != null && meme.numFlags < 10)
         );
         return {
           memes: mergedMemes,

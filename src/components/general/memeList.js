@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, FlatList, RefreshControl, ScrollView } from 'react-native';
+import { StyleSheet, FlatList, RefreshControl, View } from 'react-native';
 
 import Tile from '../image/tile';
 
@@ -41,23 +41,25 @@ class MemeList extends React.PureComponent {
 
   render() {
     return (
-      <FlatList
-        style={styles.container}
-        data={this.props.memes}
-        extraData={this.props}
-        keyExtractor={(item) => item.key}
-        renderItem={this.renderTile}
-        onEndReached={() => {
-          // Load new memes once end of list is reached
-          this.props.loadMemes();
-        }}
-        refreshControl={
-          <RefreshControl
-            refreshing={this.props.refreshing}
-            onRefresh={this.props.onRefresh}
-          />
-        }
-      />
+      <React.Fragment>
+        <FlatList
+          // style={styles.container}
+          data={this.props.memes}
+          extraData={this.props}
+          keyExtractor={(item) => item.key}
+          renderItem={this.renderTile}
+          onEndReached={() => {
+            // Load new memes once end of list is reached
+            this.props.loadMemes();
+          }}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.props.refreshing}
+              onRefresh={this.props.onRefresh}
+            />
+          }
+        />
+      </React.Fragment>
     );
   }
 }

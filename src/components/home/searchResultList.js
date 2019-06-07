@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList } from 'react-native';
 import firebase from 'react-native-firebase';
 
 import SearchResult from './searchResult';
@@ -73,13 +73,13 @@ class FollowList extends React.Component {
   render() {
     const { usersToRender } = this.state;
     return (
-      <View style={{ flex: 1 }}>
+      <React.Fragment style={{ flex: 1 }}>
         <FlatList
           data={usersToRender}
           renderItem={(user) => this.renderResult(user)}
           keyExtractor={(user) => user.ref.id || -1}
         />
-      </View>
+      </React.Fragment>
     );
   }
 }

@@ -69,6 +69,10 @@ class ExploreFeed extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   /**
    * Clears all memes and the oldest doc, then pulls the newest 15 memes from
    * collection `Memes`.
@@ -103,6 +107,11 @@ class ExploreFeed extends React.Component {
     );
   };
 
+  /**
+   * Queries the eight latest Memes and Recommendations collection in order to
+   * populate the exploreFeed. The information is extracted into a javascript
+   * Object and set in the state.
+   */
   fetchMemes = () => {
     // garentees not uploading duplicate memes by checking if memes have finished
     // updating
@@ -132,11 +141,16 @@ class ExploreFeed extends React.Component {
     }
   };
 
+  /**
+   * Extracts document snpashots from Memes and Recommendation collections
+   * into an array of Objects, which are concatenated with the memes of the
+   * previous state.
+   */
   updateFeed = (memesSnapshot, recsSnapshot) => {
     const newMemes = [];
 
     recsSnapshot.docs.forEach((doc) => {
-      const { url, time, sub, caption } = doc.data();
+      const { url, time, sub, caption, numFlags } = doc.data();
       newMemes.push({
         key: doc.id,
         doc,
@@ -145,11 +159,12 @@ class ExploreFeed extends React.Component {
         sub,
         postedBy: sub,
         caption,
+        numFlags: numFlags || 0,
       });
     });
 
     memesSnapshot.docs.forEach((doc) => {
-      const { url, time, sub, author, caption } = doc.data();
+      const { url, time, sub, author, caption, numFlags } = doc.data();
       if (sub) {
         newMemes.push({
           key: doc.id,
@@ -159,6 +174,7 @@ class ExploreFeed extends React.Component {
           sub,
           postedBy: sub,
           caption,
+          numFlags,
         });
       } else {
         newMemes.push({
@@ -169,6 +185,7 @@ class ExploreFeed extends React.Component {
           poster: author,
           postedBy: author,
           caption,
+          numFlags,
         });
       }
     });
@@ -185,7 +202,7 @@ class ExploreFeed extends React.Component {
         const mergedMemes = prevState.memes.concat(resolvedMemes);
 
         return {
-          memes: mergedMemes,
+          memes: mergedMemes.filter((meme) => meme.numFlags < 10),
           updated: true,
           oldestDocRecs: recsSnapshot.docs[recsSnapshot.docs.length - 1],
           oldestDocMemes: memesSnapshot.docs[memesSnapshot.docs.length - 1],
@@ -195,6 +212,12 @@ class ExploreFeed extends React.Component {
     });
   };
 
+  /**
+   * Every time the user inputs a new character, update the searchResults
+   * state and therefore the searchResults list with searchableUsernames
+   * or searchableNames which start with searchTerm.
+   * @param {String} searchTerm: The term which is currently in the TextInput
+   */
   updateSearch = (searchTerm = '') => {
     // Set search term state immediately to update SearchBar contents
 
@@ -236,7 +259,9 @@ class ExploreFeed extends React.Component {
           searchResults.push(snapshot);
         }
       });
-      this.setState({ searchResults: searchResults.sort() });
+      this.setState({
+        searchResults,
+      });
     });
   };
 
