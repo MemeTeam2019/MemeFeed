@@ -20,7 +20,7 @@ class ItemBasedRecommendation:
 
     # Fetch all uids from the Users collection
     def get_uids(self):
-        print('Fetching all uids...')
+        print('Fetching uids...')
         uids = []
         for user in firestore.collection('Users').stream():
             uids.append(user.id)
@@ -28,7 +28,7 @@ class ItemBasedRecommendation:
 
     # Fetch all meme ids from the Memes collection
     def get_meme_ids(self):
-        print('Fetching all meme_ids...')
+        print('Fetching meme_ids...')
         meme_ids = []
         for meme in firestore.collection('Memes').stream():
             meme_ids.append(meme.id)
@@ -45,7 +45,7 @@ class ItemBasedRecommendation:
         return reacts
 
     def get_all_reacts(self):
-        print('Fetching all user reacts...')
+        print('Fetching user reacts...')
         all_reacts = {}
         for uid in self.uids:
             all_reacts[uid] = self.get_user_reacts(uid)
@@ -174,6 +174,8 @@ class ItemBasedRecommendation:
                             recommendations[uid][meme_id] = predicted
                         else:
                             recommendations[uid] = { meme_id: predicted }
+                    elif uid not in recommendations:
+                        recommendations[uid] = {}
                 except Exception:
                     continue
         return recommendations
