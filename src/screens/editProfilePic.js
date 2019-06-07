@@ -14,7 +14,7 @@ import firebase from 'react-native-firebase';
 import ImagePicker from 'react-native-image-picker';
 import AutoHeightImage from 'react-native-auto-height-image';
 
-
+//user upload for profile pics 
 export default class EditProfilePic extends React.Component {
   static navigationOptions = {
     header: null,
