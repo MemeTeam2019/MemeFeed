@@ -70,7 +70,7 @@ def consolidateRecommendations(userVotes, itemVotes, subredditVotes):
 
             recommendation_doc = rec_ref.get()
             # if worth putting in the recommendations and its not already there
-            if rank >= 2 and recommendation_doc.to_dict() == None:
+            if rank >= 2: # and recommendation_doc.to_dict() == None:
                 # if document doesn't exist, put it there
                 doc_ref = db.collection('Memes').document(meme)
                 memeDoc = doc_ref.get()
@@ -78,23 +78,27 @@ def consolidateRecommendations(userVotes, itemVotes, subredditVotes):
                 if memeData == None:
                     continue
                 try:
+                    flags = 0 if 'numFlags' not in memeData else memeData['numFlags']
                     if memeData['sub'] != None :
                         rec_ref.set({
                             'time': modifiedTime,
                             'url': memeData['url'],
-                            'sub': memeData['sub']
+                            'sub': memeData['sub'],
+                            'numFlags': flags
                         })
                     else:
                         rec_ref.set({
                             'time': modifiedTime,
                             'url': memeData['url'],
-                            'author': memeData['author']
+                            'author': memeData['author'],
+                            'numFlags': flags
                         })
                 except: 
                     rec_ref.set({
                         'time': modifiedTime,
                         'url': memeData['url'],
-                        'author': memeData['author']
+                        'author': memeData['author'],
+                        'numFlags': flags
                     })
 
 
