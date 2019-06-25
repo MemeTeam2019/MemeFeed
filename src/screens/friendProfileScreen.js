@@ -6,11 +6,11 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  RefreshControl
+  RefreshControl,
 } from 'react-native';
 import { withNavigation } from 'react-navigation';
 import firebase from 'react-native-firebase';
-
+import ActionSheet from 'react-native-actionsheet';
 import MemeGrid from '../components/general/memeGrid';
 import MemeList from '../components/general/memeList';
 import Profile from './profilePage';
@@ -423,6 +423,13 @@ class FriendProfile extends React.Component {
   };
 
   render() {
+    const optionArray = [
+      'About',
+      'Edit Profile Picture',
+      'Privacy Policy',
+      'Log Out',
+      'Cancel',
+    ];
     const uid = this.props.navigation.getParam('uid');
     const followingState = this.state.isFollowing;
     if (!this.state.userExists) {
@@ -441,9 +448,36 @@ class FriendProfile extends React.Component {
     if (this.state.memes.length === 0) {
       return (
         <View style={styles.containerStyle}>
-          <View style={styles.navBar}>
-            <Text style={styles.textSty4}>{this.state.username}</Text>
+        <View style={styles.navBar4}>
+          <View style={styles.leftContainer4}>
+            <Text style={[styles.text, { textAlign: 'left' }]}>{}</Text>
           </View>
+          <Text style={styles.textSty4}>{this.state.username}</Text>
+          <View style={styles.rightContainer4}>
+            <View style={styles.rightIcon4} />
+            <TouchableOpacity onPress={this.showActionSheet}>
+              <Text style={styles.report}> ... </Text>
+            </TouchableOpacity>
+            <ActionSheet
+              ref={(o) => {
+                this.ActionSheet = o;
+              }}
+              title='User Settings'
+              options={optionArray}
+              cancelButtonIndex={4}
+              destructiveIndex={0}
+              onPress={(index) => {
+                if (optionArray[index] === 'About') {
+
+                } else if (optionArray[index] === 'Privacy Policy') {
+
+                } else if (optionArray[index] === 'Edit Profile Picture') {
+
+                }
+              }}
+            />
+          </View>
+        </View>
           {/* Profile Pic, Follwers, Follwing Block */}
           <View style={styles.navBar2}>
             <View style={styles.leftContainer2}>
@@ -521,9 +555,36 @@ class FriendProfile extends React.Component {
     }
     return (
       <View style={styles.containerStyle}>
-        <View style={styles.navBar}>
-          <Text style={styles.textSty4}>{this.state.username}</Text>
+      <View style={styles.navBar4}>
+        <View style={styles.leftContainer4}>
+          <Text style={[styles.text, { textAlign: 'left' }]}>{}</Text>
         </View>
+        <Text style={styles.textSty4}>{this.state.username}</Text>
+        <View style={styles.rightContainer4}>
+          <View style={styles.rightIcon4} />
+          <TouchableOpacity onPress={this.showActionSheet}>
+            <Text style={styles.report}> ... </Text>
+          </TouchableOpacity>
+          <ActionSheet
+            ref={(o) => {
+              this.ActionSheet = o;
+            }}
+            title='User Settings'
+            options={optionArray}
+            cancelButtonIndex={4}
+            destructiveIndex={0}
+            onPress={(index) => {
+              if (optionArray[index] === 'About') {
+
+              } else if (optionArray[index] === 'Privacy Policy') {
+
+              } else if (optionArray[index] === 'Edit Profile Picture') {
+
+              }
+            }}
+          />
+        </View>
+      </View>
         <ScrollView
           refreshControl={
             <RefreshControl
@@ -862,5 +923,42 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingLeft: 5,
     paddingRight: 5,
+  },
+  navBar4: {
+    height: 95,
+    paddingTop: 50,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
+  leftContainer4: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    backgroundColor: 'white',
+  },
+  rightContainer4: {
+    flex: 1,
+    width: 200,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
+  rightIcon4: {
+    height: 10,
+    width: 20,
+    resizeMode: 'contain',
+    backgroundColor: 'white',
+  },
+  report: {
+    fontFamily: 'AvenirNext-Bold',
+    marginRight: 10,
+    fontSize: 20,
+    marginBottom: 5,
+    color: '#919191',
+    backgroundColor: 'white',
+    marginLeft: 2,
   },
 });
