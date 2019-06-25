@@ -424,10 +424,7 @@ class FriendProfile extends React.Component {
 
   render() {
     const optionArray = [
-      'About',
-      'Edit Profile Picture',
-      'Privacy Policy',
-      'Log Out',
+      'Block User',
       'Cancel',
     ];
     const uid = this.props.navigation.getParam('uid');
@@ -462,17 +459,12 @@ class FriendProfile extends React.Component {
               ref={(o) => {
                 this.ActionSheet = o;
               }}
-              title='User Settings'
               options={optionArray}
-              cancelButtonIndex={4}
+              cancelButtonIndex={1}
               destructiveIndex={0}
               onPress={(index) => {
-                if (optionArray[index] === 'About') {
-
-                } else if (optionArray[index] === 'Privacy Policy') {
-
-                } else if (optionArray[index] === 'Edit Profile Picture') {
-
+                if (optionArray[index] === 'Block User') {
+                  console.log("BLOCK USER");
                 }
               }}
             />
@@ -569,16 +561,11 @@ class FriendProfile extends React.Component {
             ref={(o) => {
               this.ActionSheet = o;
             }}
-            title='User Settings'
             options={optionArray}
-            cancelButtonIndex={4}
+            cancelButtonIndex={1}
             destructiveIndex={0}
             onPress={(index) => {
-              if (optionArray[index] === 'About') {
-
-              } else if (optionArray[index] === 'Privacy Policy') {
-
-              } else if (optionArray[index] === 'Edit Profile Picture') {
+              if (optionArray[index] === 'Block User') {
 
               }
             }}
@@ -926,7 +913,7 @@ const styles = StyleSheet.create({
   },
   navBar4: {
     height: 95,
-    paddingTop: 50,
+    paddingTop: 10,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -957,7 +944,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     fontSize: 20,
     marginBottom: 5,
-    color: '#919191',
+    color: 'black',
     backgroundColor: 'white',
     marginLeft: 2,
   },
