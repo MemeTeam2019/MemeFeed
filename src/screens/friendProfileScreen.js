@@ -46,6 +46,9 @@ class FriendProfile extends React.Component {
       userExists: false,
       iconURL: '',
       refreshing: false,
+      blockingLst: [],
+      blockedByLst: [],
+      isBlocking: false
     };
   }
 
@@ -216,6 +219,94 @@ class FriendProfile extends React.Component {
     this.setState({ selectGridButtonP: false });
     this.setState({ selectListButtonP: true });
   };
+
+//__________________________
+//BLOCKING
+
+//following -> blocking
+//follower -> blockedBy
+
+//followingState -> blockingState
+//nowFollowing -> nowBlocking
+
+//followingLst -> blockingLst
+//inFollowingLst -> inBlockingLst
+
+
+//followerLst -> blockedByLst
+//inFollowersLst -> inBlockedByLst
+
+//__________________________
+updateBlocking = async (blockingState) => {
+  console.log("GETTING TO BLOCKING FUNCTION");
+
+  const myUid = firebase.auth().currentUser.uid;
+  const theirUid = this.props.navigation.getParam('uid');
+  const myUserRef = firebase
+    .firestore()
+    .collection('Users')
+    .doc(myUid);
+  const theirUserRef = firebase
+    .firestore()
+    .collection('Users')
+    .doc(theirUid);
+
+  const nowBlocking = !blockingState;
+  console.log("STEP 2");
+  // Get my myFollowingLst
+  const blockingLst = await myUserRef.get().then((mySnapshot) => {
+    return mySnapshot.data().blockingLst || [];
+  });
+
+  // Get theirFollowersLst
+  const blockedByLst = await theirUserRef.get().then((theirSnapshot) => {
+    return theirSnapshot.data().blockedByLst || [];
+  });
+
+  // Add myUid to theirFollowersLst and theirUid to myFollowingLst
+  const inBlockingLst = blockingLst.indexOf(theirUid) > -1;
+  const inBlockedByLst = blockedByLst.indexOf(myUid) > -1;
+  if (nowFollowing) {
+    if (!inBlockingLst) blockingLst.push(theirUid);
+    if (!inBlockedByLst) blockedByLst.push(myUid);
+    console.log("NOW BLOCKED? ");
+  } else {
+    if (inBlockingLst)
+      blockingLst.splice(blockingLst.indexOf(theirUid), 1);
+    if (inBlockedByLst) blockedByLst.splice(blockedByLst.indexOf(myUid), 1);
+  }
+
+  theirUserRef.update({
+    blockedByLst,
+    followersCnt: blockedByLst.length,
+  });
+  myUserRef.update({
+    blockingLst,
+    followingCnt: blockingLst.length,
+  });
+
+  console.log("UPDATED LISTS");
+
+  const theirLikes = firebase
+    .firestore()
+    .collection('Reacts')
+    .doc(theirUid)
+    .collection('Likes')
+    .orderBy('time', 'desc') // most recent
+    .limit(150);
+
+
+};
+
+
+
+//__________________________
+//__________________________
+
+
+
+
+
 
   updateFollowing = async (followingState) => {
     const myUid = firebase.auth().currentUser.uid;
@@ -429,6 +520,7 @@ class FriendProfile extends React.Component {
     ];
     const uid = this.props.navigation.getParam('uid');
     const followingState = this.state.isFollowing;
+    const blockingState = this.state.isBlocking;
     if (!this.state.userExists) {
       return (
         <View style={styles.containerStyle}>
@@ -464,7 +556,7 @@ class FriendProfile extends React.Component {
               destructiveIndex={0}
               onPress={(index) => {
                 if (optionArray[index] === 'Block User') {
-                  console.log("BLOCK USER");
+                  this.updateBlocking(blockingState);
                 }
               }}
             />
@@ -566,7 +658,7 @@ class FriendProfile extends React.Component {
             destructiveIndex={0}
             onPress={(index) => {
               if (optionArray[index] === 'Block User') {
-
+                this.updateBlocking(blockingState);
               }
             }}
           />
@@ -913,7 +1005,7 @@ const styles = StyleSheet.create({
   },
   navBar4: {
     height: 95,
-    paddingTop: 10,
+    paddingTop: 50,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'center',
